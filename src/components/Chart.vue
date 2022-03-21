@@ -9,8 +9,7 @@
 
   <button type="button" @click="count++">count is: {{ count }}</button>
 
-  <div ref="chart" style="width: 800px; margin: auto"></div>
-
+  <div ref="chart"></div>
 
 </template>
 
@@ -24,14 +23,19 @@ export default {
   },
   data() {
     return {
-      count: 0
+      count: 0,
+      chart: null
     }
   },
   mounted() {
-    const chart = createChart(this.$refs.chart, { width: 800, height: 500 });
-    // const series = chart.addLineSeries();
-    const series = chart.addCandlestickSeries();
-    series.setData([
+    this.chart = createChart(this.$refs.chart, { width: document.body.clientWidth, height: 600 });
+    this.chart.timeScale().fitContent(); // растянуть на всю ширину
+    // const series = this.chart.addLineSeries();
+    const series = this.chart.addCandlestickSeries({
+      title: 'TANK/BUSD',
+      // upColor: 'green', downColor: 'red', // цвет свечей
+    });
+    const initialData = [
       { time: '2018-10-19', open: 54.62, high: 55.50, low: 54.52, close: 54.90 },
       { time: '2018-10-22', open: 55.08, high: 55.27, low: 54.61, close: 54.98 },
       { time: '2018-10-23', open: 56.09, high: 57.47, low: 56.09, close: 57.21 },
@@ -99,19 +103,35 @@ export default {
       { time: '2019-01-24', open: 57.61, high: 57.65, low: 56.50, close: 57.07 },
       { time: '2019-01-25', open: 57.18, high: 57.47, low: 56.23, close: 56.40 },
       { time: '2019-01-28', open: 56.12, high: 56.22, low: 54.80, close: 55.07 },
-    ])
-    // series.setData([
-    //   { time: '2019-04-11', value: 80.01 },
-    //   { time: '2019-04-12', value: 96.63 },
-    //   { time: '2019-04-13', value: 76.64 },
-    //   { time: '2019-04-14', value: 81.89 },
-    //   { time: '2019-04-15', value: 74.43 },
-    //   { time: '2019-04-16', value: 80.01 },
-    //   { time: '2019-04-17', value: 96.63 },
-    //   { time: '2019-04-18', value: 76.64 },
-    //   { time: '2019-04-19', value: 81.89 },
-    //   { time: '2019-04-20', value: 74.43 },
-    // ]);
+    ]
+    const currentDate = new Date(initialData[initialData.length - 1].time);
+    let lastData = initialData[initialData.length - 1]
+
+    series.setData(initialData)
+
+    const interval = setInterval(() => {
+      currentDate.setDate(currentDate.getDate() + 1);
+      const trendUp = Math.random() > 0.5 ? 1.5 : -1.5
+      const next = {
+        time: currentDate.toISOString().slice(0, 10),
+        open: lastData.close,
+        high: lastData.close + trendUp * Math.random(),
+        low: lastData.close - trendUp * Math.random(),
+        close: lastData.close + trendUp * Math.random(),
+      };
+      lastData = next
+      series.update(next);
+    }, 1000);
+
+    window.addEventListener('resize', this.handleResize);
+  },
+  unmounted() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+  methods: {
+    handleResize() {
+      this.chart.applyOptions({ width: document.body.clientWidth });
+    }
   }
 }
 // import { ref } from 'vue'
