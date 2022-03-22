@@ -1,0 +1,53 @@
+image: node:16.4.1
+
+pipelines:
+  branches:
+    master:
+      - step:
+          caches:
+            - node
+          name: Build
+          script:
+            - npm install
+            - npm run build
+            - export TZ='GMT-3'
+            - echo 'GMT-3' > /etc/timezone
+            - echo -en "Date - `date`\nBitbucket Build Version - ${BITBUCKET_BUILD_NUMBER}\nBitbucket Commit ID - ${BITBUCKET_COMMIT}\nButbucket Branch - ${BITBUCKET_BRANCH}\nBitBucket Repo UUID - ${BITBUCKET_REPO_UUID}\nBitBucket Repo Full Name - ${BITBUCKET_REPO_FULL_NAME}" >> dist/version.txt
+          artifacts:
+            - dist/**
+      - step:
+          name: Deploy
+          deployment: prod
+          script:
+            - pipe: atlassian/rsync-deploy:0.5.0 # fetch updates
+              variables:
+                USER: $USER
+                SERVER: $IP
+                REMOTE_PATH: /opt/dex/src/frontend
+                LOCAL_PATH: dist/
+                EXTRA_ARGS: '-az --exclude-from=${BITBUCKET_CLONE_DIR}/.gitignore --exclude-from=${BITBUCKET_CLONE_DIR}/.rsyncignore --no-perms'
+    dev:
+      - step:
+          caches:
+            - node
+          name: Build
+          script:
+            - npm install
+            - npm run build
+            - export TZ='GMT-3'
+            - echo 'GMT-3' > /etc/timezone
+            - echo -en "Date - `date`\nBitbucket Build Version - ${BITBUCKET_BUILD_NUMBER}\nBitbucket Commit ID - ${BITBUCKET_COMMIT}\nButbucket Branch - ${BITBUCKET_BRANCH}\nBitBucket Repo UUID - ${BITBUCKET_REPO_UUID}\nBitBucket Repo Full Name - ${BITBUCKET_REPO_FULL_NAME}" >> dist/version.txt
+          artifacts:
+            - dist/**
+      - step:
+          name: Deploy
+          deployment: dev
+          script:
+            - pipe: atlassian/rsync-deploy:0.5.0 # fetch updates
+              variables:
+                USER: $USER
+                SERVER: $IP
+                REMOTE_PATH: /opt/dex/src/frontend
+                LOCAL_PATH: dist/
+                EXTRA_ARGS: '-az --exclude-from=${BITBUCKET_CLONE_DIR}/.gitignore --exclude-from=${BITBUCKET_CLONE_DIR}/.rsyncignore --no-perms'
+
