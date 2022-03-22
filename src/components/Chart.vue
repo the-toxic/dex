@@ -1,13 +1,6 @@
 <template>
-  <h1>{{ msg }}</h1>
 
-  <p>
-    <a href="https://vitejs.dev/guide/features.html" target="_blank">Vite Documentation</a>
-    |
-    <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Documentation</a>
-  </p>
-
-  <button type="button" @click="count++">count is: {{ count }}</button>
+  <v-btn @click="count++">count is: {{ count }}</v-btn>
 
   <div ref="chart"></div>
 
@@ -18,17 +11,18 @@ import { createChart } from 'lightweight-charts';
 
 export default {
   name: 'Chart',
-  props: {
-    msg: String
-  },
+  props: {},
+
   data() {
     return {
       count: 0,
-      chart: null
+      chart: null,
+      timerId: null
     }
   },
+
   mounted() {
-    this.chart = createChart(this.$refs.chart, { width: document.body.clientWidth, height: 600 });
+    this.chart = createChart(this.$refs.chart, { width: this.$refs.chart.clientWidth, height: 600 });
     this.chart.timeScale().fitContent(); // растянуть на всю ширину
     // const series = this.chart.addLineSeries();
     const series = this.chart.addCandlestickSeries({
@@ -109,7 +103,7 @@ export default {
 
     series.setData(initialData)
 
-    const interval = setInterval(() => {
+    this.timerId = setInterval(() => {
       currentDate.setDate(currentDate.getDate() + 1);
       const trendUp = Math.random() > 0.5 ? 1.5 : -1.5
       const next = {
@@ -126,11 +120,12 @@ export default {
     window.addEventListener('resize', this.handleResize);
   },
   unmounted() {
+    clearInterval(this.timerId)
     window.removeEventListener('resize', this.handleResize);
   },
   methods: {
     handleResize() {
-      this.chart.applyOptions({ width: document.body.clientWidth });
+      this.chart.applyOptions({ width: this.$refs.chart.clientWidth });
     }
   }
 }
