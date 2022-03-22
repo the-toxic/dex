@@ -8,8 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "lightweight-charts": "^3.8.0",
     "@mdi/font": "5.9.55",
+    "lightweight-charts": "^3.8.0",
+    "pinia": "^2.0.12",
     "roboto-fontface": "*",
     "vue": "^3.2.25",
     "vuetify": "^3.0.0-beta.0",

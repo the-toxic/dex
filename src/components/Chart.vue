@@ -1,9 +1,5 @@
 <template>
-
-  <v-btn @click="count++">count is: {{ count }}</v-btn>
-
   <div ref="chart"></div>
-
 </template>
 
 <script>
@@ -15,7 +11,6 @@ export default {
 
   data() {
     return {
-      count: 0,
       chart: null,
       timerId: null
     }
@@ -23,7 +18,7 @@ export default {
 
   mounted() {
     this.chart = createChart(this.$refs.chart, { width: this.$refs.chart.clientWidth, height: 600 });
-    this.chart.timeScale().fitContent(); // растянуть на всю ширину
+    this.chart.timeScale().fitContent(); // fill on wrap width
     // const series = this.chart.addLineSeries();
     const series = this.chart.addCandlestickSeries({
       title: 'TANK/BUSD',
@@ -118,30 +113,22 @@ export default {
     }, 1000);
 
     window.addEventListener('resize', this.handleResize);
+
   },
   unmounted() {
     clearInterval(this.timerId)
     window.removeEventListener('resize', this.handleResize);
   },
+  computed: {
+  },
   methods: {
     handleResize() {
       this.chart.applyOptions({ width: this.$refs.chart.clientWidth });
-    }
+    },
   }
 }
-// import { ref } from 'vue'
-// import { createChart } from 'lightweight-charts';
-
 
 // defineProps({
 //   msg: String
 // })
-
-// const count = ref(0)
 </script>
-
-<style scoped>
-a {
-  color: #42b983;
-}
-</style>
