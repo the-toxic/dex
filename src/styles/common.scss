@@ -1,0 +1,31 @@
+.v-application__wrap {
+  min-height: 100vh;
+}
+.fill-width {
+  width: 100%;
+}
+.pointer {
+  cursor: pointer;
+}
+#globalLoader {
+  position: absolute;
+  top: 0;
+}
+#mainFooter {
+  .smallFooter .v-btn {
+    height: 60px;
+  }
+  .footerCopy {
+    line-height: 3.7;
+  }
+  @media all and (max-width: 959px) { // < sm(960)
+    .smallFooter .v-btn {
+      height: 20px;
+      font-size: 0.8rem;
+      padding: 0 10px;
+    }
+    .footerCopy {
+      width: 100%;
+    }
+  }
+}

@@ -8,21 +8,26 @@ import { defineStore } from 'pinia'
 
 export const useMainStore = defineStore('main', { // With default suffix store name - mainStore
   state: () => ({
-    count: 0,
-    users: []
+    // count: 0,
+    walletDialog: false,
+    globalLoader: false,
+    wallet: {
+      isLogin: false,
+      address: ''
+    }
   }),
   getters: {
-    doubleCount: (state) => state.count * 2,
-    /** @returns {number} */
-    doubleCountPlusOne() { return this.doubleCount + 1 },
-    getUserById: (state) => (userId) => state.users.find((user) => user.id === userId),
+    // doubleCount: (state) => state.count * 2,
+    // /** @returns {number} */
+    // doubleCountPlusOne() { return this.doubleCount + 1 },
+    // getUserById: (state) => (userId) => state.users.find((user) => user.id === userId),
   },
   actions: {
-    increment(payload) {
-      this.count++
+    showWalletDialog(payload) {
+      this.walletDialog = payload || false
     },
-    resetStore () {
-      this.$reset()
-    }
+    // resetStore () {
+    //   this.$reset()
+    // }
   }
 })
