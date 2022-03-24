@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { createChart } from 'lightweight-charts';
+import { createChart, ColorType } from 'lightweight-charts';
 import { mapStores, mapState } from "pinia";
 import { useMainStore } from "../stores/main";
 import { closeWs, startCandles } from "../api";
@@ -30,7 +30,32 @@ export default {
     this.chart = createChart(this.$refs.chart, { width: this.$refs.chart.clientWidth, height: 600 });
     this.chart.timeScale().fitContent() // fill on wrap width
     // this.chart.timeScale().resetTimeScale();
-    this.chart.timeScale().applyOptions({timeVisible: true})
+    this.chart.timeScale().applyOptions({timeVisible: true,})
+    this.chart.applyOptions({
+      layout: {
+        background: {
+          color: '#171a25',
+          // type: ColorType.VerticalGradient,
+          // topColor: '#000',
+          // bottomColor: '#444',
+        },
+        textColor: '#a2a5ae',
+        // fontSize: 20,
+        // fontFamily: 'Calibri',
+      },
+      grid: {
+        vertLines: {
+          color: '#242632',
+          style: 1,
+          visible: true,
+        },
+        horzLines: {
+          color: '#242632',
+          style: 1,
+          visible: true,
+        },
+      },
+    })
     // const chartSeries = this.chart.addLineSeries();
     this.chartSeries = this.chart.addCandlestickSeries({
       title: 'Pair name',
