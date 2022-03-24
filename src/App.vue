@@ -57,7 +57,9 @@
     <v-footer id="mainFooter" absolute bottom padless color="#1E1E1E" class="justify-center fill-width pa-0">
       <div class="smallFooter d-flex justify-space-between flex-wrap fill-width">
         <div class="footerCopy text-center grey--text order-1 order-md-0 pl-5">&copy; {{ new Date().getFullYear() }}
-          <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>HAZB</router-link>. All rights reserved.</div>
+          <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>HAZB</router-link>. All rights reserved.
+        </div>
+        <div>{{ wsConnected ? 'On' : 'Off' }}</div>
         <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-4 pt-md-0">
           <v-btn tile :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" elevation="0" class="transparent" style="text-transform: none !important;">Terms of Use</v-btn>
           <v-btn tile :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" elevation="0" class="text-capitalize transparent">Privacy Policy</v-btn>
@@ -69,13 +71,13 @@
 </template>
 
 <script>
-import Test from "@/components/testStores.vue";
+// import Test from "@/components/testStores.vue";
 import { mapActions, mapState } from "pinia";
 import { useMainStore } from "./stores/main";
 
 export default {
   name: 'App',
-  components: {Test},
+  // components: {Test},
   data: () => ({
     drawer: false,
     BLOG_HOST: process.env.VUE_APP_BLOG_HOST,
@@ -86,7 +88,8 @@ export default {
   computed: {
     ...mapState(useMainStore, {
       globalLoader: 'globalLoader',
-      isLogged: 'wallet.isLogged'
+      isLogged: 'wallet.isLogged',
+      wsConnected: 'wsConnected'
     })
   },
   methods: {

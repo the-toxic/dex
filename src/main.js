@@ -14,3 +14,6 @@ createApp(App)
   .use(router)
   .use(vuetify)
   .mount('#app')
+
+import {httpInt} from './helpers/interceptors';
+httpInt();

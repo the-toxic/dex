@@ -8,14 +8,14 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', name: 'Home', component: Home },
-    { path: '/pairs', name: 'Pairs', redirect: { name: 'Pair', params: {network: 'bsc', id: '0x123456789123456789012345678901'} } },
-    { path: '/:network([a-zA-Z0-9]{2,10})/pair/:id([a-zA-Z0-9]{32,48})', name: 'Pair', component: Pair },
+    { path: '/pairs', name: 'Pairs', redirect: { name: 'Pair', params: {network: 'bsc', pair: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'} } },
+    { path: '/:network([a-zA-Z0-9]{2,10})/pair/:pair([a-zA-Z0-9]{42})', name: 'Pair', component: Pair },
     { path: '/:pathMatch(.*)*', name: 'E404', component: E404 }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = to.name + ' | Dex' // change page title on redirect
+  document.title = to.name + ' | HAZB' // change page title on redirect
 
   const mainStore = useMainStore()
 
