@@ -42,8 +42,8 @@
 
     </v-app-bar>
 
-    <v-main class="fill-height">
-      <v-container fluid class="mx-auto relative">
+    <v-main class="fill-height mb-9">
+      <v-container fluid class="mx-auto relative" style="max-width: 1500px">
         <router-view />
 <!--          <router-view v-slot="{ Component }">-->
 <!--            <transition enter-active-class="fadeIn" leave-active-class="fadeOut"  name="fade" mode="out-in" >-->
@@ -55,11 +55,11 @@
 
     <!--  Футер, прибит вниз через атрибут absolute, inset сдвигает его от фильтра в шопе  -->
     <v-footer id="mainFooter" absolute bottom padless color="#1E1E1E" class="justify-center fill-width pa-0">
-      <div class="smallFooter d-flex justify-space-between flex-wrap fill-width">
+      <div class="smallFooter d-flex justify-space-between align-center flex-wrap fill-width">
         <div class="footerCopy text-center grey--text order-1 order-md-0 pl-5">&copy; {{ new Date().getFullYear() }}
           <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>HAZB</router-link>. All rights reserved.
         </div>
-        <div>{{ wsConnected ? 'On' : 'Off' }}</div>
+        <v-icon :icon="wsConnected ? 'mdi-check-network' : 'mdi-close-network'" :color="wsConnected ? 'green' : 'red'" />
         <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-4 pt-md-0">
           <v-btn tile :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" elevation="0" class="transparent" style="text-transform: none !important;">Terms of Use</v-btn>
           <v-btn tile :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" elevation="0" class="text-capitalize transparent">Privacy Policy</v-btn>

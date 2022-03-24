@@ -108,6 +108,9 @@ export const useMainStore = defineStore('main', { // With default suffix store n
     showWalletDialog(payload) {
       this.walletDialog = payload || false
     },
+    setConnected(payload) {
+      this.wsConnected = payload || false
+    },
     showAlert(payload) {
       if(typeof payload === "string") payload = {msg: payload, color: 'error'}
       this.alert.msg = payload.msg || ''

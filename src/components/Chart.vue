@@ -28,7 +28,9 @@ export default {
 
   mounted() {
     this.chart = createChart(this.$refs.chart, { width: this.$refs.chart.clientWidth, height: 600 });
-    this.chart.timeScale().fitContent(); // fill on wrap width
+    this.chart.timeScale().fitContent() // fill on wrap width
+    // this.chart.timeScale().resetTimeScale();
+    this.chart.timeScale().applyOptions({timeVisible: true})
     // const chartSeries = this.chart.addLineSeries();
     this.chartSeries = this.chart.addCandlestickSeries({
       title: 'Pair name',

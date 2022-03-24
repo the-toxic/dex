@@ -26,7 +26,7 @@
 
   <Chart :pairId="pairId" :span="span" />
 
-  <TableHistory class="mt-6" />
+  <TableHistory class="mt-6 mb-8" />
 
 </template>
 
@@ -47,12 +47,12 @@ export default {
     networks: {bsc: 'BNB Chain', ether: 'Ethereum', polygon: 'Polygon'},
     // networks: [{text: 'BNB Chain', value: 'bsc'}, {text: 'Ethereum', value: 'ether'}, {text: 'Polygon', value: 'polygon'}]
     pairs: [
-      {value: 29, text: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'},
-      {value: 11, text: '0x2b788a7b1a0ee0da8cb1d2769825198d9c95d19d'},
-      {value: 2, text: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852'},
-      {value: 2636, text: '0xbf6dcdfe6e138428f5abe709e33e8ac1f7780e48'},
+      {value: 29, text: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'}, // USDC-ETH
+      {value: 11, text: '0x2b788a7b1a0ee0da8cb1d2769825198d9c95d19d'}, // TERA-WETH
+      {value: 2, text: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852'}, // USDT-WETH
+      {value: 2636, text: '0xbf6dcdfe6e138428f5abe709e33e8ac1f7780e48'}, //KIBA-WETH
       {value: 40, text: '0x9c6c852a56de59a59f7a4527724a2a0a87f7d223'}, // FERA-ETH
-      {value: 54, text: '0x5660c518c5610493086a3ba550f7ad6eb7935d1e'},
+      {value: 54, text: '0x5660c518c5610493086a3ba550f7ad6eb7935d1e'}, // RYOSHI-WETH
       {value: 95, text: '0x3d7e4674b3a78d7aa5892fb43d380292f6910b1d'},
       {value: 130, text: '0x7ee3be9a82f051401ca028db1825ac2640884d0a'},
     ],
