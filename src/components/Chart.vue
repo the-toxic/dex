@@ -120,6 +120,7 @@ export default {
         //   item.time = +item.time.toString().slice(0, -3)
         //   return item
         // })
+        this.chartSeries.setData([])
         if(candles.length > 1) {
           this.chartSeries.setData(candles)
         } else {

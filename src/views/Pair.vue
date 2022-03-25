@@ -44,7 +44,7 @@ export default {
     pairId: null,
     pairSelect: null,
     span: 1,
-    networks: {bsc: 'BNB Chain', ether: 'Ethereum', polygon: 'Polygon'},
+    networks: {bsc: 'BSC', ether: 'Ethereum', polygon: 'Polygon'},
     // networks: [{text: 'BNB Chain', value: 'bsc'}, {text: 'Ethereum', value: 'ether'}, {text: 'Polygon', value: 'polygon'}]
     pairs: [
       {value: 29, text: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'}, // USDC-ETH
