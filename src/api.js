@@ -1,7 +1,7 @@
 import axios from "axios";
 import { mapActions, mapStores, mapWritableState } from "pinia";
 import { useMainStore } from './stores/main';
-const mainStoreActions = mapActions(useMainStore, ['pushCandles', 'setConnected']) //todo разобарться
+const mainStoreActions = mapActions(useMainStore, ['pushCandles', 'setConnected'])
 
 
 let ws = null
@@ -13,7 +13,7 @@ const fetchHistoryCandles = async (pair, span, dttm) => {
   return data
 }
 
-const startCandles = (pair, span, time, callback) => {
+const startCandles = (pair, span, time, cbOnMessage) => {
   ws = new WebSocket(`wss://api.hazb.com/ws/candles/${pair}/${span}/${time}`);
   ws.onopen = function(event) {
     console.log('on open')
@@ -22,10 +22,10 @@ const startCandles = (pair, span, time, callback) => {
   ws.onmessage = function(event) {
     console.log('on message', JSON.parse(event.data).length)
     // mainStoreActions.pushCandles(JSON.parse(event.data))
-    callback(JSON.parse(event.data))
+    cbOnMessage(JSON.parse(event.data))
   };
   ws.onclose = function(event) {
-    console.log('on close', event) // code 1006
+    console.log('on close', event) // code 1006 - error, 1005 - user close
     mainStoreActions.setConnected(false)
   };
   ws.onerror = function(event) {

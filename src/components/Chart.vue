@@ -28,8 +28,10 @@ export default {
 
   mounted() {
     this.chart = createChart(this.$refs.chart, { width: this.$refs.chart.clientWidth, height: 600 });
-    this.chart.timeScale().fitContent() // fill on wrap width
+    // this.chart.timeScale().fitContent() // fill on wrap width
     // this.chart.timeScale().resetTimeScale();
+    // chart.removeSeries(series);
+    // chart.timeScale().scrollToRealTime();
     this.chart.timeScale().applyOptions({timeVisible: true,})
     this.chart.applyOptions({
       layout: {
@@ -54,12 +56,45 @@ export default {
           style: 1,
           visible: true,
         },
-      },
+      }
     })
     // const chartSeries = this.chart.addLineSeries();
     this.chartSeries = this.chart.addCandlestickSeries({
-      title: 'Pair name',
+      // title: 'Pair name',
     });
+
+    this.chartSeries.applyOptions({
+      priceFormat: {
+        type: 'custom',
+        minMove: '0.00000001',
+        // precision: 6,
+        formatter: (price) => {
+          // console.log(price)
+          if (price < 0.001) return parseFloat(price).toFixed(8)
+          else if (price >= 0.001 && price < 1) return parseFloat(price).toFixed(6)
+          else return parseFloat(price).toFixed(2)
+        },
+        // minMove: '0.000001',
+        // formatter: (price) => {
+        //   if (price < 0.000001) return parseFloat(price).toPrecision(8)
+        //   else if (price >= 0.000001 && price < 1) return parseFloat(price).toPrecision(6)
+        //   else return parseFloat(price).toPrecision(6)
+        // },
+        priceScale: {
+          autoScale: true
+        },
+        // localization: {
+        //   locale: 'en-US',
+        //   priceFormatter: (price) => {
+        //     if (price < 0.000001) return parseFloat(price).toPrecision(8)
+        //     else if (price >= 0.000001 && price < 1) return parseFloat(price).toPrecision(6)
+        //     else return parseFloat(price).toPrecision(6)
+        //   }
+        // },
+      }
+    })
+
+    // console.log(this.chart.timeScale().options())
     // const candles = this.mainStore.candles
     // const currentDate = new Date(candles[candles.length - 1].time);
     // let lastData = candles[candles.length - 1]
@@ -74,6 +109,8 @@ export default {
     // })
 
     this.openWs()
+
+    // console.log(this.chart.timeScale().getVisibleRange())
 
     // this.timerId = setInterval(() => {
     //   currentDate.setDate(currentDate.getDate() + 1);
@@ -116,16 +153,31 @@ export default {
       const tomorrowTimestamp = +date.setDate(date.getDate() - 10).toString().slice(0, -3);
 
       startCandles(this.pairId, this.span, tomorrowTimestamp, (candles) => {
-        // candles = candles.map(item => {
-        //   item.time = +item.time.toString().slice(0, -3)
-        //   return item
-        // })
         this.chartSeries.setData([])
+        // candles = candles.map((i) => ({
+        //   high: Math.round(i.high),
+        //   low: Math.round(i.low),
+        //   close: Math.round(i.close),
+        //   open: Math.round(i.open),
+        //   time: i.time,
+        // }))
         if(candles.length > 1) {
           this.chartSeries.setData(candles)
         } else {
           this.chartSeries.update(candles[0])
         }
+
+        this.$emit('priceUpdate', candles[candles.length - 1].close)
+
+        // setTimeout(() => {
+        //   this.chartSeries.update({
+        //     close: 297059703789.18665,
+        //     high: 307059703789.18665,
+        //     low: 28191674226.06323,
+        //     open: 285232884152.4325,
+        //     time: 1648288860,
+        //   })
+        // }, 2000)
       })
     },
     handleResize() {
