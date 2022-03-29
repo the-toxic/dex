@@ -59,7 +59,7 @@
         <div class="footerCopy text-center grey--text order-1 order-md-0 pl-5">&copy; {{ new Date().getFullYear() }}
           <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>HAZB</router-link>. All rights reserved.
         </div>
-        <v-icon :icon="wsConnected ? 'mdi-check-network' : 'mdi-close-network'" :color="wsConnected ? 'green' : 'red'" />
+        <v-icon :icon="wsConnected ? 'mdi-check-network' : 'mdi-close-network'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')" />
         <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-4 pt-md-0">
           <v-btn tile :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" elevation="0" class="transparent" style="text-transform: none !important;">Terms of Use</v-btn>
           <v-btn tile :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" elevation="0" class="text-capitalize transparent">Privacy Policy</v-btn>

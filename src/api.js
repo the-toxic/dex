@@ -13,8 +13,13 @@ const fetchHistoryCandles = async (pair, span, dttm) => {
   return data
 }
 
-const startCandles = (pair, span, time, cbOnMessage) => {
+function connectWs(pair, span, time) {
+  mainStoreActions.setConnected('loading')
   ws = new WebSocket(`wss://api.hazb.com/ws/candles/${pair}/${span}/${time}`);
+}
+
+const startCandles = (pair, span, time, cbOnMessage) => {
+  connectWs(pair, span, time)
   ws.onopen = function(event) {
     console.log('on open')
     mainStoreActions.setConnected(true)
@@ -25,16 +30,23 @@ const startCandles = (pair, span, time, cbOnMessage) => {
     cbOnMessage(JSON.parse(event.data))
   };
   ws.onclose = function(event) {
-    console.log('on close', event) // code 1006 - error, 1005 - user close
-    mainStoreActions.setConnected(false)
+    console.log('on close', event.code) // code 1006 - error, 1005 - user close
+
+    if(event.code === 1006) {
+      mainStoreActions.setConnected(false)
+      setTimeout(() => {
+        connectWs(pair, span, time)
+      }, 1000)
+    }
   };
   ws.onerror = function(event) {
     console.log('on error', event)
   };
 }
 
-const closeWs = () => {
-  ws.close()
+const closeWs = async () => {
+  console.log('closeWs')
+  await ws.close()
 }
 
 export { startCandles, closeWs, fetchHistoryCandles }

@@ -7,6 +7,7 @@ import { createChart, ColorType } from 'lightweight-charts';
 import { mapStores, mapState } from "pinia";
 import { useMainStore } from "../stores/main";
 import { closeWs, startCandles } from "../api";
+import { exponentToNumber } from "../helpers/common";
 
 export default {
   name: 'Chart',
@@ -66,12 +67,15 @@ export default {
     this.chartSeries.applyOptions({
       priceFormat: {
         type: 'custom',
-        minMove: '0.00000001',
+        minMove: '0.000000000001', // for pair TERA-WETH with 10 zeros
         // precision: 6,
         formatter: (price) => {
           // console.log(price)
-          if (price < 0.001) return parseFloat(price).toFixed(8)
-          else if (price >= 0.001 && price < 1) return parseFloat(price).toFixed(6)
+          if (price < 0.00001) {
+            const zeroCnt = +price.toString().split('-')[1]
+            const priceStr = exponentToNumber(price)
+            return priceStr.slice(0, 3) + "..." + priceStr.slice(zeroCnt, zeroCnt + 4)
+          } else if (price >= 0.00001 && price < 1) return parseFloat(price).toFixed(7)
           else return parseFloat(price).toFixed(2)
         },
         // minMove: '0.000001',
@@ -134,13 +138,13 @@ export default {
     window.removeEventListener('resize', this.handleResize);
   },
   watch: {
-    pairId() {
-      closeWs()
+    async pairId() {
+      await closeWs()
       this.openWs()
     },
-    span() {
+    async span() {
       console.log('span')
-      closeWs()
+      await closeWs()
       this.openWs()
     }
   },

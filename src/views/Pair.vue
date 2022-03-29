@@ -7,19 +7,19 @@
           <span>Pair: {{ pairName }}</span>
           <span>Price: {{ lastPrice }}</span>
         </v-card-title>
-        <v-card-subtitle>Pair contract: ${{ pairSelect }} ({{ pairId }})</v-card-subtitle>
+        <v-card-subtitle>Pair contract: {{ pairSelect }} ({{ pairId }})</v-card-subtitle>
       </v-card-header-text>
     </v-card-header>
   </v-card>
   <v-row>
     <v-col cols="12" md="auto">
-      <v-select hide-details label="Select Network" variant="outlined"
+      <v-select hide-details label="Network" variant="outlined"
         v-model="networkSelect"
         :items="Object.values(networks)"
       />
     </v-col>
     <v-col cols="12" md="">
-      <v-select hide-details label="Pairs" variant="outlined"
+      <v-select hide-details label="Pair address" variant="outlined"
         v-model="pairSelect"
         :items="pairs.map(i => i.text)"
       /> <!-- item-text="text" item-value="value" -->
@@ -62,11 +62,11 @@ export default {
     // networks: [{text: 'BNB Chain', value: 'bsc'}, {text: 'Ethereum', value: 'ether'}, {text: 'Polygon', value: 'polygon'}]
     pairs: [
       {value: 29, text: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc', name: 'WETH/USDC'}, // USDC-ETH
-      // {value: 11, text: '0x2b788a7b1a0ee0da8cb1d2769825198d9c95d19d', name: 'TERA-WETH'}, // TERA-WETH
+      {value: 11, text: '0x2b788a7b1a0ee0da8cb1d2769825198d9c95d19d', name: 'TERA-WETH'}, // TERA-WETH
       {value: 2, text: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852', name: 'WETH/USDT'}, // USDT-WETH
       // {value: 2636, text: '0xbf6dcdfe6e138428f5abe709e33e8ac1f7780e48', name: 'WETH/KIBA'}, //KIBA-WETH
       {value: 40, text: '0x9c6c852a56de59a59f7a4527724a2a0a87f7d223', name: 'WETH/FERA'}, // FERA-ETH
-      {value: 54, text: '0x5660c518c5610493086a3ba550f7ad6eb7935d1e', name: 'WETH/RYOSHI'}, // RYOSHI-WETH
+      // {value: 54, text: '0x5660c518c5610493086a3ba550f7ad6eb7935d1e', name: 'WETH/RYOSHI'}, // RYOSHI-WETH
       {value: 95, text: '0x3d7e4674b3a78d7aa5892fb43d380292f6910b1d', name: 'WETH/META'}, // WETH-META
       {value: 130, text: '0x7ee3be9a82f051401ca028db1825ac2640884d0a', name: 'DAI/SUSHI'},
     ],
@@ -91,7 +91,7 @@ export default {
   },
 
   async beforeRouteUpdate(to, from) {
-    console.log('call beforeRouteUpdate')
+    // console.log('call beforeRouteUpdate')
     // console.log('beforeRouteUpdate', to)
     this.networkId = to.params.network
     // networkSelect ???
