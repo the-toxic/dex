@@ -1,13 +1,11 @@
 import axios from "axios";
-import { mapActions, mapStores, mapWritableState } from "pinia";
-import { useMainStore } from './stores/main';
-const mainStoreActions = mapActions(useMainStore, ['pushCandles', 'setConnected'])
+import store from "@/store";
 
 
 let ws = null
 
-function connectWs(pair, span, time) {
-  mainStoreActions.setConnected('loading')
+ function connectWs(pair, span, time) {
+  store.commit('setConnected', 'loading')
   ws = new WebSocket(`wss://api.hazb.com/ws/candles/${pair}/${span}/${time}`);
 }
 
@@ -15,7 +13,7 @@ const startCandles = (pair, span, time, cbOnMessage) => {
   connectWs(pair, span, time)
   ws.onopen = function(event) {
     console.log('on open')
-    mainStoreActions.setConnected(true)
+    store.commit('setConnected', true)
   };
   ws.onmessage = function(event) {
     console.log('on message', JSON.parse(event.data).length)
@@ -26,7 +24,7 @@ const startCandles = (pair, span, time, cbOnMessage) => {
     console.log('on close', event.code) // code 1006 - error, 1005 - user close
 
     if(event.code === 1006) {
-      mainStoreActions.setConnected(false)
+      store.commit('setConnected', false)
       // setTimeout(() => {
       //   connectWs(pair, span, time)
       // }, 1000)
@@ -38,7 +36,6 @@ const startCandles = (pair, span, time, cbOnMessage) => {
 }
 
 const closeWs = async () => {
-  console.log('closeWs')
   await ws.close()
 }
 

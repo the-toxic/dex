@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { mapStores } from "pinia";
-import { useMainStore } from '../stores/main';
-const mainStore = mapStores(useMainStore)
+import store from '../store';
 
 let apiDomain = process.env.VUE_APP_API_DOMAIN
 // if(window.location.host.includes('.xyz') || window.location.host.includes('localhost')) { // if dev
@@ -31,7 +29,7 @@ export function httpInt() {
     const isSilenceAlert = 'silenceAlert' in error.config
 
     if(!error.response) { // 500 error or CORS
-      if(!isSilenceAlert) await mainStore.showAlert({msg: 'Error. Please try later.', color: 'error'})
+      if(!isSilenceAlert) await store.dispatch('showAlert', ({msg: 'Error. Please try later.', color: 'error'}))
       return {data: {success: false}}
     }
 
@@ -52,7 +50,7 @@ export function httpInt() {
     const msg = error.response.data?.error?.description
 
     if(msg) {
-      if(!isSilenceAlert) mainStore.showAlert({msg, color: 'error'})
+      if(!isSilenceAlert) await store.dispatch('showAlert', ({msg, color: 'error'}))
       return error.response
     }
 

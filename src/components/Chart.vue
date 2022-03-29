@@ -4,10 +4,8 @@
 
 <script>
 import { createChart, ColorType } from 'lightweight-charts';
-import { mapStores, mapState } from "pinia";
-import { useMainStore } from "../stores/main";
-import { closeWs, startCandles } from "../api";
-import { exponentToNumber } from "../helpers/common";
+import { closeWs, startCandles } from "@/api";
+import { exponentToNumber } from "@/helpers/common";
 
 export default {
   name: 'Chart',
@@ -133,7 +131,7 @@ export default {
     window.addEventListener('resize', this.handleResize);
 
   },
-  unmounted() {
+  destroyed() {
     // clearInterval(this.timerId)
     window.removeEventListener('resize', this.handleResize);
   },
@@ -149,7 +147,6 @@ export default {
     }
   },
   computed: {
-    ...mapStores(useMainStore)
   },
   methods: {
     openWs() {

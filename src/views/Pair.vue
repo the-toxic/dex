@@ -1,75 +1,83 @@
 <template>
-  <v-card class="mb-8">
-    <v-card-header>
-      <v-card-header-text>
-        <v-card-title class="d-flex justify-space-between align-center">
-          <span>Network: {{ networkName }} ({{ networkId }})</span>
-          <span>Pair: {{ pairName }}</span>
-          <span>Price: {{ lastPrice }}</span>
-        </v-card-title>
-        <v-card-subtitle>Pair contract: {{ pairSelect }} ({{ pairId }})</v-card-subtitle>
-      </v-card-header-text>
-    </v-card-header>
-  </v-card>
-  <v-row>
-    <v-col cols="12" md="auto">
-      <v-select hide-details label="Network" variant="outlined"
-        v-model="networkSelect"
-        :items="networks"
-      />
-    </v-col>
-    <v-col cols="12" md="">
-      <v-select hide-details label="Pair address" variant="outlined"
-        v-model="pairSelect"
-        :items="pairs.map(i => i.text)"
-      /> <!-- item-text="text" item-value="value" -->
-    </v-col>
-    <v-col cols="12" md="auto">
-      <v-select hide-details label="Timeframe" variant="outlined"
-        v-model="span"
-        :items="spans"
-      />
-    </v-col>
-    <v-col cols="12" md="">
-      <v-autocomplete label="Search pair"  variant="outlined"
-        v-model="searchPairSelect"
-        v-model:search-input="searchInput"
-        :loading="searchLoading"
-        :items="searchResults"
-        cache-items
-      />
-    </v-col>
-  </v-row>
+  <div>
+    <v-card class="mb-8">
+      <v-card-title class="d-flex justify-space-between align-center">
+        <span>Network: {{ activeNetwork.title }} ({{ activeNetwork.id }})</span>
+        <span>Pair: {{ activePair.title }}</span>
+        <span>Price: {{ lastPrice }}</span>
+      </v-card-title>
+      <v-card-text class="fs20">Pair contract: {{ activePair.address }} ({{ activePair.id }})</v-card-text>
+    </v-card>
+    <v-row>
+      <v-col cols="12" md="auto">
+        <v-select hide-details label="Network"
+          v-model="networkSelect"
+          :items="networks" item-value="value" item-text="title"
+        />
+      </v-col>
+      <v-col cols="12" md="">
+        <v-select hide-details label="Pair address"
+          v-model="pairSelect"
+          :items="pairs" item-value="value" item-text="title"
+        />
+      </v-col>
+      <v-col cols="12" md="auto">
+        <v-select hide-details label="Timeframe"
+          v-model="activeSpan"
+          :items="spans" item-value="value" item-text="title"
+        />
+      </v-col>
+      <v-col cols="12" md="">
+        <v-autocomplete label="Search pair"
+          v-model="searchSelect"
+          v-model:search-input="searchInput"
+          :loading="searchLoading"
+          :items="searchResults"
+          cache-items
+        />
+      </v-col>
+    </v-row>
 
-  <Chart :pairId="pairId" :span="span" @priceUpdate="priceUpdate" />
+    <Chart :pairId="activePair.id" :span="activeSpan" @priceUpdate="priceUpdate" />
 
-  <TableHistory class="mt-6 mb-8" />
-
+    <TableHistory class="mt-6 mb-8" />
+  </div>
 </template>
 
 <script>
-import Chart from "../components/Chart.vue";
-import TableHistory from "../components/TableHistory.vue";
-import { closeWs, startCandles } from "../api";
-import { exponentToNumber } from "../helpers/common";
+import Chart from "@/components/Chart.vue";
+import TableHistory from "@/components/TableHistory.vue";
+import { exponentToNumber } from "@/helpers/common";
 
 export default {
   name: 'Pair',
+  head: {
+    title() { return {
+      inner: this.title
+    }},
+  },
   components: {TableHistory, Chart},
   data() { return {
-    networkId: null,
+    title: 'Loading Pair...',
     networkSelect: null,
-    pairId: null,
     pairSelect: null,
-    pairName: '',
-    span: 1,
+    activeSpan: 1,
+    activeNetwork: {
+      id: '',
+      title: ''
+    },
+    activePair: {
+      id: null,
+      title: '',
+      address: ''
+    },
     lastPrice: 0,
-    networks: [{value: 'bsc', title: 'BSC'}, { value: 'ether', title: 'Ethereum'}, {value: 'polygon', title: 'Polygon'}],
-    // networks: [{text: 'BNB Chain', value: 'bsc'}, {text: 'Ethereum', value: 'ether'}, {text: 'Polygon', value: 'polygon'}]
-    searchPairSelect: null,
+
+    searchSelect: null,
     searchInput: null,
     searchLoading: false,
     searchResults: [],
+
     states: [
       'Alabama',
       'Alaska',
@@ -131,72 +139,79 @@ export default {
       'Wisconsin',
       'Wyoming',
     ],
+    networks: [{value: 'bsc', title: 'BSC'}, { value: 'ether', title: 'Ethereum'}, {value: 'polygon', title: 'Polygon'}],
     pairs: [
-      {value: 29, text: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc', name: 'WETH/USDC'}, // USDC-ETH
-      {value: 11, text: '0x2b788a7b1a0ee0da8cb1d2769825198d9c95d19d', name: 'TERA-WETH'}, // TERA-WETH
-      {value: 2, text: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852', name: 'WETH/USDT'}, // USDT-WETH
-      // {value: 2636, text: '0xbf6dcdfe6e138428f5abe709e33e8ac1f7780e48', name: 'WETH/KIBA'}, //KIBA-WETH
-      {value: 40, text: '0x9c6c852a56de59a59f7a4527724a2a0a87f7d223', name: 'WETH/FERA'}, // FERA-ETH
-      // {value: 54, text: '0x5660c518c5610493086a3ba550f7ad6eb7935d1e', name: 'WETH/RYOSHI'}, // RYOSHI-WETH
-      {value: 95, text: '0x3d7e4674b3a78d7aa5892fb43d380292f6910b1d', name: 'WETH/META'}, // WETH-META
-      {value: 130, text: '0x7ee3be9a82f051401ca028db1825ac2640884d0a', name: 'DAI/SUSHI'},
-      {value: 79, text: '0xceff51756c56ceffca006cd410b03ffc46dd3a58', name: 'WBTC/WETH'},
+      {value: 29, address: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc', title: 'WETH/USDC'}, // USDC-ETH
+      {value: 11, address: '0x2b788a7b1a0ee0da8cb1d2769825198d9c95d19d', title: 'TERA/WETH'}, // TERA-WETH
+      {value: 2, address: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852', title: 'WETH/USDT'}, // USDT-WETH
+      // {value: 2636, address: '0xbf6dcdfe6e138428f5abe709e33e8ac1f7780e48', title: 'WETH/KIBA'}, //KIBA-WETH
+      {value: 40, address: '0x9c6c852a56de59a59f7a4527724a2a0a87f7d223', title: 'WETH/FERA'}, // FERA-ETH
+      // {value: 54, address: '0x5660c518c5610493086a3ba550f7ad6eb7935d1e', title: 'WETH/RYOSHI'}, // RYOSHI-WETH
+      {value: 95, address: '0x3d7e4674b3a78d7aa5892fb43d380292f6910b1d', title: 'WETH/META'}, // WETH-META
+      {value: 130, address: '0x7ee3be9a82f051401ca028db1825ac2640884d0a', title: 'DAI/SUSHI'},
+      {value: 79, address: '0xceff51756c56ceffca006cd410b03ffc46dd3a58', title: 'WBTC/WETH'},
     ],
-    spans: [1, 5, 10, 15, 30, 60, 180, 720, 1440],
+    spans: [
+      {value: 1, title: '1 min'}, {value: 5, title: '5 min'}, {value: 10, title: '10 min'}, {value: 15, title: '15 min'}, {value: 30, title: '30 min'},
+      {value: 60, title: '1 hour'}, {value: 180, title: '3 hour'}, {value: 720, title: '12 hour'}, {value: 1440, title: '1 day'}
+    ],
   }},
 
   async created() {
     const networkId = this.$route.params.network.toString()
-    const pair = this.$route.params.pair.toString()
+    const pairAddress = this.$route.params.pair.toString()
 
     if(!this.networks.find(i => i.value === networkId))
       return this.$router.push({name: 'Home'})
-    if(!this.pairs.find(i => i.text === pair))
+    if(!this.pairs.find(i => i.address === pairAddress))
       return this.$router.push({name: 'Home'})
 
-    this.networkId = networkId
+    this.activeNetwork.id = networkId
+    this.activeNetwork.title = this.networks.find(i => i.value === networkId).title
+    const activePair = this.pairs.find(i => i.address === pairAddress)
+    this.activePair.id = activePair.value
+    this.activePair.title = activePair.title
+    this.activePair.address = activePair.address
+
     this.networkSelect = networkId
-    this.pairId = this.pairs.find(i => i.text === pair).value
-    this.pairSelect = pair
-
-    // startCandles(this.pairId, this.span, 1648025979)
+    this.pairSelect = activePair.value
+    this.title = activePair.title
   },
 
-  async beforeRouteUpdate(to, from) {
-    // console.log('call beforeRouteUpdate')
-    // console.log('beforeRouteUpdate', to)
-    this.networkId = to.params.network
-    // networkSelect ???
-    this.pairSelect = to.params.pair
-    this.pairId =  this.pairs.find(i => i.text === to.params.pair).value
-
-  },
+  // async beforeRouteUpdate(to, from) {
+  //   console.log('beforeRouteUpdate', to)
+  //   this.title = this.activePair.title
+  //   this.$emit('updateHead') // update title
+  // },
 
   watch: {
-    networkSelect(val) {
-      console.log('network', val)
-      this.$router.push({params: {network: val}})
+    '$route.params'(to, from) {
+      this.title = this.activePair.title
+      this.$emit('updateHead') // update title
     },
-    pairSelect(val, valOld) {
-      console.log('pairSelect', val, valOld)
-      // closeWs()
-      this.pairName = this.pairs.find(i => i.text === val).name
-      this.$router.push({params: {pair: val}})
+    networkSelect(networkId, oldVal) {
+      if(oldVal === null) return // on load page
+      console.log('network change', oldVal, '->', networkId)
+      this.activeNetwork.id = networkId
+      this.activeNetwork.title = this.networks.find(i => i.value === networkId).title
+      this.$router.push({params: {network: networkId}})
+    },
+    pairSelect(pairId, oldVal) {
+      if(oldVal === null) return // on load page
+      console.log('pair change', oldVal, '->', pairId)
+      const activePair = this.pairs.find(i => i.value === +pairId)
+      this.activePair.id = activePair.value
+      this.activePair.title = activePair.title
+      this.activePair.address = activePair.address
+      this.$router.push({params: {pair: activePair.address}})
     },
     searchInput(val) {
       val && val !== this.select && this.searchQuery(val)
     }
   },
   computed: {
-    networkName() {
-      return this.networks[this.networkId]
-    }
   },
   methods: {
-    networkNameToId(name) {
-      const idx = Object.values(this.networks).findIndex(i => i === name)
-      return Object.keys(this.networks)[idx]
-    },
     priceUpdate(val) {
       this.lastPrice = exponentToNumber(val)
     },
