@@ -6,13 +6,6 @@ const mainStoreActions = mapActions(useMainStore, ['pushCandles', 'setConnected'
 
 let ws = null
 
-const fetchHistoryCandles = async (pair, span, dttm) => {
-  const {data} = await axios.get(`xhr/candles/${pair}/${span}/${dttm}`, {
-    // silenceAlert: true
-  });
-  return data
-}
-
 function connectWs(pair, span, time) {
   mainStoreActions.setConnected('loading')
   ws = new WebSocket(`wss://api.hazb.com/ws/candles/${pair}/${span}/${time}`);
@@ -34,9 +27,9 @@ const startCandles = (pair, span, time, cbOnMessage) => {
 
     if(event.code === 1006) {
       mainStoreActions.setConnected(false)
-      setTimeout(() => {
-        connectWs(pair, span, time)
-      }, 1000)
+      // setTimeout(() => {
+      //   connectWs(pair, span, time)
+      // }, 1000)
     }
   };
   ws.onerror = function(event) {
@@ -49,4 +42,17 @@ const closeWs = async () => {
   await ws.close()
 }
 
-export { startCandles, closeWs, fetchHistoryCandles }
+const fetchHistoryCandles = async (pair, span, dttm) => {
+  const {data} = await axios.get(`xhr/candles/${pair}/${span}/${dttm}`, {
+    // silenceAlert: true
+  });
+  return data
+}
+
+const searchPair = async (search) => {
+  const {data} = await axios.get(`xhr/search_pair/${search}`, {
+  });
+  return data
+}
+
+export { startCandles, closeWs, searchPair }

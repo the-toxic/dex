@@ -15,7 +15,7 @@
     <v-col cols="12" md="auto">
       <v-select hide-details label="Network" variant="outlined"
         v-model="networkSelect"
-        :items="Object.values(networks)"
+        :items="networks"
       />
     </v-col>
     <v-col cols="12" md="">
@@ -31,7 +31,13 @@
       />
     </v-col>
     <v-col cols="12" md="">
-      <v-text-field label="Search pair" disabled variant="outlined" />
+      <v-autocomplete label="Search pair"  variant="outlined"
+        v-model="searchPairSelect"
+        v-model:search-input="searchInput"
+        :loading="searchLoading"
+        :items="searchResults"
+        cache-items
+      />
     </v-col>
   </v-row>
 
@@ -58,8 +64,73 @@ export default {
     pairName: '',
     span: 1,
     lastPrice: 0,
-    networks: {bsc: 'BSC', ether: 'Ethereum', polygon: 'Polygon'},
+    networks: [{value: 'bsc', title: 'BSC'}, { value: 'ether', title: 'Ethereum'}, {value: 'polygon', title: 'Polygon'}],
     // networks: [{text: 'BNB Chain', value: 'bsc'}, {text: 'Ethereum', value: 'ether'}, {text: 'Polygon', value: 'polygon'}]
+    searchPairSelect: null,
+    searchInput: null,
+    searchLoading: false,
+    searchResults: [],
+    states: [
+      'Alabama',
+      'Alaska',
+      'American Samoa',
+      'Arizona',
+      'Arkansas',
+      'California',
+      'Colorado',
+      'Connecticut',
+      'Delaware',
+      'District of Columbia',
+      'Federated States of Micronesia',
+      'Florida',
+      'Georgia',
+      'Guam',
+      'Hawaii',
+      'Idaho',
+      'Illinois',
+      'Indiana',
+      'Iowa',
+      'Kansas',
+      'Kentucky',
+      'Louisiana',
+      'Maine',
+      'Marshall Islands',
+      'Maryland',
+      'Massachusetts',
+      'Michigan',
+      'Minnesota',
+      'Mississippi',
+      'Missouri',
+      'Montana',
+      'Nebraska',
+      'Nevada',
+      'New Hampshire',
+      'New Jersey',
+      'New Mexico',
+      'New York',
+      'North Carolina',
+      'North Dakota',
+      'Northern Mariana Islands',
+      'Ohio',
+      'Oklahoma',
+      'Oregon',
+      'Palau',
+      'Pennsylvania',
+      'Puerto Rico',
+      'Rhode Island',
+      'South Carolina',
+      'South Dakota',
+      'Tennessee',
+      'Texas',
+      'Utah',
+      'Vermont',
+      'Virgin Island',
+      'Virginia',
+      'Washington',
+      'West Virginia',
+      'Wisconsin',
+      'Wyoming',
+    ],
     pairs: [
       {value: 29, text: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc', name: 'WETH/USDC'}, // USDC-ETH
       {value: 11, text: '0x2b788a7b1a0ee0da8cb1d2769825198d9c95d19d', name: 'TERA-WETH'}, // TERA-WETH
@@ -69,6 +140,7 @@ export default {
       // {value: 54, text: '0x5660c518c5610493086a3ba550f7ad6eb7935d1e', name: 'WETH/RYOSHI'}, // RYOSHI-WETH
       {value: 95, text: '0x3d7e4674b3a78d7aa5892fb43d380292f6910b1d', name: 'WETH/META'}, // WETH-META
       {value: 130, text: '0x7ee3be9a82f051401ca028db1825ac2640884d0a', name: 'DAI/SUSHI'},
+      {value: 79, text: '0xceff51756c56ceffca006cd410b03ffc46dd3a58', name: 'WBTC/WETH'},
     ],
     spans: [1, 5, 10, 15, 30, 60, 180, 720, 1440],
   }},
@@ -77,13 +149,13 @@ export default {
     const networkId = this.$route.params.network.toString()
     const pair = this.$route.params.pair.toString()
 
-    if(!Object.keys(this.networks).includes(networkId))
+    if(!this.networks.find(i => i.value === networkId))
       return this.$router.push({name: 'Home'})
     if(!this.pairs.find(i => i.text === pair))
       return this.$router.push({name: 'Home'})
 
     this.networkId = networkId
-    this.networkSelect = this.networks[networkId]
+    this.networkSelect = networkId
     this.pairId = this.pairs.find(i => i.text === pair).value
     this.pairSelect = pair
 
@@ -102,13 +174,17 @@ export default {
 
   watch: {
     networkSelect(val) {
-      this.$router.push({params: {network: this.networkNameToId(val)}})
+      console.log('network', val)
+      this.$router.push({params: {network: val}})
     },
     pairSelect(val, valOld) {
       console.log('pairSelect', val, valOld)
       // closeWs()
       this.pairName = this.pairs.find(i => i.text === val).name
       this.$router.push({params: {pair: val}})
+    },
+    searchInput(val) {
+      val && val !== this.select && this.searchQuery(val)
     }
   },
   computed: {
@@ -123,6 +199,16 @@ export default {
     },
     priceUpdate(val) {
       this.lastPrice = exponentToNumber(val)
+    },
+    searchQuery(v) {
+      this.searchLoading = true
+      // Simulated ajax query
+      setTimeout(() => {
+        this.items = this.states.filter(e => {
+          return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+        })
+        this.loading = false
+      }, 500)
     }
   }
 }
