@@ -47,7 +47,7 @@ export default {
     async connectMetamask() {
       this.loading = true
       // await connect()
-      await this.$store.dispatch('updateWallet', '0x123456')
+      await this.$store.dispatch('updateWallet', '0x123456789012345678901234567890')
       this.loading = false
       setTimeout(() => { // fix bug no redirect
         this.dialogModel = false

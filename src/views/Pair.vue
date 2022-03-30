@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container fluid class="mx-auto relative" style="max-width: 1500px; height: 100%">
     <v-card class="mb-8">
       <v-card-title class="d-flex justify-space-between align-center">
         <span>Network: {{ activeNetwork.title }} ({{ activeNetwork.id }})</span>
@@ -41,7 +41,7 @@
     <Chart :pairId="activePair.id" :span="activeSpan" @priceUpdate="priceUpdate" />
 
     <TableHistory class="mt-6 mb-8" />
-  </div>
+  </v-container>
 </template>
 
 <script>

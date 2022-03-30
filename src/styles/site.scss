@@ -155,3 +155,8 @@ $primaryFont: 'Quicksand', sans-serif;
     }
   }
 }
+
+.homeBg {
+  background: url("~@/assets/dex-bg.jpg") no-repeat center;
+  background-size: cover;
+}
