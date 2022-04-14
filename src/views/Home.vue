@@ -26,7 +26,7 @@
               <v-icon x-large>mdi-cursor-default-click-outline</v-icon>
               <div class="mt-5">
                 <h4 class="text-h5">SUBSCRIPTIONS</h4>
-                <p class="text-muted text-h6">Purchase DEXT via exchanges to enable DEXT subscriptions.</p>
+                <p class="text-muted text-h6">Purchase HAZB via exchanges to enable HAZB subscriptions.</p>
               </div>
             </div>
             <div class="col-6 col-md-4 py-2">

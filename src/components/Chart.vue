@@ -133,6 +133,7 @@ export default {
   },
   destroyed() {
     // clearInterval(this.timerId)
+    closeWs()
     window.removeEventListener('resize', this.handleResize);
   },
   watch: {
