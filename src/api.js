@@ -4,12 +4,12 @@ import store from "@/store";
 
 let ws = null
 
- function connectWs(pair, span, time) {
+function connectWs(pair, span, time) {
   store.commit('setConnected', 'loading')
   ws = new WebSocket(`wss://api.hazb.com/ws/candles/${pair}/${span}/${time}`);
 }
 
-const startCandles = (pair, span, time, cbOnMessage) => {
+export const startCandles = (pair, span, time, cbOnMessage) => {
   connectWs(pair, span, time)
   ws.onopen = function(event) {
     console.log('on open')
@@ -35,21 +35,28 @@ const startCandles = (pair, span, time, cbOnMessage) => {
   };
 }
 
-const closeWs = async () => {
+export const closeWs = async () => {
   await ws.close()
 }
 
-const fetchHistoryCandles = async (pair, span, dttm) => {
+export const fetchHistoryCandles = async (pair, span, dttm) => {
   const {data} = await axios.get(`xhr/candles/${pair}/${span}/${dttm}`, {
     // silenceAlert: true
   });
   return data
 }
 
-const searchPair = async (search) => {
+export const searchPair = async (search) => {
   const {data} = await axios.get(`xhr/search_pair/${search}`, {
   });
   return data
 }
 
-export { startCandles, closeWs, searchPair }
+export async function makeApiRequest(path) {
+  try {
+    const { data } = await axios.get(`https://min-api.cryptocompare.com/${path}`);
+    return data
+  } catch (error) {
+    throw new Error(`CryptoCompare request error: ${error.status}`);
+  }
+}

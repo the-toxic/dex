@@ -4,6 +4,7 @@ import store from "@/store"
 import Home from "@/views/Home.vue";
 import Pair from "@/views/Pair.vue";
 import E404 from "@/views/E404.vue"
+import NewChart from "@/views/NewChart.vue";
 
 Vue.use(VueRouter)
 
@@ -14,6 +15,7 @@ const router = new VueRouter({
   linkExactActiveClass: "exact-active",
   routes: [
     { path: '/', name: 'Home', component: Home },
+    { path: '/newChart', name: 'NewChart', component: NewChart },
     { path: '/pairs', name: 'Pairs', redirect: { name: 'Pair', params: {network: 'bsc', pair: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'} } },
     { path: '/:network([a-zA-Z0-9]{2,10})/pair/:pair([a-zA-Z0-9]{42})', name: 'Pair', component: Pair },
     { path: '/:pathMatch(.*)*', name: 'E404', component: E404 }
