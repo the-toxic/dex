@@ -52,11 +52,15 @@ export const searchPair = async (search) => {
   return data
 }
 
-export async function makeApiRequest(path) {
+export async function makeApiRequest(path, body) {
   try {
-    const { data } = await axios.get(`https://min-api.cryptocompare.com/${path}`);
+    // const { data } = await axios.get(`https://min-api.cryptocompare.com/${path}`);
+    const { data } = await axios.post(`https://api.ulud.net/xhr/${path}`,
+      {...body},
+      { headers: { Authorization: 'Basic ZGV2OmRldiFAIzE=' }}
+    );
     return data
   } catch (error) {
-    throw new Error(`CryptoCompare request error: ${error.status}`);
+    throw new Error(`API request error: ${error.status}`);
   }
 }

@@ -6,7 +6,7 @@
         <h3 class="text-h4 mt-16">Real-time data analysis at the tips of your fingers:</h3>
         <h4 class="text-h5 mt-4 mx-auto" style="max-width: 600px">Create unique trading strategies, anticipate market movements, search for big spreads, track and copy the most profitable wallets and much more.</h4>
         <div class="mt-12">
-          <v-btn x-large color="primary" :to="{name: 'Pairs'}">Open pair explorer</v-btn>
+          <v-btn x-large color="primary" :to="{name: 'NewChart'}">Open pair explorer</v-btn>
         </div>
         <p class="mt-16 fs20">If you are a DEFI user, and you want to be able to anticipate market movements and develop better trading strategies, HAZB will help you in a very simple way.</p>
       </v-container>

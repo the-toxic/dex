@@ -118,7 +118,7 @@ export function subscribeOnStream(
   lastBar,
 ) {
   const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
-  const channelString = `0~${parsedSymbol.exchange}~${parsedSymbol.fromSymbol}~${parsedSymbol.toSymbol}`;
+  const channelString = `0~${parsedSymbol.exchange}~${parsedSymbol.fromSymbol}~${parsedSymbol.toSymbol}~${parsedSymbol.pairAddr}`;
   const handler = {
     id: subscribeUID,
     callback: onRealtimeCallback,
@@ -145,8 +145,7 @@ export function unsubscribeFromStream(subscriberUID) {
   // find a subscription with id === subscriberUID
   for (const channelString of channelToSubscription.keys()) {
     const subscriptionItem = channelToSubscription.get(channelString);
-    const handlerIndex = subscriptionItem.handlers
-      .findIndex(handler => handler.id === subscriberUID);
+    const handlerIndex = subscriptionItem.handlers.findIndex(handler => handler.id === subscriberUID);
 
     if (handlerIndex !== -1) {
       // remove from handlers

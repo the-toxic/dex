@@ -3,8 +3,8 @@ import Datafeed from "./datafeed";
 export const initChart = () => {
   window.tvWidget = new TradingView.widget({
     // debug: true,
-    symbol: 'Binance:BTC/USDT', // default symbol
-    // symbol_search_request_delay: 1000, // delay before request in search field
+    symbol: 'PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // default symbol
+    symbol_search_request_delay: 1000, // delay before request in search field
     interval: '60', // default interval
     container: 'tv_chart_container',
     datafeed: Datafeed,

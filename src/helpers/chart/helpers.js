@@ -8,14 +8,14 @@ export function generateSymbol(exchange, fromSymbol, toSymbol) {
 }
 
 export function parseFullSymbol(fullSymbol) {
-  const match = fullSymbol.match(/^(\w+):(\w+)\/(\w+)$/);
-  if (!match) {
-    return null;
-  }
-
+  // console.log('parsedSymbol', fullSymbol)
+  const match = fullSymbol.match(/^([\w\s]+):(\w+)\/(\w+):(0x\w{40})$/);
+  // console.log('match', match)
+  if (!match) { return null }
   return {
     exchange: match[1],
     fromSymbol: match[2],
     toSymbol: match[3],
+    pairAddr: match[4],
   };
 }
