@@ -97,6 +97,13 @@ const channelToSubscription = new Map();
 // })
 
 function getNextBarTime(lastBarTime, resolution) {
+
+  // var coeff = resolution * 60
+  //  var rounded = Math.floor(data.ts / coeff) * coeff
+  //  var lastBarSec = lastBar.time / 1000
+  // if (rounded > lastBarSec) {
+    // create a new candle, use last close as open **PERSONAL CHOICE**
+
   const date = new Date(lastBarTime);
 
   if (resolution.includes('D')) {

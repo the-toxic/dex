@@ -128,15 +128,16 @@ export default {
       timezone: 'Etc/UTC',
       exchange: symbolItem.exchange,
       minmov: 1, // формат цены
-      pricescale: 100, // формат цены. 100 - 2 символа после запятой, 1000 - 3 символа
+      pricescale: 10000, // формат цены. 100 - 2 символа после запятой, 1000 - 3 символа
       has_intraday: true, // включение минутных свечей, но надо сконфигурировать
       intraday_multipliers: ['1', '5', '30', '60', '180', '720'], // указанные интервалы будут генерить запросы в БД, все остальные будут автоматом генериться либой на основе более, например 5-минутка будет складываться из 5 минутных баров
+      has_daily: true,
       has_weekly_and_monthly: false, // если false то либа сама построит соответствующие разрешения по дневным барам, иначе будет генерить запросы
       // weekly_multipliers: ['1'], // если либа генерит сама, и в разрешениях есть 2 недели, она будет сама складывать 2 бара по 1 неделе
       // monthly_multipliers: ['1'],
       has_empty_bars: true,
       supported_resolutions: configurationData.supported_resolutions,
-      visible_plots_set: 'ohlc', // Support: open, high, low, close. With 'value': "ohlcv"
+      visible_plots_set: 'ohlcv', // Support: open, high, low, close. With 'value': "ohlcv"
       // volume_precision: 2, // кол-во десятичных символов в объеме
       data_status: 'streaming', // streaming | endofday | pulsed | delayed_streaming
     };
@@ -164,13 +165,14 @@ export default {
       tsym: parsedSymbol.toSymbol, // USD, BUSD
       fromTs: from, // 1467676800
       toTs: to, // 1467676800
+      limit: 1000,
       span: resolution,
       paddr: parsedSymbol.pairAddr
     };
     // const query = Object.keys(urlParameters).map(name => `${name}=${encodeURIComponent(urlParameters[name])}`).join('&');
     // const url = resolution === '1D' ? 'data/histoday' : resolution >= 60 ? 'data/histohour' : 'data/histominute';
     try {
-      const { success, result } = await makeApiRequest(`candles_history`, body);
+      const { success, result } = await makeApiRequest(`limit_candles_history`, body);
 
       if (!success || !'candles' in result || !result.candles.length) {
         // "noData" should be set if there is no data in the requested period.
@@ -191,6 +193,7 @@ export default {
             high: bar.high,
             open: lastBar ? lastBar.close : bar.open,
             close: bar.close,
+            volume: bar.volume
           }];
           lastBar = bar
 
