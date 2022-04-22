@@ -9,15 +9,22 @@
         </v-card-title>
         <v-card-text class="fs20">Pair contract: {{ '-' }}</v-card-text>
       </v-card>
+
       <div id="tv_chart_container"></div>
+
+      <v-card class="mt-6 mb-4">
+        <TableHistory />
+      </v-card>
     </v-container>
   </div>
 </template>
 
 <script>
 import { initChart } from "@/helpers/chart/chart";
+import TableHistory from "@/components/TableHistory";
 export default {
   name: "NewChart",
+  components: {TableHistory},
   created() {
   },
   mounted() {

@@ -3,98 +3,92 @@ import { parseFullSymbol } from './helpers.js';
 
 const channelToSubscription = new Map();
 
-// const socket = io('wss://streamer.cryptocompare.com/v2?api_key=30970dd127f1f2dffa78ac567b453d67295f174bce01035f3b2ab169276be70d');
+const socket = io('https://api.hazb.com', {
+  path: '/ws/socket.io',
+  transports: ['websocket', 'polling', 'flashsocket']
+});
 // const socket = new WebSocket('wss://streamer.cryptocompare.com/v2?api_key=30970dd127f1f2dffa78ac567b453d67295f174bce01035f3b2ab169276be70d');
-// window.socket = socket
+window.socket = socket
 
-// socket.onopen = function(event) {
-//   console.log('on open')
-// };
-// socket.onmessage = function(event) {
-//   console.log('on message', JSON.parse(event.data))
-// };
-// socket.onclose = function(event) {
-//   console.log('on close', event.code) // code 1006 - error, 1005 - user close
-// };
-// socket.onerror = function(event) {
-//   console.log('on error', event)
-// };
+// socket.onopen = function(event) { console.log('on open') };
+// socket.onmessage = function(event) { console.log('on message', JSON.parse(event.data)) };
+// socket.onclose = function(event) { console.log('on close', event.code) }; // code 1006 - error, 1005 - user close
+// socket.onerror = function(event) { console.log('on error', event) };
 
-// socket.on('connect', () => {
-// console.log('[socket] Connected');
-// });
-//
-// socket.on('disconnect', (reason) => {
-// console.log('[socket] Disconnected:', reason);
-// });
-//
-// socket.on("connect_error", (error) => {
-//   console.error('[socket] Connect Error:', error);
-// });
-//
-// socket.on('error', (error) => {
-// console.log('[socket] Error:', error);
-// });
-//
-// socket.on('m', data => {
-// // console.log('[socket] Message:', data);
-//   const [
-//     // 0~Bitfinex~BTC~USD~2~1061298166~1649773293~0.001~40143~40.143~1649773293~789000000~806000000~1bf"
-//     eventTypeStr, // 0
-//     exchange, // Bitfinex
-//     fromSymbol, // BTC
-//     toSymbol, // USD
-//     , // 2 | 1
-//     , // 1061298166
-//     tradeTimeStr, // 1649773293
-//     , // 0.001 volume?
-//     tradePriceStr, // 40143
-//   ] = data.split('~');
-//
-//   if (parseInt(eventTypeStr) !== 0) {
-//     // skip all non-TRADE events
-//     console.log('[socket] Not-TRADE Message:', data);
-//     return;
-//   }
-//   const tradePrice = parseFloat(tradePriceStr);
-//   const tradeTime = parseInt(tradeTimeStr) * 1000;
-//   const channelString = `0~${exchange}~${fromSymbol}~${toSymbol}`;
-//   const subscriptionItem = channelToSubscription.get(channelString);
-//   if (subscriptionItem === undefined) {
-//     return;
-//   }
-//   const lastBar = subscriptionItem.lastBar;
-//   // const resolution = subscriptionItem.resolution; // 1D, 60 & e.g.
-//   const resolution = subscriptionItem.handlers[0].id.split('#_')[1]; // 1D, 60 & e.g.
-//
-//   const nextBarTime = getNextBarTime(lastBar.time, resolution);
-//
-//   // console.log(resolution, new Date(lastBar.time).toISOString(), new Date(tradeTime).toISOString(), new Date(nextBarTime).toISOString())
-//
-//   let bar;
-//   if (tradeTime >= nextBarTime) { // если пора рисовать новый бар
-//     bar = {
-//       time: nextBarTime,
-//       open: tradePrice,
-//       high: tradePrice,
-//       low: tradePrice,
-//       close: tradePrice,
-//     };
-//     console.log('[socket] Generate new bar', bar);
-//   } else {
-//     bar = {
-//       ...lastBar,
-//       high: Math.max(lastBar.high, tradePrice),
-//       low: Math.min(lastBar.low, tradePrice),
-//       close: tradePrice,
-//     };
-//     // console.log('[socket] Update the latest bar by price', tradePrice);
-//   }
-//   subscriptionItem.lastBar = bar;
-//
-//   // send data to every subscriber of that symbol
-//   subscriptionItem.handlers.forEach(handler => handler.callback(bar));
-// })
+socket.on('connect', () => {
+  console.log('[socket] Connected');
+});
+
+socket.on('disconnect', (reason) => {
+  console.log('[socket] Disconnected:', reason);
+});
+
+socket.on("connect_error", (error) => {
+  console.error('[socket] Connect Error:', error);
+});
+
+socket.on('error', (error) => {
+  console.log('[socket] Error:', error);
+});
+
+socket.on('m', data => {
+  console.log('[socket] Message:', data);
+  const [
+    // 0~4321~TANK~BUSD~ts~price~volume"
+    eventTypeStr, // 0
+    pair_id, // 1234
+    fromSymbol, // BTC
+    toSymbol, // USD
+    tradeTimeStr, // 1649773293
+    tradePriceStr, // 40143
+    tradeVolumeStr, // 100
+  ] = data.split('~');
+
+  if (parseInt(eventTypeStr) !== 0) {
+    // skip all non-TRADE events
+    console.log('[socket] Not-TRADE Message:', data);
+    return false;
+  }
+  const tradePrice = parseFloat(tradePriceStr);
+  const tradeTime = parseInt(tradeTimeStr) * 1000;
+  const tradeVolume = parseInt(tradeVolumeStr);
+  const channelString = `0~${pair_id}~${fromSymbol}~${toSymbol}`;
+  const subscriptionItem = channelToSubscription.get(channelString);
+  if (subscriptionItem === undefined) { return }
+  const lastBar = subscriptionItem.lastBar;
+  // const resolution = subscriptionItem.resolution; // 1D, 60 & e.g.
+  const resolution = subscriptionItem.handlers[0].id.split('#_')[1]; // 1D, 60 & e.g.
+
+  const nextBarTime = getNextBarTime(lastBar.time, resolution);
+
+  console.log(resolution, new Date(lastBar.time).toISOString(), new Date(tradeTime).toISOString(), new Date(nextBarTime).toISOString())
+
+  let bar;
+  if (tradeTime >= nextBarTime) { // если пора рисовать новый бар
+    bar = {
+      time: nextBarTime,
+      open: tradePrice,
+      high: tradePrice,
+      low: tradePrice,
+      close: tradePrice,
+      volume: tradeVolume
+    };
+    console.log('[socket] Generate new bar', bar);
+  } else {
+    bar = {
+      ...lastBar, // TODO проверить, может лучше open: lastBar.close
+      high: Math.max(lastBar.high, tradePrice),
+      low: Math.min(lastBar.low, tradePrice),
+      close: tradePrice,
+      volume: tradeVolume
+    };
+    console.log('[socket] Update the latest bar by price', tradePrice);
+  }
+  subscriptionItem.lastBar = bar;
+
+  // send data to every subscriber of that symbol
+  subscriptionItem.handlers.forEach(handler => handler.callback(bar));
+})
 
 function getNextBarTime(lastBarTime, resolution) {
 
@@ -125,7 +119,7 @@ export function subscribeOnStream(
   lastBar,
 ) {
   const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
-  const channelString = `0~${parsedSymbol.exchange}~${parsedSymbol.fromSymbol}~${parsedSymbol.toSymbol}~${parsedSymbol.pairAddr}`;
+  const channelString = `0~${symbolInfo.pair_id}~${parsedSymbol.fromSymbol}~${parsedSymbol.toSymbol}`; // ~${parsedSymbol.pairAddr}
   const handler = {
     id: subscribeUID,
     callback: onRealtimeCallback,
@@ -133,8 +127,8 @@ export function subscribeOnStream(
   let subscriptionItem = channelToSubscription.get(channelString);
   if (subscriptionItem) {
     // already subscribed to the channel, use the existing subscription
-    console.log('subscribeOnStream', 'already subscribed to the channel, use the existing subscription', subscribeUID)
     subscriptionItem.handlers.push(handler);
+    console.log('subscribeOnStream', 'already subscribed to the channel, use the existing subscription. Handlers:', subscriptionItem.handlers) // subscribeUID
     return;
   }
   subscriptionItem = {
@@ -145,7 +139,7 @@ export function subscribeOnStream(
   };
   channelToSubscription.set(channelString, subscriptionItem);
   console.log('[subscribeBars]: Subscribe to streaming. SubAdd Channel:', channelString);
-  // socket.emit('SubAdd', { subs: [channelString] });
+  socket.emit('SubAdd', { subs: [channelString] });
 }
 
 export function unsubscribeFromStream(subscriberUID) {
@@ -161,7 +155,7 @@ export function unsubscribeFromStream(subscriberUID) {
       if (subscriptionItem.handlers.length === 0) {
         // unsubscribe from the channel, if it was the last handler
         console.log('[unsubscribeBars]: Unsubscribe from streaming. SubRemove Channel:', channelString);
-        // socket.emit('SubRemove', { subs: [channelString] });
+        socket.emit('SubRemove', { subs: [channelString] });
         channelToSubscription.delete(channelString);
         break;
       }

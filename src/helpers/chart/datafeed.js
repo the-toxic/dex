@@ -9,6 +9,7 @@ let findedSymbols = [{
   description: '0x4e14498c6f679c6421db117bc9e9b08671d42996', // pair addr
   exchange: '', // Binance - symbol exchange name
   type: 'Binance Smart Chain', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
+  pair_id: 4321
 }]
 
 const configurationData = {
@@ -35,37 +36,37 @@ const configurationData = {
   }],
 };
 
-async function getAllSymbols() {
-  return [{
-    symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
-    full_name: 'pancake:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // Kraken:XMR/BTC:pairAddr - full symbol name
-    description: '0x4e14498c6f679c6421db117bc9e9b08671d42996', // pair addr
-    exchange: 'pancake', // Binance - symbol exchange name
-    type: 'bsc', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
-  }];
-
-  // const data = await makeApiRequest('data/v3/all/exchanges');
-  // let allSymbols = [];
-  //
-  // for (const exchange of configurationData.exchanges) {
-  //   const pairs = data.Data[exchange.value].pairs;
-  //
-  //   for (const leftPairPart of Object.keys(pairs)) {
-  //     const symbols = pairs[leftPairPart].map(rightPairPart => {
-  //       const symbol = generateSymbol(exchange.value, leftPairPart, rightPairPart);
-  //       return {
-  //         symbol: symbol.short, // XMR/BTC - short symbol name
-  //         full_name: symbol.full, // Kraken:XMR/BTC - full symbol name
-  //         description: symbol.short, // XMR/BTC
-  //         exchange: exchange.value, // Kraken - symbol exchange name
-  //         type: 'crypto', // stock | "futures" | "crypto" | "forex" | "index" | any custom string
-  //       };
-  //     });
-  //     allSymbols = [...allSymbols, ...symbols];
-  //   }
-  // }
-  // return allSymbols;
-}
+// async function getAllSymbols() {
+//   return [{
+//     symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
+//     full_name: 'pancake:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // Kraken:XMR/BTC:pairAddr - full symbol name
+//     description: '0x4e14498c6f679c6421db117bc9e9b08671d42996', // pair addr
+//     exchange: 'pancake', // Binance - symbol exchange name
+//     type: 'bsc', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
+//   }];
+//
+//   // const data = await makeApiRequest('data/v3/all/exchanges');
+//   // let allSymbols = [];
+//   //
+//   // for (const exchange of configurationData.exchanges) {
+//   //   const pairs = data.Data[exchange.value].pairs;
+//   //
+//   //   for (const leftPairPart of Object.keys(pairs)) {
+//   //     const symbols = pairs[leftPairPart].map(rightPairPart => {
+//   //       const symbol = generateSymbol(exchange.value, leftPairPart, rightPairPart);
+//   //       return {
+//   //         symbol: symbol.short, // XMR/BTC - short symbol name
+//   //         full_name: symbol.full, // Kraken:XMR/BTC - full symbol name
+//   //         description: symbol.short, // XMR/BTC
+//   //         exchange: exchange.value, // Kraken - symbol exchange name
+//   //         type: 'crypto', // stock | "futures" | "crypto" | "forex" | "index" | any custom string
+//   //       };
+//   //     });
+//   //     allSymbols = [...allSymbols, ...symbols];
+//   //   }
+//   // }
+//   // return allSymbols;
+// }
 
 export default {
   onReady: (callback) => {
@@ -124,11 +125,12 @@ export default {
       full_name: symbolItem.full_name, // self adding for show pair address in getBars
       description: symbolItem.description,
       type: symbolItem.type,
+      pair_id: symbolItem.pair_id,
       session: '24x7',
       timezone: 'Etc/UTC',
       exchange: symbolItem.exchange,
       minmov: 1, // формат цены
-      pricescale: 10000, // формат цены. 100 - 2 символа после запятой, 1000 - 3 символа
+      pricescale: 100000, // формат цены. 100 - 2 символа после запятой, 1000 - 3 символа
       has_intraday: true, // включение минутных свечей, но надо сконфигурировать
       intraday_multipliers: ['1', '5', '30', '60', '180', '720'], // указанные интервалы будут генерить запросы в БД, все остальные будут автоматом генериться либой на основе более, например 5-минутка будет складываться из 5 минутных баров
       has_daily: true,
