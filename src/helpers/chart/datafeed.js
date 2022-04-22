@@ -9,12 +9,14 @@ let findedSymbols = [{
   description: '0x4e14498c6f679c6421db117bc9e9b08671d42996', // pair addr
   exchange: '', // Binance - symbol exchange name
   type: 'Binance Smart Chain', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
-  pair_id: 4321
+  pair_id: 4321,
+  exchange_id: 123,
 }]
 
 const configurationData = {
   supported_resolutions: ['1', '5', '10', '15', '30', '60', '180', '720', '1D', '1W'], // 1W
   exchanges: [
+    { value: '', name: 'All', desc: 'All DEX' },
     { value: 'PanCake v2', name: 'PanCake v2', desc: 'Pancake DEX' },
     { value: 'Uniswap V2 Router 01', name: 'Uniswap V2 Router 01', desc: 'Uniswap DEX' },
     { value: 'Uniswap V2 Router 02', name: 'Uniswap V2 Router 02', desc: 'Uniswap DEX' },
@@ -28,6 +30,9 @@ const configurationData = {
     { value: 'Swapr', name: 'Swapr', desc: 'Swapr DEX' },
   ],
   symbols_types: [{
+    name: 'All Networks',
+    value: '', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
+  },{
     name: 'Binance Smart Chain',
     value: 'Binance Smart Chain', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
   },{
@@ -126,6 +131,7 @@ export default {
       description: symbolItem.description,
       type: symbolItem.type,
       pair_id: symbolItem.pair_id,
+      exchange_id: symbolItem.exchange_id,
       session: '24x7',
       timezone: 'Etc/UTC',
       exchange: symbolItem.exchange,
@@ -162,17 +168,17 @@ export default {
     const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
     // console.log('parsedSymbol', parsedSymbol)
     const body = {
-      e: parsedSymbol.exchange, // Bitfinex, pancake
-      fsym: parsedSymbol.fromSymbol, // BTC, TANK
-      tsym: parsedSymbol.toSymbol, // USD, BUSD
-      fromTs: from, // 1467676800
-      toTs: to, // 1467676800
+      ex: parsedSymbol.exchange, // Bitfinex, pancake
+      ex_id: symbolInfo.exchange_id, // 123
+      pair_id: symbolInfo.pair_id,
+      pair_addr: parsedSymbol.pairAddr,
+      from_sym: parsedSymbol.fromSymbol, // BTC, TANK
+      to_sym: parsedSymbol.toSymbol, // USD, BUSD
+      from_ts: from, // 1467676800
+      to_ts: to, // 1467676800
       limit: 1000,
       span: resolution,
-      paddr: parsedSymbol.pairAddr
     };
-    // const query = Object.keys(urlParameters).map(name => `${name}=${encodeURIComponent(urlParameters[name])}`).join('&');
-    // const url = resolution === '1D' ? 'data/histoday' : resolution >= 60 ? 'data/histohour' : 'data/histominute';
     try {
       const { success, result } = await makeApiRequest(`limit_candles_history`, body);
 
