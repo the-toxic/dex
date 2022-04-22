@@ -3,41 +3,41 @@ import { makeApiRequest } from '@/api.js'
 import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
 
 const lastBarsCache = new Map();
+
 let findedSymbols = [{
   symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
   full_name: 'PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // Kraken:XMR/BTC:pairAddr - full symbol name
-  description: '0x4e14498c6f679c6421db117bc9e9b08671d42996', // pair addr
-  exchange: '', // Binance - symbol exchange name
+  description: 'Pair: 0x4e14498c6f679c6421db117bc9e9b08671d42996', // pair addr
+  exchange: 'PanCake v2', // Binance - symbol exchange name
   type: 'Binance Smart Chain', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
   pair_id: 4321,
-  exchange_id: 123,
 }]
 
 const configurationData = {
   supported_resolutions: ['1', '5', '10', '15', '30', '60', '180', '720', '1D', '1W'], // 1W
   exchanges: [
     { value: '', name: 'All', desc: 'All DEX' },
-    { value: 'PanCake v2', name: 'PanCake v2', desc: 'Pancake DEX' },
-    { value: 'Uniswap V2 Router 01', name: 'Uniswap V2 Router 01', desc: 'Uniswap DEX' },
-    { value: 'Uniswap V2 Router 02', name: 'Uniswap V2 Router 02', desc: 'Uniswap DEX' },
-    { value: 'Uniswap V3 Router 01', name: 'Uniswap V3 Router 01', desc: 'Uniswap DEX' },
-    { value: 'Uniswap V3 Router 02', name: 'Uniswap V3 Router 02', desc: 'Uniswap DEX' },
-    { value: 'SushiSwap', name: 'SushiSwap', desc: 'SushiSwap DEX' },
-    { value: 'ShibaSwap', name: 'ShibaSwap', desc: 'ShibaSwap DEX' },
-    { value: 'KyberSwap', name: 'KyberSwap', desc: 'KyberSwap DEX' },
-    { value: 'MintySwap', name: 'MintySwap', desc: 'MintySwap DEX' },
-    { value: 'SafeMoon Swap', name: 'SafeMoon Swap', desc: 'SafeMoon Swap DEX' },
-    { value: 'Swapr', name: 'Swapr', desc: 'Swapr DEX' },
+    { value: 'PanCake v2', name: 'PanCake v2', desc: 'BSC | Pancake DEX' },
+    { value: 'Uniswap V2 Router 01', name: 'Uniswap V2 Router 01', desc: 'BSC | Uniswap DEX' },
+    { value: 'Uniswap V2 Router 02', name: 'Uniswap V2 Router 02', desc: 'BSC | Uniswap DEX' },
+    { value: 'Uniswap V3 Router 01', name: 'Uniswap V3 Router 01', desc: 'BSC | Uniswap DEX' },
+    { value: 'Uniswap V3 Router 02', name: 'Uniswap V3 Router 02', desc: 'BSC | Uniswap DEX' },
+    { value: 'SushiSwap', name: 'SushiSwap', desc: 'BSC | SushiSwap DEX' },
+    { value: 'ShibaSwap', name: 'ShibaSwap', desc: 'BSC | ShibaSwap DEX' },
+    { value: 'KyberSwap', name: 'KyberSwap', desc: 'BSC | KyberSwap DEX' },
+    { value: 'MintySwap', name: 'MintySwap', desc: 'BSC | MintySwap DEX' },
+    { value: 'SafeMoon Swap', name: 'SafeMoon Swap', desc: 'BSC | SafeMoon Swap DEX' },
+    { value: 'Swapr', name: 'Swapr', desc: 'BSC | Swapr DEX' },
   ],
   symbols_types: [{
-    name: 'All Networks',
-    value: '', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
-  },{
-    name: 'Binance Smart Chain',
-    value: 'Binance Smart Chain', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
-  },{
-    name: 'Ethereum',
-    value: 'eth',
+      name: 'All Networks',
+      value: '', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
+    },{
+      name: 'Binance Smart Chain',
+      value: 'Binance Smart Chain', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
+    },{
+      name: 'Ethereum',
+      value: 'Ethereum',
   }],
 };
 
@@ -95,12 +95,16 @@ export default {
       onResultReadyCallback([]);
       return
     }
+    result.content.sort((a,b) => { // filter by symbol name
+      if(a.symbol > b.symbol) return 1
+      if(a.symbol < b.symbol) return -1
+      return 0
+    })
     findedSymbols = [...result.content]
 
     onResultReadyCallback(result.content);
 
-
-    // const symbols = await getAllSymbols(); // TODO add userInput in query
+    // const symbols = await getAllSymbols();
     // const filteredSymbols = symbols.filter(symbol => {
     //   const isExchangeValid = exchange === '' || symbol.exchange === exchange;
     //   const isFullSymbolContainsInput = symbol.full_name
@@ -128,10 +132,9 @@ export default {
       name: symbolItem.symbol,
       ticker: symbolItem.full_name,
       full_name: symbolItem.full_name, // self adding for show pair address in getBars
-      description: symbolItem.description,
+      description: symbolItem.description, // выводится рядом с зеленой иконкой коннекта
       type: symbolItem.type,
       pair_id: symbolItem.pair_id,
-      exchange_id: symbolItem.exchange_id,
       session: '24x7',
       timezone: 'Etc/UTC',
       exchange: symbolItem.exchange,
@@ -152,7 +155,7 @@ export default {
     // if (split_data[2].match(/USD|USDT|BUSD/)) { symbolInfo.pricescale = 100 }
 
     console.log('[resolveSymbol]: Symbol resolved', symbolName);
-    onSymbolResolvedCallback(symbolInfo);
+    setTimeout(() => onSymbolResolvedCallback(symbolInfo))
   },
 
   getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) => {
@@ -165,16 +168,16 @@ export default {
     }
     console.log('[getBars]: Method call: ', resolution, new Date(from * 1000).toISOString().slice(0, 16), ' -> ', new Date(to * 1000).toISOString().slice(0, 16), countBack+' bars'); // symbolInfo
     // console.log('symbolInfo', symbolInfo)
-    const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
+    // const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
     // console.log('parsedSymbol', parsedSymbol)
     const body = {
-      ex: parsedSymbol.exchange, // Bitfinex, pancake
-      ex_id: symbolInfo.exchange_id, // 123
+      // ex: parsedSymbol.exchange, // Bitfinex, pancake
+      // ex_id: symbolInfo.exchange_id, // 123
+      // pair_addr: parsedSymbol.pairAddr,
+      // from_sym: parsedSymbol.fromSymbol, // BTC, TANK
+      // to_sym: parsedSymbol.toSymbol, // USD, BUSD
+      // from_ts: from, // 1467676800
       pair_id: symbolInfo.pair_id,
-      pair_addr: parsedSymbol.pairAddr,
-      from_sym: parsedSymbol.fromSymbol, // BTC, TANK
-      to_sym: parsedSymbol.toSymbol, // USD, BUSD
-      from_ts: from, // 1467676800
       to_ts: to, // 1467676800
       limit: 1000,
       span: resolution,

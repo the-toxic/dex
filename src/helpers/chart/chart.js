@@ -10,8 +10,7 @@ export const initChart = () => {
     datafeed: Datafeed,
     library_path: '/assets/charting_library/',
     // locale: getLanguageFromURL() || 'en',
-    // disabled_features: ['use_localstorage_for_settings'],
-    // enabled_features: [],
+    // timezone: 'Europe/Moscow',
     theme: 'Dark',
     overrides: {
       // "paneProperties.background": "#131722",
@@ -31,7 +30,23 @@ export const initChart = () => {
     fullscreen: false, // displays the chart in the fullscreen mode
     width: '100%',
     height: '800px',
-    // autosize: true, // hz. Resize always work
-    // disabled_features: ["header_widget", "left_toolbar"],
+    // autosize: true, // Full size on container
+    disabled_features: ['header_compare'] // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
+    // enabled_features: [],
+    // custom_css_url: 'css/style.css',
   });
+
+  tvWidget.headerReady().then(function() {
+    const button = tvWidget.createButton();
+    button.textContent = 'Open TANK/BUSD pair';
+    button.setAttribute('title', 'Open TANK/BUSD pair');
+    button.addEventListener('click', function() {
+      tvWidget.activeChart().setSymbol('PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996')
+    });
+  });
+
+  // tvWidget.subscribe('onTick', (candle) => {
+  //   console.log('onTick', candle) // time, open, close...
+  // })
+  // tvWidget.unsubscribe('onTick', (cb) => {})
 }
