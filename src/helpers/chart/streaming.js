@@ -89,7 +89,7 @@ function candleMessageHandler(data) {
       high: Math.max(lastBar.high, tradePrice),
       low: Math.min(lastBar.low, tradePrice),
       close: tradePrice,
-      volume: tradeVolume
+      volume: lastBar.volume + tradeVolume
     };
     console.log('[socket] Update the latest bar by price', tradePrice);
   }

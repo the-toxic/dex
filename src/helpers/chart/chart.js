@@ -21,6 +21,9 @@ export const initChart = () => {
       // "mainSeriesProperties.candleStyle.wickUpColor": '#336854',
       // "mainSeriesProperties.candleStyle.wickDownColor": '#7f323f',
     },
+    // studies_overrides: {
+      // "volume.volume.color.0": "#00FFFF",
+    // },
     // time_frames: [
       // { text: "1w", resolution: "1W", description: "1 Week", title: "1 Week" },
     // ],
@@ -31,7 +34,7 @@ export const initChart = () => {
     width: '100%',
     height: '800px',
     // autosize: true, // Full size on container
-    disabled_features: ['header_compare'] // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
+    disabled_features: ['header_compare', 'volume_force_overlay'] // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
     // enabled_features: [],
     // custom_css_url: 'css/style.css',
   });
