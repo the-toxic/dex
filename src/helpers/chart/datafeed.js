@@ -34,12 +34,15 @@ const configurationData = {
       value: '', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
     },{
       name: 'Binance Smart Chain',
-      value: 'Binance Smart Chain', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
+      value: 'BSC', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
     },{
       name: 'Ethereum',
       value: 'Ethereum',
   }],
 };
+
+const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value)
+const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
 
 // async function getAllSymbols() {
 //   return [{
@@ -95,9 +98,12 @@ export default {
       onResultReadyCallback([]);
       return
     }
+    result.content.forEach(i => {
+      i.description = `Pair: ${i.pair_addr} | TX: ${toNumber(i.tx_count)}`
+    })
     result.content.sort((a,b) => { // filter by symbol name
-      if(a.symbol > b.symbol) return 1
-      if(a.symbol < b.symbol) return -1
+      if(a.tx_count > b.tx_count) return -1
+      if(a.tx_count < b.tx_count) return 1
       return 0
     })
     findedSymbols = [...result.content]
@@ -256,6 +262,3 @@ export default {
 
 };
 
-function humanDate(date) {
-  return new Date(date * 1000).toISOString().slice(0, 16)
-}
