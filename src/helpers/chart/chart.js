@@ -3,7 +3,7 @@ import Datafeed from "./datafeed";
 export const initChart = () => {
   window.tvWidget = new TradingView.widget({
     // debug: true,
-    symbol: 'Uniswap V2 Router 02:WETH/USDT:0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852', // default symbol
+    symbol: 'Uniswap V3 Router 02:WETH/USDT:0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852', // default symbol
     symbol_search_request_delay: 1000, // delay before request in search field
     interval: '15', // default interval
     container: 'tv_chart_container',

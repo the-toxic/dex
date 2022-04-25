@@ -48,8 +48,7 @@ function candleMessageHandler(data) {
     // 0~4321~TANK~BUSD~ts~price~volume"
     eventTypeStr, // 0
     pair_id, // 1234
-    // fromSymbol, // BTC
-    // toSymbol, // USD
+    resolution, // 1D
     tradeTimeStr, // 1649773293
     tradePriceStr, // 40143
     tradeVolumeStr, // 100
@@ -59,7 +58,7 @@ function candleMessageHandler(data) {
   const tradeTime = parseInt(tradeTimeStr) * 1000;
   const tradeVolume = parseInt(tradeVolumeStr);
   // const channelString = `0~${pair_id}~${fromSymbol}~${toSymbol}`;
-  const channelString = `0~${pair_id}`;
+  const channelString = `0~${pair_id}~${resolution}`;
   const subscriptionItem = channelToSubscription.get(channelString);
   // console.log('channelToSubscription', channelString, channelToSubscription)
   // console.log(pair_id, fromSymbol, toSymbol, tradeTimeStr, tradePriceStr, tradeVolumeStr)
@@ -67,7 +66,7 @@ function candleMessageHandler(data) {
   if (subscriptionItem === undefined) { return }
   const lastBar = subscriptionItem.lastBar;
   // const resolution = subscriptionItem.resolution; // 1D, 60 & e.g.
-  const resolution = subscriptionItem.handlers[0].id.split('#_')[1]; // 1D, 60 & e.g.
+  // const resolution = subscriptionItem.handlers[0].id.split('#_')[1]; // 1D, 60 & e.g.
 
   const nextBarTime = getNextBarTime(lastBar.time, resolution);
 
@@ -122,7 +121,7 @@ export function subscribeOnStream(
 ) {
   // const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
   // const channelString = `0~${symbolInfo.pair_id}~${parsedSymbol.fromSymbol}~${parsedSymbol.toSymbol}`; // ~${parsedSymbol.pairAddr}
-  const channelString = `0~${symbolInfo.pair_id}`; // ~${parsedSymbol.pairAddr}
+  const channelString = `0~${symbolInfo.pair_id}~${resolution}`; // ~${parsedSymbol.pairAddr}
   const handler = {
     id: subscribeUID,
     callback: onRealtimeCallback,
