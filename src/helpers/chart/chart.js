@@ -38,10 +38,9 @@ export const initChart = () => {
 
   // tvWidget.headerReady().then(function() {
   //   const button = tvWidget.createButton();
-  //   button.textContent = 'Open TANK/BUSD pair';
-  //   button.setAttribute('title', 'Open TANK/BUSD pair');
+  //   button.textContent = 'Load WBNB/BUSD';
   //   button.addEventListener('click', function() {
-  //     tvWidget.activeChart().setSymbol('PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996')
+  //     tvWidget.activeChart().setSymbol('PanCake v2:WBNB/BUSD:0x58f876857a02d6762e0101bb5c46a8c1ed44dc16')
   //   });
   // });
 

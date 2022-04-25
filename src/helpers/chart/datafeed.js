@@ -113,7 +113,7 @@ export default {
       i.description = `Pair: ${shortAddress(i.pair_addr)} | TX: ${toNumber(i.tx_count)}`
       i.exchange = i.exchange === 'UNKNOWN_ROUTER' ? 'UNKNOWN' : i.exchange
     })
-    result.content.sort((a,b) => { // filter by symbol name
+    result.content.sort((a,b) => { // filter by TX count, DESC
       if(a.tx_count > b.tx_count) return -1
       if(a.tx_count < b.tx_count) return 1
       return 0

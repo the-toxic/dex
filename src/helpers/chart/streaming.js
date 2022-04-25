@@ -32,28 +32,38 @@ socket.on('error', (error) => {
 });
 
 socket.on('m', data => {
-  console.log('[socket] Message:', data);
+  // console.log('[socket] Message:', data);
+  if(data[0] === '0') { // candle
+    candleMessageHandler(data)
+
+  } else if(data[0] === '1') { // table
+    return
+  } else {
+    return false
+  }
+})
+
+function candleMessageHandler(data) {
   const [
     // 0~4321~TANK~BUSD~ts~price~volume"
     eventTypeStr, // 0
     pair_id, // 1234
-    fromSymbol, // BTC
-    toSymbol, // USD
+    // fromSymbol, // BTC
+    // toSymbol, // USD
     tradeTimeStr, // 1649773293
     tradePriceStr, // 40143
     tradeVolumeStr, // 100
   ] = data.split('~');
 
-  if (parseInt(eventTypeStr) !== 0) {
-    // skip all non-TRADE events
-    console.log('[socket] Not-TRADE Message:', data);
-    return false;
-  }
   const tradePrice = parseFloat(tradePriceStr);
   const tradeTime = parseInt(tradeTimeStr) * 1000;
   const tradeVolume = parseInt(tradeVolumeStr);
-  const channelString = `0~${pair_id}~${fromSymbol}~${toSymbol}`;
+  // const channelString = `0~${pair_id}~${fromSymbol}~${toSymbol}`;
+  const channelString = `0~${pair_id}`;
   const subscriptionItem = channelToSubscription.get(channelString);
+  // console.log('channelToSubscription', channelString, channelToSubscription)
+  // console.log(pair_id, fromSymbol, toSymbol, tradeTimeStr, tradePriceStr, tradeVolumeStr)
+
   if (subscriptionItem === undefined) { return }
   const lastBar = subscriptionItem.lastBar;
   // const resolution = subscriptionItem.resolution; // 1D, 60 & e.g.
@@ -76,7 +86,7 @@ socket.on('m', data => {
     console.log('[socket] Generate new bar', bar);
   } else {
     bar = {
-      ...lastBar, // TODO проверить, может лучше open: lastBar.close
+      ...lastBar, // TODO проверить, может лучше open: lastBar.close & time: lastBar.time
       high: Math.max(lastBar.high, tradePrice),
       low: Math.min(lastBar.low, tradePrice),
       close: tradePrice,
@@ -88,26 +98,18 @@ socket.on('m', data => {
 
   // send data to every subscriber of that symbol
   subscriptionItem.handlers.forEach(handler => handler.callback(bar));
-})
+}
 
 function getNextBarTime(lastBarTime, resolution) {
-
+  const date = new Date(lastBarTime);
+  resolution = resolution.includes('D') ? 1440 : (resolution.includes('W') ? 10080 : resolution)
+  date.setTime(date.getTime() + resolution * 60 * 1000);
+  return date.getTime();
   // var coeff = resolution * 60
   //  var rounded = Math.floor(data.ts / coeff) * coeff
   //  var lastBarSec = lastBar.time / 1000
   // if (rounded > lastBarSec) {
-    // create a new candle, use last close as open **PERSONAL CHOICE**
-
-  const date = new Date(lastBarTime);
-
-  if (resolution.includes('D')) {
-    resolution = 1440
-  } else if (resolution.includes('W')) {
-    resolution = 10080
-  }
-  date.setTime(date.getTime() + resolution * 60 * 1000);
-
-  return date.getTime();
+  // create a new candle, use last close as open **PERSONAL CHOICE**
 }
 
 export function subscribeOnStream(
@@ -118,8 +120,9 @@ export function subscribeOnStream(
   onResetCacheNeededCallback,
   lastBar,
 ) {
-  const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
-  const channelString = `0~${symbolInfo.pair_id}~${parsedSymbol.fromSymbol}~${parsedSymbol.toSymbol}`; // ~${parsedSymbol.pairAddr}
+  // const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
+  // const channelString = `0~${symbolInfo.pair_id}~${parsedSymbol.fromSymbol}~${parsedSymbol.toSymbol}`; // ~${parsedSymbol.pairAddr}
+  const channelString = `0~${symbolInfo.pair_id}`; // ~${parsedSymbol.pairAddr}
   const handler = {
     id: subscribeUID,
     callback: onRealtimeCallback,

@@ -55,7 +55,7 @@ export const searchPair = async (search) => {
 export async function makeApiRequest(path, body) {
   try {
     // const { data } = await axios.get(`https://min-api.cryptocompare.com/${path}`);
-    const { data } = await axios.post(`https://api.ulud.net/xhr/${path}`,
+    const { data } = await axios.post(`https://api.hazb.com/xhr/${path}`,
       {...body},
       { headers: { Authorization: 'Basic ZGV2OmRldiFAIzE=' }}
     );
