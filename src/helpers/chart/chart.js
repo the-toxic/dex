@@ -3,9 +3,9 @@ import Datafeed from "./datafeed";
 export const initChart = () => {
   window.tvWidget = new TradingView.widget({
     // debug: true,
-    symbol: 'PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // default symbol
+    symbol: 'Uniswap V2 Router 02:WETH/USDT:0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852', // default symbol
     symbol_search_request_delay: 1000, // delay before request in search field
-    interval: '60', // default interval
+    interval: '15', // default interval
     container: 'tv_chart_container',
     datafeed: Datafeed,
     library_path: '/assets/charting_library/',
@@ -36,14 +36,14 @@ export const initChart = () => {
     // custom_css_url: 'css/style.css',
   });
 
-  tvWidget.headerReady().then(function() {
-    const button = tvWidget.createButton();
-    button.textContent = 'Open TANK/BUSD pair';
-    button.setAttribute('title', 'Open TANK/BUSD pair');
-    button.addEventListener('click', function() {
-      tvWidget.activeChart().setSymbol('PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996')
-    });
-  });
+  // tvWidget.headerReady().then(function() {
+  //   const button = tvWidget.createButton();
+  //   button.textContent = 'Open TANK/BUSD pair';
+  //   button.setAttribute('title', 'Open TANK/BUSD pair');
+  //   button.addEventListener('click', function() {
+  //     tvWidget.activeChart().setSymbol('PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996')
+  //   });
+  // });
 
   // tvWidget.subscribe('onTick', (candle) => {
   //   console.log('onTick', candle) // time, open, close...

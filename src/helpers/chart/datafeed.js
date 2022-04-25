@@ -4,45 +4,56 @@ import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
 
 const lastBarsCache = new Map();
 
-let findedSymbols = [{
-  symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
-  full_name: 'PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // Kraken:XMR/BTC:pairAddr - full symbol name
-  description: 'Pair: 0x4e14498c6f679c6421db117bc9e9b08671d42996', // pair addr
-  exchange: 'PanCake v2', // Binance - symbol exchange name
-  type: 'Binance Smart Chain', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
-  pair_id: 4321,
-}]
+let findedSymbols = [
+  {
+  symbol: 'WETH/USDT', // XMR/BTC - short symbol name
+  pair_id: 14,
+  full_name: 'Uniswap V2 Router 02:WETH/USDT:0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852', // Kraken:XMR/BTC:pairAddr - full symbol name
+  exchange: 'Uniswap V2 Router 02', // Binance - symbol exchange name
+  type: 'Ethereum', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
+  description: '',
+},
+//   {
+//   symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
+//   pair_id: 4321,
+//   full_name: 'PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // Kraken:XMR/BTC:pairAddr - full symbol name
+//   exchange: 'PanCake v2', // Binance - symbol exchange name
+//   type: 'Binance Smart Chain', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
+//   description: '',
+// }
+]
 
 const configurationData = {
   supported_resolutions: ['1', '5', '10', '15', '30', '60', '180', '720', '1D', '1W'], // 1W
   exchanges: [
     { value: '', name: 'All', desc: 'All DEX' },
-    { value: 'PanCake v2', name: 'PanCake v2', desc: 'BSC | Pancake DEX' },
-    { value: 'Uniswap V2 Router 01', name: 'Uniswap V2 Router 01', desc: 'BSC | Uniswap DEX' },
-    { value: 'Uniswap V2 Router 02', name: 'Uniswap V2 Router 02', desc: 'BSC | Uniswap DEX' },
-    { value: 'Uniswap V3 Router 01', name: 'Uniswap V3 Router 01', desc: 'BSC | Uniswap DEX' },
-    { value: 'Uniswap V3 Router 02', name: 'Uniswap V3 Router 02', desc: 'BSC | Uniswap DEX' },
-    { value: 'SushiSwap', name: 'SushiSwap', desc: 'BSC | SushiSwap DEX' },
-    { value: 'ShibaSwap', name: 'ShibaSwap', desc: 'BSC | ShibaSwap DEX' },
-    { value: 'KyberSwap', name: 'KyberSwap', desc: 'BSC | KyberSwap DEX' },
-    { value: 'MintySwap', name: 'MintySwap', desc: 'BSC | MintySwap DEX' },
-    { value: 'SafeMoon Swap', name: 'SafeMoon Swap', desc: 'BSC | SafeMoon Swap DEX' },
-    { value: 'Swapr', name: 'Swapr', desc: 'BSC | Swapr DEX' },
+    { value: 'PanCake v2', name: 'PanCake v2', desc: 'Pancake DEX' },
+    { value: 'Uniswap V2 Router 01', name: 'Uniswap V2 Router 01', desc: 'Uniswap DEX' },
+    { value: 'Uniswap V2 Router 02', name: 'Uniswap V2 Router 02', desc: 'Uniswap DEX' },
+    { value: 'Uniswap V3 Router 01', name: 'Uniswap V3 Router 01', desc: 'Uniswap DEX' },
+    { value: 'Uniswap V3 Router 02', name: 'Uniswap V3 Router 02', desc: 'Uniswap DEX' },
+    { value: 'SushiSwap', name: 'SushiSwap', desc: 'SushiSwap DEX' },
+    { value: 'ShibaSwap', name: 'ShibaSwap', desc: 'ShibaSwap DEX' },
+    { value: 'KyberSwap', name: 'KyberSwap', desc: 'KyberSwap DEX' },
+    { value: 'MintySwap', name: 'MintySwap', desc: 'MintySwap DEX' },
+    { value: 'SafeMoon Swap', name: 'SafeMoon Swap', desc: 'SafeMoon Swap DEX' },
+    { value: 'Swapr', name: 'Swapr', desc: 'Swapr DEX' },
   ],
   symbols_types: [{
       name: 'All Networks',
       value: '', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
-    },{
+    }, {
       name: 'Binance Smart Chain',
       value: 'BSC', // `symbolType` argument for the `searchSymbols` method, if a user selects this symbol type
-    },{
+    }, {
       name: 'Ethereum',
       value: 'Ethereum',
   }],
 };
 
 const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value)
-const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
+const shortAddress = (wallet) => wallet.slice(0,12) + '...' + wallet.slice(-12)
+// const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
 
 // async function getAllSymbols() {
 //   return [{
@@ -99,7 +110,8 @@ export default {
       return
     }
     result.content.forEach(i => {
-      i.description = `Pair: ${i.pair_addr} | TX: ${toNumber(i.tx_count)}`
+      i.description = `Pair: ${shortAddress(i.pair_addr)} | TX: ${toNumber(i.tx_count)}`
+      i.exchange = i.exchange === 'UNKNOWN_ROUTER' ? 'UNKNOWN' : i.exchange
     })
     result.content.sort((a,b) => { // filter by symbol name
       if(a.tx_count > b.tx_count) return -1
@@ -147,7 +159,7 @@ export default {
       minmov: 1, // формат цены
       pricescale: 100000, // формат цены. 100 - 2 символа после запятой, 1000 - 3 символа
       has_intraday: true, // включение минутных свечей, но надо сконфигурировать
-      intraday_multipliers: ['1', '5', '30', '60', '180', '720'], // указанные интервалы будут генерить запросы в БД, все остальные будут автоматом генериться либой на основе более, например 5-минутка будет складываться из 5 минутных баров
+      intraday_multipliers: ['1', '5', '15', '30', '60', '180', '720'], // указанные интервалы будут генерить запросы в БД, все остальные будут автоматом генериться либой на основе более, например 5-минутка будет складываться из 5 минутных баров
       has_daily: true,
       has_weekly_and_monthly: false, // если false то либа сама построит соответствующие разрешения по дневным барам, иначе будет генерить запросы
       // weekly_multipliers: ['1'], // если либа генерит сама, и в разрешениях есть 2 недели, она будет сама складывать 2 бара по 1 неделе
