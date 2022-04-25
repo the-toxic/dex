@@ -6,12 +6,12 @@ const lastBarsCache = new Map();
 
 let findedSymbols = [
   {
-  symbol: 'WETH/USDT', // XMR/BTC - short symbol name
-  pair_id: 17,
-  full_name: 'Uniswap V3 Router 02:WETH/USDT:0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852', // Kraken:XMR/BTC:pairAddr - full symbol name
-  exchange: 'Uniswap V3 Router 02', // Binance - symbol exchange name
-  type: 'Ethereum', // Network name | stock | "futures" | "crypto" | "forex" | "index" | any custom string
-  description: 'Pair: 0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852', // require for initial load page, or library show full_name
+  symbol: 'USDT/WBNB', // XMR/BTC - short symbol name
+  pair_id: 6,
+  full_name: 'PanCake v2:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // Kraken:XMR/BTC:pairAddr - full symbol name
+  exchange: 'PanCake v2', // Binance - symbol exchange name
+  type: 'BSC', // Network name | stock | "futures" | "crypto" | "forex" | "index" | any custom string
+  description: 'Pair: 0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // require for initial load page, or library show full_name
 },
 //   {
 //   symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
