@@ -4,11 +4,9 @@
     <tr>
       <th class="text-left">Date</th>
       <th class="text-left">Type</th>
-      <th class="text-left">Price, USD</th>
-      <th class="text-left">Price, BNB</th>
+      <th class="text-left">Price</th>
       <th class="text-left">Amount, {{ leftToken }}</th>
       <th class="text-left">Total, {{ rightToken }}</th>
-      <th class="text-left">Total, BNB</th>
       <th class="text-left">Maker</th>
       <th class="text-left">Others</th>
     </tr>
@@ -19,11 +17,9 @@
     <tr v-for="(item, idx) in rows" :key="idx" >
       <td>{{ tsToDate(item.date) }}</td>
       <td>{{ item.type }}</td>
-      <td>{{ '-' }}</td>
-      <td>{{ '-' }}</td>
+      <td>{{ item.price_usd }}</td>
       <td>{{ item.amount_token0 }}</td>
       <td>{{ item.amount_token1 }}</td>
-      <td>{{ '-' }}</td>
       <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank">{{ shortAddress(item.maker) }}</a></td>
       <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank">Show Tx</a></td>
     </tr>
@@ -34,27 +30,31 @@
 <script>
 import { mapGetters } from "vuex";
 import { fetchHistoryTable } from "@/api";
+import { priceFormatter } from "@/helpers/common";
 
 export default {
   name: "TableHistory",
   data() {return {
     loading: false,
-    rows: []
   }},
   async created() {},
   computed: {
-    ...mapGetters('chart', ['activeSymbol', 'leftToken', 'rightToken'])
+    ...mapGetters('chart', ['activeSymbol', 'leftToken', 'rightToken', 'lastTXs']),
+    rows() {
+      return this.lastTXs
+    }
   },
   watch: {
     async activeSymbol(newVal, oldVal) {
       this.loading = true
-      this.rows = []
       const {success, result} = await fetchHistoryTable(newVal.pair_id)
       this.loading = false
       if(success && result?.length) {
-        this.rows = result
+        result.forEach(item => {
+          item.price_usd = priceFormatter(+item.amount_token1/+item.amount_token0)
+        })
+        await this.$store.dispatch('chart/setLastTXs', result)
       }
-
     }
   },
   methods: {

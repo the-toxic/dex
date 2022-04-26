@@ -1,5 +1,6 @@
 import { io } from 'socket.io-client'
 import store from '@/store'
+import { priceFormatter } from "@/helpers/common";
 
 const channelToSubscription = new Map();
 
@@ -102,18 +103,32 @@ function candleMessageHandler(data) {
 
 function tableMessageHandler(data) {
   // 1~38~15~1650986416.0~0.0025588011976477886~0.13466513247830642~0xac6d563ea3ead92bba2af54d2cef0b41e365ac0c~0x23421b55d2d9df329bb4e5447532aa5ce16710bfef7d71f77716b690e68d357c~sell
-  // const [
-  //   eventTypeStr, // 1
-  //   pair_id, // 1234
-  //   resolution, // 1D
-  //   tradeTimeStr, // 1649773293
-  //   tradePriceStr, // 40143
-  //   tradeVolumeStr, // 100
-  //   maker, // 0x...
-  //   tx, // 0x...
-  //   type // buy | sell
-  // ] = data.split('~');
+  const [
+    eventTypeStr, // 1
+    pair_id, // 1234
+    resolution, // 1D
+    tradeTimeStr, // 1649773293
+    tradePriceStr, // 40143
+    tradeVolumeStr, // 100
+    amount_token0,
+    amount_token1,
+    maker, // 0x...
+    tx, // 0x...
+    type // buy | sell
+  ] = data.split('~');
+
+  const item = {
+    date: parseInt(tradeTimeStr),
+    type: type,
+    price_usd: priceFormatter(tradePriceStr),
+    amount_token0: priceFormatter(amount_token0),
+    amount_token1: priceFormatter(amount_token1),
+    maker: maker,
+    tx: tx,
+  }
   // console.log('table', data)
+  store.dispatch('chart/pushLastTXs', item).then()
+
 }
 
 function getNextBarTime(lastBarTime, resolution) {
