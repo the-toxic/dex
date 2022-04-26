@@ -7,7 +7,7 @@ const lastBarsCache = new Map();
 let findedSymbols = [
   {
   symbol: 'USDT/WBNB', // XMR/BTC - short symbol name
-  pair_id: 6,
+  pair_id: 38,
   full_name: 'PanCake v2:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // Kraken:XMR/BTC:pairAddr - full symbol name
   exchange: 'PanCake v2', // Binance - symbol exchange name
   type: 'BSC', // Network name | stock | "futures" | "crypto" | "forex" | "index" | any custom string
@@ -110,7 +110,7 @@ export default {
       return
     }
     result.content.forEach(i => {
-      i.description = `Pair: ${shortAddress(i.pair_addr)} | TX: ${toNumber(i.tx_count)}`
+      i.description = `Pair: ${shortAddress(i.pair_addr)} | TX: ${toNumber(i.tx_count)} | ID: ${i.pair_id}`
       i.exchange = i.exchange === 'UNKNOWN_ROUTER' ? 'UNKNOWN' : i.exchange
     })
     result.content.sort((a,b) => { // filter by TX count, DESC

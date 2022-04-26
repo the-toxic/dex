@@ -13,6 +13,7 @@ export const initChart = () => {
     // timezone: 'Europe/Moscow',
     theme: 'Dark',
     overrides: {
+      volumePaneSize: "medium"
       // "paneProperties.background": "#131722",
       // "paneProperties.vertGridProperties.color": "#363c4e",
       // "paneProperties.horzGridProperties.color": "#363c4e",
