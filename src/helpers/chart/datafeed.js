@@ -5,23 +5,33 @@ import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
 const lastBarsCache = new Map();
 
 let findedSymbols = [
-  {
-  symbol: 'USDT/WBNB', // XMR/BTC - short symbol name
-  pair_id: 38,
-  full_name: 'PanCake v2:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // Kraken:XMR/BTC:pairAddr - full symbol name
-  exchange: 'PanCake v2', // Binance - symbol exchange name
-  type: 'BSC', // Network name | stock | "futures" | "crypto" | "forex" | "index" | any custom string
-  description: 'Pair: 0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // require for initial load page, or library show full_name
-},
+//   {
+//   symbol: 'USDT/WBNB', // XMR/BTC - short symbol name
+//   pair_id: 38,
+//   full_name: 'PanCake v2:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // Kraken:XMR/BTC:pairAddr - full symbol name
+//   exchange: 'PanCake v2', // Binance - symbol exchange name
+//   type: 'BSC', // Network name | stock | "futures" | "crypto" | "forex" | "index" | any custom string
+//   description: 'Pair: 0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // require for initial load page, or library show full_name
+// },
 //   {
 //   symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
-//   pair_id: 4321,
+//   pair_id: 5787,
 //   full_name: 'PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // Kraken:XMR/BTC:pairAddr - full symbol name
 //   exchange: 'PanCake v2', // Binance - symbol exchange name
 //   type: 'Binance Smart Chain', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
 //   description: '',
 // }
 ]
+
+async function loadDefaultPair(symbolFullName) {
+  const pairAddress = symbolFullName.split(':')[2]
+  const {success, result} = await makeApiRequest(`search_pair`, { search: pairAddress, exchange: '', network: '' })
+  if(success && result?.content) {
+    const pair = result.content[0]
+    pair.description = `Pair: ${pair.pair_addr}`
+    findedSymbols = [pair]
+  }
+}
 
 const configurationData = {
   supported_resolutions: ['1', '5', '10', '15', '30', '60', '180', '720', '1D', '1W'], // 1W
@@ -134,15 +144,17 @@ export default {
   },
 
   resolveSymbol: async (
-    symbolName,
+    symbolFullName,
     onSymbolResolvedCallback,
     onResolveErrorCallback,
   ) => {
-    console.log('[resolveSymbol]: Method call', symbolName);
-    // const symbols = await getAllSymbols();
-    const symbolItem = findedSymbols.find(({full_name}) => full_name === symbolName);
+    console.log('[resolveSymbol]: Method call', symbolFullName);
+    if(!findedSymbols.length) await loadDefaultPair(symbolFullName) // on load page get default pair
+
+    const symbolItem = findedSymbols.find(({full_name}) => full_name === symbolFullName);
+
     if (!symbolItem) {
-      console.log('[resolveSymbol]: Cannot resolve symbol', symbolName);
+      console.log('[resolveSymbol]: Cannot resolve symbol', symbolFullName);
       onResolveErrorCallback('cannot resolve symbol');
       return;
     }
@@ -172,7 +184,7 @@ export default {
     };
     // if (split_data[2].match(/USD|USDT|BUSD/)) { symbolInfo.pricescale = 100 }
 
-    console.log('[resolveSymbol]: Symbol resolved', symbolName);
+    console.log('[resolveSymbol]: Symbol resolved', symbolFullName);
     setTimeout(() => onSymbolResolvedCallback(symbolInfo))
   },
 
@@ -271,6 +283,6 @@ export default {
   // calculateHistoryDepth: (resolution, resolutionBack, intervalBack) => {},
   // getMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {},
   // getTimeScaleMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {}
-
 };
+
 
