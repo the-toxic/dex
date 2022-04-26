@@ -23,8 +23,10 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { initChart } from "@/helpers/chart/chart";
 import TableHistory from "@/components/TableHistory";
+
 export default {
   name: "NewChart",
   components: {TableHistory},
@@ -34,18 +36,16 @@ export default {
     exchange: '...',
     pairAddr: ''
   } },
-  created() {
-  },
   mounted() {
     initChart()
-    tvWidget.onChartReady(() => {
-      const symbol = tvWidget.activeChart().symbolExt()
-      this.pairName = symbol.symbol
-      this.network = symbol.type
-      this.exchange = symbol.exchange
-      this.exchange = symbol.exchange
-      this.pairAddr = symbol.description
-    });
+    // tvWidget.onChartReady(() => {
+    //   const symbol = tvWidget.activeChart().symbolExt()
+    //   this.pairName = symbol.symbol
+    //   this.network = symbol.type
+    //   this.exchange = symbol.exchange
+    //   this.exchange = symbol.exchange
+    //   this.pairAddr = symbol.description
+    // });
 
   },
   // tvWidget.activeChart().symbolExt()
@@ -54,8 +54,16 @@ export default {
   // tvWidget.activeChart().setSymbol('PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996')
   // tvWidget.activeChart().setResolution('1D');
   // tvWidget.activeChart().executeActionById('symbolSearch'); // показать поиск
-
+  watch: {
+    activeSymbol(newVal) {
+      this.pairName = newVal.symbol
+      this.pairAddr = newVal.pair_addr
+      this.exchange = newVal.exchange
+      this.network = newVal.type
+    }
+  },
   computed: {
+    ...mapGetters('chart', ['activeSymbol'])
     // pairName() { return '' }
   }
 }

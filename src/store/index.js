@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
+import chart from "./modules/chart";
 // import wallet from "./modules/wallet";
 
 const initShowCookie = (() => !window.localStorage.getItem('cookiePopup'))()
@@ -10,9 +11,9 @@ export default new Vuex.Store({
   // deny on change state, without commits (this.$store.state.cartCnt++)
   // enable in dev work, because tracking the storage change method increases the load on the browser
   strict: process.env.NODE_ENV !== 'production',
-  // modules: {
-  //   wallet
-  // },
+  modules: {
+    chart
+  },
   state: {
     globalLoader: false,
     alert: {

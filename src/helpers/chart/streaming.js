@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client'
-import { parseFullSymbol } from './helpers.js';
+import store from '@/store'
 
 const channelToSubscription = new Map();
 
@@ -7,9 +7,8 @@ const socket = io('https://api.hazb.com', {
   path: '/ws/socket.io',
   transports: ['websocket', 'polling', 'flashsocket']
 });
-// const socket = new WebSocket('wss://streamer.cryptocompare.com/v2?api_key=30970dd127f1f2dffa78ac567b453d67295f174bce01035f3b2ab169276be70d');
-window.socket = socket
 
+// const socket = new WebSocket('wss://streamer.cryptocompare.com/v2?api_key=30970dd127f1f2dffa78ac567b453d67295f174bce01035f3b2ab169276be70d');
 // socket.onopen = function(event) { console.log('on open') };
 // socket.onmessage = function(event) { console.log('on message', JSON.parse(event.data)) };
 // socket.onclose = function(event) { console.log('on close', event.code) }; // code 1006 - error, 1005 - user close
@@ -35,17 +34,18 @@ socket.on('m', data => {
   // console.log('[socket] Message:', data);
   if(data[0] === '0') { // candle
     candleMessageHandler(data)
-
   } else if(data[0] === '1') { // table
-    return
+    tableMessageHandler(data)
   } else {
     return false
   }
 })
 
+const humanDate = (date) => new Date(date).toISOString().slice(0, 16).split('T').join(' ')
+
 function candleMessageHandler(data) {
   const [
-    // 0~4321~TANK~BUSD~ts~price~volume"
+    // 0~4321~1D~ts~price~volume"
     eventTypeStr, // 0
     pair_id, // 1234
     resolution, // 1D
@@ -61,7 +61,6 @@ function candleMessageHandler(data) {
   const channelString = `0~${pair_id}~${resolution}`;
   const subscriptionItem = channelToSubscription.get(channelString);
   // console.log('channelToSubscription', channelString, channelToSubscription)
-  // console.log(pair_id, fromSymbol, toSymbol, tradeTimeStr, tradePriceStr, tradeVolumeStr)
 
   if (subscriptionItem === undefined) { return }
   const lastBar = subscriptionItem.lastBar;
@@ -70,7 +69,7 @@ function candleMessageHandler(data) {
 
   const nextBarTime = getNextBarTime(lastBar.time, resolution);
 
-  console.log(resolution, new Date(lastBar.time).toISOString(), new Date(tradeTime).toISOString(), new Date(nextBarTime).toISOString())
+  console.log(resolution, humanDate(lastBar.time), '<', humanDate(tradeTime), '<', humanDate(nextBarTime), tradePrice)
 
   let bar;
   if (tradeTime >= nextBarTime) { // если пора рисовать новый бар
@@ -91,12 +90,30 @@ function candleMessageHandler(data) {
       close: tradePrice,
       volume: lastBar.volume + tradeVolume
     };
-    console.log('[socket] Update the latest bar by price', tradePrice);
+    // console.log('[socket] Update the latest bar by price', tradePrice);
   }
   subscriptionItem.lastBar = bar;
 
+  // store.dispatch('', )
+
   // send data to every subscriber of that symbol
   subscriptionItem.handlers.forEach(handler => handler.callback(bar));
+}
+
+function tableMessageHandler(data) {
+  // 1~38~15~1650986416.0~0.0025588011976477886~0.13466513247830642~0xac6d563ea3ead92bba2af54d2cef0b41e365ac0c~0x23421b55d2d9df329bb4e5447532aa5ce16710bfef7d71f77716b690e68d357c~sell
+  // const [
+  //   eventTypeStr, // 1
+  //   pair_id, // 1234
+  //   resolution, // 1D
+  //   tradeTimeStr, // 1649773293
+  //   tradePriceStr, // 40143
+  //   tradeVolumeStr, // 100
+  //   maker, // 0x...
+  //   tx, // 0x...
+  //   type // buy | sell
+  // ] = data.split('~');
+  // console.log('table', data)
 }
 
 function getNextBarTime(lastBarTime, resolution) {

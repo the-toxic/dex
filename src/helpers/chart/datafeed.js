@@ -1,6 +1,6 @@
-import { generateSymbol, parseFullSymbol } from './helpers.js';
 import { makeApiRequest } from '@/api.js'
 import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
+import store from "@/store";
 
 const lastBarsCache = new Map();
 
@@ -63,39 +63,7 @@ const configurationData = {
 
 const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value)
 const shortAddress = (wallet) => wallet.slice(0,12) + '...' + wallet.slice(-12)
-// const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
-
-// async function getAllSymbols() {
-//   return [{
-//     symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
-//     full_name: 'pancake:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // Kraken:XMR/BTC:pairAddr - full symbol name
-//     description: '0x4e14498c6f679c6421db117bc9e9b08671d42996', // pair addr
-//     exchange: 'pancake', // Binance - symbol exchange name
-//     type: 'bsc', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
-//   }];
-//
-//   // const data = await makeApiRequest('data/v3/all/exchanges');
-//   // let allSymbols = [];
-//   //
-//   // for (const exchange of configurationData.exchanges) {
-//   //   const pairs = data.Data[exchange.value].pairs;
-//   //
-//   //   for (const leftPairPart of Object.keys(pairs)) {
-//   //     const symbols = pairs[leftPairPart].map(rightPairPart => {
-//   //       const symbol = generateSymbol(exchange.value, leftPairPart, rightPairPart);
-//   //       return {
-//   //         symbol: symbol.short, // XMR/BTC - short symbol name
-//   //         full_name: symbol.full, // Kraken:XMR/BTC - full symbol name
-//   //         description: symbol.short, // XMR/BTC
-//   //         exchange: exchange.value, // Kraken - symbol exchange name
-//   //         type: 'crypto', // stock | "futures" | "crypto" | "forex" | "index" | any custom string
-//   //       };
-//   //     });
-//   //     allSymbols = [...allSymbols, ...symbols];
-//   //   }
-//   // }
-//   // return allSymbols;
-// }
+const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
 
 export default {
   onReady: (callback) => {
@@ -131,16 +99,6 @@ export default {
     findedSymbols = [...result.content]
 
     onResultReadyCallback(result.content);
-
-    // const symbols = await getAllSymbols();
-    // const filteredSymbols = symbols.filter(symbol => {
-    //   const isExchangeValid = exchange === '' || symbol.exchange === exchange;
-    //   const isFullSymbolContainsInput = symbol.full_name
-    //     .toLowerCase()
-    //     .indexOf(userInput.toLowerCase()) !== -1;
-    //   return isExchangeValid && isFullSymbolContainsInput;
-    // });
-    // onResultReadyCallback(filteredSymbols);
   },
 
   resolveSymbol: async (
@@ -185,6 +143,9 @@ export default {
     // if (split_data[2].match(/USD|USDT|BUSD/)) { symbolInfo.pricescale = 100 }
 
     console.log('[resolveSymbol]: Symbol resolved', symbolFullName);
+
+    store.dispatch('chart/setSymbol', symbolItem).then()
+
     setTimeout(() => onSymbolResolvedCallback(symbolInfo))
   },
 
@@ -196,17 +157,8 @@ export default {
       onHistoryCallback([], {noData: true});
       return;
     }
-    console.log('[getBars]: Method call: ', resolution, new Date(from * 1000).toISOString().slice(0, 16), ' -> ', new Date(to * 1000).toISOString().slice(0, 16), countBack+' bars'); // symbolInfo
-    // console.log('symbolInfo', symbolInfo)
-    // const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
-    // console.log('parsedSymbol', parsedSymbol)
+    console.log('[getBars]: Method call: ', resolution, humanDate(from), ' -> ', humanDate(to), countBack+' bars'); // symbolInfo
     const body = {
-      // ex: parsedSymbol.exchange, // Bitfinex, pancake
-      // ex_id: symbolInfo.exchange_id, // 123
-      // pair_addr: parsedSymbol.pairAddr,
-      // from_sym: parsedSymbol.fromSymbol, // BTC, TANK
-      // to_sym: parsedSymbol.toSymbol, // USD, BUSD
-      // from_ts: from, // 1467676800
       pair_id: symbolInfo.pair_id,
       to_ts: to, // 1467676800
       limit: 1000,
@@ -216,8 +168,7 @@ export default {
       const { success, result } = await makeApiRequest(`limit_candles_history`, body);
 
       if (!success || !'candles' in result || !result.candles.length) {
-        // "noData" should be set if there is no data in the requested period.
-        onHistoryCallback([], { noData: true });
+        onHistoryCallback([], { noData: true }); // "noData" should be set if there is no data in the requested period.
         return;
       }
       result.candles.sort((a,b) => {
@@ -246,9 +197,7 @@ export default {
         });
       }
       console.log(`[getBars]: returned ${bars.length} bar(s)`);
-      onHistoryCallback(bars, {
-        noData: false,
-      });
+      onHistoryCallback(bars, { noData: false, });
     } catch (error) {
       console.log('[getBars]: Get error', error);
       onErrorCallback(error);

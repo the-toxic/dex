@@ -1,29 +1,30 @@
 <template>
-  <v-simple-table fixed-header height="500" >
+  <v-simple-table v-if="activeSymbol" fixed-header height="500" >
     <thead>
     <tr>
       <th class="text-left">Date</th>
       <th class="text-left">Type</th>
       <th class="text-left">Price, USD</th>
       <th class="text-left">Price, BNB</th>
-      <th class="text-left">Amount, TANK</th>
-      <th class="text-left">Total, BUSD</th>
+      <th class="text-left">Amount, {{ leftToken }}</th>
+      <th class="text-left">Total, {{ rightToken }}</th>
       <th class="text-left">Total, BNB</th>
       <th class="text-left">Maker</th>
       <th class="text-left">Others</th>
     </tr>
     </thead>
     <tbody>
-    <tr v-if="!rows.length"><td colspan="9" class="text-center">No activity</td></tr>
+    <tr v-if="loading"><td colspan="9" class="text-center"><v-skeleton-loader type="table-tbody" /></td></tr>
+    <tr v-else-if="!loading && !rows.length"><td colspan="9" class="text-center">No activity</td></tr>
     <tr v-for="(item, idx) in rows" :key="idx" >
-      <td>{{ item.date }}</td>
+      <td>{{ tsToDate(item.date) }}</td>
       <td>{{ item.type }}</td>
-      <td>${{ item.price_usd }}</td>
-      <td>{{ item.price_bnb }}</td>
-      <td>{{ item.amount_tank }}</td>
-      <td>{{ item.total_busd }}</td>
-      <td>{{ item.total_bnb }}</td>
-      <td>{{ item.maker }}</td>
+      <td>{{ '-' }}</td>
+      <td>{{ '-' }}</td>
+      <td>{{ item.amount_token0 }}</td>
+      <td>{{ item.amount_token1 }}</td>
+      <td>{{ '-' }}</td>
+      <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank">{{ shortAddress(item.maker) }}</a></td>
       <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank">Show Tx</a></td>
     </tr>
     </tbody>
@@ -31,77 +32,33 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { fetchHistoryTable } from "@/api";
+
 export default {
   name: "TableHistory",
   data() {return {
-    rows: [
-      {
-      'tx': '0x2edf205e6a556fde5de54391bc022ab8ec07394a36f1615159ec623f0c2df1cf',
-      'date': '2022-03-23 17:34:08',
-      'type': 'buy',
-      'price_usd': '0.093834',
-      'price_bnb': '0.000233',
-      'amount_tank': '221.423',
-      'total_busd': '20.777',
-      'total_bnb': '0.051583',
-      'maker': '0xd8...2fd5',
-    },
-      {
-      'tx': '0x2edf205e6a556fde5de54391bc022ab8ec07394a36f1615159ec623f0c2df1cf',
-      'date': '2022-03-23 17:28:53',
-      'type': 'sell',
-      'price_usd': '0.09334',
-      'price_bnb': '0.0002314',
-      'amount_tank': '356.634',
-      'total_busd': '33.2883',
-      'total_bnb': '0.082513',
-      'maker': '0xd8...2fd5',
-    },
-      {
-      'tx': '0x2edf205e6a556fde5de54391bc022ab8ec07394a36f1615159ec623f0c2df1cf',
-      'date': '2022-03-23 17:34:08',
-      'type': 'buy',
-      'price_usd': '0.093834',
-      'price_bnb': '0.000233',
-      'amount_tank': '221.423',
-      'total_busd': '20.777',
-      'total_bnb': '0.051583',
-      'maker': '0xd8...2fd5',
-    },
-      {
-      'tx': '0x2edf205e6a556fde5de54391bc022ab8ec07394a36f1615159ec623f0c2df1cf',
-      'date': '2022-03-23 17:28:53',
-      'type': 'sell',
-      'price_usd': '0.09334',
-      'price_bnb': '0.0002314',
-      'amount_tank': '356.634',
-      'total_busd': '33.2883',
-      'total_bnb': '0.082513',
-      'maker': '0xd8...2fd5',
-    },
-      {
-      'tx': '0x2edf205e6a556fde5de54391bc022ab8ec07394a36f1615159ec623f0c2df1cf',
-      'date': '2022-03-23 17:34:08',
-      'type': 'buy',
-      'price_usd': '0.093834',
-      'price_bnb': '0.000233',
-      'amount_tank': '221.423',
-      'total_busd': '20.777',
-      'total_bnb': '0.051583',
-      'maker': '0xd8...2fd5',
-    },
-      {
-      'tx': '0x2edf205e6a556fde5de54391bc022ab8ec07394a36f1615159ec623f0c2df1cf',
-      'date': '2022-03-23 17:28:53',
-      'type': 'sell',
-      'price_usd': '0.09334',
-      'price_bnb': '0.0002314',
-      'amount_tank': '356.634',
-      'total_busd': '33.2883',
-      'total_bnb': '0.082513',
-      'maker': '0xd8...2fd5',
-    },
-    ]
-  }}
+    loading: false,
+    rows: []
+  }},
+  async created() {},
+  computed: {
+    ...mapGetters('chart', ['activeSymbol', 'leftToken', 'rightToken'])
+  },
+  watch: {
+    async activeSymbol(newVal, oldVal) {
+      this.loading = true
+      this.rows = []
+      const {success, result} = await fetchHistoryTable(newVal.pair_id)
+      this.loading = false
+      if(success && result?.length) {
+        this.rows = result
+      }
+
+    }
+  },
+  methods: {
+    tsToDate: (date) => new Date(date * 1000).toISOString().slice(0, 19).split('T').join(' ')
+  }
 }
 </script>
