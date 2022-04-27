@@ -21,7 +21,7 @@
     </v-navigation-drawer>
 
 
-    <v-app-bar app clipped-left :hide-on-scroll="$vuetify.breakpoint.mdAndUp" class="mx-auto mb-8">
+    <v-app-bar app clipped-left :hide-on-scroll="false && $vuetify.breakpoint.mdAndUp" class="mx-auto mb-8">
       <v-container fluid class="pa-0 fill-height">
 
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">

@@ -1,4 +1,6 @@
 import Datafeed from "./datafeed";
+import store from "@/store";
+import { symbolItemByInfo } from "@/helpers/common";
 
 export const initChart = () => {
   window.tvWidget = new TradingView.widget({
@@ -48,6 +50,14 @@ export const initChart = () => {
   //   });
   // });
 
+  tvWidget.onChartReady(() => {
+    // tvWidget.activeChart().priceFormatter().format(123); // hz
+    tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
+      symbolInfo.needInvert = symbolInfo.checkInvert()
+      const symbolItem = symbolItemByInfo(symbolInfo)
+      store.dispatch('chart/setSymbol', symbolItem).then()
+    });
+  })
   // tvWidget.subscribe('onTick', (candle) => {
   //   console.log('onTick', candle) // time, open, close...
   // })

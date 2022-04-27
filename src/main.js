@@ -20,8 +20,8 @@ Vue.component('CopyLabel', CopyLabel)
 
 import "@/helpers/mixins"
 
-Vue.config.devtools = false
-Vue.config.productionTip = false
+// Vue.config.devtools = false
+// Vue.config.productionTip = false
 
 new Vue({
   router,

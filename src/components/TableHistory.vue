@@ -5,8 +5,8 @@
       <th class="text-center">Date</th>
       <th class="text-center">Type</th>
       <th class="text-center">Price</th>
-      <th class="text-center">Amount, {{ leftToken }}</th>
-      <th class="text-center">Total, {{ rightToken }}</th>
+      <th class="text-center">Amount, {{ activeSymbol.needInvert ? rightToken : leftToken }}</th>
+      <th class="text-center">Total, {{ activeSymbol.needInvert ? leftToken : rightToken }}</th>
       <th class="text-center">Maker</th>
       <th class="text-center">Others</th>
     </tr>
@@ -53,6 +53,11 @@ export default {
       this.loading = false
       if(success && result?.length) {
         result.forEach(item => {
+          if(newVal.needInvert) {
+            const oldAmount0 = item.amount_token0
+            item.amount_token0 = item.amount_token1
+            item.amount_token1 = oldAmount0
+          }
           item.price = priceFormatter(+item.amount_token1/+item.amount_token0)
         })
         await this.$store.dispatch('chart/setLastTXs', result)

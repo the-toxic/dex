@@ -43,13 +43,14 @@ socket.on('m', data => {
 })
 
 const humanDate = (date, length = 16) => new Date(date).toISOString().slice(0, length).split('T').join(' ')
+const checkInvert = (number, needInvert) => (needInvert ? 1 / number : number)
 
 function candleMessageHandler(data) {
   // 0~14~15~1651066924.0~19.643600704488794~0.05
   // свечи 0~{pair_id}~{span}~{ts}~{amount0}~{amount1}
   // цена = правое делить на левое
   // объём = цена * на левое
-  const [
+  let [
     , // 0
     pair_id, // 1234
     resolution, // 1D
@@ -58,9 +59,15 @@ function candleMessageHandler(data) {
     amount1, // 0.05
   ] = data.split('~');
 
+  if(store.getters['chart/needInvert']) {
+    const oldAmount0 = amount0
+    amount0 = amount1
+    amount1 = oldAmount0
+  }
+
   const tradeTime = parseInt(tradeTimeStr) * 1000;
   const tradePrice = parseFloat(amount1 / amount0);
-  const tradeVolume = parseInt(tradePrice * amount0);
+  const tradeVolume = parseFloat(tradePrice * amount0);
 
   const channelString = `0~${pair_id}~${resolution}`;
   const subscriptionItem = channelToSubscription.get(channelString);
@@ -108,7 +115,7 @@ function tableMessageHandler(data) {
   // таблица 1~{pair_id}~{span}~{ts}~{amount0}~{amount1}~{maker}~{tx}~{direction}
   // цена = правое делить на левое
   // объём = цена * на левое
-  const [
+  let [
     , // 1 | 0
     , // pair_id
     , // resolution (1D)
@@ -119,6 +126,12 @@ function tableMessageHandler(data) {
     tx, // 0x...
     type // buy | sell
   ] = data.split('~');
+
+  if(store.getters['chart/needInvert']) {
+    const oldAmount0 = amount0
+    amount0 = amount1
+    amount1 = oldAmount0
+  }
 
   const tradePrice = parseFloat(amount1 / amount0);
   // const tradeVolume = parseInt(tradePrice * amount0);

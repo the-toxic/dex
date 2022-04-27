@@ -4,7 +4,7 @@ const emailRegex = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|
 const urlRegex = /^(?:(?:https?):\/\/)?(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i
 
 export function priceFormatter(price) {
-  // parseFloat(14567890123456789).toExponential() // TODO rework
+  // parseFloat(parseFloat(0.14567890123456789).toExponential(4)) // TODO rework. IF 1000 > number > 0.000001. If > 1k toFixed(2)
   // console.log(price)
   if (price < 0.00001) {
     return parseFloat(price).toFixed(8)
@@ -12,6 +12,20 @@ export function priceFormatter(price) {
     return parseFloat(price).toFixed(5)
   else
     return parseFloat(price).toFixed(3)
+}
+
+export function symbolItemByInfo(symbolInfo) {
+  return {
+    symbol: symbolInfo.name,
+    full_name: symbolInfo.full_name,
+    exchange: symbolInfo.exchange,
+    exchange_id: symbolInfo.exchange_id,
+    pair_addr: symbolInfo.full_name.split(':')[2],
+    pair_id: symbolInfo.pair_id,
+    type: symbolInfo.type,
+    description: symbolInfo.description,
+    needInvert: symbolInfo.needInvert
+  }
 }
 
 const exponentToNumber = function(exp) {

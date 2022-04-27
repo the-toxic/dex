@@ -126,6 +126,7 @@ export default {
       session: '24x7',
       timezone: 'Etc/UTC',
       exchange: symbolItem.exchange,
+      exchange_id: symbolItem.exchange_id,
       minmov: 1, // формат цены
       pricescale: 100000, // формат цены. 100 - 2 символа после запятой, 1000 - 3 символа
       has_intraday: true, // включение минутных свечей, но надо сконфигурировать
@@ -139,8 +140,13 @@ export default {
       visible_plots_set: 'ohlcv', // Support: open, high, low, close. With 'value': "ohlcv"
       // volume_precision: 2, // кол-во десятичных символов в объеме
       data_status: 'streaming', // streaming | endofday | pulsed | delayed_streaming
+      needInvert: false
     };
-    // if (split_data[2].match(/USD|USDT|BUSD/)) { symbolInfo.pricescale = 100 }
+    symbolInfo.checkInvert = function () {
+      const detectStablecoin = this.name.match(/BUSD|TUSD|USDT|USDC|DAI|USD|UST/)
+      return detectStablecoin && detectStablecoin.index === 0
+    }
+    symbolInfo.needInvert = symbolItem.needInvert = symbolInfo.checkInvert() // on first load symbol
 
     console.log('[resolveSymbol]: Symbol resolved', symbolFullName);
 
@@ -176,16 +182,18 @@ export default {
         if(a.time < b.time) return -1
         return 0
       })
+      const checkInvert = (number) => (symbolInfo.needInvert ? number : 1 / number)
       let bars = [], lastBar = null;
       result.candles.forEach(bar => {
         // if (bar.time >= from && bar.time < to) {
+        // console.log('needInvert', symbolInfo.needInvert)
         bar = {
           time: bar.time * 1000,
-          low: 1 / bar.low,
-          high: 1 / bar.high,
-          open: lastBar ? lastBar.close : 1 / bar.open,
-          close: 1 / bar.close,
-          volume: bar.volume
+          low: checkInvert(bar.low),
+          high: checkInvert(bar.high),
+          open: lastBar ? lastBar.close : checkInvert(bar.open),
+          close: checkInvert(bar.close),
+          volume: checkInvert(bar.volume)
         }
         bars = [...bars, bar];
         lastBar = bar
@@ -234,5 +242,3 @@ export default {
   // getMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {},
   // getTimeScaleMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {}
 };
-
-
