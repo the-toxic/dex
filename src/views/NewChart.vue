@@ -5,7 +5,7 @@
         <v-card-title class="d-flex justify-space-between align-center">
           <span>Network: {{ network }}</span>
           <span>Pair: {{ pairName }}</span>
-          <span>Price: {{ '-' }}</span>
+          <span>Price: {{ lastPrice }}</span>
         </v-card-title>
         <v-card-text class="fs20 d-flex justify-space-between align-center">
           <span>Exchange: {{ exchange }}</span>
@@ -63,7 +63,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('chart', ['activeSymbol'])
+    ...mapGetters('chart', ['activeSymbol', 'lastPrice'])
     // pairName() { return '' }
   }
 }

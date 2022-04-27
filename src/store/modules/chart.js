@@ -2,7 +2,6 @@ export default {
   namespaced: true,
   state: {
     activeSymbol: null,
-    lastPrice: 0,
     lastTXs: []
   },
   getters: {
@@ -10,7 +9,8 @@ export default {
     needInvert: state => state.activeSymbol.needInvert,
     leftToken: state => state.activeSymbol.symbol.split('/')[0],
     rightToken: state => state.activeSymbol.symbol.split('/')[1],
-    lastTXs: state => state.lastTXs
+    lastTXs: state => state.lastTXs,
+    lastPrice: state => state.lastTXs.length ? (state.lastTXs[0].amount_token1 / state.lastTXs[0].amount_token0) : 0
   },
   mutations: {
     setSymbol(state, payload) {

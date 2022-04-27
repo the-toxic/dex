@@ -193,7 +193,7 @@ export default {
           high: checkInvert(bar.high),
           open: lastBar ? lastBar.close : checkInvert(bar.open),
           close: checkInvert(bar.close),
-          volume: checkInvert(bar.volume)
+          volume: bar.volume // TODO может тут всеже нужно 1/volume. хз
         }
         bars = [...bars, bar];
         lastBar = bar
