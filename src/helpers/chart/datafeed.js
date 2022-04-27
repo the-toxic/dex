@@ -179,15 +179,16 @@ export default {
       let bars = [], lastBar = null;
       result.candles.forEach(bar => {
         // if (bar.time >= from && bar.time < to) {
-          bars = [...bars, {
-            time: bar.time * 1000,
-            low: bar.low,
-            high: bar.high,
-            open: lastBar ? lastBar.close : bar.open,
-            close: bar.close,
-            volume: bar.volume
-          }];
-          lastBar = bar
+        bar = {
+          time: bar.time * 1000,
+          low: 1 / bar.low,
+          high: 1 / bar.high,
+          open: lastBar ? lastBar.close : 1 / bar.open,
+          close: 1 / bar.close,
+          volume: bar.volume
+        }
+        bars = [...bars, bar];
+        lastBar = bar
 
         // } else { console.log('WHAT?', humanDate(bar.time), '>=', humanDate(from), ' ; ',  humanDate(bar.time), '<', humanDate(to)) }
       });

@@ -1,27 +1,29 @@
 <template>
-  <v-simple-table v-if="activeSymbol" fixed-header height="500" >
+  <v-simple-table v-if="activeSymbol" fixed-header height="500" class="text-center">
     <thead>
     <tr>
-      <th class="text-left">Date</th>
-      <th class="text-left">Type</th>
-      <th class="text-left">Price</th>
-      <th class="text-left">Amount, {{ leftToken }}</th>
-      <th class="text-left">Total, {{ rightToken }}</th>
-      <th class="text-left">Maker</th>
-      <th class="text-left">Others</th>
+      <th class="text-center">Date</th>
+      <th class="text-center">Type</th>
+      <th class="text-center">Price</th>
+      <th class="text-center">Amount, {{ leftToken }}</th>
+      <th class="text-center">Total, {{ rightToken }}</th>
+      <th class="text-center">Maker</th>
+      <th class="text-center">Others</th>
     </tr>
     </thead>
     <tbody>
-    <tr v-if="loading"><td colspan="9" class="text-center"><v-skeleton-loader type="table-tbody" /></td></tr>
-    <tr v-else-if="!loading && !rows.length"><td colspan="9" class="text-center">No activity</td></tr>
-    <tr v-for="(item, idx) in rows" :key="idx" >
+    <tr v-if="loading"><td colspan="9"><v-skeleton-loader type="table-tbody" /></td></tr>
+    <tr v-else-if="!loading && !rows.length"><td colspan="9">No activity</td></tr>
+    <tr v-for="(item, idx) in rows" :key="idx"
+        :class="item.type === 'buy' ? 'green--text' : 'red--text'" >
+        <!-- :style="{backgroundColor: item.type === 'buy' ? '#192a19' : '#2a1919'}" -->
       <td>{{ tsToDate(item.date) }}</td>
       <td>{{ item.type }}</td>
-      <td>{{ item.price_usd }}</td>
+      <td>{{ item.price }}</td>
       <td>{{ item.amount_token0 }}</td>
       <td>{{ item.amount_token1 }}</td>
-      <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank">{{ shortAddress(item.maker) }}</a></td>
-      <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank">Show Tx</a></td>
+      <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank" class="text-decoration-none">{{ shortAddress(item.maker) }}</a></td>
+      <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank" class="text-decoration-none">Show Tx</a></td>
     </tr>
     </tbody>
   </v-simple-table>
@@ -51,7 +53,7 @@ export default {
       this.loading = false
       if(success && result?.length) {
         result.forEach(item => {
-          item.price_usd = priceFormatter(+item.amount_token1/+item.amount_token0)
+          item.price = priceFormatter(+item.amount_token1/+item.amount_token0)
         })
         await this.$store.dispatch('chart/setLastTXs', result)
       }

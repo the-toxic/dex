@@ -3,7 +3,7 @@ import Datafeed from "./datafeed";
 export const initChart = () => {
   window.tvWidget = new TradingView.widget({
     // debug: true,
-    symbol: 'PanCake v2:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // default symbol
+    symbol: 'UNKNOWN ROUTER:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // default symbol
     symbol_search_request_delay: 1000, // delay before request in search field
     interval: '15', // default interval
     container: 'tv_chart_container',

@@ -42,27 +42,28 @@ socket.on('m', data => {
   }
 })
 
-const humanDate = (date) => new Date(date).toISOString().slice(0, 16).split('T').join(' ')
+const humanDate = (date, length = 16) => new Date(date).toISOString().slice(0, length).split('T').join(' ')
 
 function candleMessageHandler(data) {
+  // 0~14~15~1651066924.0~19.643600704488794~0.05
+  // свечи 0~{pair_id}~{span}~{ts}~{amount0}~{amount1}
+  // цена = правое делить на левое
+  // объём = цена * на левое
   const [
-    // 0~4321~1D~ts~price~volume"
-    eventTypeStr, // 0
+    , // 0
     pair_id, // 1234
     resolution, // 1D
     tradeTimeStr, // 1649773293
-    tradePriceStr, // 40143
-    tradeVolumeStr, // 100
+    amount0, // 20
+    amount1, // 0.05
   ] = data.split('~');
 
-  const tradePrice = parseFloat(tradePriceStr);
   const tradeTime = parseInt(tradeTimeStr) * 1000;
-  const tradeVolume = parseInt(tradeVolumeStr);
-  // const channelString = `0~${pair_id}~${fromSymbol}~${toSymbol}`;
+  const tradePrice = parseFloat(amount1 / amount0);
+  const tradeVolume = parseInt(tradePrice * amount0);
+
   const channelString = `0~${pair_id}~${resolution}`;
   const subscriptionItem = channelToSubscription.get(channelString);
-  // console.log('channelToSubscription', channelString, channelToSubscription)
-
   if (subscriptionItem === undefined) { return }
   const lastBar = subscriptionItem.lastBar;
   // const resolution = subscriptionItem.resolution; // 1D, 60 & e.g.
@@ -70,7 +71,7 @@ function candleMessageHandler(data) {
 
   const nextBarTime = getNextBarTime(lastBar.time, resolution);
 
-  console.log(resolution, humanDate(lastBar.time), '<', humanDate(tradeTime), '<', humanDate(nextBarTime), tradePrice)
+  console.log(resolution, humanDate(lastBar.time), '<', humanDate(tradeTime, 19), '<', humanDate(nextBarTime), tradePrice)
 
   let bar;
   if (tradeTime >= nextBarTime) { // если пора рисовать новый бар
@@ -85,7 +86,8 @@ function candleMessageHandler(data) {
     console.log('[socket] Generate new bar', bar);
   } else {
     bar = {
-      ...lastBar, // TODO проверить, может лучше open: lastBar.close & time: lastBar.time
+      ...lastBar,
+      // time: lastBar.time, open: lastBar.close, // TODO проверить, может вместо ...lastBar лучше open: lastBar.close & time: lastBar.time
       high: Math.max(lastBar.high, tradePrice),
       low: Math.min(lastBar.low, tradePrice),
       close: tradePrice,
@@ -102,27 +104,31 @@ function candleMessageHandler(data) {
 }
 
 function tableMessageHandler(data) {
-  // 1~38~15~1650986416.0~0.0025588011976477886~0.13466513247830642~0xac6d563ea3ead92bba2af54d2cef0b41e365ac0c~0x23421b55d2d9df329bb4e5447532aa5ce16710bfef7d71f77716b690e68d357c~sell
+  // 1~14~15~1651070483.0~89.10302463339211~0.22990089406023437~0xf7702834e5d3156e1857a3b958807e248a2f48c9~0x7a9d3e7fa21a3dd711434815602a767a6ffa6221292a80f80ad3a9042021d48a~sell
+  // таблица 1~{pair_id}~{span}~{ts}~{amount0}~{amount1}~{maker}~{tx}~{direction}
+  // цена = правое делить на левое
+  // объём = цена * на левое
   const [
-    eventTypeStr, // 1
-    pair_id, // 1234
-    resolution, // 1D
+    , // 1 | 0
+    , // pair_id
+    , // resolution (1D)
     tradeTimeStr, // 1649773293
-    tradePriceStr, // 40143
-    tradeVolumeStr, // 100
-    amount_token0,
-    amount_token1,
+    amount0,
+    amount1,
     maker, // 0x...
     tx, // 0x...
     type // buy | sell
   ] = data.split('~');
 
+  const tradePrice = parseFloat(amount1 / amount0);
+  // const tradeVolume = parseInt(tradePrice * amount0);
+
   const item = {
     date: parseInt(tradeTimeStr),
     type: type,
-    price_usd: priceFormatter(tradePriceStr),
-    amount_token0: priceFormatter(amount_token0),
-    amount_token1: priceFormatter(amount_token1),
+    price: priceFormatter(tradePrice),
+    amount_token0: priceFormatter(amount0),
+    amount_token1: priceFormatter(amount1),
     maker: maker,
     tx: tx,
   }
