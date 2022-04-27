@@ -67,7 +67,8 @@ function candleMessageHandler(data) {
 
   const tradeTime = parseInt(tradeTimeStr) * 1000;
   const tradePrice = parseFloat(amount1 / amount0);
-  const tradeVolume = parseFloat(tradePrice * amount0);
+  // const tradeVolume = parseFloat(tradePrice * amount0);
+  const tradeVolume = parseFloat(amount1);
 
   const channelString = `0~${pair_id}~${resolution}`;
   const subscriptionItem = channelToSubscription.get(channelString);
