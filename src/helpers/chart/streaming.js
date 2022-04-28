@@ -17,10 +17,12 @@ const socket = io('https://api.hazb.com', {
 
 socket.on('connect', () => {
   console.log('[socket] Connected');
+  store.commit('setConnected', true)
 });
 
 socket.on('disconnect', (reason) => {
   console.log('[socket] Disconnected:', reason);
+  store.commit('setConnected', false)
 });
 
 socket.on("connect_error", (error) => {

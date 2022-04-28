@@ -50,19 +50,27 @@ import store from "@/store";
 //   return data
 // }
 
+export const searchPair = async (payload) => {
+  const {data} = await axios.post(`xhr/search_pair`, payload);
+  return data
+}
 export const fetchHistoryTable = async (pairId) => {
   const {data} = await axios.get(`xhr/txs?pair_id=${pairId}`);
   return data
 }
-
-export async function makeApiRequest(path, body) {
-  try {
-    const { data } = await axios.post(`xhr/${path}`,
-      {...body},
-      { headers: { Authorization: 'Basic ZGV2OmRldiFAIzE=' }}
-    );
-    return data
-  } catch (error) {
-    throw new Error(`API request error: ${error.status}`);
-  }
+export const fetchHistoryCandles = async (payload) => {
+  const {data} = await axios.post(`xhr/limit_candles_history`, payload);
+  return data
 }
+
+// export async function makeApiRequest(path, body) {
+//   try {
+//     const { data } = await axios.post(`xhr/${path}`,
+//       {...body},
+//       { headers: { Authorization: 'Basic ZGV2OmRldiFAIzE=' }}
+//     );
+//     return data
+//   } catch (error) {
+//     throw new Error(`API request error: ${error.status}`);
+//   }
+// }

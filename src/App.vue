@@ -38,6 +38,8 @@
           <v-icon v-if="!!wallet" color="green" alt="Wallet connected">mdi-wallet</v-icon>
           <v-icon v-else alt="Wallet disconnected">mdi-wallet</v-icon>
         </v-btn>
+        <v-icon right v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">{{ wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>
+
 
         <!-- Menu open icon for mobile -->
         <v-app-bar-nav-icon v-if="$vuetify.breakpoint.smAndDown" @click.stop="drawer = !drawer" class="ml-3"></v-app-bar-nav-icon>
@@ -60,7 +62,7 @@
         <div class="footerCopy text-center grey--text order-1 order-md-0 pl-5">&copy; {{ new Date().getFullYear() }}
           <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>HAZB</router-link>. All rights reserved.
         </div>
-        <v-icon v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">{{ wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>
+<!--        <v-icon v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">{{ wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>-->
         <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-4 pt-md-0">
           <v-btn tile :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" elevation="0" class="transparent" style="text-transform: none !important;">Terms of Use</v-btn>
           <v-btn tile :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" elevation="0" class="text-capitalize transparent">Privacy Policy</v-btn>

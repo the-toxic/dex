@@ -1,9 +1,13 @@
-export default {
-  namespaced: true,
-  state: {
+const getDefaultState = () => {
+  return {
     activeSymbol: null,
     lastTXs: []
-  },
+  }
+}
+
+export default {
+  namespaced: true,
+  state: getDefaultState(),
   getters: {
     activeSymbol: state => state.activeSymbol,
     // needInvert: state => state.activeSymbol.needInvert,
@@ -24,6 +28,9 @@ export default {
         state.lastTXs = state.lastTXs.slice(0, 50)
       }
     },
+    resetState (state) {
+      Object.assign(state, getDefaultState())
+    }
   },
   actions: {
     async setSymbol({commit}, payload) {

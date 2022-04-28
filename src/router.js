@@ -16,8 +16,8 @@ const router = new VueRouter({
   routes: [
     { path: '/', name: 'Home', component: Home },
     { path: '/newChart', name: 'NewChart', component: NewChart },
-    { path: '/pairs', name: 'Pairs', redirect: { name: 'Pair', params: {network: 'bsc', pair: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'} } },
-    { path: '/:network([a-zA-Z0-9]{2,10})/pair/:pair([a-zA-Z0-9]{42})', name: 'Pair', component: Pair },
+    { path: '/pairs', name: 'Pairs', redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae'} } },
+    { path: '/:network([a-zA-Z0-9]{2,10})/pe/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', component: NewChart },
     { path: '/:pathMatch(.*)*', name: 'E404', component: E404 }
   ],
   scrollBehavior: (to, from, savedPosition) => {

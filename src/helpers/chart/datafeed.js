@@ -1,4 +1,4 @@
-import { makeApiRequest } from '@/api.js'
+import { fetchHistoryCandles, searchPair } from '@/api.js'
 import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
 import store from "@/store";
 
@@ -24,12 +24,16 @@ let findedSymbols = [
 ]
 
 async function loadDefaultPair(symbolFullName) {
-  const pairAddress = symbolFullName.split(':')[2]
-  const {success, result} = await makeApiRequest(`search_pair`, { search: pairAddress, exchange: '', network: '' })
+  // const pairAddress = symbolFullName.split(':')[2]
+  const {success, result} = await searchPair( { search: symbolFullName, exchange: '', network: '' })
   if(success && result?.content && result.content.length) {
     const pair = result.content[0]
-    pair.description = `Pair: ${pair.pair_addr}`
+    pair.description = `Pair: ${shortAddress(pair.pair_addr)} | TX: ${toNumber(pair.tx_count)} | ID: ${pair.pair_id}`
     findedSymbols = [pair]
+    window.tvWidget.activeChart().setSymbol(pair.full_name)
+  } else {
+    // await store.dispatch('showAlert', ({msg: 'Error. Pair not found', color: 'error'}))
+    location.href = '/'
   }
 }
 
@@ -78,7 +82,7 @@ export default {
     onResultReadyCallback,
   ) => {
     console.log('[searchSymbols]: Method call', userInput, exchange, symbolType);
-    const {success, result} = await makeApiRequest(`search_pair`, {
+    const {success, result} = await searchPair({
       search: userInput,
       exchange: exchange,
       network: symbolType
@@ -107,7 +111,10 @@ export default {
     onResolveErrorCallback,
   ) => {
     console.log('[resolveSymbol]: Method call', symbolFullName);
-    if(!findedSymbols.length) await loadDefaultPair(symbolFullName) // on load page get default pair
+    if(!findedSymbols.length) {
+      await loadDefaultPair(symbolFullName)
+      return;
+    } // on load page get default pair
 
     const symbolItem = findedSymbols.find(({full_name}) => full_name === symbolFullName);
 
@@ -171,7 +178,7 @@ export default {
       span: resolution,
     };
     try {
-      const { success, result } = await makeApiRequest(`limit_candles_history`, body);
+      const { success, result } = await fetchHistoryCandles(body);
 
       if (!success || !'candles' in result || !result.candles.length) {
         onHistoryCallback([], { noData: true }); // "noData" should be set if there is no data in the requested period.
@@ -233,6 +240,7 @@ export default {
 
   unsubscribeBars: (subscriberUID) => {
     console.log('[unsubscribeBars]: Method call with subscriberUID:', subscriberUID);
+    findedSymbols = []
     unsubscribeFromStream(subscriberUID);
   },
 
