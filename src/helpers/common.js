@@ -9,7 +9,7 @@ export function priceFormatter(price) {
   if (price < 0.00001) {
     return parseFloat(price).toFixed(8)
   } else if (price >= 0.00001 && price < 1)
-    return parseFloat(price).toFixed(5)
+    return parseFloat(price).toFixed(6)
   else
     return parseFloat(price).toFixed(3)
 }

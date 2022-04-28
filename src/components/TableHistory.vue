@@ -19,9 +19,9 @@
         <!-- :style="{backgroundColor: item.type === 'buy' ? '#192a19' : '#2a1919'}" -->
       <td>{{ tsToDate(item.date) }}</td>
       <td>{{ item.type }}</td>
-      <td>{{ item.price }}</td>
-      <td>{{ item.amount_token0 }}</td>
-      <td>{{ item.amount_token1 }}</td>
+      <td>{{ toNumber(item.price) }}</td>
+      <td>{{ toNumber(item.amount_token0) }}</td>
+      <td>{{ toNumber(item.amount_token1) }}</td>
       <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank" class="text-decoration-none">{{ shortAddress(item.maker) }}</a></td>
       <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank" class="text-decoration-none">Show Tx</a></td>
     </tr>
