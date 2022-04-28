@@ -14,19 +14,19 @@ export function priceFormatter(price) {
     return parseFloat(price).toFixed(3)
 }
 
-export function symbolItemByInfo(symbolInfo) {
-  return {
-    symbol: symbolInfo.name,
-    full_name: symbolInfo.full_name,
-    exchange: symbolInfo.exchange,
-    exchange_id: symbolInfo.exchange_id,
-    pair_addr: symbolInfo.full_name.split(':')[2],
-    pair_id: symbolInfo.pair_id,
-    type: symbolInfo.type,
-    description: symbolInfo.description,
-    needInvert: symbolInfo.needInvert
-  }
-}
+// export function symbolItemByInfo(symbolInfo) {
+//   return {
+//     symbol: symbolInfo.name,
+//     full_name: symbolInfo.full_name,
+//     exchange: symbolInfo.exchange,
+//     exchange_id: symbolInfo.exchange_id,
+//     pair_addr: symbolInfo.full_name.split(':')[2],
+//     pair_id: symbolInfo.pair_id,
+//     type: symbolInfo.type,
+//     description: symbolInfo.description,
+//     needInvert: symbolInfo.needInvert
+//   }
+// }
 
 const exponentToNumber = function(exp) {
   const data = String(exp).split(/[eE]/);

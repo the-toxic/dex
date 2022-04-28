@@ -4,12 +4,12 @@
       <v-card class="mb-4">
         <v-card-title class="d-flex justify-space-between align-center">
           <span>Network: {{ network }}</span>
-          <span>Pair: {{ pairName }}</span>
           <span>Price: {{ lastPrice }}</span>
+          <span>Pair: {{ pairName }}</span>
         </v-card-title>
         <v-card-text class="fs20 d-flex justify-space-between align-center">
           <span>Exchange: {{ exchange }}</span>
-          <span>{{ pairAddr }}</span>
+          <span>Pair address: {{ pairAddr }}</span>
         </v-card-text>
       </v-card>
 

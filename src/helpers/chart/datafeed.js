@@ -26,7 +26,7 @@ let findedSymbols = [
 async function loadDefaultPair(symbolFullName) {
   const pairAddress = symbolFullName.split(':')[2]
   const {success, result} = await makeApiRequest(`search_pair`, { search: pairAddress, exchange: '', network: '' })
-  if(success && result?.content) {
+  if(success && result?.content && result.content.length) {
     const pair = result.content[0]
     pair.description = `Pair: ${pair.pair_addr}`
     findedSymbols = [pair]
@@ -140,13 +140,13 @@ export default {
       visible_plots_set: 'ohlcv', // Support: open, high, low, close. With 'value': "ohlcv"
       // volume_precision: 2, // кол-во десятичных символов в объеме
       data_status: 'streaming', // streaming | endofday | pulsed | delayed_streaming
-      needInvert: false
+      // needInvert: false
     };
-    symbolInfo.checkInvert = function () {
-      const detectStablecoin = this.name.match(/BUSD|TUSD|USDT|USDC|DAI|USD|UST/)
-      return detectStablecoin && detectStablecoin.index === 0
-    }
-    symbolInfo.needInvert = symbolItem.needInvert = symbolInfo.checkInvert() // on first load symbol
+    // symbolInfo.checkInvert = function () {
+    //   const detectStablecoin = this.name.match(/BUSD|TUSD|USDT|USDC|DAI|USD|UST/)
+    //   return detectStablecoin && detectStablecoin.index === 0
+    // }
+    // symbolInfo.needInvert = symbolItem.needInvert = symbolInfo.checkInvert() // on first load symbol
 
     console.log('[resolveSymbol]: Symbol resolved', symbolFullName);
 
@@ -182,18 +182,18 @@ export default {
         if(a.time < b.time) return -1
         return 0
       })
-      const checkInvert = (number) => (symbolInfo.needInvert ? number : 1 / number)
+      // const checkInvert = (number) => (symbolInfo.needInvert ? number : 1 / number)
       let bars = [], lastBar = null;
       result.candles.forEach(bar => {
         // if (bar.time >= from && bar.time < to) {
         // console.log('needInvert', symbolInfo.needInvert)
         bar = {
           time: bar.time * 1000,
-          low: checkInvert(bar.low),
-          high: checkInvert(bar.high),
-          open: lastBar ? lastBar.close : checkInvert(bar.open),
-          close: checkInvert(bar.close),
-          volume: bar.volume // TODO может тут всеже нужно 1/volume. хз
+          low: bar.low,
+          high: bar.high,
+          open: lastBar ? lastBar.close : bar.open,
+          close: bar.close,
+          volume: bar.volume
         }
         bars = [...bars, bar];
         lastBar = bar

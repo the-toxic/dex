@@ -6,7 +6,7 @@ export default {
   },
   getters: {
     activeSymbol: state => state.activeSymbol,
-    needInvert: state => state.activeSymbol.needInvert,
+    // needInvert: state => state.activeSymbol.needInvert,
     leftToken: state => state.activeSymbol.symbol.split('/')[0],
     rightToken: state => state.activeSymbol.symbol.split('/')[1],
     lastTXs: state => state.lastTXs,

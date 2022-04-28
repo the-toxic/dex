@@ -43,7 +43,7 @@ socket.on('m', data => {
 })
 
 const humanDate = (date, length = 16) => new Date(date).toISOString().slice(0, length).split('T').join(' ')
-const checkInvert = (number, needInvert) => (needInvert ? 1 / number : number)
+// const checkInvert = (number, needInvert) => (needInvert ? 1 / number : number)
 
 function candleMessageHandler(data) {
   // 0~14~15~1651066924.0~19.643600704488794~0.05
@@ -59,16 +59,15 @@ function candleMessageHandler(data) {
     amount1, // 0.05
   ] = data.split('~');
 
-  if(store.getters['chart/needInvert']) {
-    const oldAmount0 = amount0
-    amount0 = amount1
-    amount1 = oldAmount0
-  }
+  // if(store.getters['chart/needInvert']) {
+  //   const oldAmount0 = amount0
+  //   amount0 = amount1
+  //   amount1 = oldAmount0
+  // }
 
   const tradeTime = parseInt(tradeTimeStr) * 1000;
   const tradePrice = parseFloat(amount1 / amount0);
-  // const tradeVolume = parseFloat(tradePrice * amount0);
-  const tradeVolume = parseFloat(amount1);
+  const tradeVolume = parseFloat(amount0);
 
   const channelString = `0~${pair_id}~${resolution}`;
   const subscriptionItem = channelToSubscription.get(channelString);
@@ -79,7 +78,7 @@ function candleMessageHandler(data) {
 
   const nextBarTime = getNextBarTime(lastBar.time, resolution);
 
-  console.log(resolution, humanDate(lastBar.time), '<', humanDate(tradeTime, 19), '<', humanDate(nextBarTime), tradePrice)
+  // console.log(resolution, humanDate(lastBar.time), '<', humanDate(tradeTime, 19), '<', humanDate(nextBarTime), tradePrice)
 
   let bar;
   if (tradeTime >= nextBarTime) { // если пора рисовать новый бар
@@ -128,11 +127,11 @@ function tableMessageHandler(data) {
     type // buy | sell
   ] = data.split('~');
 
-  if(store.getters['chart/needInvert']) {
-    const oldAmount0 = amount0
-    amount0 = amount1
-    amount1 = oldAmount0
-  }
+  // if(store.getters['chart/needInvert']) {
+  //   const oldAmount0 = amount0
+  //   amount0 = amount1
+  //   amount1 = oldAmount0
+  // }
 
   const tradePrice = parseFloat(amount1 / amount0);
   // const tradeVolume = parseInt(tradePrice * amount0);
@@ -171,8 +170,6 @@ export function subscribeOnStream(
   onResetCacheNeededCallback,
   lastBar,
 ) {
-  // const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
-  // const channelString = `0~${symbolInfo.pair_id}~${parsedSymbol.fromSymbol}~${parsedSymbol.toSymbol}`; // ~${parsedSymbol.pairAddr}
   const channelString = `0~${symbolInfo.pair_id}~${resolution}`; // ~${parsedSymbol.pairAddr}
   const handler = {
     id: subscribeUID,
