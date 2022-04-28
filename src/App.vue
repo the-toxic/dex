@@ -55,7 +55,7 @@
     </v-main>
 
     <!--  Футер, прибит вниз через атрибут absolute, inset сдвигает его от фильтра в шопе  -->
-    <v-footer id="mainFooter" absolute bottom padless color="#1E1E1E" class="justify-center fill-width pa-0">
+    <v-footer id="mainFooter" absolute bottom padless class="justify-center fill-width pa-0">
       <div class="smallFooter d-flex justify-space-between align-center flex-wrap fill-width">
         <div class="footerCopy text-center grey--text order-1 order-md-0 pl-5">&copy; {{ new Date().getFullYear() }}
           <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>HAZB</router-link>. All rights reserved.
