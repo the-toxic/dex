@@ -17,9 +17,9 @@
     <tr v-for="(item, idx) in rows" :key="idx"
         :class="item.type === 'buy' ? 'green--text' : 'red--text'" >
         <!-- :style="{backgroundColor: item.type === 'buy' ? '#192a19' : '#2a1919'}" -->
-      <td>{{ tsToDate(item.date) }}</td>
+      <td>{{ item.parsedDate }}</td>
       <td>{{ item.type }}</td>
-      <td>{{ toNumber(item.price) }}</td>
+      <td>{{ toNumber(item.parsedPrice) }}</td>
       <td>{{ toNumber(item.amount_token0) }}</td>
       <td>{{ toNumber(item.amount_token1) }}</td>
       <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank" class="text-decoration-none">{{ shortAddress(item.maker) }}</a></td>
@@ -43,8 +43,17 @@ export default {
   computed: {
     ...mapGetters('chart', ['activeSymbol', 'leftToken', 'rightToken', 'lastTXs']),
     rows() {
-      return this.lastTXs
-    }
+      console.warn('1')
+      // const items = Object.assign([], this.lastTXs)
+      // const items = [...this.lastTXs]
+      return this.lastTXs.map(item => {
+        item.parsedPrice = priceFormatter(+item.amount_token1/+item.amount_token0)
+        item.parsedDate = new Date((item.date + this.tzOffset) * 1000).toISOString().slice(0, 19).split('T').join(' ')
+        return item
+      })
+      // return this.lastTXs
+    },
+    tzOffset: () => -(new Date().getTimezoneOffset()) * 60
   },
   watch: {
     async activeSymbol(newVal, oldVal) {
@@ -58,14 +67,10 @@ export default {
           //   item.amount_token0 = item.amount_token1
           //   item.amount_token1 = oldAmount0
           // }
-          item.price = priceFormatter(+item.amount_token1/+item.amount_token0)
         })
         await this.$store.dispatch('chart/setLastTXs', result)
       }
     }
-  },
-  methods: {
-    tsToDate: (date) => new Date(date * 1000).toISOString().slice(0, 19).split('T').join(' ')
   }
 }
 </script>

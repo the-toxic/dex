@@ -33,7 +33,7 @@
         <v-spacer />
 
         <v-btn plain :to="{name: 'Home'}" exact :ripple="false" class="d-none d-md-inline-flex" active-class="activeMenu">Main</v-btn>
-        <v-btn plain :to="{name: 'NewChart'}" :ripple="false" class="d-none d-md-inline-flex" active-class="activeMenu">Pairs</v-btn>
+        <v-btn plain :to="{name: 'Pairs'}" :ripple="false" class="d-none d-md-inline-flex" active-class="activeMenu">Pairs</v-btn>
         <v-btn icon :ripple="false" @click="showWalletDialog(true)" class="d-none d-md-inline-flex">
           <v-icon v-if="!!wallet" color="green" alt="Wallet connected">mdi-wallet</v-icon>
           <v-icon v-else alt="Wallet disconnected">mdi-wallet</v-icon>

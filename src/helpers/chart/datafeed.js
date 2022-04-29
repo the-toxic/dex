@@ -31,6 +31,8 @@ async function loadDefaultPair(symbolFullName) {
     pair.description = `Pair: ${shortAddress(pair.pair_addr)} | TX: ${toNumber(pair.tx_count)} | ID: ${pair.pair_id}`
     findedSymbols = [pair]
     window.tvWidget.activeChart().setSymbol(pair.full_name)
+    store.dispatch('chart/setSymbol', pair).then()
+
   } else {
     // await store.dispatch('showAlert', ({msg: 'Error. Pair not found', color: 'error'}))
     location.href = '/'
@@ -156,8 +158,6 @@ export default {
     // symbolInfo.needInvert = symbolItem.needInvert = symbolInfo.checkInvert() // on first load symbol
 
     console.log('[resolveSymbol]: Symbol resolved', symbolFullName);
-
-    store.dispatch('chart/setSymbol', symbolItem).then()
 
     setTimeout(() => onSymbolResolvedCallback(symbolInfo))
   },

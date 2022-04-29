@@ -1,6 +1,6 @@
 import Datafeed from "./datafeed";
 import store from "@/store";
-// import { symbolItemByInfo } from "@/helpers/common";
+import { symbolItemByInfo } from "@/helpers/common";
 import { priceFormatter } from "@/helpers/common";
 
 export const initChart = (pairAddr) => {
@@ -63,8 +63,8 @@ export const initChart = (pairAddr) => {
 
     tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
       // symbolInfo.needInvert = symbolInfo.checkInvert()
-      // const symbolItem = symbolItemByInfo(symbolInfo)
-      // store.dispatch('chart/setSymbol', symbolItem).then()
+      const symbolItem = symbolItemByInfo(symbolInfo)
+      store.dispatch('chart/setSymbol', symbolItem).then()
     });
   })
   // tvWidget.subscribe('onTick', (candle) => {
