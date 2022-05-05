@@ -7,6 +7,7 @@
       'successShadow': color === 'success',
       'errorShadow': color === 'error',
     }"
+    color="#1D2231"
   >
     <v-icon left color="#A8A8A8" v-if="color === 'success'">mdi-check-bold</v-icon>
     <v-icon left color="#A8A8A8" v-else-if="color === 'error'">mdi-alert-remove</v-icon>

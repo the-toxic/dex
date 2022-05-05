@@ -67,6 +67,11 @@ export const initChart = (pairAddr) => {
       const symbolItem = symbolItemByInfo(symbolInfo)
       store.dispatch('chart/setSymbol', symbolItem).then()
     });
+
+    // let f = () => { console.log('bars loaded'); };
+    // let subsr = tvWidget.activeChart().onDataLoaded();
+    // subsr.subscribe(null, f, false)
+    // subsr.unsubscribe(null, f)
   })
   // tvWidget.subscribe('onTick', (candle) => {
   //   console.log('onTick', candle) // time, open, close...

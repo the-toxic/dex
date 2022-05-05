@@ -32,7 +32,7 @@
 
         <v-spacer />
 
-        <div class="showSearchBox d-flex justify-space-between align-center" @click="showSearch">
+        <div v-if="$route.name === 'Pair'" class="showSearchBox d-flex justify-space-between align-center" @click="showSearch">
           <span>Token SC / Name / Pair SC / Symbol</span>
           <v-icon small color="#B3B5BD" class="px-2">mdi-magnify</v-icon>
         </div>
