@@ -178,3 +178,14 @@ $primaryFont: sans-serif;
   color: #2D2C2C;
   font-size: 12px;
 }
+
+.myTable {
+  tr.buy { color: #51a49a; }
+  tr.sell { color: #de5f57; }
+  tr:hover {
+    background: #161925 !important;
+  }
+  tr > td {
+    height: 40px !important;
+  }
+}

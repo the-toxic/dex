@@ -1,6 +1,9 @@
+import { fetchHistoryTable, fetchPairInfo } from "@/api";
+
 const getDefaultState = () => {
   return {
     activeSymbol: null,
+    pairInfo: null,
     lastTXs: []
   }
 }
@@ -20,6 +23,9 @@ export default {
     setSymbol(state, payload) {
       state.activeSymbol = payload
     },
+    setPairInfo(state, payload) {
+      state.pairInfo = {...state.pairInfo, ...payload}
+    },
     updateLastTxs(state, {type, data}) {
       if(type === 'set') {
         state.lastTXs = data
@@ -36,8 +42,18 @@ export default {
     async setSymbol({commit}, payload) {
       commit('setSymbol', payload)
     },
-    async setLastTXs({commit}, payload) {
-      commit('updateLastTxs', {type: 'set', data: payload})
+    async getPairInfo({commit}, pairId) {
+      const {success, result} = await fetchPairInfo(pairId)
+      if(!success || !result) return
+      commit('setPairInfo', result)
+      console.log('fetchPairInfo', result)
+      return result
+    },
+    async getHistoryTable({commit}, payload) {
+      const {success, result} = await fetchHistoryTable(payload)
+      if(success && result?.length) {
+        commit('updateLastTxs', {type: 'set', data: result})
+      }
     },
     async pushLastTXs({commit}, payload) {
       commit('updateLastTxs', {type: 'push', data: payload})

@@ -54,7 +54,12 @@ export const searchPair = async (payload) => {
   const {data} = await axios.post(`xhr/search_pair`, payload);
   return data
 }
-export const fetchHistoryTable = async (pairId) => {
+export const fetchPairInfo = async (pairId) => {
+  const {data} = await axios.get(`xhr/pair_info?pair_id=${pairId}`);
+  return data
+}
+export const fetchHistoryTable = async (payload) => {
+  const pairId = payload.pair_id
   const {data} = await axios.get(`xhr/txs?pair_id=${pairId}`);
   return data
 }

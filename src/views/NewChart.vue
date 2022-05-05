@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
-      <v-card class="mb-0" elevation="0" tile>
+      <v-card class="mb-0" elevation="0" tile :loading="pairInfoLoading">
 <!--        <v-card-title class="d-flex justify-space-between align-center">-->
 <!--          <span>Network: {{ network }}</span>-->
 <!--          <span>Price: {{ lastPrice }}</span>-->
@@ -20,26 +20,26 @@
               </div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">Holders</div><div class="lh-1_2 fs12" style="color: #fff">18,652</div>
+              <div class="fs12 lh-1_2">Holders</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(18652) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">Cyrc. Supply</div><div class="lh-1_2 fs12" style="color: #fff">2M</div>
+              <div class="fs12 lh-1_2">Cyrc. Supply</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(2100000) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">24hr Volume</div><div class="lh-1_2 fs12" style="color: #fff">104k</div>
+              <div class="fs12 lh-1_2">24hr Volume</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(104100) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
               <div class="fs12 lh-1_2">Liquidity</div><div class="lh-1_2 fs12" style="color: #fff">60k {{ rightToken }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">Market Cap</div><div class="lh-1_2 fs12" style="color: #fff">$8.5M</div>
+              <div class="fs12 lh-1_2">Market Cap</div><div class="lh-1_2 fs12" style="color: #fff">${{ shortNumber(8500000) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">24hr Swaps</div><div class="lh-1_2 fs12" style="color: #fff">41,650</div>
+              <div class="fs12 lh-1_2">24hr Swaps</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(41650) }}</div>
             </div>
           </div>
           <div>
-            <div class="green--text">{{ lastPrice }}</div>
+            <div class="green--text">{{ priceFormatter(lastPrice) }}</div>
             <div>24hr <span class="red--text">4.41%</span></div>
           </div>
         </v-card-text>
@@ -59,15 +59,15 @@
         <div style="color:#C1C4D6;">Trade History</div>
         <div style="color:#72747F;">
           <span class="mr-3">TXs count</span>
-          <span class="" style="color:#305D5E;">Buy: 8,000</span> |
-          <span class="" style="color:#77393B;">Sell: 2,000</span> |
-          <span class="" style="color:#9EA0AF;">Total: 10,000</span>
+          <span class="" style="color:#305D5E;">Buy: {{ toNumber(8000) }}</span> |
+          <span class="" style="color:#77393B;">Sell: {{ toNumber(2000) }}</span> |
+          <span class="" style="color:#9EA0AF;">Total: {{ toNumber(10000) }}</span>
         </div>
         <div style="color:#72747F;">
           <span class="mr-3">Volume</span>
-          <span class="" style="color:#305D5E;">Buy: 50,000 {{ rightToken }}</span> |
-          <span class="" style="color:#77393B;">Sell: 20,000 {{ rightToken }}</span> |
-          <span class="" style="color:#9EA0AF;">Total: 70,000 {{ rightToken }}</span>
+          <span class="" style="color:#305D5E;">Buy: {{ toNumber(50000) }} {{ rightToken }}</span> |
+          <span class="" style="color:#77393B;">Sell: {{ toNumber(20000) }} {{ rightToken }}</span> |
+          <span class="" style="color:#9EA0AF;">Total: {{ toNumber(70000) }} {{ rightToken }}</span>
         </div>
       </div>
       <v-card class="mt-2 mb-8">
@@ -81,7 +81,7 @@
 import { mapGetters } from "vuex";
 import { initChart } from "@/helpers/chart/chart";
 import TableHistory from "@/components/TableHistory";
-import { priceFormatter } from "@/helpers/common";
+import { priceFormatter, shortNumber } from "@/helpers/common";
 
 export default {
   name: "NewChart",
@@ -92,6 +92,7 @@ export default {
   },
   components: {TableHistory},
   data() { return {
+    pairInfoLoading: false,
     title: 'Loading Pair...',
     pairName: '...',
     network: '...',
@@ -142,7 +143,7 @@ export default {
     //   this.title = `${this.pairName} - ${this.lastPrice}`
     //   this.$emit('updateHead') // update title
     // },
-    activeSymbol(newVal, oldVal) {
+    async activeSymbol(newVal, oldVal) {
       if(!newVal) return // on resetState
       // console.log('activeSymbol change', newVal, oldVal)
       this.pairName = newVal.symbol
@@ -154,8 +155,11 @@ export default {
         this.$router.push({params: {
           network: this.network.toLowerCase(),
           pairAddr: this.pairAddr
-        }})
+        }}).then()
       }
+      this.pairInfoLoading = true
+      await this.$store.dispatch('chart/getPairInfo', newVal.pair_id)
+      this.pairInfoLoading = false
     },
     lastPrice() {
       this.updateTitle()
@@ -169,7 +173,9 @@ export default {
     updateTitle() {
       this.title = `${this.pairName} - ${priceFormatter(this.lastPrice)}`
       this.$emit('updateHead') // update title
-    }
+    },
+    shortNumber(num) { return shortNumber(num) },
+    priceFormatter(num) { return priceFormatter(num) }
   }
 }
 </script>
