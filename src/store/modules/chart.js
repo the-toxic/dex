@@ -11,8 +11,8 @@ export default {
   getters: {
     activeSymbol: state => state.activeSymbol,
     // needInvert: state => state.activeSymbol.needInvert,
-    leftToken: state => state.activeSymbol.symbol.split('/')[0],
-    rightToken: state => state.activeSymbol.symbol.split('/')[1],
+    leftToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[0] : '',
+    rightToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[1]: '',
     lastTXs: state => state.lastTXs,
     lastPrice: state => state.lastTXs.length ? (state.lastTXs[0].amount_token1 / state.lastTXs[0].amount_token0) : 0
   },

@@ -21,24 +21,33 @@
     </v-navigation-drawer>
 
 
-    <v-app-bar app clipped-left :hide-on-scroll="false && $vuetify.breakpoint.mdAndUp" class="mx-auto mb-8">
+    <v-app-bar app clipped-left height="39" :hide-on-scroll="false && $vuetify.breakpoint.mdAndUp" class="mx-auto mb-8">
       <v-container fluid class="pa-0 fill-height">
 
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
           <div class="v-toolbar__title logoBox" @click="navigate">
-            <img src="@/assets/logo.svg" alt="HAZB Logo" />
+            <img src="@/assets/logo.png" alt="HAZB Logo" />
           </div>
         </router-link>
 
         <v-spacer />
 
-        <v-btn plain :to="{name: 'Home'}" exact :ripple="false" class="d-none d-md-inline-flex" active-class="activeMenu">Main</v-btn>
-        <v-btn plain :to="{name: 'Pairs'}" :ripple="false" class="d-none d-md-inline-flex" active-class="activeMenu">Pairs</v-btn>
-        <v-btn icon :ripple="false" @click="showWalletDialog(true)" class="d-none d-md-inline-flex">
-          <v-icon v-if="!!wallet" color="green" alt="Wallet connected">mdi-wallet</v-icon>
-          <v-icon v-else alt="Wallet disconnected">mdi-wallet</v-icon>
-        </v-btn>
-        <v-icon right v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">{{ wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>
+        <div class="showSearchBox d-flex justify-space-between align-center" @click="showSearch">
+          <span>Token SC / Name / Pair SC / Symbol</span>
+          <v-icon small color="#B3B5BD" class="px-2">mdi-magnify</v-icon>
+        </div>
+        <v-btn plain :to="{name: 'Pairs'}" small exact :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14" active-class="activeMenu">Chart</v-btn>
+        <v-btn plain :to="{name: 'Home'}" small exact :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14" active-class="activeMenu">Landing</v-btn>
+        <v-btn plain :to="{name: 'Analyse'}" small :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14" active-class="activeMenu">Analyse</v-btn>
+        <v-btn plain :to="{name: 'Liquidity'}" small :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14" active-class="activeMenu">Liquidity</v-btn>
+
+        <v-spacer />
+
+        <!--<v-btn icon :ripple="false" @click="showWalletDialog(true)" class="d-none d-md-inline-flex">-->
+        <!--  <v-icon v-if="!!wallet" color="green" alt="Wallet connected">mdi-wallet</v-icon>-->
+        <!--  <v-icon v-else alt="Wallet disconnected">mdi-wallet</v-icon>-->
+        <!--</v-btn>-->
+        <v-icon right small v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
 
 
         <!-- Menu open icon for mobile -->
@@ -79,9 +88,9 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-// import Test from "@/components/testStores.vue";
 import WalletDialog from "@/components/WalletDialog.vue";
 import Alert from "@/components/Alert.vue";
+import { showChartSearch } from "@/helpers/chart/chart";
 
 export default {
   name: 'App',
@@ -104,6 +113,9 @@ export default {
   },
   methods: {
     ...mapActions({showWalletDialog: 'showWalletDialog'}),
+    showSearch() {
+      showChartSearch()
+    }
   }
 }
 </script>

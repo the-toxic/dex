@@ -29,9 +29,10 @@ export const initChart = (pairAddr) => {
     // studies_overrides: {
       // "volume.volume.color.0": "#00FFFF",
     // },
-    // time_frames: [
-      // { text: "1w", resolution: "1W", description: "1 Week", title: "1 Week" },
-    // ],
+    time_frames: [
+      { text: "1M", resolution: "1H", description: "1 Month range on 1H candles", title: "1 Month range" },
+      { text: "1Y", resolution: "1D", description: "1 Year range on 1D candles", title: "1 Year range" }
+    ],
     favorites: {
       intervals: ["1", "15", "60", "1D", "1W"],
     },
@@ -71,6 +72,10 @@ export const initChart = (pairAddr) => {
   //   console.log('onTick', candle) // time, open, close...
   // })
   // tvWidget.unsubscribe('onTick', (cb) => {})
+}
+
+export const showChartSearch = () => {
+  window.tvWidget.activeChart().executeActionById('symbolSearch');
 }
 
 

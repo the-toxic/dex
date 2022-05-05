@@ -113,8 +113,8 @@ function candleMessageHandler(data) {
 }
 
 function tableMessageHandler(data) {
-  // 1~14~15~1651070483.0~89.10302463339211~0.22990089406023437~0xf7702834e5d3156e1857a3b958807e248a2f48c9~0x7a9d3e7fa21a3dd711434815602a767a6ffa6221292a80f80ad3a9042021d48a~sell
-  // таблица 1~{pair_id}~{span}~{ts}~{amount0}~{amount1}~{maker}~{tx}~{direction}
+  // 1~10~15~1651639383.0~867.1865216318507~2.2613733312250917~0x2eae1660df22b0bbd80170092c23ff965e72a79c~0x2eae1660df22b0bbd80170092c23ff965e72a79c~0xe6a49844d7e3bfb4cf4cb7a25d531a8256e0b9c480dbd89a78c3c60fded5b118~buy
+  // таблица 1~{pair_id}~{span}~{ts}~{amount0}~{amount1}~{maker}~{receiver}~{tx}~{direction}
   // цена = правое делить на левое
   // объём = цена * на левое
   let [
@@ -125,6 +125,7 @@ function tableMessageHandler(data) {
     amount0,
     amount1,
     maker, // 0x...
+    receiver, // 0x...
     tx, // 0x...
     type // buy | sell
   ] = data.split('~');
@@ -140,12 +141,13 @@ function tableMessageHandler(data) {
 
   const item = {
     date: parseInt(tradeTimeStr),
-    type: type,
+    type,
     price: priceFormatter(tradePrice),
     amount_token0: priceFormatter(amount0),
     amount_token1: priceFormatter(amount1),
-    maker: maker,
-    tx: tx,
+    maker,
+    receiver,
+    tx,
   }
   // console.log('table', data)
   store.dispatch('chart/pushLastTXs', item).then()
