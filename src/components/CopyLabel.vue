@@ -1,7 +1,10 @@
 <template>
   <v-tooltip bottom>
     <template v-slot:activator="{ on }">
-      <div ref="copylabel" v-on="on" @click.stop.prevent="copy">{{ visibleText }}</div>
+      <span v-on="on" @click.stop.prevent="copy">
+        <v-icon v-if="icon" size="14" :color="iconColor">mdi-content-copy</v-icon>
+        <span v-else>{{ visibleText }}</span>
+      </span>
     </template>
     <span>{{ tooltip }}</span>
   </v-tooltip>
@@ -22,6 +25,14 @@ export default {
     text: {
       type: String,
       default: ''
+    },
+    icon: {
+      type: Boolean,
+      default: false
+    },
+    iconColor: {
+      type: String,
+      default: '#FFF'
     },
     // Text to show on toast
     alertText: {
@@ -64,10 +75,10 @@ export default {
 }
 </script>
 
-<style scoped>
-.copylabel {
-  cursor: pointer;
-  display: inline-block;
-  border-bottom: 1px dashed;
-}
+<style>
+/*.copylabel {*/
+/*  cursor: pointer;*/
+/*  display: inline-block;*/
+/*  border-bottom: 1px dashed;*/
+/*}*/
 </style>

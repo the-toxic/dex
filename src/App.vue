@@ -4,19 +4,19 @@
       <v-list>
         <v-list-item :to="{name: 'Home'}">
           <v-list-item-icon><v-icon color="grey">mdi-menu-open</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>Main</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>Landing</v-list-item-title></v-list-item-content>
         </v-list-item>
         <v-list-item :to="{name: 'Pairs'}">
           <v-list-item-icon><v-icon color="grey">mdi-menu-open</v-icon></v-list-item-icon>
-          <v-list-item-content><v-list-item-title>Pairs</v-list-item-title></v-list-item-content>
+          <v-list-item-content><v-list-item-title>Chart</v-list-item-title></v-list-item-content>
         </v-list-item>
-        <v-list-item @click="showWalletDialog(true)">
-          <v-list-item-icon left>
-            <v-icon v-if="!!wallet" color="green" alt="Wallet connected">mdi-wallet</v-icon>
-            <v-icon v-else alt="Wallet disconnected">mdi-wallet</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content><v-list-item-title>Wallet</v-list-item-title></v-list-item-content>
-        </v-list-item>
+        <!--<v-list-item @click="showWalletDialog(true)">-->
+        <!--  <v-list-item-icon left>-->
+        <!--    <v-icon v-if="!!wallet" color="green" alt="Wallet connected">mdi-wallet</v-icon>-->
+        <!--    <v-icon v-else alt="Wallet disconnected">mdi-wallet</v-icon>-->
+        <!--  </v-list-item-icon>-->
+        <!--  <v-list-item-content><v-list-item-title>Wallet</v-list-item-title></v-list-item-content>-->
+        <!--</v-list-item>-->
       </v-list>
     </v-navigation-drawer>
 
@@ -32,14 +32,9 @@
 
         <v-spacer />
 
-        <div v-if="$route.name === 'Pair'" class="showSearchBox d-flex justify-space-between align-center" @click="showSearch">
-          <span>Token SC / Name / Pair SC / Symbol</span>
-          <v-icon small color="#B3B5BD" class="px-2">mdi-magnify</v-icon>
-        </div>
-        <v-btn plain :to="{name: 'Pairs'}" small exact :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14" active-class="activeMenu">Chart</v-btn>
-        <v-btn plain :to="{name: 'Home'}" small exact :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14" active-class="activeMenu">Landing</v-btn>
-        <v-btn plain :to="{name: 'Analyse'}" small :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14" active-class="activeMenu">Analyse</v-btn>
-        <v-btn plain :to="{name: 'Liquidity'}" small :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14" active-class="activeMenu">Liquidity</v-btn>
+        <v-btn plain :to="{name: 'Pairs'}" small exact :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14" :class="$route.name === 'Pair' ? 'v-btn--active' : ''">Chart</v-btn>
+        <v-btn plain :to="{name: 'Analyse'}" small :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14">Analyse</v-btn>
+        <v-btn plain :to="{name: 'Liquidity'}" small :ripple="false" class="d-none d-md-inline-flex text-capitalize fs14">Liquidity</v-btn>
 
         <v-spacer />
 
@@ -47,6 +42,10 @@
         <!--  <v-icon v-if="!!wallet" color="green" alt="Wallet connected">mdi-wallet</v-icon>-->
         <!--  <v-icon v-else alt="Wallet disconnected">mdi-wallet</v-icon>-->
         <!--</v-btn>-->
+
+        <v-btn v-if="$route.name === 'Pair'" icon small :ripple="false" @click="showSearch">
+          <v-icon small color="#B3B5BD" class="px-2" alt="Show Search">mdi-magnify</v-icon>
+        </v-btn>
         <v-icon right small v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
 
 
@@ -66,16 +65,22 @@
     </v-main>
 
     <!--  Футер, прибит вниз через атрибут absolute, inset сдвигает его от фильтра в шопе  -->
-    <v-footer id="mainFooter" absolute bottom padless class="justify-center fill-width pa-0">
+    <v-footer absolute bottom padless class="justify-center fill-width py-1">
       <div class="smallFooter d-flex justify-space-between align-center flex-wrap fill-width">
-        <div class="footerCopy text-center grey--text order-1 order-md-0 pl-5">&copy; {{ new Date().getFullYear() }}
-          <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>HAZB</router-link>. All rights reserved.
+        <div class="footerCopy fs12 text-center grey--text order-1 order-md-0 pl-md-5 mx-auto mx-md-0 py-2 py-md-0">&copy; {{ new Date().getFullYear() }}
+          <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>HAZB</router-link>. <span class="white--text">v0.12</span>
         </div>
 <!--        <v-icon v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">{{ wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>-->
-        <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-4 pt-md-0">
-          <v-btn tile :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" elevation="0" class="transparent" style="text-transform: none !important;">Terms of Use</v-btn>
-          <v-btn tile :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" elevation="0" class="text-capitalize transparent">Privacy Policy</v-btn>
-          <v-btn tile :href="DOCS_HOST+'/legal/cookie-policy'" target="_blank" rel="nofollow" elevation="0" class="text-capitalize transparent">Cookie Policy</v-btn>
+        <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-2 pt-md-0 pr-md-2">
+          <v-btn tile small :to="{name: 'Home'}" elevation="0" class="transparent" style="text-transform: none !important; color: #72747F">Landing</v-btn>
+          <v-btn tile small target="_blank" rel="nofollow" elevation="0" class="transparent" style="text-transform: none !important; color: #72747F">Contacts</v-btn>
+          <v-btn tile small :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" elevation="0" class="transparent" style="text-transform: none !important; color: #72747F">Legal</v-btn>
+
+          <v-btn icon small :ripple="false" class="mr-md-1 ml-md-3" href="https://twitter.com/hazbcom" target="_blank"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" /></v-btn>
+          <v-btn icon small :ripple="false" class="mr-md-1"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" /></v-btn>
+          <v-btn icon small :ripple="false" class="mr-md-1"><img src="@/assets/social_medium.svg" width="22" height="22" alt="Medium" /></v-btn>
+          <v-btn icon small :ripple="false" class="mr-md-1"><img src="@/assets/social_discord.svg" width="22" height="22" alt="Discord" /></v-btn>
+          <v-btn icon small :ripple="false" class="mr-md-1" :href="DOCS_HOST" target="_blank" rel="nofollow"><img src="@/assets/paper.svg" width="22" height="22" alt="Docs" /></v-btn>
         </div>
       </div>
     </v-footer>

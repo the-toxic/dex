@@ -13,6 +13,7 @@ export default {
   state: getDefaultState(),
   getters: {
     activeSymbol: state => state.activeSymbol,
+    pairInfo: state => state.pairInfo,
     // needInvert: state => state.activeSymbol.needInvert,
     leftToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[0] : '',
     rightToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[1]: '',
@@ -46,7 +47,6 @@ export default {
       const {success, result} = await fetchPairInfo(pairId)
       if(!success || !result) return
       commit('setPairInfo', result)
-      console.log('fetchPairInfo', result)
       return result
     },
     async getHistoryTable({commit}, payload) {

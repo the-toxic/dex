@@ -13,34 +13,34 @@
           <div class="d-flex align-center flex-wrap">
             <div class="black mr-2" style="width: 40px; height: 40px"></div>
             <div class="mr-3">
-              <h2 class="fs16 font-weight-regular" style="color: #D9DCEE">CryptoTanks</h2>
-              <div class="lh-1_2">
-                <span class="mr-2">Token: 0x444...f33e</span>
-                <span>Pair 4: {{ shortAddress(pairAddr) }}</span>
+              <h2 class="fs16 font-weight-regular" style="color: #D9DCEE">{{ pairInfo ? pairInfo.token0.name : 'Loading...' }}</h2>
+              <div v-if="pairInfo" class="lh-1_2">
+                <span class="mr-2">Token: {{shortAddress(pairInfo.token0.address) }} <CopyLabel icon :text="pairInfo.token0.address" icon-color="#72747F" /></span>
+                <span>Pair 4: {{ shortAddress(pairAddr) }} <CopyLabel icon :text="pairAddr" icon-color="#72747F" /></span>
               </div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">Holders</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(18652) }}</div>
+              <div class="fs12 lh-1_2">Holders</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(holders) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">Cyrc. Supply</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(2100000) }}</div>
+              <div class="fs12 lh-1_2">Cyrc. Supply</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(circulatingSupply) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">24hr Volume</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(104100) }}</div>
+              <div class="fs12 lh-1_2">24hr Volume</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(volume24h) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">Liquidity</div><div class="lh-1_2 fs12" style="color: #fff">60k {{ rightToken }}</div>
+              <div class="fs12 lh-1_2">Liquidity</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(liquidity) }} {{ rightToken }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">Market Cap</div><div class="lh-1_2 fs12" style="color: #fff">${{ shortNumber(8500000) }}</div>
+              <div class="fs12 lh-1_2">Market Cap</div><div class="lh-1_2 fs12" style="color: #fff">${{ shortNumber(marketCap) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">24hr Swaps</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(41650) }}</div>
+              <div class="fs12 lh-1_2">24hr Swaps</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(txCount24) }}</div>
             </div>
           </div>
           <div>
             <div class="green--text">{{ priceFormatter(lastPrice) }}</div>
-            <div>24hr <span class="red--text">4.41%</span></div>
+            <div>24hr <span :class="{'red--text': priceChange < 0, 'green--text': priceChange >= 0}">{{ toNumber(priceChange) }}%</span></div>
           </div>
         </v-card-text>
       </v-card>
@@ -49,7 +49,7 @@
         color="#51A49A" background-color="#DE5F57"
       >
         <template v-slot:default="{ value }">
-          <strong>{{ toNumber(buyVolume24) }} {{ rightToken }} / {{ toNumber(sellVolume24) }} {{ rightToken }}</strong>
+          <strong>{{ toNumber(buyVolume24) }} {{ leftToken }} / {{ toNumber(sellVolume24) }} {{ leftToken }}</strong>
         </template>
       </v-progress-linear>
 
@@ -59,15 +59,15 @@
         <div style="color:#C1C4D6;">Trade History</div>
         <div style="color:#72747F;">
           <span class="mr-3">TXs count</span>
-          <span class="" style="color:#305D5E;">Buy: {{ toNumber(8000) }}</span> |
-          <span class="" style="color:#77393B;">Sell: {{ toNumber(2000) }}</span> |
-          <span class="" style="color:#9EA0AF;">Total: {{ toNumber(10000) }}</span>
+          <span class="" style="color:#305D5E;">Buy: {{ toNumber(buyTxCount24) }}</span> |
+          <span class="" style="color:#77393B;">Sell: {{ toNumber(sellTxCount24) }}</span> |
+          <span class="" style="color:#9EA0AF;">Total: {{ toNumber(buyTxCount24 + sellTxCount24) }}</span>
         </div>
         <div style="color:#72747F;">
           <span class="mr-3">Volume</span>
-          <span class="" style="color:#305D5E;">Buy: {{ toNumber(50000) }} {{ rightToken }}</span> |
-          <span class="" style="color:#77393B;">Sell: {{ toNumber(20000) }} {{ rightToken }}</span> |
-          <span class="" style="color:#9EA0AF;">Total: {{ toNumber(70000) }} {{ rightToken }}</span>
+          <span class="" style="color:#305D5E;">Buy: {{ toNumber(buyVolume24) }} {{ rightToken }}</span> |
+          <span class="" style="color:#77393B;">Sell: {{ toNumber(sellVolume24) }} {{ rightToken }}</span> |
+          <span class="" style="color:#9EA0AF;">Total: {{ toNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>
         </div>
       </div>
       <v-card class="mt-2 mb-8">
@@ -98,8 +98,6 @@ export default {
     network: '...',
     exchange: '...',
     pairAddr: '',
-    buyVolume24: 24123.12,
-    sellVolume24: 20111,
     networks: [{value: 'bsc', title: 'Binance Smart Chain'}, { value: 'ethereum', title: 'Ethereum'}, {value: 'polygon', title: 'Polygon'}],
   } },
 
@@ -166,8 +164,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('chart', ['activeSymbol', 'lastPrice', 'leftToken', 'rightToken']),
-    buySellRate() { return Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) }
+    ...mapGetters('chart', ['activeSymbol', 'pairInfo', 'lastPrice', 'leftToken', 'rightToken']),
+    buySellRate() { return Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
+    buyVolume24() { return this.pairInfo ? this.pairInfo.token0.day_buy_volume : 0 },
+    sellVolume24() { return this.pairInfo ? this.pairInfo.token0.day_sell_volume : 0 },
+    buyTxCount24() { return this.pairInfo ? this.pairInfo.token0.day_buy_tx_count : 0 },
+    sellTxCount24() { return this.pairInfo ? this.pairInfo.token0.day_sell_tx_count : 0 },
+    holders() { return this.pairInfo ? this.pairInfo.token0.holders : 0 },
+    circulatingSupply() { return this.pairInfo ? this.pairInfo.token0.circulating_supply : 0 },
+    volume24h() { return this.pairInfo ? this.pairInfo.pool.volume_24h : 0 },
+    liquidity() { return this.pairInfo ? this.pairInfo.pool.total_liquidity : 0 },
+    txCount24() { return this.pairInfo ? this.pairInfo.pool.tx_count_24h : 0 },
+    marketCap() { return this.pairInfo ? this.pairInfo.token0.total_supply * this.lastPrice : 0 },
+    priceChange() { return this.pairInfo ? this.pairInfo.pool.price_change_24h : 0 },
   },
   methods: {
     updateTitle() {
