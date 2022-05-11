@@ -1,6 +1,5 @@
 import { io } from 'socket.io-client'
 import store from '@/store'
-import { priceFormatter } from "@/helpers/common";
 
 const channelToSubscription = new Map();
 
@@ -142,9 +141,9 @@ function tableMessageHandler(data) {
   const item = {
     date: parseInt(tradeTimeStr),
     type,
-    price: priceFormatter(tradePrice),
-    amount_token0: priceFormatter(amount0),
-    amount_token1: priceFormatter(amount1),
+    price: tradePrice,
+    amount_token0: parseFloat(amount0),
+    amount_token1: parseFloat(amount1),
     maker,
     receiver,
     tx,
