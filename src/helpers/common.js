@@ -38,7 +38,7 @@ const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberF
 
 export function priceFormatter(price) {
   price = +price
-  if (price > 1000)
+  if (price >= 1000)
     return toNumber(price)
   else if (price > 100)
     return parseFloat(price).toFixed(2).toString()

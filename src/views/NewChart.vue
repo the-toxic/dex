@@ -2,18 +2,11 @@
   <div>
     <v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
       <v-card class="mb-0" elevation="0" tile :loading="pairInfoLoading">
-<!--        <v-card-title class="d-flex justify-space-between align-center">-->
-<!--          <span>Network: {{ network }}</span>-->
-<!--          <span>Price: {{ lastPrice }}</span>-->
-<!--          <span>Pair: {{ pairName }}</span>-->
-<!--          <span>Exchange: {{ exchange }}</span>-->
-<!--          <span>Pair address: {{ pairAddr }}</span>-->
-<!--        </v-card-title>-->
         <v-card-text class="d-flex justify-space-between align-center flex-wrap pa-2">
           <div class="d-flex align-center flex-wrap">
             <div class="black mr-2" style="width: 40px; height: 40px"></div>
             <div class="mr-3">
-              <h2 class="fs16 font-weight-regular" style="color: #D9DCEE">{{ pairInfo ? pairInfo.token0.name : 'Loading...' }}</h2>
+              <h2 class="fs16 font-weight-regular" style="color: #D9DCEE">{{ tokenName }}</h2>
               <div v-if="pairInfo" class="lh-1_2">
                 <span class="mr-2">Token: {{shortAddress(pairInfo.token0.address) }} <CopyLabel icon :text="pairInfo.token0.address" icon-color="#72747F" /></span>
                 <span>Pair 4: {{ shortAddress(pairAddr) }} <CopyLabel icon :text="pairAddr" icon-color="#72747F" /></span>
@@ -39,7 +32,7 @@
             </div>
           </div>
           <div>
-            <div class="green--text">{{ priceFormatter(lastPrice) }}</div>
+            <div class="green--text">{{ priceFormatter(lastPrice) }} {{ rightToken }}</div>
             <div>24hr <span :class="{'red--text': priceChange < 0, 'green--text': priceChange >= 0}">{{ toNumber(priceChange) }}%</span></div>
           </div>
         </v-card-text>
@@ -49,7 +42,7 @@
         color="#51A49A" background-color="#DE5F57"
       >
         <template v-slot:default="{ value }">
-          <strong>{{ toNumber(buyVolume24) }} {{ leftToken }} / {{ toNumber(sellVolume24) }} {{ leftToken }}</strong>
+          <strong>{{ shortNumber(buyVolume24) }} {{ leftToken }} / {{ shortNumber(sellVolume24) }} {{ leftToken }}</strong>
         </template>
       </v-progress-linear>
 
@@ -65,9 +58,9 @@
         </div>
         <div style="color:#72747F;">
           <span class="mr-3">Volume</span>
-          <span class="" style="color:#305D5E;">Buy: {{ toNumber(buyVolume24) }} {{ rightToken }}</span> |
-          <span class="" style="color:#77393B;">Sell: {{ toNumber(sellVolume24) }} {{ rightToken }}</span> |
-          <span class="" style="color:#9EA0AF;">Total: {{ toNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>
+          <span class="" style="color:#305D5E;">Buy: {{ shortNumber(buyVolume24) }} {{ rightToken }}</span> |
+          <span class="" style="color:#77393B;">Sell: {{ shortNumber(sellVolume24) }} {{ rightToken }}</span> |
+          <span class="" style="color:#9EA0AF;">Total: {{ shortNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>
         </div>
       </div>
       <v-card class="mt-2 mb-8">
@@ -166,6 +159,7 @@ export default {
   computed: {
     ...mapGetters('chart', ['activeSymbol', 'pairInfo', 'lastPrice', 'leftToken', 'rightToken']),
     buySellRate() { return Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
+    tokenName() { return this.pairInfo ?  this.pairInfo.token0.name : 'Loading...' },
     buyVolume24() { return this.pairInfo ? this.pairInfo.token0.day_buy_volume : 0 },
     sellVolume24() { return this.pairInfo ? this.pairInfo.token0.day_sell_volume : 0 },
     buyTxCount24() { return this.pairInfo ? this.pairInfo.token0.day_buy_tx_count : 0 },
