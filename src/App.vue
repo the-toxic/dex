@@ -26,7 +26,7 @@
 
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
           <div class="v-toolbar__title logoBox" @click="navigate">
-            <img src="@/assets/logo.png" alt="HAZB Logo" />
+            <img src="@/assets/logo.png" alt="Logo" />
           </div>
         </router-link>
 
@@ -68,7 +68,7 @@
     <v-footer absolute bottom padless class="justify-center fill-width py-1">
       <div class="smallFooter d-flex justify-space-between align-center flex-wrap fill-width">
         <div class="footerCopy fs12 text-center grey--text order-1 order-md-0 pl-md-5 mx-auto mx-md-0 py-2 py-md-0">&copy; {{ new Date().getFullYear() }}
-          <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>HAZB</router-link>. <span class="white--text">v0.12</span>
+          <router-link class="text-decoration-none grey--text" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span class="white--text">v0.12</span>
         </div>
 <!--        <v-icon v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">{{ wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>-->
         <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-2 pt-md-0 pr-md-2">

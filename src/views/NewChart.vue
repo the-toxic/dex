@@ -75,23 +75,25 @@ import { mapGetters } from "vuex";
 import { initChart } from "@/helpers/chart/chart";
 import TableHistory from "@/components/TableHistory";
 import { priceFormatter, shortNumber } from "@/helpers/common";
+import store from "@/store";
 
 export default {
   name: "NewChart",
   head: {
-    title() { return {
-      inner: this.title
-    }},
+    title() { return { inner: this.title }},
+    meta() { return [{ name: 'description', content: this.description, id: 'desc' }]},
   },
   components: {TableHistory},
   data() { return {
     pairInfoLoading: false,
     title: 'Loading Pair...',
+    description: 'DEX Platform',
     pairName: '...',
     network: '...',
     exchange: '...',
     pairAddr: '',
     networks: [{value: 'bsc', title: 'Binance Smart Chain'}, { value: 'ethereum', title: 'Ethereum'}, {value: 'polygon', title: 'Polygon'}],
+    loadingOldTxs: true
   } },
 
   async created() {
@@ -157,7 +159,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('chart', ['activeSymbol', 'pairInfo', 'lastPrice', 'leftToken', 'rightToken']),
+    ...mapGetters('chart', ['activeSymbol', 'pairInfo', 'lastPrice', 'leftToken', 'rightToken', "lastTXs"]),
     buySellRate() { return Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
     tokenName() { return this.pairInfo ?  this.pairInfo.token0.name : 'Loading...' },
     buyVolume24() { return this.pairInfo ? this.pairInfo.token0.day_buy_volume : 0 },
@@ -175,6 +177,7 @@ export default {
   methods: {
     updateTitle() {
       this.title = `${this.pairName} - ${priceFormatter(this.lastPrice)}`
+      this.description = `Analyse ${this.pairName} of ${this.PROJECT_NAME} | ${this.pairAddr}`
       this.$emit('updateHead') // update title
     },
     shortNumber(num) { return shortNumber(num) },

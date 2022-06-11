@@ -8,7 +8,7 @@
         <div class="mt-12">
           <v-btn x-large color="primary" :to="{name: 'Pairs'}">Open pair explorer</v-btn>
         </div>
-        <p class="mt-16 fs20">If you are a DEFI user, and you want to be able to anticipate market movements and develop better trading strategies, HAZB will help you in a very simple way.</p>
+        <p class="mt-16 fs20">If you are a DEFI user, and you want to be able to anticipate market movements and develop better trading strategies, {{ PROJECT_NAME }} will help you in a very simple way.</p>
       </v-container>
     </div>
     <v-container fluid class="mx-auto relative" style="max-width: 1500px">
@@ -19,14 +19,14 @@
               <v-icon x-large>mdi-responsive</v-icon>
               <div class="mt-5">
                 <h4 class="text-h5">RESPONSIVE</h4>
-                <p class="text-muted text-h6">HAZB works on any device: desktop, tablet or mobile.</p>
+                <p class="text-muted text-h6">{{ PROJECT_NAME }} works on any device: desktop, tablet or mobile.</p>
               </div>
             </div>
             <div class="col-6 col-md-4 py-2">
               <v-icon x-large>mdi-cursor-default-click-outline</v-icon>
               <div class="mt-5">
                 <h4 class="text-h5">SUBSCRIPTIONS</h4>
-                <p class="text-muted text-h6">Purchase HAZB via exchanges to enable HAZB subscriptions.</p>
+                <p class="text-muted text-h6">Purchase {{ PROJECT_NAME }} via exchanges to enable {{ PROJECT_NAME }} subscriptions.</p>
               </div>
             </div>
             <div class="col-6 col-md-4 py-2">
@@ -66,6 +66,6 @@
 <script>
 export default {
   name: 'Home',
-  head: { title: {inner: 'HAZB', complement: 'Dex Platform'}},
+  head: { title: {inner: process.env.VUE_APP_PROJECT_NAME, complement: 'Dex Platform'}},
 }
 </script>

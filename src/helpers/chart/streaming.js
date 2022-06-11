@@ -3,7 +3,7 @@ import store from '@/store'
 
 const channelToSubscription = new Map();
 
-const socket = io('https://api.hazb.com', {
+const socket = io(process.env.VUE_APP_API_DOMAIN, {
   path: '/ws/socket.io',
   transports: ['websocket', 'polling', 'flashsocket']
 });
@@ -126,6 +126,7 @@ function tableMessageHandler(data) {
     maker, // 0x...
     receiver, // 0x...
     tx, // 0x...
+    tx_id, // 0x...
     type // buy | sell
   ] = data.split('~');
 
@@ -135,21 +136,21 @@ function tableMessageHandler(data) {
   //   amount1 = oldAmount0
   // }
 
-  const tradePrice = parseFloat(amount1 / amount0);
   // const tradeVolume = parseInt(tradePrice * amount0);
 
   const item = {
     date: parseInt(tradeTimeStr),
     type,
-    price: tradePrice,
+    price: parseFloat(amount1 / amount0),
     amount_token0: parseFloat(amount0),
     amount_token1: parseFloat(amount1),
     maker,
     receiver,
     tx,
+    tx_id
   }
   // console.log('table', data)
-  store.dispatch('chart/pushLastTXs', item).then()
+  store.dispatch('chart/addNewTx', item).then()
 
 }
 

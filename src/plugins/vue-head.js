@@ -7,5 +7,5 @@ import VueHead from 'vue-head'
  */
 Vue.use(VueHead, {
 	separator: '|',
-	complement: 'HAZB'
+	complement: process.env.VUE_APP_PROJECT_NAME
 })

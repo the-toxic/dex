@@ -28,6 +28,13 @@
       <td><a :href="`https://bscscan.com/address/${item.receiver}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.receiver) }}</a></td>
       <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">Show Tx</a></td>
     </tr>
+    <tr v-if="rows.length">
+      <td colspan="9">
+        <div v-intersect="infiniteScrolling" class="text-center">
+          <v-progress-circular :size="50" :width="4" color="white" indeterminate class="ma-2" />
+        </div>
+      </td>
+    </tr>
     </tbody>
   </v-simple-table>
 </template>
@@ -35,6 +42,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { priceFormatter } from "@/helpers/common";
+import store from "@/store";
 
 export default {
   name: "TableHistory",
@@ -50,6 +58,7 @@ export default {
       return this.lastTXs.map(item => {
         item.parsedPrice = priceFormatter(+item.amount_token1/+item.amount_token0)
         item.parsedDate = new Date((item.date + this.tzOffset) * 1000).toISOString().slice(0, 19).split('T').join(' ')
+        // console.log(item.parsedDate)
         return item
       })
       // return this.lastTXs
@@ -60,11 +69,17 @@ export default {
     async activeSymbol(newVal, oldVal) {
       if(!newVal) return
       this.loading = true
-      await this.$store.dispatch('chart/getHistoryTable', {pair_id: newVal.pair_id})
+      await this.$store.dispatch('chart/loadHistoryTable', { pair_id: newVal.pair_id })
       this.loading = false
     }
   },
   methods: {
+    infiniteScrolling(entries, observer, isIntersecting) {
+      if (entries[0].isIntersecting) {
+        console.log('Load Oldest TXs on Scroll...')
+        store.dispatch('chart/loadOldTXs').then()
+      }
+    },
     priceFormatter(num) { return priceFormatter(num) }
   }
 }

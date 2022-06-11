@@ -30,9 +30,12 @@ export default {
     updateLastTxs(state, {type, data}) {
       if(type === 'set') {
         state.lastTXs = data
-      } else {
+      } else if(type === 'addToStart') {
         state.lastTXs.unshift(data) // add to start array
-        state.lastTXs = state.lastTXs.slice(0, 50)
+        // todo обрезать только если юзер не скроллил (до последней), иначе при скролле может удалить только что загруженные
+        // state.lastTXs = state.lastTXs.slice(0, 50)
+      } else if(type === 'addToEnd') {
+        state.lastTXs.push(...data) // add to end array
       }
     },
     resetState (state) {
@@ -49,14 +52,24 @@ export default {
       commit('setPairInfo', result)
       return result
     },
-    async getHistoryTable({commit}, payload) {
-      const {success, result} = await fetchHistoryTable(payload)
+    async loadHistoryTable({commit}, {pair_id}) {
+      const {success, result} = await fetchHistoryTable({pair_id})
       if(success && result?.length) {
         commit('updateLastTxs', {type: 'set', data: result})
       }
     },
-    async pushLastTXs({commit}, payload) {
-      commit('updateLastTxs', {type: 'push', data: payload})
+    async addNewTx({commit}, newTx) {
+      newTx.tx_id = state.lastTXs[0]['tx_id'] + 1 // так не совсем правильно, но схема рабочая
+      commit('updateLastTxs', {type: 'addToStart', data: newTx})
+    },
+    async loadOldTXs({state, commit}) {
+      const {success, result} = await fetchHistoryTable({
+        pair_id: state.activeSymbol.pair_id,
+        tx_id: state.lastTXs[state.lastTXs.length - 1]['tx_id']
+      })
+      if(success && result?.length) {
+        commit('updateLastTxs', {type: 'addToEnd', data: result})
+      }
     },
   }
 }

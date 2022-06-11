@@ -40,7 +40,7 @@ export const initChart = (pairAddr) => {
     width: '100%',
     height: '800px',
     // autosize: true, // Full size on container
-    disabled_features: ['header_compare', 'volume_force_overlay'] // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
+    disabled_features: ['header_compare', 'volume_force_overlay', 'display_market_status'] // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
     // enabled_features: [],
     // custom_css_url: 'css/style.css',
   });

@@ -60,7 +60,8 @@ export const fetchPairInfo = async (pairId) => {
 }
 export const fetchHistoryTable = async (payload) => {
   const pairId = payload.pair_id
-  const {data} = await axios.get(`xhr/txs?pair_id=${pairId}`);
+  const lastTxId = payload.tx_id || 0
+  const {data} = await axios.get(`xhr/txs?pair_id=${pairId}&tx_id=${lastTxId}`);
   return data
 }
 export const fetchHistoryCandles = async (payload) => {

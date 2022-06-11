@@ -4,8 +4,9 @@ import Vue from "vue"
 // import {urlRegex} from '@/helpers/common'
 
 Vue.mixin({
-	// data() {
-	// 	return {
+	data() {
+		return {
+			PROJECT_NAME: process.env.VUE_APP_PROJECT_NAME
 	// 		emailRules: [
 	// 			v => !!v || 'Email is required',
 	// 			v => emailRegex.test(v) || 'Email is invalid',
@@ -22,8 +23,8 @@ Vue.mixin({
 	// 			v => !!v || 'Field is required',
 	// 			v => urlRegex.test(v) || 'Invalid site address',
 	// 		],
-	// 	}
-	// },
+		}
+	},
 	methods: {
 		toNumber: (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value),
 		toCurrency: (value, currency) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'usd' }).format(isNaN(value) ? 0 : +value),

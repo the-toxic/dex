@@ -33,7 +33,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // document.title = to.name + ' | HAZB' // change page title on redirect
+  // document.title = to.name + ' | ' + process.env.VUE_APP_PROJECT_NAME // change page title on redirect
   store.commit('setGlobalLoader', true)
   setTimeout(() => store.commit('setGlobalLoader', false), 1000)
 
