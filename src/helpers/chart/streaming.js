@@ -126,7 +126,6 @@ function tableMessageHandler(data) {
     maker, // 0x...
     receiver, // 0x...
     tx, // 0x...
-    tx_id, // 0x...
     type // buy | sell
   ] = data.split('~');
 
@@ -147,7 +146,6 @@ function tableMessageHandler(data) {
     maker,
     receiver,
     tx,
-    tx_id
   }
   // console.log('table', data)
   store.dispatch('chart/addNewTx', item).then()
