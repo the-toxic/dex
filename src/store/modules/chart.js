@@ -58,7 +58,7 @@ export default {
         commit('updateLastTxs', {type: 'set', data: result})
       }
     },
-    async addNewTx({commit}, newTx) {
+    async addNewTx({commit, state}, newTx) {
       newTx.tx_id = state.lastTXs[0]['tx_id'] + 1 // так не совсем правильно, но схема рабочая
       commit('updateLastTxs', {type: 'addToStart', data: newTx})
     },

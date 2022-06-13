@@ -61,7 +61,7 @@ export default {
         // console.log(item.parsedDate)
         return item
       })
-      // return this.lastTXs
+      // return this.lastTXs 
     },
     tzOffset: () => -(new Date().getTimezoneOffset()) * 60
   },
