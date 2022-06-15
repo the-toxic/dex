@@ -64,8 +64,8 @@ export const fetchHistoryTable = async (payload) => {
   const {data} = await axios.get(`xhr/txs?pair_id=${pairId}&tx_id=${lastTxId}`);
   return data
 }
-export const fetchHistoryCandles = async (payload) => {
-  const {data} = await axios.post(`xhr/limit_candles_history`, payload);
+export const fetchHistoryCandles = async (body) => {
+  const {data} = await axios.post(`xhr/limit_candles_history`, body);
   return data
 }
 

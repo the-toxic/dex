@@ -6,20 +6,12 @@ const lastBarsCache = new Map();
 
 let findedSymbols = [
 //   {
-//   symbol: 'USDT/WBNB', // XMR/BTC - short symbol name
-//   pair_id: 38,
-//   full_name: 'PanCake v2:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // Kraken:XMR/BTC:pairAddr - full symbol name
-//   exchange: 'PanCake v2', // Binance - symbol exchange name
-//   type: 'BSC', // Network name | stock | "futures" | "crypto" | "forex" | "index" | any custom string
-//   description: 'Pair: 0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // require for initial load page, or library show full_name
-// },
-//   {
 //   symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
 //   pair_id: 5787,
 //   full_name: 'PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // Kraken:XMR/BTC:pairAddr - full symbol name
 //   exchange: 'PanCake v2', // Binance - symbol exchange name
 //   type: 'Binance Smart Chain', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
-//   description: '',
+//   description: '', // require for initial load page, or library show full_name
 // }
 ]
 
@@ -89,7 +81,7 @@ export default {
       exchange: exchange,
       network: symbolType
     });
-    if(!success || !'content' in result) {
+    if(!success || !('content' in result)) {
       onResultReadyCallback([]);
       return
     }
@@ -171,16 +163,15 @@ export default {
       return;
     }
     console.log('[getBars]: Method call: ', resolution, humanDate(from), ' -> ', humanDate(to), countBack+' bars'); // symbolInfo
-    const body = {
-      pair_id: symbolInfo.pair_id,
-      to_ts: to, // 1467676800
-      limit: 1000,
-      span: resolution,
-    };
     try {
-      const { success, result } = await fetchHistoryCandles(body);
+      const { success, result } = await fetchHistoryCandles({
+        pair_id: symbolInfo.pair_id,
+        to_ts: to, // 1467676800
+        limit: 1000,
+        span: resolution,
+      });
 
-      if (!success || !'candles' in result || !result.candles.length) {
+      if (!success || !('candles' in result) || !result.candles.length) {
         onHistoryCallback([], { noData: true }); // "noData" should be set if there is no data in the requested period.
         return;
       }
@@ -200,7 +191,7 @@ export default {
           high: bar.high,
           open: lastBar ? lastBar.close : bar.open,
           close: bar.close,
-          volume: bar.volume
+          volume: bar.volume1
         }
         bars = [...bars, bar];
         lastBar = bar

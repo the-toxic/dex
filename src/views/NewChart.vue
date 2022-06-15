@@ -4,19 +4,21 @@
       <v-card class="mb-0" elevation="0" tile :loading="pairInfoLoading">
         <v-card-text class="d-flex justify-space-between align-center flex-wrap pa-2">
           <div class="d-flex align-center flex-wrap">
-            <div class="black mr-2" style="width: 40px; height: 40px"></div>
+            <div class="white mr-2" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
+              <img v-if="pairInfo && pairInfo.token0.icon" :src="pairInfo.token0.icon" width="40" height="40" alt="Logo">
+            </div>
             <div class="mr-3">
               <h2 class="fs16 font-weight-regular" style="color: #D9DCEE">{{ tokenName }}</h2>
               <div v-if="pairInfo" class="lh-1_2">
                 <span class="mr-2">Token: {{shortAddress(pairInfo.token0.address) }} <CopyLabel icon :text="pairInfo.token0.address" icon-color="#72747F" /></span>
-                <span>Pair 4: {{ shortAddress(pairAddr) }} <CopyLabel icon :text="pairAddr" icon-color="#72747F" /></span>
+                <span>Pair: {{ shortAddress(pairAddr) }} <CopyLabel icon :text="pairAddr" icon-color="#72747F" /></span>
               </div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
               <div class="fs12 lh-1_2">Holders</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(holders) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
-              <div class="fs12 lh-1_2">Cyrc. Supply</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(circulatingSupply) }}</div>
+              <div class="fs12 lh-1_2">Total Supply</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(totalSupply) }}</div>
             </div>
             <div class="d-flex justify-center flex-column px-2 mr-2" style="background: #181B25; height: 40px">
               <div class="fs12 lh-1_2">24hr Volume</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(volume24h) }}</div>
@@ -42,7 +44,7 @@
         color="#51A49A" background-color="#DE5F57"
       >
         <template v-slot:default="{ value }">
-          <strong>{{ shortNumber(buyVolume24) }} {{ leftToken }} / {{ shortNumber(sellVolume24) }} {{ leftToken }}</strong>
+          <strong>{{ shortNumber(buyVolume24) }} {{ rightToken }} / {{ shortNumber(sellVolume24) }} {{ rightToken }}</strong>
         </template>
       </v-progress-linear>
 
@@ -50,18 +52,18 @@
 
       <div class="d-flex flex-wrap justify-space-between align-center mt-6">
         <div style="color:#C1C4D6;">Trade History</div>
-        <div style="color:#72747F;">
-          <span class="mr-3">TXs count</span>
-          <span class="" style="color:#305D5E;">Buy: {{ toNumber(buyTxCount24) }}</span> |
-          <span class="" style="color:#77393B;">Sell: {{ toNumber(sellTxCount24) }}</span> |
-          <span class="" style="color:#9EA0AF;">Total: {{ toNumber(buyTxCount24 + sellTxCount24) }}</span>
-        </div>
-        <div style="color:#72747F;">
-          <span class="mr-3">Volume</span>
-          <span class="" style="color:#305D5E;">Buy: {{ shortNumber(buyVolume24) }} {{ rightToken }}</span> |
-          <span class="" style="color:#77393B;">Sell: {{ shortNumber(sellVolume24) }} {{ rightToken }}</span> |
-          <span class="" style="color:#9EA0AF;">Total: {{ shortNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>
-        </div>
+        <!--<div style="color:#72747F;">-->
+        <!--  <span class="mr-3">TXs count</span>-->
+        <!--  <span class="" style="color:#305D5E;">Buy: {{ toNumber(buyTxCount24) }}</span> |-->
+        <!--  <span class="" style="color:#77393B;">Sell: {{ toNumber(sellTxCount24) }}</span> |-->
+        <!--  <span class="" style="color:#9EA0AF;">Total: {{ toNumber(buyTxCount24 + sellTxCount24) }}</span>-->
+        <!--</div>-->
+        <!--<div style="color:#72747F;">-->
+        <!--  <span class="mr-3">Volume</span>-->
+        <!--  <span class="" style="color:#305D5E;">Buy: {{ shortNumber(buyVolume24) }} {{ rightToken }}</span> |-->
+        <!--  <span class="" style="color:#77393B;">Sell: {{ shortNumber(sellVolume24) }} {{ rightToken }}</span> |-->
+        <!--  <span class="" style="color:#9EA0AF;">Total: {{ shortNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>-->
+        <!--</div>-->
       </div>
       <v-card class="mt-2 mb-8">
         <TableHistory />
@@ -167,7 +169,7 @@ export default {
     buyTxCount24() { return this.pairInfo ? this.pairInfo.token0.day_buy_tx_count : 0 },
     sellTxCount24() { return this.pairInfo ? this.pairInfo.token0.day_sell_tx_count : 0 },
     holders() { return this.pairInfo ? this.pairInfo.token0.holders : 0 },
-    circulatingSupply() { return this.pairInfo ? this.pairInfo.token0.circulating_supply : 0 },
+    totalSupply() { return this.pairInfo ? this.pairInfo.token0.total_supply : 0 },
     volume24h() { return this.pairInfo ? this.pairInfo.pool.volume_24h : 0 },
     liquidity() { return this.pairInfo ? this.pairInfo.pool.total_liquidity : 0 },
     txCount24() { return this.pairInfo ? this.pairInfo.pool.tx_count_24h : 0 },

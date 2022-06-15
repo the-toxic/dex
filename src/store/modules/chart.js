@@ -33,9 +33,12 @@ export default {
       } else if(type === 'addToStart') {
         state.lastTXs.unshift(data) // add to start array
         // todo обрезать только если юзер не скроллил (до последней), иначе при скролле может удалить только что загруженные
-        // state.lastTXs = state.lastTXs.slice(0, 50)
+        state.lastTXs = state.lastTXs.slice(0, 1000)
       } else if(type === 'addToEnd') {
         state.lastTXs.push(...data) // add to end array
+      }
+      if(state.lastTXs.length >= 1000) {
+        console.log('Limit 1k rows')
       }
     },
     resetState (state) {

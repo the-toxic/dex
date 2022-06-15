@@ -52,14 +52,14 @@ export const initChart = (pairAddr) => {
     // tvWidget.activeChart().priceFormatter().format = priceFormatter; // function
 
     tvWidget.headerReady().then(function() {
-      const button = tvWidget.createButton();
-      button.textContent = 'Invert Pair'
-      button.style.cursor = 'pointer'
-      button.classList.add("invertPairBtn")
-      button.addEventListener('click', () => {
-        alert('In work')
-        // tvWidget.activeChart().setSymbol('UNKNOWN ROUTER:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae:invert')
-      });
+      // const button = tvWidget.createButton();
+      // button.textContent = 'Invert Pair'
+      // button.style.cursor = 'pointer'
+      // button.classList.add("invertPairBtn")
+      // button.addEventListener('click', () => {
+      //   tvWidget.activeChart().setSymbol(tvWidget.activeChart().symbol() + ':invert')
+      //   tvWidget.activeChart().resetData()
+      // });
     });
 
     tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
