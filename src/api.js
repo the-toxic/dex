@@ -54,8 +54,9 @@ import store from "@/store";
 export const searchPair = async (payload) => {
   const {data} = await axios.post(`xhr/search_pair`, payload);
   const session_id = data.result?.session_id || '1234'
+  const isDev = process.env.NODE_ENV !== 'production'
   if(data.success && session_id) {
-    setCookie('session_id', session_id, {'max-age': 3600, samesite: 'strict'})
+    setCookie('session_id', session_id, {domain: isDev ? 'localhost' : 'hazb.com', samesite: 'strict'}) // 'max-age': 3600
     store.commit('chart/setSessionId', session_id)
   }
   return data
