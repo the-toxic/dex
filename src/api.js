@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setCookie } from '@/helpers/common'
 import store from "@/store";
 
 
@@ -52,6 +53,11 @@ import store from "@/store";
 
 export const searchPair = async (payload) => {
   const {data} = await axios.post(`xhr/search_pair`, payload);
+  const session_id = data.result?.session_id || '1234'
+  if(data.success && session_id) {
+    setCookie('session_id', session_id, {'max-age': 3600, samesite: 'strict'})
+    store.commit('chart/setSessionId', session_id)
+  }
   return data
 }
 export const fetchPairInfo = async (pairId) => {

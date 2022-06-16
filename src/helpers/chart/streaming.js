@@ -5,7 +5,10 @@ const channelToSubscription = new Map();
 
 const socket = io(process.env.VUE_APP_API_DOMAIN, {
   path: '/ws/socket.io',
-  transports: ['websocket', 'polling', 'flashsocket']
+  transports: ['websocket', 'polling', 'flashsocket'],
+  extraHeaders: {
+    "session_id": store.getters['chart/sessionId']
+  }
 });
 
 // const socket = new WebSocket('wss://streamer.cryptocompare.com/v2?api_key=30970dd127f1f2dffa78ac567b453d67295f174bce01035f3b2ab169276be70d');
@@ -15,7 +18,7 @@ const socket = io(process.env.VUE_APP_API_DOMAIN, {
 // socket.onerror = function(event) { console.log('on error', event) };
 
 socket.on('connect', () => {
-  console.log('[socket] Connected');
+  console.log('[socket] Connected. ID:', socket.id);
   store.commit('setConnected', true)
 });
 
@@ -31,6 +34,29 @@ socket.on("connect_error", (error) => {
 socket.on('error', (error) => {
   console.log('[socket] Error:', error);
 });
+socket.io.on("reconnect", (attempt) => {
+  console.log('[socket] Reconnect:', attempt);
+});
+socket.io.on("reconnect_attempt", (attempt) => {
+  console.log('[socket] Reconnect attempt:', attempt);
+});
+socket.io.on("reconnect_error", (error) => {
+  console.log('[socket] Reconnect error:', error);
+});
+socket.io.on("reconnect_failed", (error) => {
+  console.log('[socket] Reconnect failed:', error);
+});
+// socket.io.on("ping", () => {
+//   console.log('[socket] Ping:', arguments);
+// });
+socket.onAny((event, ...args) => {
+  if(event !== 'm') {
+    console.log(`got onAny: ${event}`, args);
+  }
+});
+// setTimeout(() => {
+//   console.log(socket.listenersAny())
+// }, 5000)
 
 socket.on('m', data => {
   // console.log('[socket] Message:', data);
@@ -85,7 +111,7 @@ function candleMessageHandler(data) {
   if (tradeTime >= nextBarTime) { // если пора рисовать новый бар
     bar = {
       time: nextBarTime,
-      open: tradePrice,
+      open: lastBar.close,
       high: tradePrice,
       low: tradePrice,
       close: tradePrice,

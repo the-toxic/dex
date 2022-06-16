@@ -4,7 +4,8 @@ const getDefaultState = () => {
   return {
     activeSymbol: null,
     pairInfo: null,
-    lastTXs: []
+    lastTXs: [],
+    sessionId: ''
   }
 }
 
@@ -14,6 +15,7 @@ export default {
   getters: {
     activeSymbol: state => state.activeSymbol,
     pairInfo: state => state.pairInfo,
+    sessionId: state => state.sessionId,
     // needInvert: state => state.activeSymbol.needInvert,
     leftToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[0] : '',
     rightToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[1]: '',
@@ -40,6 +42,9 @@ export default {
       if(state.lastTXs.length >= 1000) {
         console.log('Limit 1k rows')
       }
+    },
+    setSessionId(state, payload) {
+      state.sessionId = payload
     },
     resetState (state) {
       Object.assign(state, getDefaultState())
