@@ -107,6 +107,9 @@ export default {
     DOCS_HOST: process.env.VUE_APP_DOCS_HOST,
   }),
   created() {
+    if('msg' in this.$route.query && this.$route.query.msg === 'pair404') {
+      setTimeout(() => this.$store.dispatch('showAlert', 'Pair not Found'), 500)
+    }
   },
   computed: {
     isRouterReady() { return this.$route.name !== null },

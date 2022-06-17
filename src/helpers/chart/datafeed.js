@@ -27,7 +27,7 @@ async function loadDefaultPair(symbolFullName) {
 
   } else {
     // await store.dispatch('showAlert', ({msg: 'Error. Pair not found', color: 'error'}))
-    location.href = '/home'
+    location.href = '/home?msg=pair404'
   }
 }
 

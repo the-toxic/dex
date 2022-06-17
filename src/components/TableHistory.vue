@@ -28,7 +28,7 @@
       <td><a :href="`https://bscscan.com/address/${item.receiver}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.receiver) }}</a></td>
       <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">Show Tx</a></td>
     </tr>
-    <tr v-if="rows.length">
+    <tr v-if="rows.length && rows.length < 1000">
       <td colspan="9">
         <div v-intersect="infiniteScrolling" class="text-center">
           <v-progress-circular :size="50" :width="4" color="white" indeterminate class="ma-2" />

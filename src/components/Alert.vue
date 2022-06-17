@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar tile
+  <v-snackbar app tile
     v-show="isVisible" v-model="isVisible"
     right top
     timeout="-1"
