@@ -8,6 +8,9 @@ const socket = io(process.env.VUE_APP_API_DOMAIN, {
   transports: ['websocket', 'polling', 'flashsocket'],
   extraHeaders: {
     "session_id": store.getters['chart/sessionId']
+  },
+  auth: {
+    token: store.getters['chart/sessionId']
   }
 });
 
