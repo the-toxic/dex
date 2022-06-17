@@ -57,7 +57,7 @@ export const searchPair = async (payload) => {
       session_id: store.getters['chart/sessionId']
     },
   });
-  const session_id = data.result?.session_id || ''
+  const session_id = data.session_id || ''
   if(!store.getters['chart/sessionId'] && data.success && session_id) {
     // setCookie('session_id', session_id, {domain: isDev ? 'localhost' : 'hazb.com', samesite: 'strict'}) // 'max-age': 3600
     store.commit('chart/setSessionId', session_id)
