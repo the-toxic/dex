@@ -6,11 +6,8 @@ const channelToSubscription = new Map();
 const socket = io(process.env.VUE_APP_API_DOMAIN, {
   path: '/ws/socket.io',
   transports: ['websocket', 'polling', 'flashsocket'],
-  extraHeaders: {
+  query: {
     "session_id": store.getters['chart/sessionId']
-  },
-  auth: {
-    token: store.getters['chart/sessionId']
   }
 });
 

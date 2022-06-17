@@ -1,11 +1,13 @@
 import { fetchHistoryTable, fetchPairInfo } from "@/api";
 
+const sessionId = Math.random().toString(36).slice(2, 18);
+
 const getDefaultState = () => {
   return {
     activeSymbol: null,
     pairInfo: null,
     lastTXs: [],
-    sessionId: ''
+    sessionId: sessionId
   }
 }
 
