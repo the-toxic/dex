@@ -78,14 +78,8 @@ export const fetchHistoryCandles = async (body) => {
   return data
 }
 
-// export async function makeApiRequest(path, body) {
-//   try {
-//     const { data } = await axios.post(`xhr/${path}`,
-//       {...body},
-//       { headers: { Authorization: 'Basic ZGV2OmRldiFAIzE=' }}
-//     );
-//     return data
-//   } catch (error) {
-//     throw new Error(`API request error: ${error.status}`);
-//   }
-// }
+export const fetchExchanges = async () => {
+  const {data} = await axios.get(`xhr/routers`, {
+  });
+  return data
+}

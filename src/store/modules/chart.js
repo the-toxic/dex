@@ -1,4 +1,4 @@
-import { fetchHistoryTable, fetchPairInfo } from "@/api";
+import { fetchExchanges, fetchHistoryTable, fetchPairInfo } from "@/api";
 
 const sessionId = Math.random().toString(36).slice(2, 18);
 
@@ -7,7 +7,8 @@ const getDefaultState = () => {
     activeSymbol: null,
     pairInfo: null,
     lastTXs: [],
-    sessionId: sessionId
+    sessionId,
+    exchangesList: {}
   }
 }
 
@@ -18,6 +19,7 @@ export default {
     activeSymbol: state => state.activeSymbol,
     pairInfo: state => state.pairInfo,
     sessionId: state => state.sessionId,
+    exchangesList: state => state.exchangesList,
     // needInvert: state => state.activeSymbol.needInvert,
     leftToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[0] : '',
     rightToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[1]: '',
@@ -46,6 +48,9 @@ export default {
     },
     setSessionId(state, payload) {
       state.sessionId = payload
+    },
+    setExchanges(state, payload) {
+      state.exchangesList = payload
     },
     resetState (state) {
       Object.assign(state, getDefaultState())
@@ -78,6 +83,17 @@ export default {
       })
       if(success && result?.length) {
         commit('updateLastTxs', {type: 'addToEnd', data: result})
+      }
+    },
+    async loadExchanges({commit}) {
+      const {success, result} = await fetchExchanges()
+      if(success && Object.keys(result)?.length) {
+        let list = {}
+        Object.values(result).forEach(i => {
+          list[i.address] = i.title.trim().replaceAll(':', '')
+        })
+        // window.exchanges = list
+        commit('setExchanges', list)
       }
     },
   }

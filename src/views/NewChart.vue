@@ -78,6 +78,7 @@ import { initChart } from "@/helpers/chart/chart";
 import TableHistory from "@/components/TableHistory";
 import { priceFormatter, shortNumber } from "@/helpers/common";
 import store from "@/store";
+import { fetchExchanges } from "@/api";
 
 export default {
   name: "NewChart",
@@ -109,6 +110,7 @@ export default {
 
     this.network = network
     this.pairAddr = pairAddress
+    await this.$store.dispatch('chart/loadExchanges')
   },
 
   mounted() {
