@@ -4,26 +4,26 @@ import store from "@/store";
 
 const lastBarsCache = new Map();
 
-let findedSymbols = [
+let findedPairs = [
 //   {
 //   symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
+//   full_name: 'Exchange:Symbol:Address'
 //   pair_id: 5787,
-//   full_name: 'PanCake v2:TANK/BUSD:0x4e14498c6f679c6421db117bc9e9b08671d42996', // Kraken:XMR/BTC:pairAddr - full symbol name
+//   pair_addr: '0x0...'
 //   exchange: 'PanCake v2', // Binance - symbol exchange name
-//   type: 'Binance Smart Chain', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
+//   exchange_id: 11,
+//   type: 'BSC', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
 //   description: '', // require for initial load page, or library show full_name
+//   tx_count: 111
 // }
 ]
 
 async function loadDefaultPair(symbolFullName) {
-  // const pairAddress = symbolFullName.split(':')[2]
   const {success, result} = await searchPair( { search: symbolFullName, exchange: '', network: '' })
   if(success && result?.content && result.content.length) {
-    const pair = result.content[0]
-    pair.description = `Pair: ${shortAddress(pair.pair_addr)} | TX: ${toNumber(pair.tx_count)} | ID: ${pair.pair_id}`
-    findedSymbols = [pair]
-    window.tvWidget.activeChart().setSymbol(pair.full_name)
-    store.dispatch('chart/setSymbol', pair).then()
+    fillFindedPairs(result.content)
+    window.tvWidget.activeChart().setSymbol(findedPairs[0].full_name)
+    store.dispatch('chart/setSymbol', findedPairs[0]).then()
 
   } else {
     // await store.dispatch('showAlert', ({msg: 'Error. Pair not found', color: 'error'}))
@@ -63,6 +63,19 @@ const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberF
 const shortAddress = (wallet) => wallet.slice(0,12) + '...' + wallet.slice(-12)
 const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
 
+function fillFindedPairs(data) {
+  data.forEach(i => {
+    i.full_name = `${i.exchange}:${i.symbol}:${i.pair_addr}`
+    i.description = `Pair: ${shortAddress(i.pair_addr)} | TX: ${toNumber(i.tx_count)} | ID: ${i.pair_id}`
+  })
+  data.sort((a,b) => { // filter by TX count, DESC
+    if(a.tx_count > b.tx_count) return -1
+    if(a.tx_count < b.tx_count) return 1
+    return 0
+  })
+  findedPairs = [...data]
+}
+
 export default {
   onReady: (callback) => {
     console.log('[onReady]: Method call');
@@ -85,16 +98,7 @@ export default {
       onResultReadyCallback([]);
       return
     }
-    result.content.forEach(i => {
-      i.description = `Pair: ${shortAddress(i.pair_addr)} | TX: ${toNumber(i.tx_count)} | ID: ${i.pair_id}`
-      i.exchange = i.exchange === 'UNKNOWN_ROUTER' ? 'UNKNOWN' : i.exchange
-    })
-    result.content.sort((a,b) => { // filter by TX count, DESC
-      if(a.tx_count > b.tx_count) return -1
-      if(a.tx_count < b.tx_count) return 1
-      return 0
-    })
-    findedSymbols = [...result.content]
+    fillFindedPairs(result.content)
 
     onResultReadyCallback(result.content);
   },
@@ -105,12 +109,12 @@ export default {
     onResolveErrorCallback,
   ) => {
     console.log('[resolveSymbol]: Method call', symbolFullName);
-    if(!findedSymbols.length) {
+    if(!findedPairs.length) {
       await loadDefaultPair(symbolFullName)
       return;
     } // on load page get default pair
 
-    const symbolItem = findedSymbols.find(({full_name}) => full_name === symbolFullName);
+    const symbolItem = findedPairs.find(({full_name}) => full_name === symbolFullName);
 
     if (!symbolItem) {
       console.log('[resolveSymbol]: Cannot resolve symbol', symbolFullName);
@@ -124,10 +128,12 @@ export default {
       description: symbolItem.description, // выводится рядом с зеленой иконкой коннекта
       type: symbolItem.type,
       pair_id: symbolItem.pair_id,
-      session: '24x7',
-      timezone: 'Etc/UTC',
+      pair_addr: symbolItem.pair_addr,
       exchange: symbolItem.exchange,
       exchange_id: symbolItem.exchange_id,
+      tx_count: symbolItem.tx_count,
+      session: '24x7',
+      timezone: 'Etc/UTC',
       minmov: 1, // формат цены
       pricescale: 100000, // формат цены. 100 - 2 символа после запятой, 1000 - 3 символа
       has_intraday: true, // включение минутных свечей, но надо сконфигурировать
@@ -231,7 +237,7 @@ export default {
 
   unsubscribeBars: (subscriberUID) => {
     console.log('[unsubscribeBars]: Method call with subscriberUID:', subscriberUID);
-    findedSymbols = []
+    findedPairs = []
     unsubscribeFromStream(subscriberUID);
   },
 

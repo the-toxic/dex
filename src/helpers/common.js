@@ -9,11 +9,11 @@ export function symbolItemByInfo(symbolInfo) {
     full_name: symbolInfo.full_name,
     exchange: symbolInfo.exchange,
     exchange_id: symbolInfo.exchange_id,
-    pair_addr: symbolInfo.full_name.split(':')[2],
+    pair_addr: symbolInfo.pair_addr,
     pair_id: symbolInfo.pair_id,
     type: symbolInfo.type,
     description: symbolInfo.description,
-    needInvert: symbolInfo.needInvert
+    tx_count: symbolInfo.tx_count
   }
 }
 
