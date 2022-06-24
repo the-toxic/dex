@@ -53,13 +53,13 @@ import store from "@/store";
 
 export const searchPair = async (payload) => {
   const {data} = await axios.post(`xhr/search_pair`, payload, {
-    headers: { session_id: store.getters['chart/sessionId'] },
+    headers: { 'x-session-id': store.getters['chart/sessionId'] },
   });
   return data
 }
 export const fetchPairInfo = async (pairId) => {
   const {data} = await axios.get(`xhr/pair_info?pair_id=${pairId}`, {
-    headers: { session_id: store.getters['chart/sessionId'] },
+    headers: { 'x-session-id': store.getters['chart/sessionId'] },
   });
   return data
 }
@@ -67,13 +67,13 @@ export const fetchHistoryTable = async (payload) => {
   const pairId = payload.pair_id
   const lastTxId = payload.tx_id || 0
   const {data} = await axios.get(`xhr/txs?pair_id=${pairId}&tx_id=${lastTxId}`, {
-    headers: { session_id: store.getters['chart/sessionId'] },
+    headers: { 'x-session-id': store.getters['chart/sessionId'] },
   });
   return data
 }
 export const fetchHistoryCandles = async (body) => {
   const {data} = await axios.post(`xhr/limit_candles_history`, body, {
-    headers: { session_id: store.getters['chart/sessionId'] },
+    headers: { 'x-session-id': store.getters['chart/sessionId'] },
   });
   return data
 }
