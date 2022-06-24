@@ -88,12 +88,11 @@ export default {
     async loadExchanges({commit}) {
       const {success, result} = await fetchExchanges()
       if(success && Object.keys(result)?.length) {
-        let list = {}
-        Object.values(result).forEach(i => {
-          list[i.address] = i.title.trim().replaceAll(':', '')
+        Object.keys(result).forEach(idx => {
+          result[idx] = result[idx].title.trim().replaceAll(':', '')
         })
         // window.exchanges = list
-        commit('setExchanges', list)
+        commit('setExchanges', result)
       }
     },
   }

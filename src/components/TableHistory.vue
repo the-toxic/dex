@@ -56,8 +56,7 @@ export default {
       return this.lastTXs.map(item => {
         item.parsedPrice = priceFormatter(+item.amount_token1/+item.amount_token0)
         item.parsedDate = new Date((item.date + this.tzOffset) * 1000).toISOString().slice(0, 19).split('T').join(' ')
-        item.makerTitle = this.exchangesList.hasOwnProperty(item.maker) ? this.exchangesList[item.maker] : this.shortAddress(item.maker)
-        console.log(this.exchangesList.hasOwnProperty(item.maker))
+        item.makerTitle = this.exchangesList.hasOwnProperty(item.router_id) ? this.exchangesList[item.router_id] : this.shortAddress(item.maker)
         // console.log(item.parsedDate)
         return item
       })

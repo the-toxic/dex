@@ -138,8 +138,8 @@ function candleMessageHandler(data) {
 }
 
 function tableMessageHandler(data) {
-  // 1~10~15~1651639383.0~867.1865216318507~2.2613733312250917~0x2eae1660df22b0bbd80170092c23ff965e72a79c~0x2eae1660df22b0bbd80170092c23ff965e72a79c~0xe6a49844d7e3bfb4cf4cb7a25d531a8256e0b9c480dbd89a78c3c60fded5b118~buy
-  // таблица 1~{pair_id}~{span}~{ts}~{amount0}~{amount1}~{maker}~{receiver}~{tx}~{direction}
+  // 1~10~15~1651639383.0~867.1865216318507~2.2613733312250917~0x2eae1660df22b0bbd80170092c23ff965e72a79c~0x2eae1660df22b0bbd80170092c23ff965e72a79c~0xe6a49844d7e3bfb4cf4cb7a25d531a8256e0b9c480dbd89a78c3c60fded5b118~buy~123
+  // таблица 1~{pair_id}~{span}~{ts}~{amount0}~{amount1}~{maker}~{receiver}~{tx}~{direction}~{router_id}
   // цена = правое делить на левое
   // объём = цена * на левое
   let [
@@ -152,7 +152,8 @@ function tableMessageHandler(data) {
     maker, // 0x...
     receiver, // 0x...
     tx, // 0x...
-    type // buy | sell
+    type, // buy | sell
+    routerId, // 123
   ] = data.split('~');
 
   // if(store.getters['chart/needInvert']) {
@@ -172,6 +173,7 @@ function tableMessageHandler(data) {
     maker,
     receiver,
     tx,
+    router_id: parseInt(routerId)
   }
   // console.log('table', data)
   store.dispatch('chart/addNewTx', item).then()
