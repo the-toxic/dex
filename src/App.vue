@@ -10,13 +10,16 @@
           <v-list-item-icon><v-icon color="grey">mdi-menu-open</v-icon></v-list-item-icon>
           <v-list-item-content><v-list-item-title>Chart</v-list-item-title></v-list-item-content>
         </v-list-item>
-        <!--<v-list-item @click="showWalletDialog(true)">-->
-        <!--  <v-list-item-icon left>-->
-        <!--    <v-icon v-if="!!wallet" color="green" alt="Wallet connected">mdi-wallet</v-icon>-->
-        <!--    <v-icon v-else alt="Wallet disconnected">mdi-wallet</v-icon>-->
-        <!--  </v-list-item-icon>-->
-        <!--  <v-list-item-content><v-list-item-title>Wallet</v-list-item-title></v-list-item-content>-->
-        <!--</v-list-item>-->
+
+        <v-list-item v-if="!$store.getters['wallet/account']" link @click="connect">
+          <v-list-item-icon><v-icon color="grey">mdi-menu-open</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>Sign in</v-list-item-title></v-list-item-content>
+        </v-list-item>
+        <v-list-item v-else link  @click="disconnect">
+          <v-list-item-icon><v-icon color="grey">mdi-menu-open</v-icon></v-list-item-icon>
+          <v-list-item-content><v-list-item-title>Log Out</v-list-item-title></v-list-item-content>
+        </v-list-item>
+
       </v-list>
     </v-navigation-drawer>
 
@@ -38,19 +41,24 @@
 
         <v-spacer />
 
-        <!--<v-btn icon :ripple="false" @click="showWalletDialog(true)" class="d-none d-md-inline-flex">-->
-        <!--  <v-icon v-if="!!wallet" color="green" alt="Wallet connected">mdi-wallet</v-icon>-->
-        <!--  <v-icon v-else alt="Wallet disconnected">mdi-wallet</v-icon>-->
-        <!--</v-btn>-->
-
         <v-btn v-if="$route.name === 'Pair'" icon small :ripple="false" @click="showSearch">
           <v-icon small color="#B3B5BD" class="px-2" alt="Show Search">mdi-magnify</v-icon>
         </v-btn>
+
+        <v-speed-dial v-if="$store.getters['wallet/account']" v-model="profileBtn" open-on-hover class="d-none d-md-flex" direction="bottom">
+          <template v-slot:activator>
+            <v-btn v-model="profileBtn" plain :ripple="false" class="text-capitalize">{{ shortAddress($store.getters['wallet/account']) }} <v-icon right small>mdi-arrow-down-drop-circle-outline</v-icon></v-btn>
+          </template>
+          <p class="mb-2 text-center text-no-wrap">{{ $store.getters['wallet/providerName'] }}</p>
+          <v-btn small rounded elevation="0" outlined color="error" width="140" @click="disconnect"><v-icon small left>mdi-logout</v-icon>Disconnect</v-btn>
+        </v-speed-dial>
+        <v-btn v-else @click="connect" plain :ripple="false" class="d-none d-md-block">Connect Wallet</v-btn>
+
         <v-icon right small v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
 
 
         <!-- Menu open icon for mobile -->
-        <v-app-bar-nav-icon v-if="$vuetify.breakpoint.smAndDown" @click.stop="drawer = !drawer" class="ml-3"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon v-if="$vuetify.breakpoint.smAndDown" @click.stop="drawer = !drawer" class="ml-3" style="height: 31px"></v-app-bar-nav-icon>
 
         <!-- Loader on redirects -->
         <v-progress-linear :active="globalLoader" indeterminate absolute top ></v-progress-linear>
@@ -85,24 +93,23 @@
       </div>
     </v-footer>
 
-    <WalletDialog />
     <Alert />
 
   </v-app>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-import WalletDialog from "@/components/WalletDialog.vue";
+import { mapGetters } from "vuex";
 import Alert from "@/components/Alert.vue";
 import { showChartSearch } from "@/helpers/chart/chart";
+import { connect, disconnect } from "@/helpers/web3";
 
 export default {
   name: 'App',
-  components: {Alert, WalletDialog},
-  // components: {Test},
+  components: {Alert},
   data: () => ({
     drawer: false,
+    profileBtn: false,
     BLOG_HOST: process.env.VUE_APP_BLOG_HOST,
     DOCS_HOST: process.env.VUE_APP_DOCS_HOST,
   }),
@@ -113,17 +120,19 @@ export default {
   },
   computed: {
     isRouterReady() { return this.$route.name !== null },
-    ...mapGetters([
-      'globalLoader',
-      'wallet',
-      'wsConnected'
-    ])
+    ...mapGetters([ 'globalLoader', 'wsConnected' ])
   },
   methods: {
-    ...mapActions({showWalletDialog: 'showWalletDialog'}),
     showSearch() {
       showChartSearch()
-    }
+    },
+    connect() {
+      this.drawer = false
+      connect().then(success => {
+        console.log('connect', success)
+      })
+    },
+    disconnect: () => disconnect(),
   }
 }
 </script>

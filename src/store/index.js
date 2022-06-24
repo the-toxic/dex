@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 import chart from "./modules/chart";
-// import wallet from "./modules/wallet";
+import wallet from "./modules/wallet";
 
 const initShowCookie = (() => !window.localStorage.getItem('cookiePopup'))()
 
@@ -12,7 +12,8 @@ export default new Vuex.Store({
   // enable in dev work, because tracking the storage change method increases the load on the browser
   strict: process.env.NODE_ENV !== 'production',
   modules: {
-    chart
+    chart,
+    wallet
   },
   state: {
     globalLoader: false,
@@ -21,17 +22,13 @@ export default new Vuex.Store({
       color: ''
     },
     wsConnected: false,
-    wallet: null,
     dialog: false,
-    walletDialog: false,
     subscribeForm: false,
     showCookie: initShowCookie,
   },
   getters: {
     globalLoader: state => (state.globalLoader),
     wsConnected: state => (state.wsConnected),
-    wallet: state => (state.wallet),
-    walletDialog: state => (state.walletDialog),
     subscribeForm: state => (state.subscribeForm),
     // getTankById: state => (id) => (state.tanks.find(item => item.id === id)),
   },
@@ -45,12 +42,6 @@ export default new Vuex.Store({
     },
     setDialog(state, name) {
       state.dialog = name || false
-    },
-    setWalletDialog(state, visible) {
-      state.walletDialog = visible || false
-    },
-    setWallet(state, payload) {
-      state.wallet = payload
     },
     setSubscribeForm(state, visible) {
       state.subscribeForm = visible || false
@@ -70,12 +61,6 @@ export default new Vuex.Store({
     },
     showDialog({commit}, payload) {
       commit('setDialog', payload)
-    },
-    showWalletDialog({commit}, payload) {
-      commit('setWalletDialog', payload)
-    },
-    updateWallet({commit}, payload) {
-      commit('setWallet', payload)
     },
     showSubscribeForm({commit}, payload) {
       commit('setSubscribeForm', payload)

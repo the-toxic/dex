@@ -36,7 +36,7 @@ export function httpInt() {
     const code = parseInt(error.response && error.response.status)
     // if(code === 401) {
     //   if(error.response.config.url.includes('garage/')) {
-    //     await store.dispatch('garage/logOut')
+    //     await store.dispatch('wallet/logOut')
     //     await store.dispatch('showWalletDialog', true)
     //     await store.dispatch('showAlert', {msg: 'Session expired. Need to reconnect MetaMask account.', color: 'error'})
     //   } else {

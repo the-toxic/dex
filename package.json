@@ -7,6 +7,8 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@coinbase/wallet-sdk": "^3.3.0",
+    "@walletconnect/web3-provider": "^1.7.8",
     "axios": "^0.26.1",
     "core-js": "^3.18.3",
     "ethers": "^5.5.4",
@@ -17,7 +19,8 @@
     "vue-head": "^2.2.0",
     "vue-router": "^3.5.2",
     "vuetify": "^2.5.10",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "web3modal": "^1.9.8"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.13",

@@ -10,9 +10,11 @@ import '@/plugins/clipboard'
 import {httpInt} from './helpers/interceptors';
 httpInt();
 
-// import '@/helpers/web3'
-
 import '@/styles/site.scss'
+
+import '@/helpers/web3'
+
+store.commit('wallet/loginWithLocalStorage');
 
 import App from '@/App.vue'
 import CopyLabel from "@/components/CopyLabel"

@@ -37,7 +37,7 @@ router.beforeEach((to, from, next) => {
   store.commit('setGlobalLoader', true)
   setTimeout(() => store.commit('setGlobalLoader', false), 1000)
 
-  // if(to.matched.some(item => item.meta?.['garageLogged']) && !mainStore.getters['garage/account']) {
+  // if(to.matched.some(item => item.meta?.['garageLogged']) && !mainStore.getters['wallet/account']) {
   //   if(from.name === null) {
   //     next({name: 'Home'}) // on load page
   //     return

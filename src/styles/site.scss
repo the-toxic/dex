@@ -189,3 +189,46 @@ $primaryFont: sans-serif;
     height: 40px !important;
   }
 }
+
+// web3modal
+.web3modal-modal-card { // wrap
+  font-family: $primaryFont;
+  //border-radius: 0 !important;
+  display: block !important;
+  max-width: 500px !important;
+  padding: 30px !important;
+  //border: 3px solid #3e3e3e;
+
+  &::before {
+    content: 'Connect a Wallet';
+    font-family: $primaryFont;
+    font-weight: bold;
+    display: block;
+    font-size: 22px;
+    margin-bottom: 15px;
+    text-align: left;
+    color: #ffcb12;
+  }
+  .web3modal-provider-wrapper { padding: 0 }
+  .web3modal-provider-container { // sub item
+    border-radius: 0 !important;
+    flex-direction: row-reverse;
+    background: #1D2231;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+  }
+  .web3modal-provider-name {
+    margin-top: 2px;
+    text-align: left;
+    font-weight: normal;
+  }
+  .web3modal-provider-description { display: none; }
+}
+.v-speed-dial--is-active {
+  .v-speed-dial__list {
+    background: #2D3245;
+    border-radius: 3px;
+    padding: 10px 20px;
+    width: auto;
+  }
+}
