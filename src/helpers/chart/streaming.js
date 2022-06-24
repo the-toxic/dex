@@ -218,7 +218,7 @@ export function subscribeOnStream(
   };
   channelToSubscription.set(channelString, subscriptionItem);
   console.log('[subscribeBars]: Subscribe to streaming. SubAdd Channel:', channelString);
-  socket.emit('SubAdd', { subs: [channelString] });
+  socket.emit('SubAdd', { subs: [channelString], session_id: store.getters['chart/sessionId'] });
 }
 
 export function unsubscribeFromStream(subscriberUID) {
@@ -234,7 +234,7 @@ export function unsubscribeFromStream(subscriberUID) {
       if (subscriptionItem.handlers.length === 0) {
         // unsubscribe from the channel, if it was the last handler
         console.log('[unsubscribeBars]: Unsubscribe from streaming. SubRemove Channel:', channelString);
-        socket.emit('SubRemove', { subs: [channelString] });
+        socket.emit('SubRemove', { subs: [channelString], session_id: store.getters['chart/sessionId'] });
         channelToSubscription.delete(channelString);
         break;
       }
