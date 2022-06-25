@@ -89,7 +89,7 @@ export default {
       const {success, result} = await fetchExchanges()
       if(success && Object.keys(result)?.length) {
         Object.keys(result).forEach(idx => {
-          result[idx] = result[idx].title.trim().replaceAll(':', '')
+          result[idx].title = result[idx].title.trim().replaceAll(':', '')
         })
         // window.exchanges = list
         commit('setExchanges', result)

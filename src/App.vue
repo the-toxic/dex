@@ -52,7 +52,7 @@
           <p class="mb-2 text-center text-no-wrap">{{ $store.getters['wallet/providerName'] }}</p>
           <v-btn small rounded elevation="0" outlined color="error" width="140" @click="disconnect"><v-icon small left>mdi-logout</v-icon>Disconnect</v-btn>
         </v-speed-dial>
-        <v-btn v-else @click="connect" plain :ripple="false" class="d-none d-md-block">Connect Wallet</v-btn>
+        <v-btn v-else @click="connect" icon plain :ripple="false" class="d-none d-md-block" height="31"><v-icon>mdi-wallet</v-icon></v-btn>
 
         <v-icon right small v-if="$route.name === 'Pair'" :color="!wsConnected ? 'red' : (wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
 

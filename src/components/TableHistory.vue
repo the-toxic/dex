@@ -7,6 +7,7 @@
       <th class="text-center">Price</th>
       <th class="text-center">{{ leftToken }}</th>
       <th class="text-center">{{ rightToken }}</th>
+      <th class="text-center">Router</th>
       <th class="text-center">Maker</th>
       <th class="text-center">Receiver</th>
       <th class="text-center">Actions</th>
@@ -22,7 +23,11 @@
       <td>{{ priceFormatter(item.parsedPrice) }}</td>
       <td>{{ priceFormatter(item.amount_token0) }}</td>
       <td>{{ priceFormatter(item.amount_token1) }}</td>
-      <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.makerTitle }}</a></td>
+      <td>
+        <a v-if="item.router.address" :href="`https://bscscan.com/address/${item.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.router.title }}</a>
+        <span v-else>{{ item.router.title }}</span>
+      </td>
+      <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.maker) }}</a></td>
       <td><a :href="`https://bscscan.com/address/${item.receiver}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.receiver) }}</a></td>
       <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">Show Tx</a></td>
     </tr>
@@ -56,7 +61,7 @@ export default {
       return this.lastTXs.map(item => {
         item.parsedPrice = priceFormatter(+item.amount_token1/+item.amount_token0)
         item.parsedDate = new Date((item.date + this.tzOffset) * 1000).toISOString().slice(0, 19).split('T').join(' ')
-        item.makerTitle = this.exchangesList.hasOwnProperty(item.router_id) ? this.exchangesList[item.router_id] : this.shortAddress(item.maker)
+        item.router = this.exchangesList.hasOwnProperty(item.router_id) ? this.exchangesList[item.router_id] : { title: '—', address: null }
         // console.log(item.parsedDate)
         return item
       })
