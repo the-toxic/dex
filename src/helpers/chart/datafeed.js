@@ -12,6 +12,7 @@ let findedPairs = [
 //   pair_addr: '0x0...'
 //   exchange: 'PanCake v2', // Binance - symbol exchange name
 //   exchange_id: 11,
+//   need_invert: false,
 //   type: 'BSC', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
 //   description: '', // require for initial load page, or library show full_name
 //   tx_count: 111
@@ -26,8 +27,8 @@ async function loadDefaultPair(symbolFullName) {
     store.dispatch('chart/setSymbol', findedPairs[0]).then()
 
   } else {
-    // await store.dispatch('showAlert', ({msg: 'Error. Pair not found', color: 'error'}))
-    location.href = '/home?msg=pair404'
+    await store.dispatch('showAlert', ({msg: 'Error. Pair not found', color: 'error'}))
+    // location.href = '/home?msg=pair404'
   }
 }
 
@@ -132,6 +133,7 @@ export default {
       exchange: symbolItem.exchange,
       exchange_id: symbolItem.exchange_id,
       tx_count: symbolItem.tx_count,
+      need_invert: symbolItem.need_invert,
       session: '24x7',
       timezone: 'Etc/UTC',
       minmov: 1, // формат цены
@@ -147,7 +149,6 @@ export default {
       visible_plots_set: 'ohlcv', // Support: open, high, low, close. With 'value': "ohlcv"
       // volume_precision: 2, // кол-во десятичных символов в объеме
       data_status: 'streaming', // streaming | endofday | pulsed | delayed_streaming
-      // needInvert: false
     };
     // symbolInfo.checkInvert = function () {
     //   const detectStablecoin = this.name.match(/BUSD|TUSD|USDT|USDC|DAI|USD|UST/)

@@ -79,7 +79,6 @@ export const fetchHistoryCandles = async (body) => {
 }
 
 export const fetchExchanges = async () => {
-  const {data} = await axios.get(`xhr/routers`, {
-  });
+  const {data} = await axios.get(`xhr/routers`);
   return data
 }

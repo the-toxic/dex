@@ -86,15 +86,15 @@ function candleMessageHandler(data) {
     amount1, // 0.05
   ] = data.split('~');
 
-  // if(store.getters['chart/needInvert']) {
-  //   const oldAmount0 = amount0
-  //   amount0 = amount1
-  //   amount1 = oldAmount0
-  // }
+  if(store.getters['chart/needInvert']) {
+    const oldAmount0 = amount0
+    amount0 = amount1
+    amount1 = oldAmount0
+  }
 
   const tradeTime = parseInt(tradeTimeStr) * 1000;
   const tradePrice = parseFloat(amount1 / amount0);
-  const tradeVolume = parseFloat(amount0);
+  const tradeVolume = parseFloat(amount1);
 
   const channelString = `0~${pair_id}~${resolution}`;
   const subscriptionItem = channelToSubscription.get(channelString);
@@ -156,13 +156,11 @@ function tableMessageHandler(data) {
     routerId, // 123
   ] = data.split('~');
 
-  // if(store.getters['chart/needInvert']) {
-  //   const oldAmount0 = amount0
-  //   amount0 = amount1
-  //   amount1 = oldAmount0
-  // }
-
-  // const tradeVolume = parseInt(tradePrice * amount0);
+  if(store.getters['chart/needInvert']) {
+    const oldAmount0 = amount0
+    amount0 = amount1
+    amount1 = oldAmount0
+  }
 
   const item = {
     date: parseInt(tradeTimeStr),

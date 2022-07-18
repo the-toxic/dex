@@ -13,7 +13,8 @@ export function symbolItemByInfo(symbolInfo) {
     pair_id: symbolInfo.pair_id,
     type: symbolInfo.type,
     description: symbolInfo.description,
-    tx_count: symbolInfo.tx_count
+    tx_count: symbolInfo.tx_count,
+    need_invert: symbolInfo.need_invert
   }
 }
 
