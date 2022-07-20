@@ -86,6 +86,10 @@ function candleMessageHandler(data) {
     amount1, // 0.05
   ] = data.split('~');
 
+  if(+store.getters['chart/activeSymbol'].pair_id !== +pair_id) {
+    return; // fix bug delay call SubRemove
+  }
+
   if(store.getters['chart/needInvert']) {
     const oldAmount0 = amount0
     amount0 = amount1
@@ -144,7 +148,7 @@ function tableMessageHandler(data) {
   // объём = цена * на левое
   let [
     , // 1 | 0
-    , // pair_id
+    pair_id, // pair_id
     , // resolution (1D)
     tradeTimeStr, // 1649773293
     amount0,
@@ -155,6 +159,10 @@ function tableMessageHandler(data) {
     type, // buy | sell
     routerId, // 123
   ] = data.split('~');
+
+  if(+store.getters['chart/activeSymbol'].pair_id !== +pair_id) {
+    return; // fix bug delay call SubRemove
+  }
 
   if(store.getters['chart/needInvert']) {
     const oldAmount0 = amount0

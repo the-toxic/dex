@@ -20,7 +20,7 @@ export default {
     pairInfo: state => state.pairInfo,
     sessionId: state => state.sessionId,
     exchangesList: state => state.exchangesList,
-    needInvert: state => state.activeSymbol.need_invert || false,
+    needInvert: state => state.activeSymbol?.need_invert || false,
     leftToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[0] : '',
     rightToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[1]: '',
     lastTXs: state => state.lastTXs,

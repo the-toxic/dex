@@ -7,7 +7,7 @@
       <th class="text-center">Price</th>
       <th class="text-center">{{ leftToken }}</th>
       <th class="text-center">{{ rightToken }}</th>
-      <th class="text-center">Router</th>
+      <th class="text-center">Aggregator</th>
       <th class="text-center">Maker</th>
       <th class="text-center">Receiver</th>
       <th class="text-center">Actions</th>
