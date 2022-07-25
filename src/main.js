@@ -1,7 +1,10 @@
 import Vue from 'vue'
+import VueVirtualScroller from 'vue-virtual-scroller'
 import router from '@/router'
 import store from '@/store'
 import vuetify from './plugins/vuetify'
+
+Vue.use(VueVirtualScroller)
 
 import '@/plugins/vue-head'
 import '@/plugins/vue-gtag'
