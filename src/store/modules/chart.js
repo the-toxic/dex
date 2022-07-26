@@ -38,10 +38,9 @@ export default {
         state.lastTXs = data
       } else if(type === 'addToStart') {
         state.lastTXs.unshift(data) // add to start array
-        // todo обрезать только если юзер не скроллил (до последней), иначе при скролле может удалить только что загруженные
-        if(state.lastTXs.length > 1000) {
-          state.lastTXs = state.lastTXs.slice(0, 1000)
-        }
+        // if(state.lastTXs.length > 1000) {
+        //   state.lastTXs = state.lastTXs.slice(0, 1000)
+        // }
       } else if(type === 'addToEnd') {
         state.lastTXs.push(...data) // add to end array
       }

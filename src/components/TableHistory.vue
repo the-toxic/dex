@@ -17,9 +17,12 @@
       <div class="txsTableTd">Actions</div>
     </template>
 
-    <template #after v-if="loading || !rows.length">
+    <template #after>
       <div v-if="loading" class="text-center flex-fill"><v-skeleton-loader type="table-tbody" /> <v-skeleton-loader type="table-tbody" /></div>
       <div v-else-if="!loading && !rows.length" class="text-center flex-fill">No activity</div>
+      <div v-if="!loading && rows.length" v-intersect="infiniteScrolling" class="text-center flex-fill">
+        <v-progress-circular :size="50" :width="4" color="white" indeterminate class="ma-2" />
+      </div>
     </template>
 
     <template v-slot="{ item }" v-if="!loading && rows.length">
