@@ -1,0 +1,4 @@
+.rsyncignore
+.gitignore
+.git
+/bitbucket-pipelines.yml
