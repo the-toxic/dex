@@ -2,11 +2,9 @@ import axios from 'axios';
 import store from '../store';
 
 let apiDomain = process.env.VUE_APP_API_DOMAIN
-// if(window.location.host.includes('.xyz') || window.location.host.includes('localhost')) { // if dev
-//   apiDomain =  process.env.VUE_APP_API_DOMAIN_DEV
-// } else {
-//   apiDomain =  process.env.VUE_APP_API_DOMAIN
-// }
+if(window.location.host.includes('.app') || window.location.host.includes('localhost')) { // if dev
+  apiDomain =  process.env.VUE_APP_API_DOMAIN_DEV
+}
 axios.defaults.baseURL = apiDomain + process.env.VUE_APP_API_PATH;
 
 export function httpInt() {

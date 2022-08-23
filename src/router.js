@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from "@/store"
 import Home from "@/views/Home.vue";
-import Pair from "@/views/Pair.vue";
 import E404 from "@/views/E404.vue"
 import NewChart from "@/views/NewChart.vue";
 import Analyse from "@/views/Analyse";
@@ -16,7 +15,7 @@ const router = new VueRouter({
   linkActiveClass: "active", // класс активного пункта меню
   linkExactActiveClass: "exact-active",
   routes: [
-    { path: '/', name: 'Pairs', redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae'} } },
+    { path: '/', name: 'Pairs', redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
     { path: '/home', name: 'Home', component: Home },
     { path: '/:network([a-zA-Z0-9]{2,10})/pe/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', component: NewChart },
     { path: '/analyse', name: 'Analyse', component: Analyse },

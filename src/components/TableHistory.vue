@@ -11,7 +11,7 @@
       <div class="txsTableTd">Price</div>
       <div class="txsTableTd">{{ leftToken }}</div>
       <div class="txsTableTd">{{ rightToken }}</div>
-      <div class="txsTableTd">Aggregator</div>
+      <div class="txsTableTd" style="flex-grow: 2">Aggregator</div>
       <div class="txsTableTd">Maker</div>
       <div class="txsTableTd">Receiver</div>
       <div class="txsTableTd">Actions</div>
@@ -31,7 +31,7 @@
       <div class="txsTableTd">{{ priceFormatter(item.parsedPrice) }}</div>
       <div class="txsTableTd">{{ priceFormatter(item.amount_token0) }}</div>
       <div class="txsTableTd">{{ priceFormatter(item.amount_token1) }}</div>
-      <div class="txsTableTd">
+      <div class="txsTableTd text-center" style="flex-grow: 2">
         <a v-if="item.router.address" :href="`https://bscscan.com/address/${item.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.router.title }}</a>
         <span v-else>{{ item.router.title }}</span>
       </div>
