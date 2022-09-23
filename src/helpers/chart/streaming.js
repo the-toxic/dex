@@ -3,7 +3,12 @@ import store from '@/store'
 
 const channelToSubscription = new Map();
 
-const socket = io(process.env.VUE_APP_API_DOMAIN, {
+let apiDomain = process.env.VUE_APP_API_DOMAIN
+if(window.location.host.includes('.app') || window.location.host.includes('localhost')) { // if dev
+  apiDomain =  process.env.VUE_APP_API_DOMAIN_DEV
+}
+
+const socket = io(apiDomain, {
   path: '/ws/socket.io',
   transports: ['websocket', 'polling', 'flashsocket'],
   query: {
