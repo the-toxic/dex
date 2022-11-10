@@ -72,16 +72,22 @@ export default {
       }
     },
     async addNewTx({commit, state}, newTx) {
-      newTx.tx_id = state.lastTXs[0]['tx_id'] + 1 // так не совсем правильно, но схема рабочая
+      // newTx.tx_id = state.lastTXs[0]['tx_id'] + 1 // наверно эта строка не нужна, если tx_id больше нет
       commit('updateLastTxs', {type: 'addToStart', data: newTx})
     },
     async loadOldTXs({state, commit}) {
+      const lastTx = state.lastTXs[state.lastTXs.length - 1]
       const {success, result} = await fetchHistoryTable({
         pair_id: state.activeSymbol.pair_id,
-        block_id: state.lastTXs[state.lastTXs.length - 1]['tx_id']
+        block_id: lastTx['block_id']
       })
       if(success && result?.length) {
-        commit('updateLastTxs', {type: 'addToEnd', data: result})
+        // проходимся по результату и если в блоке есть та-же tx или свежее, чем последняя в сторе, образеем их
+        const data = result.filter(item => {
+          if(lastTx.block_id !== item.block_id) return true
+          return (lastTx.tx !== item.tx && lastTx.date > item.date)
+        })
+        commit('updateLastTxs', {type: 'addToEnd', data})
       }
     },
     async loadExchanges({commit}) {
