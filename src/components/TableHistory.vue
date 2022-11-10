@@ -1,7 +1,7 @@
 <template>
   <RecycleScroller v-if="activeSymbol"
     :item-size="30"
-    key-field="tx_id"
+    key-field="tx"
     :items="rows"
     class="txsTable">
 

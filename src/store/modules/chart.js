@@ -78,7 +78,7 @@ export default {
     async loadOldTXs({state, commit}) {
       const {success, result} = await fetchHistoryTable({
         pair_id: state.activeSymbol.pair_id,
-        tx_id: state.lastTXs[state.lastTXs.length - 1]['tx_id']
+        block_id: state.lastTXs[state.lastTXs.length - 1]['tx_id']
       })
       if(success && result?.length) {
         commit('updateLastTxs', {type: 'addToEnd', data: result})
