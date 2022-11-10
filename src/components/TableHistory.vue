@@ -1,7 +1,7 @@
 <template>
   <RecycleScroller v-if="activeSymbol"
     :item-size="30"
-    key-field="tx_id"
+    key-field="tx"
     :items="rows"
     class="txsTable">
 
@@ -32,12 +32,12 @@
       <div class="txsTableTd">{{ priceFormatter(item.amount_token0) }}</div>
       <div class="txsTableTd">{{ priceFormatter(item.amount_token1) }}</div>
       <div class="txsTableTd text-center" style="flex-grow: 2">
-        <a v-if="item.router.address" :href="`https://bscscan.com/address/${item.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.router.title }}</a>
+        <a v-if="item.router.address" :href="`${blockchainDomain}/address/${item.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.router.title }}</a>
         <span v-else>{{ item.router.title }}</span>
       </div>
-      <div class="txsTableTd"><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.maker) }}</a></div>
-      <div class="txsTableTd"><a :href="`https://bscscan.com/address/${item.receiver}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.receiver) }}</a></div>
-      <div class="txsTableTd"><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">Show Tx</a></div>
+      <div class="txsTableTd"><a :href="`${blockchainDomain}/address/${item.maker}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.maker) }}</a></div>
+      <div class="txsTableTd"><a :href="`${blockchainDomain}/address/${item.receiver}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.receiver) }}</a></div>
+      <div class="txsTableTd"><a :href="`${blockchainDomain}/tx/${item.tx}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">Show Tx</a></div>
     </template>
   </RecycleScroller>
 <!--  <v-simple-table v-if="activeSymbol" fixed-header height="1000" class="myTable text-center">-->
@@ -110,7 +110,10 @@ export default {
       })
       // return this.lastTXs 
     },
-    tzOffset: () => -(new Date().getTimezoneOffset()) * 60
+    tzOffset: () => -(new Date().getTimezoneOffset()) * 60,
+		blockchainDomain() {
+			return this.activeSymbol.type === 'BSC' ? 'https://bscscan.com' : 'https://etherscan.io'
+		}
   },
   watch: {
     async activeSymbol(newVal, oldVal) {
