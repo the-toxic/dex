@@ -26,11 +26,11 @@
     </template>
 
     <template v-slot="{ item }" v-if="!loading && rows.length">
-      <div class="txsTableTd">{{ item.parsedDate }}</div>
-      <div class="txsTableTd text-uppercase">{{ item.type }}</div>
-      <div class="txsTableTd">{{ priceFormatter(item.parsedPrice) }}</div>
-      <div class="txsTableTd">{{ priceFormatter(item.amount_token0) }}</div>
-      <div class="txsTableTd">{{ priceFormatter(item.amount_token1) }}</div>
+      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.parsedDate }}</div>
+      <div class="txsTableTd text-uppercase" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.type }}</div>
+      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.parsedPrice) }}</div>
+      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.amount_token0) }}</div>
+      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.amount_token1) }}</div>
       <div class="txsTableTd text-center" style="flex-grow: 2">
         <a v-if="item.router.address" :href="`${blockchainDomain}/address/${item.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.router.title }}</a>
         <span v-else>{{ item.router.title }}</span>
@@ -108,7 +108,7 @@ export default {
         // console.log(item.parsedDate)
         return item
       })
-      // return this.lastTXs 
+      // return this.lastTXs
     },
     tzOffset: () => -(new Date().getTimezoneOffset()) * 60,
 		blockchainDomain() {
@@ -138,6 +138,12 @@ export default {
 <style>
 .txsTable {
   height: 700px;
+}
+.buyTd {
+	color: #27a69a;
+}
+.sellTd {
+	color: #f0534f;
 }
 
 .vue-recycle-scroller__item-wrapper { /* table */

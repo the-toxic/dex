@@ -40,8 +40,8 @@
         </v-card-text>
       </v-card>
       <v-progress-linear class="buySellProgress"
-        v-model="buySellRate" height="12"
-        color="#51A49A" background-color="#DE5F57"
+        v-model="buySellRate" height="12" :indeterminate="pairInfoLoading"
+        color="#51A49A" background-color="#DE5F57" background-opacity="#DE5F57"
       >
         <template v-slot:default="{ value }">
           <strong>{{ shortNumber(buyVolume24) }} {{ rightToken }} / {{ shortNumber(sellVolume24) }} {{ rightToken }}</strong>
@@ -51,7 +51,7 @@
       <div id="tv_chart_container"></div>
 
       <div class="d-flex flex-wrap justify-space-between align-center mt-6">
-        <div style="color:#C1C4D6;">Trade History</div>
+        <div style="color:#C1C4D6;">History Transactions</div>
         <!--<div style="color:#72747F;">-->
         <!--  <span class="mr-3">TXs count</span>-->
         <!--  <span class="" style="color:#305D5E;">Buy: {{ toNumber(buyTxCount24) }}</span> |-->
