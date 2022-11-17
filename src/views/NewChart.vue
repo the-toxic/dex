@@ -40,8 +40,8 @@
         </v-card-text>
       </v-card>
       <v-progress-linear class="buySellProgress"
-        v-model="buySellRate" height="12" :indeterminate="pairInfoLoading"
-        color="#51A49A" background-color="#DE5F57" background-opacity="#DE5F57"
+        v-model="buySellRate" height="12"
+        color="#51A49A" background-color="#DE5F57"
       >
         <template v-slot:default="{ value }">
           <strong>{{ shortNumber(buyVolume24) }} {{ rightToken }} / {{ shortNumber(sellVolume24) }} {{ rightToken }}</strong>
