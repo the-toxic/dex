@@ -1,7 +1,7 @@
 import Datafeed from "./datafeed";
-import store from "@/store";
-import { symbolItemByInfo } from "@/helpers/common";
-import { priceFormatter } from "@/helpers/common";
+// import store from "@/store";
+// import { symbolItemByInfo } from "@/helpers/common";
+// import { priceFormatter } from "@/helpers/common";
 
 export const initChart = (pairAddr) => {
   window.tvWidget = new TradingView.widget({
@@ -62,11 +62,12 @@ export const initChart = (pairAddr) => {
       // });
     });
 
-    tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
-      // symbolInfo.needInvert = symbolInfo.checkInvert()
-      const symbolItem = symbolItemByInfo(symbolInfo)
-      store.dispatch('chart/setSymbol', symbolItem).then()
-    });
+    // Вызывается только при ручном выборе пары через поиск
+    // tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
+    //   // symbolInfo.needInvert = symbolInfo.checkInvert()
+    //   // const symbolItem = symbolItemByInfo(symbolInfo)
+    //   // store.dispatch('chart/setSymbol', symbolItem).then()
+    // });
 
     // let f = () => { console.log('bars loaded'); };
     // let subsr = tvWidget.activeChart().onDataLoaded();

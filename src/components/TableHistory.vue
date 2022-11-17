@@ -119,7 +119,10 @@ export default {
     async activeSymbol(newVal, oldVal) {
       if(!newVal) return
       this.loading = true
-      await this.$store.dispatch('chart/loadHistoryTable', { pair_id: newVal.pair_id })
+      await this.$store.dispatch('chart/loadHistoryTable', {
+				chain_id: newVal.chain_id,
+				pair_id: newVal.pair_id
+			})
       this.loading = false
     }
   },
