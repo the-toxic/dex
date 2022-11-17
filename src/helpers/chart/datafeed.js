@@ -24,8 +24,6 @@ async function loadDefaultPair(symbolFullName) {
   if(success && result?.content && result.content.length) {
     fillFindedPairs(result.content)
     window.tvWidget.activeChart().setSymbol(findedPairs[0].full_name)
-    store.dispatch('chart/setSymbol', findedPairs[0]).then()
-
   } else {
     await store.dispatch('showAlert', ({msg: 'Error. Pair not found', color: 'error'}))
     // location.href = '/home?msg=pair404'
@@ -122,12 +120,18 @@ export default {
       onResolveErrorCallback('cannot resolve symbol');
       return;
     }
+
+    symbolItem.chain_id = symbolItem.type === 'BSC' ? 2 : (symbolItem.type === 'Ethereum' ? 1 : 0)
+
+    store.dispatch('chart/setSymbol', symbolItem).then()
+
     const symbolInfo = {
       name: symbolItem.symbol,
       ticker: symbolItem.full_name,
       full_name: symbolItem.full_name, // self adding for show pair address in getBars
       description: symbolItem.description, // выводится рядом с зеленой иконкой коннекта
       type: symbolItem.type,
+      chain_id: symbolItem.chain_id,
       pair_id: symbolItem.pair_id,
       pair_addr: symbolItem.pair_addr,
       exchange: symbolItem.exchange,
@@ -150,6 +154,7 @@ export default {
       // volume_precision: 2, // кол-во десятичных символов в объеме
       data_status: 'streaming', // streaming | endofday | pulsed | delayed_streaming
     };
+
     // symbolInfo.checkInvert = function () {
     //   const detectStablecoin = this.name.match(/BUSD|TUSD|USDT|USDC|DAI|USD|UST/)
     //   return detectStablecoin && detectStablecoin.index === 0

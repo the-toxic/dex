@@ -65,8 +65,8 @@ export default {
       commit('setPairInfo', result)
       return result
     },
-    async loadHistoryTable({commit}, {pair_id}) {
-      const {success, result} = await fetchHistoryTable({pair_id})
+    async loadHistoryTable({commit}, {pair_id, chain_id}) {
+      const {success, result} = await fetchHistoryTable({pair_id, chain_id})
       if(success && result?.length) {
         commit('updateLastTxs', {type: 'set', data: result})
       }
@@ -78,6 +78,7 @@ export default {
     async loadOldTXs({state, commit}) {
       const lastTx = state.lastTXs[state.lastTXs.length - 1]
       const {success, result} = await fetchHistoryTable({
+        chain_id: state.activeSymbol.chain_id,
         pair_id: state.activeSymbol.pair_id,
         block_id: lastTx['block_id']
       })
