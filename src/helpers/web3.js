@@ -20,7 +20,7 @@ export const hexToEther = (hex) => +ethers.utils.formatEther(hex)
 // provider.getNetwork()
 // await provider.getFeeData()
 
-const isDev = process.env.NODE_ENV !== 'production' || window.location.host === 'hazb.dev'
+const isDev = process.env.NODE_ENV !== 'production' || window.location.host === 'hazb.app'
 let provider, contract, signer, contractWithSigner
 
 const providerOptions = {
