@@ -1,24 +1,24 @@
 import Vue from "vue"
 
-// import {emailRegex} from '@/helpers/common'
+import {emailRegex} from '@/helpers/common'
 // import {urlRegex} from '@/helpers/common'
 
 Vue.mixin({
 	data() {
 		return {
-			PROJECT_NAME: process.env.VUE_APP_PROJECT_NAME
-	// 		emailRules: [
-	// 			v => !!v || 'Email is required',
-	// 			v => emailRegex.test(v) || 'Email is invalid',
-	// 		],
-	// 		nameRules: [
-	// 			v => !!v || 'Field is required',
-	// 			v => /^[\w]{2,64}$/.test(v) || 'Name of user, only alphabet, 2 - 64 characters',
-	// 		],
-	// 		passwordRules: [
-	// 			v => !!v || 'Field is required',
-	// 			v => /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])[\w~!?.,@#$%^&*=+-]{6,25}$/.test(v) || 'Password must be at least one lowercase letter, uppercase letter and number. 6 - 25 characters',
-	// 		],
+			PROJECT_NAME: process.env.VUE_APP_PROJECT_NAME,
+			emailRules: [
+				v => !!v || 'Email is required',
+				v => emailRegex.test(v) || 'Email is invalid',
+			],
+			nameRules: [
+				v => !!v || 'Field is required',
+				v => /^[\w]{2,64}$/.test(v) || 'Name of user, only alphabet, 2 - 64 characters',
+			],
+			passwordRules: [
+				v => !!v || 'Field is required',
+				v => /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])[\w~!?.,@#$%^&*=+-]{6,25}$/.test(v) || 'Password must be at least one lowercase letter, uppercase letter and number. 6 - 25 characters',
+			],
 	// 		urlRules: [
 	// 			v => !!v || 'Field is required',
 	// 			v => urlRegex.test(v) || 'Invalid site address',
@@ -31,6 +31,23 @@ Vue.mixin({
 		capitalize: (words, separator = ' ') => words.split(separator).map(word => (word.charAt(0).toUpperCase() + word.slice(1))).join(separator),
 		nowTimestamp: () => +(+new Date()).toString().slice(0, 10),
 		shortAddress: (wallet) => wallet ? wallet.slice(0,6) + '...' + wallet.slice(-4) : wallet,
-		logger: (str) => console.log(str) ,
+		logger: (str) => console.log(str),
+
+		// // "vue-recaptcha-v3": "^1.9.0",
+		// async recaptchaHandler(action, cb) {
+		// 	// console.log(this.$recaptchaInstance)
+		// 	await this.$recaptchaLoaded()
+		// 	await this.$recaptcha(action)
+		// 	let token
+		// 	let intervalId = setInterval(() => {
+		// 		token = this.$recaptchaInstance.recaptcha.getResponse()
+		// 		if(token) {
+		// 			clearInterval(intervalId)
+		// 			this.$recaptchaInstance.recaptcha.reset()
+		// 			cb(token)
+		// 		}
+		// 	}, 200)
+		// 	setTimeout(() => clearInterval(intervalId), 60 * 1000)
+		// }
 	}
 })

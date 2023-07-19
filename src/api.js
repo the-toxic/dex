@@ -83,3 +83,56 @@ export const fetchExchanges = async () => {
   const {data} = await axios.get(`xhr/routers`);
   return data
 }
+
+
+
+// if(payload.email === 'demo@plasm.ai' && payload.password === 'Qwerty12')
+// const userData = {
+// 	success: true,
+// 	result: {
+// 		user_id: '1q2w3e',
+// 		email: 'test-user@gmail.com',
+// 		first_name: 'Demo',
+// 		last_name: 'User',
+// 		token: ''
+// 	}
+// }
+
+// sign in
+export async function signIn(payload){
+  const {data} = await axios.post(`auth/sign-in`, payload);
+  return data
+  // if(data.success) {
+  // 	userData.result.token = data.result
+  // 	userData.result.email = payload.email
+  // 	return userData
+  // } else {
+  // 	return {success: false, error: 'Invalid credentials'}
+  // }
+}
+export async function signUp(payload){
+  const {data} = await axios.post(`auth/sign-up`, payload);
+  return data
+}
+export async function confirmEmail(payload){
+  const {data} =  await axios.post(`auth/email-confirm`, {token: payload});
+  // const data = {success: true}
+  return data
+}
+export async function resendConfirmEmail(payload){
+  const {data} = await axios.post(`auth/email-confirm/resend`, payload);
+  return data
+}
+
+export async function resetPassword(payload){
+  return  await axios.post(`auth/reset-password`, payload);
+}
+export async function setNewPassword(payload){
+  return  await axios.post(`auth/reset-password/set-new`, payload);
+}
+
+
+// export async function changePassword(payload){
+//   const {data} = await axios.post(`auth/password`, payload);
+//   return data
+// }

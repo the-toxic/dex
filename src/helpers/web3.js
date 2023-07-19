@@ -161,7 +161,7 @@ async function handleChainChanged(chainId) {
   web3Modal.clearCachedProvider();
 
   if(store.getters['wallet/account']) {
-    store.dispatch('wallet/logOut', false).then() // redirect if garage || mint page
+    store.dispatch('wallet/logOut', false).then()
     store.dispatch('showAlert', {msg: `Network is changed. Please reconnect your wallet.`, color: 'info'}).then()
   }
 }

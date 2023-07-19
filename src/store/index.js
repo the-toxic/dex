@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
+import user from "./modules/user";
 import chart from "./modules/chart";
 import wallet from "./modules/wallet";
 
@@ -12,6 +13,7 @@ export default new Vuex.Store({
   // enable in dev work, because tracking the storage change method increases the load on the browser
   strict: process.env.NODE_ENV !== 'production',
   modules: {
+    user,
     chart,
     wallet
   },
