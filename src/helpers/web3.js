@@ -1,3 +1,11 @@
+
+// https://docs.walletconnect.com/2.0/web/about-web3modal
+// https://web3modal.com/
+// https://www.google.com/search?q=WalletConnect+web3modal+vue&oq=WalletConnect+web3modal+vue&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQIRigATIHCAIQIRigATIHCAMQIRigATIHCAQQIRigAdIBCDU5OTJqMGoxqAIAsAIA&sourceid=chrome&ie=UTF-8
+
+
+
+
 // import Web3Modal from "web3modal";
 // import WalletConnectProvider from "@walletconnect/web3-provider";
 // import CoinbaseWalletSDK from "@coinbase/wallet-sdk";

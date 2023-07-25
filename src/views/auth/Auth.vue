@@ -1,12 +1,15 @@
 <template>
-  <div class="d-flex flex-column justify-md-center align-center fill-height pa-6 pa-md-10 pa-xl-16 ">
-    <div class="text-md-left text-center">
-      <v-btn-toggle mandatory variant="tonal" color="secondary" class="rounded-lg">
-        <v-btn :to="{name: 'AuthSignIn'}" class="fs20 px-md-12 px-8 text-none">Sign In</v-btn>
-        <v-btn :to="{name: 'AuthSignUp'}" class="fs20 px-md-12 px-8 text-none">Sign Up</v-btn>
-      </v-btn-toggle>
-    </div>
-    <component :is="pageComponent" />
+  <div class="text-center fill-width" style="max-width: 500px">
+    <v-btn-toggle mandatory variant="tonal" color="secondary" class="rounded-lg mb-8">
+      <v-btn :to="{name: 'AuthSignIn'}" class="fs20 px-md-12 px-8 text-none">Sign In</v-btn>
+      <v-btn :to="{name: 'AuthSignUp'}" class="fs20 px-md-12 px-8 text-none">Sign Up</v-btn>
+    </v-btn-toggle>
+
+    <v-card rounded class="rounded-xl" elevation="0">
+      <v-card-text class="pa-6 px-md-12 py-md-14">
+        <component :is="pageComponent" />
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 

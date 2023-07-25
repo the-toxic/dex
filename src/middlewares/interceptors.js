@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useMainStore } from "@/store/mainStore";
+import { useUserStore } from "@/store/userStore";
 // import { useWalletStore } from "@/store/walletStore";
-// import { useUserStore } from "@/store/userStore";
 const mainStore = () => useMainStore()
-// const walletStore = useWalletStore()
-// const userStore = useUserStore()
+const userStore = () => useUserStore()
+// const walletStore = () => useWalletStore()
 
 let apiDomain = import.meta.env.VITE_APP_API_DOMAIN
 if(window.location.host.includes('.app') || window.location.host.includes('localhost')) { // if dev
@@ -37,18 +37,18 @@ export function httpInt() {
     }
 
     const code = parseInt(error.response && error.response.status)
-    // if(code === 401) {
-    //   if(error.response.config.url.includes('garage/')) {
-    //     await walletStore.logOut()
-    //     await store.dispatch('showWalletDialog', true)
-    //     await mainStore().showAlert({msg: 'Session expired. Need to reconnect MetaMask account.', color: 'error'})
-    //   } else {
-    //     await userStore.logOut()
-    //     await mainStore().showAlert({msg: 'Session expired.', color: 'error'})
-    //   }
-    //   // return Promise.reject('Session expired');
-    //   return {data: {success: false}}
-    // }
+    if(code === 401) {
+      await userStore().logOut() // reload page
+      await mainStore().showAlert({msg: 'Session expired. Re-login please.', color: 'error'})
+      return {data: {success: false}}
+      // if(error.response.config.url.includes('garage/')) {
+      //   await walletStore.logOut()
+      //   await store.dispatch('showWalletDialog', true)
+      //   await mainStore().showAlert({msg: 'Session expired. Need to reconnect MetaMask account.', color: 'error'})
+      // }
+      // return Promise.reject('Session expired');
+
+    }
 
     const msg = error.response.data?.error?.description
 
@@ -59,21 +59,21 @@ export function httpInt() {
 
     const data = error.response.data
 
-    // if(code === 422 && 'detail' in data && data.detail.length) {
-    //   if(!isSilenceAlert) {
-    //     if(data.detail[0].type === 'value_error.missing') {
-    //       await mainStore().showAlert('Invalid params')
-    //     } else {
-    //       let field = data.detail[0].loc[1].split('_').join(' ')
-    //       field = field.charAt(0).toUpperCase() + field.slice(1)
-    //       const msg = field + ': ' + data.detail[0].msg
-    //       await mainStore().showAlert({msg, color: 'error'})
-    //     }
-    //   }
-    //   return error.response
-    // }
+    if(code === 422 && 'detail' in data && data.detail.length) {
+      if(!isSilenceAlert) {
+        if(data.detail[0].type === 'value_error.missing') {
+          await mainStore().showAlert('Invalid params')
+        } else {
+          let field = data.detail[0].loc[1].split('_').join(' ')
+          field = field.charAt(0).toUpperCase() + field.slice(1)
+          const msg = field + ': ' + data.detail[0].msg
+          await mainStore().showAlert({msg, color: 'error'})
+        }
+      }
+      return error.response
+    }
 
-    // 'Internal error. Please try later.'
+    await mainStore().showAlert('Internal error. Please try later.')
     // return Promise.reject(error);
     return error.response
 

@@ -19,7 +19,7 @@
     <v-app-bar density="compact" class="mx-auto mb-8">
       <template v-slot:prepend>
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
-          <div class="v-toolbar__title logoBox" @click="navigate">
+          <div class="logoBox" @click="navigate">
             <img src="@/assets/logo.png" alt="Logo" />
           </div>
         </router-link>
@@ -36,8 +36,8 @@
           <v-icon small color="#B3B5BD" class="px-2" alt="Show Search">mdi-magnify</v-icon>
         </v-btn>
 
-        <v-btn icon size="small">
-          <v-icon right size="small" v-if="route.name === 'Pair'" :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
+        <v-btn v-if="route.name === 'Pair'" icon size="small">
+          <v-icon right size="small" :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
           <v-tooltip activator="parent" location="bottom">Status: {{ !mainStore.wsConnected ? 'Offline' : (mainStore.wsConnected === 'loading' ? 'Connection' : 'Online') }}</v-tooltip>
         </v-btn>
 
@@ -73,7 +73,7 @@
 
     <!--  Футер, прибит вниз через атрибут absolute, inset сдвигает его от фильтра в шопе  -->
     <v-footer :absolute="true" bottom padless class="justify-center fill-width py-1">
-      <div class="smallFooter d-flex justify-space-between align-center flex-wrap fill-width">
+      <div class="d-flex justify-space-between align-center flex-wrap fill-width">
         <div class="footerCopy text-center text-disabled fs14 order-1 order-md-0 pl-md-5 mx-auto mx-md-0 py-2 py-md-0">&copy; {{ new Date().getFullYear() }}
           <router-link class="text-none grey--text" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span class="white--text">v0.22</span>
         </div>
@@ -92,8 +92,6 @@
       </div>
     </v-footer>
 
-    <Alert />
-
   </v-app>
 </template>
 
@@ -106,7 +104,6 @@
   import { useMainStore } from "@/store/mainStore";
   import { useUserStore } from "@/store/userStore";
   import { useWalletStore } from "@/store/walletStore";
-  import Alert from "@/components/Alert.vue";
   import { PROJECT_NAME, DOCS_HOST } from "@/helpers/mixins";
 
   import { showChartSearch } from "@/helpers/chart/chart";

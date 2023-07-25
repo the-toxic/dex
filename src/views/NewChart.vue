@@ -39,6 +39,7 @@
           </div>
         </v-card-text>
       </v-card>
+
       <v-progress-linear class="buySellProgress"
         v-model="buySellRate" height="12"
         color="#51A49A" bg-color="#DE5F57" bg-opacity="1"
