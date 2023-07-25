@@ -1,6 +1,10 @@
 import { fetchHistoryCandles, searchPair } from '@/api.js'
 import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
-import store from "@/store";
+import { useChartStore } from "@/store/chartStore";
+import { useMainStore } from "@/store/mainStore";
+
+const chartStore = () => useChartStore()
+const mainStore = () => useMainStore()
 
 const lastBarsCache = new Map();
 
@@ -25,7 +29,7 @@ async function loadDefaultPair(symbolFullName) {
     fillFindedPairs(result.content)
     window.tvWidget.activeChart().setSymbol(findedPairs[0].full_name)
   } else {
-    await store.dispatch('showAlert', ({msg: 'Error. Pair not found', color: 'error'}))
+    await mainStore().showAlert({msg: 'Error. Pair not found', color: 'error'})
     // location.href = '/home?msg=pair404'
   }
 }
@@ -123,7 +127,7 @@ export default {
 
     symbolItem.chain_id = symbolItem.type === 'BSC' ? 2 : (symbolItem.type === 'Ethereum' ? 1 : 0)
 
-    store.dispatch('chart/setSymbol', symbolItem).then()
+    chartStore().setSymbol(symbolItem).then()
 
     const symbolInfo = {
       name: symbolItem.symbol,

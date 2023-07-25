@@ -1,12 +1,11 @@
 <template>
-  <v-tooltip bottom>
-    <template v-slot:activator="{ on }">
-      <span v-on="on" @click.stop.prevent="copy">
+  <v-tooltip location="end" :text="tooltip">
+    <template v-slot:activator="{ props }">
+      <span v-bind="props" @click.stop.prevent="copy">
         <v-icon v-if="icon" size="14" :color="iconColor">mdi-content-copy</v-icon>
         <span v-else>{{ visibleText }}</span>
       </span>
     </template>
-    <span>{{ tooltip }}</span>
   </v-tooltip>
 </template>
 
@@ -59,7 +58,7 @@ export default {
   },
   computed: {
     visibleText() {
-      return this.strip ? this.text.substr(0, 6) + '...' : this.text
+      return this.strip ? this.text.slice(0, 6) + '...' : this.text
     }
   },
   methods: {

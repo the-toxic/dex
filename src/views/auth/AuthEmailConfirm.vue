@@ -12,7 +12,7 @@
 			<div v-if="!loading && success" class="text-center">
 				<h3 class="fs40 secondaryFont white--text  lh-1 mb-7">EMAIL CONFIRMATION</h3>
 				<p class="fs25 lh-30 mb-7 white--text black--text">Email successfully confirmed!</p>
-				<v-btn class="myBtn myYellowBtn px-6" height="60" :to="{name: 'AuthSignIn'}">Sign In</v-btn>
+				<v-btn class="myBtn px-6" height="60" :to="{name: 'AuthSignIn'}">Sign In</v-btn>
 			</div>
 		</v-card-text>
 	</v-card>
@@ -20,6 +20,8 @@
 
 <script>
 import {confirmEmail} from "@/api"
+import { mapActions } from "pinia";
+import { useMainStore } from "@/store/mainStore";
 // import * as tokenHelper from "@/helpers/jwt_token"
 
 export default {
@@ -38,7 +40,7 @@ export default {
       // if(!payload || !payload.expire || payload.action !== 'confirm') throw new Error('Invalid token [payload]')
       // if(payload.expire < this.nowTimestamp()) throw new Error('Token expired')
     } catch (e) {
-      setTimeout(() => this.$store.dispatch('showAlert', e.message)) // bug on load page, need async
+      setTimeout(() => this.showAlert(e.message)) // bug on load page, need async
       await this.$router.replace({name: 'Home'})
       return
     }
@@ -50,5 +52,8 @@ export default {
       this.success = true
     }
   },
+  methods: {
+    ...mapActions(useMainStore, {showAlert: 'showAlert'})
+  }
 }
 </script>

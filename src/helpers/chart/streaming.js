@@ -1,18 +1,25 @@
 import { io } from 'socket.io-client'
-import store from '@/store'
+import { useMainStore } from "@/store/mainStore";
+import { useChartStore } from "@/store/chartStore";
+
+const mainStore = () => useMainStore()
+const chartStore = () => useChartStore()
 
 const channelToSubscription = new Map();
 
-let apiDomain = process.env.VUE_APP_API_DOMAIN
+let apiDomain = import.meta.env.VITE_APP_API_DOMAIN
 if(window.location.host.includes('.app') || window.location.host.includes('localhost')) { // if dev
-  apiDomain =  process.env.VUE_APP_API_DOMAIN_DEV
+  apiDomain =  import.meta.env.VITE_APP_API_DOMAIN_DEV
 }
+
 
 const socket = io(apiDomain, {
   path: '/ws/socket.io',
   transports: ['websocket', 'polling', 'flashsocket'],
+  reconnection: false,
+  reconnectionAttempts: 5, // reconnect limiter
   query: {
-    "session_id": store.getters['chart/sessionId']
+    "session_id": chartStore().sessionId
   }
 });
 
@@ -24,12 +31,12 @@ const socket = io(apiDomain, {
 
 socket.on('connect', () => {
   console.log('[socket] Connected. ID:', socket.id);
-  store.commit('setConnected', true)
+  mainStore().setConnected(true)
 });
 
 socket.on('disconnect', (reason) => {
   console.log('[socket] Disconnected:', reason);
-  store.commit('setConnected', false)
+  mainStore().setConnected(false)
 });
 
 socket.on("connect_error", (error) => {
@@ -91,11 +98,11 @@ function candleMessageHandler(data) {
     amount1, // 0.05
   ] = data.split('~');
 
-  if(+store.getters['chart/activeSymbol'].pair_id !== +pair_id) {
+  if(+chartStore().activeSymbol.pair_id !== +pair_id) {
     return; // fix bug delay call SubRemove
   }
 
-  if(store.getters['chart/needInvert']) {
+  if(chartStore().needInvert) {
     const oldAmount0 = amount0
     amount0 = amount1
     amount1 = oldAmount0
@@ -140,8 +147,6 @@ function candleMessageHandler(data) {
   }
   subscriptionItem.lastBar = bar;
 
-  // store.dispatch('', )
-
   // send data to every subscriber of that symbol
   subscriptionItem.handlers.forEach(handler => handler.callback(bar));
 }
@@ -165,11 +170,11 @@ function tableMessageHandler(data) {
     routerId, // 123
   ] = data.split('~');
 
-  if(+store.getters['chart/activeSymbol'].pair_id !== +pair_id) {
+  if(+chartStore().activeSymbol.pair_id !== +pair_id) {
     return; // fix bug delay call SubRemove
   }
 
-  if(store.getters['chart/needInvert']) {
+  if(chartStore().needInvert) {
     const oldAmount0 = amount0
     amount0 = amount1
     amount1 = oldAmount0
@@ -187,7 +192,7 @@ function tableMessageHandler(data) {
     router_id: parseInt(routerId)
   }
   // console.log('table', data)
-  store.dispatch('chart/addNewTx', item).then()
+  chartStore().addNewTx(item).then()
 
 }
 
@@ -231,7 +236,7 @@ export function subscribeOnStream(
   };
   channelToSubscription.set(channelString, subscriptionItem);
   console.log('[subscribeBars]: Subscribe to streaming. SubAdd Channel:', channelString);
-  socket.emit('SubAdd', { subs: [channelString], session_id: store.getters['chart/sessionId'] });
+  socket.emit('SubAdd', { subs: [channelString], session_id: chartStore().sessionId });
 }
 
 export function unsubscribeFromStream(subscriberUID) {
@@ -247,7 +252,7 @@ export function unsubscribeFromStream(subscriberUID) {
       if (subscriptionItem.handlers.length === 0) {
         // unsubscribe from the channel, if it was the last handler
         console.log('[unsubscribeBars]: Unsubscribe from streaming. SubRemove Channel:', channelString);
-        socket.emit('SubRemove', { subs: [channelString], session_id: store.getters['chart/sessionId'] });
+        socket.emit('SubRemove', { subs: [channelString], session_id: chartStore().sessionId });
         channelToSubscription.delete(channelString);
         break;
       }

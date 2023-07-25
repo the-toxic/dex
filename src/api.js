@@ -1,6 +1,7 @@
 import axios from "axios";
 import { setCookie } from '@/helpers/common'
-import store from "@/store";
+import { useChartStore } from "@/store/chartStore";
+const chartStore = () => useChartStore()
 
 
 // let ws = null
@@ -53,13 +54,13 @@ import store from "@/store";
 
 export const searchPair = async (payload) => {
   const {data} = await axios.post(`xhr/search_pair`, payload, {
-    headers: { 'x-session-id': store.getters['chart/sessionId'] },
+    headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
 }
 export const fetchPairInfo = async (pairId) => {
   const {data} = await axios.get(`xhr/pair_info?pair_id=${pairId}`, {
-    headers: { 'x-session-id': store.getters['chart/sessionId'] },
+    headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
 }
@@ -68,13 +69,13 @@ export const fetchHistoryTable = async (payload) => {
   const pairId = payload.pair_id
   const lastBlockId = payload.block_id || 0
   const {data} = await axios.get(`xhr/txs?chain_id=${chainId}&pair_id=${pairId}&block_id=${lastBlockId}`, {
-    headers: { 'x-session-id': store.getters['chart/sessionId'] },
+    headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
 }
 export const fetchHistoryCandles = async (body) => {
   const {data} = await axios.post(`xhr/limit_candles_history`, body, {
-    headers: { 'x-session-id': store.getters['chart/sessionId'] },
+    headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
 }

@@ -1,21 +1,18 @@
 <template>
-	<v-card :loading="loading" tile elevation="0" class="mx-auto mx-md-0" style="max-width: 500px; width: 100%; min-height: 460px; background: transparent">
-		<v-card-text class="fill-height d-flex align-center pa-6 px-md-8 py-md-14">
+	<v-card :loading="loading" tile elevation="0" class="mx-auto mx-md-0 fill-width">
+		<v-card-text class="fill-height d-flex align-center pa-6 px-md-8 pt-md-14">
 
-			<v-row v-if="!success">
-				<h3 class="fs35 fs-m21 secondaryFont lh-1 text-center white--text mb-7 ml-3">Password Recovery</h3>
-				<v-col cols="12" lg="12">
+			<v-row v-if="!success" class="justify-center">
+				<h3 class="fs24 mb-7">Password Recovery</h3>
+				<v-col cols="12">
 					<v-form ref="form" v-model="valid" lazy-validation @submit.prevent="onSubmit">
 
 						<v-text-field label="Email" filled
-							v-model.trim="form.email"
-							:rules="emailRules" dense />
-						<p class="fs14" style="color: #8D8D8D">Enter the email you provided during registration</p>
+              v-model.trim="form.email"
+              :rules="emailRules" hint="Enter the email you provided during registration" persistent-hint />
 
-						<v-btn type="submit" class="myBtn myYellowBtn font-weight-bold fill-width fs20" height="60"
-						 :loading="loading"
-						 :disabled="!valid || loading"
-						>Send</v-btn>
+						<v-btn type="submit" color="primary" block size="large" class="myBtn fs20 mt-6"
+						 :loading="loading" :disabled="loading">Send</v-btn>
 					</v-form>
 				</v-col>
 
@@ -34,6 +31,9 @@
 
 <script>
 import { resetPassword } from "@/api"
+import { emailRules, passwordRules } from "@/helpers/mixins";
+import { mapActions } from "pinia";
+import { useMainStore } from "@/store/mainStore";
 
   export default {
     name: 'ResetPassword',
@@ -49,12 +49,16 @@ import { resetPassword } from "@/api"
         // successMessage: ''
       }
     },
+    computed: {
+      emailRules() { return emailRules },
+    },
     methods: {
+      ...mapActions(useMainStore, {showAlert: 'showAlert'}),
       async onSubmit() {
-        const isValid = this.$refs.form.validate()
+        const { isValid } = this.$refs.form.validate()
         if(!isValid) return false
 
-        // if(process.env.VUE_APP_RECAPTCHA_ENABLE_RECOVERY === 'true') {
+        // if(import.meta.env.VITE_APP_RECAPTCHA_ENABLE_RECOVERY === 'true') {
         //   await this.recaptchaHandler('password-recovery', this.sendRequest) // callback sendRequest(token)
         // } else {
           await this.sendRequest('')
@@ -71,7 +75,7 @@ import { resetPassword } from "@/api"
           this.success = true
           // this.successMessage = data.result.message
         } else {
-					this.$store.dispatch('showAlert', {msg: 'Server error', color: 'error'}).then()
+					this.showAlert({msg: 'Server error', color: 'error'})
 				}
       }
     }

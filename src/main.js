@@ -1,36 +1,34 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
+import { createPinia, setActivePinia } from 'pinia'
 import VueVirtualScroller from 'vue-virtual-scroller'
-import router from '@/router'
-import store from '@/store'
+import CopyLabel from "@/components/CopyLabel.vue";
+
+
+import './assets/styles/main.scss'
+
+import App from './App.vue'
+const app = createApp(App)
+app.use(createPinia())
+
+import router from './router'
+
 import vuetify from './plugins/vuetify'
+// const { default: vuetify } = await import('@/plugins/vuetify')
+import { initVueGtag } from '@/plugins/vue-gtag'
+import { initClipboard } from '@/plugins/clipboard'
+import { httpInt } from './middlewares/interceptors'
 
-Vue.use(VueVirtualScroller)
+app
+  .use(vuetify)
+  .use(router)
+  .component('CopyLabel', CopyLabel)
+  .use(VueVirtualScroller)
 
-import '@/plugins/vue-head'
-import '@/plugins/vue-gtag'
-import '@/plugins/clipboard'
-
-import {httpInt} from './helpers/interceptors';
 httpInt();
+initVueGtag(app)
+initClipboard(app)
 
-import '@/styles/site.scss'
+app.mount('#app')
 
-import '@/helpers/web3'
-
-store.commit('wallet/loginWithLocalStorage');
-
-import App from '@/App.vue'
-import CopyLabel from "@/components/CopyLabel"
-Vue.component('CopyLabel', CopyLabel)
-
-import "@/helpers/mixins"
-
-// Vue.config.devtools = false
-// Vue.config.productionTip = false
-
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
+// import { initVueHead } from '@/plugins/vue-head'
+// initVueHead(app)

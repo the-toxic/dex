@@ -4,7 +4,7 @@
       <v-card class="mb-0" elevation="0" tile :loading="pairInfoLoading">
         <v-card-text class="d-flex justify-space-between align-center flex-wrap pa-2">
           <div class="d-flex align-center flex-wrap">
-            <div class="white mr-2" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
+            <div class="bg-white mr-2" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
               <img v-if="pairInfo && pairInfo.token0.icon" :src="pairInfo.token0.icon" width="40" height="40" alt="Logo">
             </div>
             <div class="mr-3">
@@ -41,7 +41,7 @@
       </v-card>
       <v-progress-linear class="buySellProgress"
         v-model="buySellRate" height="12"
-        color="#51A49A" background-color="#DE5F57"
+        color="#51A49A" bg-color="#DE5F57" bg-opacity="1"
       >
         <template v-slot:default="{ value }">
           <strong>{{ shortNumber(buyVolume24) }} {{ rightToken }} / {{ shortNumber(sellVolume24) }} {{ rightToken }}</strong>
@@ -73,20 +73,21 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import { initChart } from "@/helpers/chart/chart";
-import TableHistory from "@/components/TableHistory";
+import { PROJECT_NAME, shortAddress, toNumber } from "@/helpers/mixins";
+import TableHistory from "@/components/TableHistory.vue";
 import { priceFormatter, shortNumber } from "@/helpers/common";
-// import store from "@/store";
-// import { fetchExchanges } from "@/api";
+import { mapActions, mapState } from "pinia";
+import { useChartStore } from "@/store/chartStore";
 
 export default {
   name: "NewChart",
+  components: { TableHistory },
   head: {
     title() { return { inner: this.title }},
     meta() { return [{ name: 'description', content: this.description, id: 'desc' }]},
   },
-  components: {TableHistory},
+  // components: {TableHistory},
   data() { return {
     pairInfoLoading: false,
     title: 'Loading Pair...',
@@ -110,7 +111,7 @@ export default {
 
     this.network = network
     this.pairAddr = pairAddress
-    await this.$store.dispatch('chart/loadExchanges')
+    await this.loadExchanges()
   },
 
   mounted() {
@@ -127,7 +128,7 @@ export default {
   },
   destroyed() {
     window.tvWidget.remove()
-    this.$store.commit('chart/resetState')
+    this.resetState()
   },
   // tvWidget.activeChart().symbolExt()
   // Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -155,7 +156,7 @@ export default {
         }}).then()
       }
       this.pairInfoLoading = true
-      await this.$store.dispatch('chart/getPairInfo', newVal.pair_id)
+      await this.getPairInfo(newVal.pair_id)
       this.pairInfoLoading = false
     },
     lastPrice() {
@@ -163,8 +164,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('chart', ['activeSymbol', 'pairInfo', 'lastPrice', 'leftToken', 'rightToken', "lastTXs"]),
-    buySellRate() { return Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
+    PROJECT_NAME() { return PROJECT_NAME },
+    ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'lastPrice', 'leftToken', 'rightToken', "lastTXs"]),
+    buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
     tokenName() { return this.pairInfo ?  this.pairInfo.token0.name : 'Loading...' },
     buyVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.buy_volume_24h) : 0 },
     sellVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.sell_volume_24h) : 0 },
@@ -179,6 +181,8 @@ export default {
     priceChange() { return this.pairInfo ? this.pairInfo.pool.price_change_24h : 0 },
   },
   methods: {
+    shortAddress, toNumber, // from mixins
+    ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
     updateTitle() {
       this.title = `${this.pairName} - ${priceFormatter(this.lastPrice)}`
       this.description = `Analyse ${this.pairName} of ${this.PROJECT_NAME} | ${this.pairAddr}`

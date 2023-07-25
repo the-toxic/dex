@@ -32,12 +32,12 @@
       <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.amount_token0) }}</div>
       <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.amount_token1) }}</div>
       <div class="txsTableTd text-center" style="flex-grow: 2">
-        <a v-if="item.router.address" :href="`${blockchainDomain}/address/${item.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.router.title }}</a>
+        <a v-if="item.router.address" :href="`${blockchainDomain}/address/${item.router.address}`" target="_blank" class="text-none" style="color:#2e7ebe;">{{ item.router.title }}</a>
         <span v-else>{{ item.router.title }}</span>
       </div>
-      <div class="txsTableTd"><a :href="`${blockchainDomain}/address/${item.maker}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.maker) }}</a></div>
-      <div class="txsTableTd"><a :href="`${blockchainDomain}/address/${item.receiver}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.receiver) }}</a></div>
-      <div class="txsTableTd"><a :href="`${blockchainDomain}/tx/${item.tx}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">Show Tx</a></div>
+      <div class="txsTableTd"><a :href="`${blockchainDomain}/address/${item.maker}`" target="_blank" class="text-none" style="color:#2e7ebe;">{{ shortAddress(item.maker) }}</a></div>
+      <div class="txsTableTd"><a :href="`${blockchainDomain}/address/${item.receiver}`" target="_blank" class="text-none" style="color:#2e7ebe;">{{ shortAddress(item.receiver) }}</a></div>
+      <div class="txsTableTd"><a :href="`${blockchainDomain}/tx/${item.tx}`" target="_blank" class="text-none" style="color:#2e7ebe;">Show Tx</a></div>
     </template>
   </RecycleScroller>
 <!--  <v-simple-table v-if="activeSymbol" fixed-header height="1000" class="myTable text-center">-->
@@ -65,12 +65,12 @@
 <!--      <td>{{ priceFormatter(item.amount_token0) }}</td>-->
 <!--      <td>{{ priceFormatter(item.amount_token1) }}</td>-->
 <!--      <td>-->
-<!--        <a v-if="item.router.address" :href="`https://bscscan.com/address/${item.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.router.title }}</a>-->
+<!--        <a v-if="item.router.address" :href="`https://bscscan.com/address/${item.router.address}`" target="_blank" class="text-none" style="color:#2e7ebe;">{{ item.router.title }}</a>-->
 <!--        <span v-else>{{ item.router.title }}</span>-->
 <!--      </td>-->
-<!--      <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.maker) }}</a></td>-->
-<!--      <td><a :href="`https://bscscan.com/address/${item.receiver}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.receiver) }}</a></td>-->
-<!--      <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">Show Tx</a></td>-->
+<!--      <td><a :href="`https://bscscan.com/address/${item.maker}`" target="_blank" class="text-none" style="color:#2e7ebe;">{{ shortAddress(item.maker) }}</a></td>-->
+<!--      <td><a :href="`https://bscscan.com/address/${item.receiver}`" target="_blank" class="text-none" style="color:#2e7ebe;">{{ shortAddress(item.receiver) }}</a></td>-->
+<!--      <td><a :href="`https://bscscan.com/tx/${item.tx}`" target="_blank" class="text-none" style="color:#2e7ebe;">Show Tx</a></td>-->
 <!--    </tr>-->
 <!--    <tr v-if="rows.length && rows.length < 1000">-->
 <!--      <td colspan="9">-->
@@ -84,20 +84,25 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import { priceFormatter } from "@/helpers/common";
-import store from "@/store";
+import { mapState } from "pinia";
+import { useChartStore } from "@/store/chartStore";
+const chartStore = useChartStore()
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import { shortAddress } from "@/helpers/mixins";
+import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
+
 
 export default {
   name: "TableHistory",
   data() {return {
     loading: false,
   }},
+  components: { VSkeletonLoader },
   async created() {},
   computed: {
-    ...mapGetters('chart', ['activeSymbol', 'leftToken', 'rightToken', 'lastTXs', 'exchangesList']),
+    ...mapState(useChartStore, ['activeSymbol', 'leftToken', 'rightToken', 'lastTXs', 'exchangesList']),
     rows() {
       // const items = Object.assign([], this.lastTXs)
       // const items = [...this.lastTXs]
@@ -119,7 +124,7 @@ export default {
     async activeSymbol(newVal, oldVal) {
       if(!newVal) return
       this.loading = true
-      await this.$store.dispatch('chart/loadHistoryTable', {
+      await chartStore.loadHistoryTable({
 				chain_id: newVal.chain_id,
 				pair_id: newVal.pair_id
 			})
@@ -127,10 +132,11 @@ export default {
     }
   },
   methods: {
-    infiniteScrolling(entries, observer, isIntersecting) {
+    shortAddress,
+    infiniteScrolling(isIntersecting, entries, observer) {
       if (entries[0].isIntersecting) {
         console.log('Load Oldest TXs on Scroll...')
-        store.dispatch('chart/loadOldTXs').then()
+        chartStore.loadOldTXs().then()
       }
     },
     priceFormatter(num) { return priceFormatter(num) }

@@ -1,11 +1,16 @@
 import axios from 'axios';
-import store from '../store';
+import { useMainStore } from "@/store/mainStore";
+// import { useWalletStore } from "@/store/walletStore";
+// import { useUserStore } from "@/store/userStore";
+const mainStore = () => useMainStore()
+// const walletStore = useWalletStore()
+// const userStore = useUserStore()
 
-let apiDomain = process.env.VUE_APP_API_DOMAIN
+let apiDomain = import.meta.env.VITE_APP_API_DOMAIN
 if(window.location.host.includes('.app') || window.location.host.includes('localhost')) { // if dev
-  apiDomain =  process.env.VUE_APP_API_DOMAIN_DEV
+  apiDomain =  import.meta.env.VITE_APP_API_DOMAIN_DEV
 }
-axios.defaults.baseURL = apiDomain + process.env.VUE_APP_API_PATH;
+axios.defaults.baseURL = apiDomain + import.meta.env.VITE_APP_API_PATH;
 
 export function httpInt() {
   axios.interceptors.request.use(function(config) {
@@ -27,19 +32,19 @@ export function httpInt() {
     const isSilenceAlert = 'silenceAlert' in error.config
 
     if(!error.response) { // 500 error or CORS
-      if(!isSilenceAlert) await store.dispatch('showAlert', ({msg: 'Error. Please try later.', color: 'error'}))
+      if(!isSilenceAlert) await mainStore().showAlert({msg: 'Error. Please try later.', color: 'error'})
       return {data: {success: false}}
     }
 
     const code = parseInt(error.response && error.response.status)
     // if(code === 401) {
     //   if(error.response.config.url.includes('garage/')) {
-    //     await store.dispatch('wallet/logOut')
+    //     await walletStore.logOut()
     //     await store.dispatch('showWalletDialog', true)
-    //     await store.dispatch('showAlert', {msg: 'Session expired. Need to reconnect MetaMask account.', color: 'error'})
+    //     await mainStore().showAlert({msg: 'Session expired. Need to reconnect MetaMask account.', color: 'error'})
     //   } else {
-    //     await store.dispatch('user/logOut');
-    //     await store.dispatch('showAlert', {msg: 'Session expired.', color: 'error'})
+    //     await userStore.logOut()
+    //     await mainStore().showAlert({msg: 'Session expired.', color: 'error'})
     //   }
     //   // return Promise.reject('Session expired');
     //   return {data: {success: false}}
@@ -48,7 +53,7 @@ export function httpInt() {
     const msg = error.response.data?.error?.description
 
     if(msg) {
-      if(!isSilenceAlert) await store.dispatch('showAlert', ({msg, color: 'error'}))
+      if(!isSilenceAlert) await mainStore().showAlert({msg, color: 'error'})
       return error.response
     }
 
@@ -57,12 +62,12 @@ export function httpInt() {
     // if(code === 422 && 'detail' in data && data.detail.length) {
     //   if(!isSilenceAlert) {
     //     if(data.detail[0].type === 'value_error.missing') {
-    //       await store.dispatch('showAlert','Invalid params')
+    //       await mainStore().showAlert('Invalid params')
     //     } else {
     //       let field = data.detail[0].loc[1].split('_').join(' ')
     //       field = field.charAt(0).toUpperCase() + field.slice(1)
     //       const msg = field + ': ' + data.detail[0].msg
-    //       await store.dispatch('showAlert', {msg, color: 'error'})
+    //       await mainStore().showAlert({msg, color: 'error'})
     //     }
     //   }
     //   return error.response

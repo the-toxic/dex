@@ -1,34 +1,28 @@
-import Vue from 'vue';
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
 
-// For full framework
-// import Vuetify from 'vuetify/lib/framework';
-// For a-la-carte components - https://vuetifyjs.com/en/customization/a-la-carte/
-import Vuetify from 'vuetify/lib';
+import { createVuetify } from 'vuetify'
+// import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
-import * as directives from 'vuetify/lib/directives'
-
-Vue.use(Vuetify, { directives });
-
-export default new Vuetify({
+// https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
+export default createVuetify({
   theme: {
-    dark: true,
-    // options: { variations: false }, // disable generate 9 sub-colors for all colors
-    options: {
-      customProperties: true,
-    },
+    defaultTheme: 'dark',
+
     themes: {
       dark: {
-        // background: '#05090c', // not work, need change in styles/vuetify_variables/_dark.scss
-        // surface: '#111b27',
-        // primary: '#FFCB12', // '#264706', // '#099809',
-        // secondary: '#829099',
-        // accent: '#82B1FF',
-        // error: '#FF5252',
-        // info: '#2196F3',
-        // success: '#4CAF50',
-        // warning: '#FFC107',
-        // myGreen: '#264706',
+        colors: {
+          primary: '#1867C0',
+          secondary: '#5CBBF6',
+        },
       },
     },
   },
-});
+  // icons: {
+  //   defaultSet: 'mdi',
+  //   aliases,
+  //   sets: {
+  //     mdi,
+  //   },
+  // },
+})

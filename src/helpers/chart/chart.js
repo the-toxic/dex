@@ -1,5 +1,4 @@
-import Datafeed from "./datafeed";
-// import store from "@/store";
+import Datafeed from "./datafeed.js";
 // import { symbolItemByInfo } from "@/helpers/common";
 // import { priceFormatter } from "@/helpers/common";
 

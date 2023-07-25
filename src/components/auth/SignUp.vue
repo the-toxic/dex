@@ -1,28 +1,26 @@
 <template>
-	<v-card :loading="loading" tile elevation="0" class="mx-auto mx-md-0" style="max-width: 500px; width: 100%; min-height: 460px; background: transparent">
-		<v-card-text class="fill-height d-flex align-center pa-6 px-md-8 py-md-14">
+	<v-card :loading="loading" tile elevation="0" class="mx-auto mx-md-0 fill-width">
+		<v-card-text class="fill-height d-flex align-center pa-6 px-md-8 pt-md-14">
 			<v-row v-if="!isSubmitted">
 				<v-col cols="12" lg="12">
 					<v-form ref="form" v-model="valid" lazy-validation @submit.prevent="onSubmit">
 
+            <h3 class="fs24 mb-10">Sign Up</h3>
 						<v-text-field label="Email" filled
-							v-model.trim="form.email"
-							:rules="emailRules" dense />
-
-<!--						<v-text-field label="Username" filled-->
-<!--							v-model.trim="form.nickname"-->
-<!--							:rules="nicknameRules" dense background-color="#353535" />-->
+              v-model.trim="form.email"
+              :rules="emailRules" />
 
 						<v-text-field label="Password" filled
-							v-model.trim="form.password"
-							name="password" :type="visiblePassword ? 'text' : 'password'" append-icon="mdi-eye"  @click:append="visiblePassword = !visiblePassword"
-							:rules="passwordRules" dense />
+              v-model.trim="form.password" name="password"
+              :type="visiblePassword ? 'text' : 'password'"
+              :append-icon="visiblePassword ? 'mdi-eye-off' : 'mdi-eye'" @click:append="visiblePassword = !visiblePassword"
+              :rules="passwordRules" />
 
 						<v-text-field label="Repeat Password" filled
-							v-model.trim="rePassword" type="password" dense
-							:rules="[...passwordRules, (form.password === rePassword) || 'Password must be match']" />
+							v-model.trim="rePassword" type="password"
+							:rules="[(form.password === rePassword) || 'Password must be match']" />
 
-						<v-checkbox :rules="[v => !!v || 'Need agree with policy']" dense class="mt-0">
+						<v-checkbox v-model="agree" :rules="[v => !!v || 'Need agree with policy']" class="mt-0">
 							<template v-slot:label>
 									<span class="flex-wrap">
 										I agree with <a @click.stop target="_blank" :href="'/legal/privacy-policy'" class="text-decoration-underline">Privacy Policy</a>
@@ -31,10 +29,8 @@
 							</template>
 						</v-checkbox>
 
-						<v-btn type="submit" class="myBtn myYellowBtn font-weight-bold fill-width mt-2 fs20" height="60"
-						 :loading="loading"
-						 :disabled="!valid || loading"
-						>Create account</v-btn>
+						<v-btn type="submit" color="primary" block class="myBtn text-none" size="large"
+						 :loading="loading" :disabled="loading">Create account</v-btn>
 					</v-form>
 				</v-col>
 
@@ -48,7 +44,7 @@
 					<p>Please check your inbox for a confirmation email.</p>
 					<p>Click the link in the email to confirm your email address.</p>
 				</v-alert>
-				<v-btn @click="resendEmail" class="myBtn myYellowBtn font-weight-bold fill-width mt-2 fs20" height="60" :loading="loading" :disabled="loading"
+				<v-btn @click="resendEmail" class="myBtn font-weight-bold fill-width mt-2 fs20" height="60" :loading="loading" :disabled="loading"
 					>Re-send confirmation email</v-btn>
 			</div>
 		</v-card-text>
@@ -56,6 +52,10 @@
 </template>
 
 <script>
+import { emailRules, passwordRules } from "@/helpers/mixins";
+import { mapStores } from "pinia";
+import { useUserStore } from "@/store/userStore";
+
 export default {
   name: 'SignUp',
   data() {return {
@@ -68,15 +68,21 @@ export default {
 			password: '', // required on create acc
 			recaptcha_response: ''
 		},
+    agree: true,
 		rePassword: '',
 		visiblePassword: false
 	}},
+  computed: {
+    ...mapStores(useUserStore),
+    emailRules() { return emailRules },
+    passwordRules() { return passwordRules },
+  },
   methods: {
     async onSubmit() {
-      const isValid = this.$refs.form.validate()
+      const { isValid } = this.$refs.form.validate()
       if(!isValid) return false
 
-      // if(process.env.VUE_APP_RECAPTCHA_ENABLE_SIGN_UP === 'true') {
+      // if(import.meta.env.VITE_APP_RECAPTCHA_ENABLE_SIGN_UP === 'true') {
       //   await this.recaptchaHandler('sign-up', this.sendRequest) // callback sendRequest(token)
       // } else {
         await this.sendRequest('')
@@ -85,7 +91,7 @@ export default {
     async sendRequest(token) {
       this.form.recaptcha_response = token
       this.loading = true
-      const data = await this.$store.dispatch('user/signUp', this.form)
+      const data = await this.userStore.signUp(this.form)
 
       this.loading = false
 
@@ -97,7 +103,7 @@ export default {
     },
 		async resendEmail() {
 			this.loading = true
-			const data = await this.$store.dispatch('user/resendConfirmEmail', this.form)
+			const data = await this.userStore.resendConfirmEmail(this.form)
 			this.loading = false
 		}
 		// async onSubmit() {

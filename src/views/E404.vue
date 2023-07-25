@@ -1,13 +1,8 @@
 <template>
-  <div>
-    <h1 class="text-center text-h1 mt-16">404</h1>
-    <div class="text-center mt-8">
-      <v-btn :to="{name: 'Home'}" size="large">Home</v-btn>
-    </div>
-  </div>
+  <h1 class="text-h1 text-amber my-5">404</h1>
+  <h1 class="text-h4 my-5">Page not found</h1>
+  <v-btn :to="{name: 'Home'}" color="amber" variant="outlined" size="large" class="my-5">Home</v-btn>
 </template>
-<script>
-export default {
-  name: 'E404'
-}
+
+<script setup>
 </script>
