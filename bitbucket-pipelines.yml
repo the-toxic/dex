@@ -26,7 +26,7 @@ pipelines:
                 REMOTE_PATH: /opt/dex/src/frontend
                 LOCAL_PATH: dist/
                 EXTRA_ARGS: '-az --exclude-from=${BITBUCKET_CLONE_DIR}/.gitignore --exclude-from=${BITBUCKET_CLONE_DIR}/.rsyncignore --no-perms'
-    dev:
+    '{dev,feature/*}':
       - step:
           caches:
             - node
