@@ -1,10 +1,9 @@
 <template>
-
   <template v-if="step === 'email'">
     <v-form ref="formEmail" @submit.prevent="onSubmitEmail" class="fill-width">
       <h3 class="fs24 mb-10">Sign Up</h3>
 
-      <v-text-field label="Email" filled
+      <v-text-field label="Email"
         v-model.trim="email"
         :rules="emailRules" />
 
@@ -30,165 +29,152 @@
   </template>
 
   <template v-if="step === 'otp'">
-    <h3 class="fs24 mb-10">Enter Code</h3>
-    <p class="mb-4">We've sent a code to {{ email }}</p>
-
-    <v-otp-input
-      ref="otpInput" v-model:value="otp"
-      input-classes="otp-input" separator=""
-      :num-inputs="6" :should-auto-focus="true" :is-disabled="otpDisabled"
-      input-type="number" :placeholder="['', '', '', '', '', '']"
-      @on-change="handleOnChange" @on-complete="handleOnComplete"
-    /> <!-- letter-numeric -->
-    <v-alert v-if="!otpAttempts" color="error" variant="tonal" density="compact" border icon="mdi-alert" :prominent="true" class="mt-6">
-      The code has expired, please resend the email with the new code
-    </v-alert>
-
-    <v-btn @click="onSubmitOTP" color="primary" block class="myBtn mt-8 text-none" size="large"
-     :loading="loading" :disabled="loading || otp.length !== 6">Next</v-btn>
-
-    <p class="mt-6 text-blue-grey-lighten-3">
-      Didn't receive anything?
-      <v-btn @click="resendEmail" :loading="loadingResend" :disabled="loadingResend || timer > 0"
-        variant="text" color="secondary" class="text-none" :text="`Resend code${timer > 0 ? ` (${timer}s)` : ''}`" />
-    </p>
+    <StepOTP action="sign-up" ref="stepOTP" :email="email" @completed="onCompleteOTP" />
   </template>
 
   <template v-if="step === 'password'">
-    <h3 class="fs24 mb-10">Create Password</h3>
-    <v-text-field label="Password" filled
-      v-model.trim="password" name="password"
-      :type="visiblePassword ? 'text' : 'password'"
-      :append-inner-icon="visiblePassword ? 'mdi-eye-off' : 'mdi-eye'" @click:append-inner="visiblePassword = !visiblePassword"
-      :rules="passwordRules" />
-
-    <v-text-field label="Repeat Password" filled
-      v-model.trim="rePassword" type="password"
-      :rules="[(password === rePassword) || 'Password must be match']" />
-
-    <v-btn @click="onSubmitPassword" color="primary" block class="myBtn mt-4 text-none" size="large"
-       :loading="loading" :disabled="loading">Next</v-btn>
+    <StepPassword action="sign-up" @completed="onCompletePassword" />
   </template>
 
-  <template v-if="step === 'invite'"></template>
+  <template v-if="step === 'invite'">
+    <h3 class="fs24 mb-6">Whitelist</h3>
+    <p class="fs16 mb-4">Thank you for registration!</p>
+    <p class="fs16 mb-6">Follow us:
+      <v-btn icon variant="tonal" color="black" :href="SOCIAL_TWITTER" class="ml-2"><v-img width="30" height="30" src="@/assets/social_twitter.svg" /></v-btn>
+      <v-btn icon variant="tonal" color="black" :href="SOCIAL_TELEGRAM" class="ml-2"><v-img width="30" height="30" src="@/assets/social_telegram.svg" class="mr-1" /></v-btn>
+      <v-btn icon variant="tonal" color="black" :href="SOCIAL_DISCORD" class="ml-2"><v-img width="30" height="30" src="@/assets/social_discord.svg" /></v-btn>
+    </p>
+    <p class="fs16 text-blue mb-2">If you have invite code you can continue</p>
+    <v-form ref="formInvite" @submit.prevent="onSubmitInvite" class="fill-width">
+      <v-text-field label="Invite code" v-model.trim="invite"
+        :rules="[v => v.length === 6 || 'Incorrect length']" />
+
+      <v-btn type="submit" color="primary" block class="myBtn mt-2 text-none" size="large"
+       :loading="loading" :disabled="loading">Next</v-btn>
+
+      <v-divider class="mt-4" />
+      <v-btn :to="{name: 'Home'}" variant="outlined" color="secondary" class="mt-6 text-none">Back to Home</v-btn>
+    </v-form>
+  </template>
 </template>
 
 <script>
-import { emailRules, passwordRules } from "@/helpers/mixins";
+import { emailRules, SOCIAL_DISCORD, SOCIAL_TELEGRAM, SOCIAL_TWITTER } from "@/helpers/mixins";
 import { mapStores } from "pinia";
 import { useUserStore } from "@/store/userStore";
 import { useMainStore } from "@/store/mainStore";
 import VOtpInput from "vue3-otp-input";
+import StepOTP from "@/components/auth/StepOTP.vue";
+import StepPassword from "@/components/auth/StepPassword.vue";
 
 export default {
   name: 'SignUp',
-  components: { VOtpInput },
-  data() {return {
+  components: { StepPassword, StepOTP, VOtpInput },
+  data: () => ({
 		loading: false,
-    loadingResend: false,
 		step: 'email', // email | otp | password | invite
 
-    email: 'test@test.com',
-    password: '',
-    otp: '',
+    email: '',
     invite: '',
-    recaptcha_response: '',
 
     agree: true,
-    timer: 0,
-    timerId: null,
-    otpAttempts: 3,
-    otpDisabled: false,
-		rePassword: '',
-		visiblePassword: false
-	}},
+    SOCIAL_TWITTER, SOCIAL_TELEGRAM, SOCIAL_DISCORD,
+    CAPTCHA_SIGN_UP_ID: import.meta.env.VITE_APP_CAPTCHA_SIGN_UP_ID
+	}),
   computed: {
     ...mapStores(useUserStore, useMainStore),
     emailRules() { return emailRules },
-    passwordRules() { return passwordRules },
+  },
+  mounted() {
+    const _this = this
+    initGeetest4(
+      {
+        captchaId: _this.CAPTCHA_SIGN_UP_ID, // sign-up event
+        product: "bind", // float | bind | popup
+      },
+      function (captchaObj) {
+        // captchaObj.appendTo("#captchaBox"); // Insert the validation button into the captchaBox element in the host page
+        window.captchaObj = captchaObj
+        // window.captchaObj.showCaptcha()
+        // window.captchaObj.showBox()
+        // window.captchaObj.getValidate()
+        captchaObj
+          .onReady(() => { /*console.log('onReady')*/ })
+          .onError(function () { console.log('onError', arguments); _this.showAlert('Captcha error. Please try later...') })
+          .onSuccess(function () {
+            // console.log('onSuccess')
+            const captcha = window.captchaObj.getValidate()
+            console.log('step', _this.step)
+            switch (_this.step) {
+              case 'email': _this.sendRequestEmail(captcha); break
+              case 'otp': _this.$refs.stepOTP.onCaptchaPassed(captcha); break
+              case 'invite': _this.sendRequestInvite(captcha); break
+              // case 'otp': !_this.isResendEvent ? _this.sendRequestOTP(captcha) : _this.sendRequestResendEmail(captcha); break
+            }
+          })
+      }
+    );
   },
   unmounted() {
-    clearInterval(this.timerId)
+    window.captchaObj.destroy()
   },
   methods: {
     async onSubmitEmail() {
       const { valid } = await this.$refs.formEmail.validate()
-      console.log(valid)
       if(!valid) return false
 
-      // if(import.meta.env.VITE_APP_RECAPTCHA_ENABLE_SIGN_UP === 'true') {
-      //   await this.recaptchaHandler('sign-up', this.sendRequestEmail) // callback sendRequestEmail(token)
-      // } else {
-        await this.sendRequestEmail('')
-      // }
+      if(import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true') {
+        window.captchaObj.showCaptcha()
+      //   await this.recaptchaHandler('sign-up', this.sendRequestEmail)
+      } else {
+        await this.sendRequestEmail({})
+      }
     },
-    async sendRequestEmail(token) {
-      this.recaptcha_response = token
+    async sendRequestEmail(captcha) {
+      // this.recaptcha_response = token
       this.loading = true
       const data = await new Promise(resolve => setTimeout(() => {resolve({success: true})}, 500))
       // const data = await this.userStore.signUp({email: this.email, recaptcha_response: this.recaptcha_response})
       this.loading = false
+      window.captchaObj.reset();
 
       if(data.success) {
 				this.step = 'otp'
       }
     },
 
-    async onSubmitOTP() {
-      // if(import.meta.env.VITE_APP_RECAPTCHA_ENABLE_SIGN_UP_OTP === 'true') {
-      //   await this.recaptchaHandler('sign-up', this.sendRequestOTP)
-      // } else {
-      await this.sendRequestOTP('')
-      // }
+    onCompleteOTP() {
+      this.step = 'password'
     },
-    async sendRequestOTP(token) {
-      if(this.otpAttempts <= 0) return
-      this.recaptcha_response = token
+
+    async onCompletePassword() {
+      this.step = 'invite'
+    },
+
+    async onSubmitInvite() {
+      const { valid } = await this.$refs.formInvite.validate()
+      if(!valid) return false
+
+      if(import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true') {
+        window.captchaObj.showCaptcha()
+        //   await this.recaptchaHandler('sign-up', this.sendRequestInvite)
+      } else {
+        await this.sendRequestInvite({})
+      }
+    },
+    async sendRequestInvite(captcha) {
       this.loading = true
       const data = await new Promise(resolve => setTimeout(() => {resolve({success: true})}, 500))
-      // const data = await this.userStore.signUpOTP({email: this.otp, recaptcha_response: this.recaptcha_response})
+      // const data = await this.userStore.resendConfirmEmail(this.email)
       this.loading = false
+      window.captchaObj.reset();
 
       if(data.success) {
-        this.step = 'password'
-      } else {
-        this.otpAttempts = this.otpAttempts - 1
-        if(this.otpAttempts <= 0) {
-          this.otpDisabled = true
-        } else {
-          this.mainStore.showAlert('Incorrect code')
-        }
-        this.$refs.otpInput?.clearInput()
+        this.mainStore.showAlert({msg: 'Account successfully created!', color: 'success'})
+        this.$router.replace({name: 'AuthSignIn', query: {email: this.email}})
       }
     },
 
-		async resendEmail() {
-      this.otpAttempts = 3
-      this.otpDisabled = false
-
-			this.loadingResend = true
-      const data = await new Promise(resolve => setTimeout(() => {resolve({success: true})}, 500))
-			// const data = await this.userStore.resendConfirmEmail(this.email)
-			this.loadingResend = false
-
-      this.timer = 10
-      this.timerId = setInterval(() => {
-        this.timer = this.timer - 1
-        if(this.timer <= 0) clearInterval(this.timerId)
-      }, 1000)
-
-      if(data.success) {
-      }
-		},
-
-    async onSubmitPassword() {
-
-    },
-
-    handleOnComplete (value) {},
-    handleOnChange (value) {},
-
-// const clearInput = () => { this.$refs.otpInput.value?.clearInput() }
 		// async onSubmitEmail() {
 		// 	const { valid } = await this.$refs.formEmail.validate()
 		// 	if(!valid) return false

@@ -45,7 +45,7 @@
         <!-- Menu open icon for mobile -->
         <v-app-bar-nav-icon size="small" v-if="breakpoints.mobile" @click.stop="drawer = !drawer" />
 
-        <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged && !breakpoints.mobile" rounded prepend-icon="mdi-login" class="text-none">Log In</v-btn>
+        <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged && !breakpoints.mobile" rounded prepend-icon="mdi-login" class="text-none">Sign In</v-btn>
         <v-btn @click="null" v-if="userStore.logged && !breakpoints.mobile" rounded prepend-icon="mdi-logout" class="text-none">Log Out</v-btn>
 
         <!-- <v-speed-dial v-if="walletStore.account" v-model="profileBtn" open-on-hover class="d-none d-md-flex" direction="bottom">-->

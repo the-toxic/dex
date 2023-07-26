@@ -50,7 +50,7 @@ export function httpInt() {
 
     }
 
-    const msg = error.response.data?.error?.description
+    const msg = error.response.data?.error?.text || error.response.data?.error?.description
 
     if(msg) {
       if(!isSilenceAlert) await mainStore().showAlert({msg, color: 'error'})

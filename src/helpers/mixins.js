@@ -20,6 +20,9 @@ export const passwordRules = [
   v => !!v || 'Field is required',
   v => urlRegex.test(v) || 'Invalid site address',
 ],*/
+export const SOCIAL_TWITTER = import.meta.env.VITE_APP_SOCIAL_TWITTER
+export const SOCIAL_TELEGRAM = import.meta.env.VITE_APP_SOCIAL_TELEGRAM
+export const SOCIAL_DISCORD = import.meta.env.VITE_APP_SOCIAL_DISCORD
 
 export const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value)
 export const toCurrency = (value, currency) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'usd' }).format(isNaN(value) ? 0 : +value)

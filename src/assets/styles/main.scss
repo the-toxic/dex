@@ -215,11 +215,16 @@ $primaryFont: sans-serif;
 //}
 
 /* OPT Input plugin */
+.otpWrap > div {
+  flex: 1 1 auto !important;
+  justify-content: center;
+}
 .otp-input {
-  width: 47px;
+  max-width: 47px;
+  width: 100%;
   height: 50px;
   padding: 5px;
-  margin: 0 10px;
+  margin: 0 5px;
   font-size: 20px;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.3);
