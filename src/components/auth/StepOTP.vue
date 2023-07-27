@@ -1,22 +1,24 @@
 <template>
-	<h3 class="fs24 mb-10">Enter Code</h3>
-	<p class="mb-4">We've sent a code to {{ email }}</p>
+	<h3 class="fs24 mb-10">{{ otpAttempts ? 'Enter Code' : 'Resend Code' }}</h3>
+  <p v-if="otpAttempts" class="mb-4">We've sent a code to <span class="font-weight-bold">{{ email }}</span></p>
 
-	<v-otp-input
+	<v-otp-input v-if="otpAttempts"
 		ref="otpInput" v-model:value="otp"
 		input-classes="otp-input" separator="" class="otpWrap"
 		:num-inputs="6" :should-auto-focus="true" :is-disabled="otpDisabled"
 		input-type="number" :placeholder="['', '', '', '', '', '']"
 		@on-change="handleOnChange" @on-complete="handleOnComplete"
 	/> <!-- letter-numeric -->
-	<v-alert v-if="!otpAttempts" color="error" variant="tonal" density="compact" border icon="mdi-alert" :prominent="true" class="mt-6">
-		The code has expired, please resend the email with the new code
+	<v-alert v-if="!otpAttempts" color="warning" variant="tonal" density="compact" border icon="mdi-alert" :prominent="true"
+   title="The code has expired." text="Please resend the email with the new code." class="text-left mt-6">
 	</v-alert>
 
-	<v-btn @click="sendRequestOTP" color="primary" block class="myBtn mt-8 text-none" size="large"
+	<v-btn v-if="otpAttempts" @click="sendRequestOTP" color="primary" block class="myBtn mt-8 text-none" size="large"
 	 :loading="loading" :disabled="loading || otp.length !== 6">Next</v-btn>
 
-	<p class="mt-6 text-blue-grey-lighten-3">
+	<v-btn v-else @click="onSubmitResendEmail" color="primary" block class="myBtn mt-8 text-none" size="large">Request a new code</v-btn>
+
+	<p v-if="otpAttempts" class="mt-6 text-blue-grey-lighten-3">
 		Didn't receive anything?
 		<v-btn @click="onSubmitResendEmail" :loading="loadingResend" :disabled="loadingResend || timer > 0"
 		 variant="text" color="secondary" class="text-none" :text="`Resend code${timer > 0 ? ` (${timer}s)` : ''}`" />
@@ -104,7 +106,8 @@ export default {
 
 		async onSubmitResendEmail() {
 			// this.isResendEvent = true
-			if(import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true') {
+      if((this.action === 'sign-up' && import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true')
+      || (this.action === 'reset-password' && import.meta.env.VITE_APP_CAPTCHA_RESET_PASSWORD === 'true')) {
 				window.captchaObj.showCaptcha()
 			} else {
 				await this.sendRequestResendEmail({})
@@ -121,7 +124,7 @@ export default {
 			this.loadingResend = false
 			window.captchaObj.reset();
 
-			this.timer = 10
+			this.timer = 120
 			this.timerId = setInterval(() => {
 				this.timer = this.timer - 1
 				if(this.timer <= 0) clearInterval(this.timerId)

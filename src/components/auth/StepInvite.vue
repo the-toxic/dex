@@ -2,13 +2,13 @@
 	<h3 class="fs24 mb-6">Whitelist</h3>
 	<p v-if="action === 'sign-up'" class="fs16 mb-4">Thank you for registration!</p>
 	<p class="fs16 mb-6">Follow us:
-		<v-btn icon variant="tonal" color="black" :href="SOCIAL_TWITTER" class="ml-2">
+		<v-btn icon variant="tonal" color="black" :href="SOCIAL_TWITTER" target="_blank" class="ml-2">
 			<v-img width="30" height="30" src="@/assets/social_twitter.svg"/>
 		</v-btn>
-		<v-btn icon variant="tonal" color="black" :href="SOCIAL_TELEGRAM" class="ml-2">
+		<v-btn icon variant="tonal" color="black" :href="SOCIAL_TELEGRAM" target="_blank" class="ml-2">
 			<v-img width="30" height="30" src="@/assets/social_telegram.svg" class="mr-1"/>
 		</v-btn>
-		<v-btn icon variant="tonal" color="black" :href="SOCIAL_DISCORD" class="ml-2">
+		<v-btn icon variant="tonal" color="black" :href="SOCIAL_DISCORD" target="_blank" class="ml-2">
 			<v-img width="30" height="30" src="@/assets/social_discord.svg"/>
 		</v-btn>
 	</p>
@@ -58,7 +58,8 @@ export default {
       const { valid } = await this.$refs.formInvite.validate()
       if(!valid) return false
 
-      if(import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true') { // todo OR SIGN IN
+      if((this.action === 'sign-up' && import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true')
+      || (this.action === 'sign-in' && import.meta.env.VITE_APP_CAPTCHA_SIGN_IN === 'true')) {
         window.captchaObj.showCaptcha()
       } else {
         await this.sendRequestInvite({})

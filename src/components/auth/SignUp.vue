@@ -5,9 +5,9 @@
 
       <v-text-field label="Email"
         v-model.trim="email"
-        :rules="emailRules" />
+        :rules="emailRules" hide-details="auto" class="text-left mb-4" />
 
-      <v-checkbox v-model="agree" :rules="[v => !!v || 'Need agree with policy']" density="compact">
+      <v-checkbox v-model="agree" :rules="[v => !!v || 'Need agree with policy']" density="compact" hide-details="auto" class="text-left">
         <template v-slot:label>
             <span class="flex-wrap">
               I agree with <a @click.stop target="_blank" :href="'/legal/privacy-policy'" class="text-decoration-underline">Privacy Policy</a>
@@ -16,7 +16,7 @@
         </template>
       </v-checkbox>
 
-      <v-btn type="submit" color="primary" block class="myBtn mt-2 text-none" size="large"
+      <v-btn type="submit" color="primary" block class="myBtn mt-4 text-none" size="large"
        :loading="loading" :disabled="loading">Sign Up</v-btn>
 
       <p class="mt-6 text-blue-grey-lighten-3">
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { emailRules, SOCIAL_DISCORD, SOCIAL_TELEGRAM, SOCIAL_TWITTER } from "@/helpers/mixins";
+import { emailRules } from "@/helpers/mixins";
 import { mapStores } from "pinia";
 import { useUserStore } from "@/store/userStore";
 import { useMainStore } from "@/store/mainStore";
