@@ -6,6 +6,7 @@
         <v-list-item :to="{name: 'Console'}" prepend-icon="mdi-menu-open" title="Pairs"></v-list-item>
         <v-list-item :to="{name: 'Analyse'}" prepend-icon="mdi-menu-open" title="Analyse"></v-list-item>
         <v-list-item :to="{name: 'Liquidity'}" prepend-icon="mdi-menu-open" title="Liquidity"></v-list-item>
+        <v-list-item :to="{name: 'Profile'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Profile"></v-list-item>
       </v-list>
       <template v-slot:append>
         <div class="mt-6 pa-3">
@@ -46,7 +47,23 @@
         <v-app-bar-nav-icon size="small" v-if="breakpoints.mobile" @click.stop="drawer = !drawer" />
 
         <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged && !breakpoints.mobile" rounded prepend-icon="mdi-login" class="text-none">Sign In</v-btn>
-        <v-btn @click="userStore.logOut()" v-if="userStore.logged && !breakpoints.mobile" rounded prepend-icon="mdi-logout" class="text-none">Log Out</v-btn>
+
+        <v-menu v-if="userStore.logged && !breakpoints.mobile" v-model="userMenu" :close-on-content-click="false" location="bottom">
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" rounded append-icon="mdi-menu-down" class="text-none">{{ userStore.user.email }}</v-btn>
+          </template>
+          <v-card min-width="300">
+            <v-list>
+              <v-list-item prepend-icon="mdi-badge-account-outline"
+                 :title="userStore.user.email" subtitle="John Doe"></v-list-item>
+            </v-list>
+            <v-divider></v-divider>
+            <v-list>
+              <v-list-item :to="{name: 'Profile'}" title="Profile" prepend-icon="mdi-account" />
+              <v-list-item @click="userStore.logOut()" title="Logout" prepend-icon="mdi-logout" />
+            </v-list>
+          </v-card>
+        </v-menu>
 
         <!-- <v-speed-dial v-if="walletStore.account" v-model="profileBtn" open-on-hover class="d-none d-md-flex" direction="bottom">-->
         <!--   <template v-slot:activator>-->
@@ -116,7 +133,7 @@
   const breakpoints = ref(useDisplay())
 
   const drawer = ref(false)
-  const profileBtn = ref(false)
+  const userMenu = ref(false)
 
   if (mainStore.theme === 'light') {
     toggleTheme()

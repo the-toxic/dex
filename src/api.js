@@ -104,6 +104,11 @@ export async function inviteRequest(payload){
 
 
 /** User module */
+export async function updateProfile(payload){
+  // return  await axios.post(`user/profile`, payload);
+  await delay(500)
+  return {data: {success: true}}
+}
 export async function changePassword(payload){
   // return  await axios.post(`user/change-password`, payload);
   await delay(500)
