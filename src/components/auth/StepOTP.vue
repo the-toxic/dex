@@ -13,12 +13,12 @@
 		The code has expired, please resend the email with the new code
 	</v-alert>
 
-	<v-btn @click="onSubmitOTP" color="primary" block class="myBtn mt-8 text-none" size="large"
+	<v-btn @click="sendRequestOTP" color="primary" block class="myBtn mt-8 text-none" size="large"
 	 :loading="loading" :disabled="loading || otp.length !== 6">Next</v-btn>
 
 	<p class="mt-6 text-blue-grey-lighten-3">
 		Didn't receive anything?
-		<v-btn @click="onResendEmail" :loading="loadingResend" :disabled="loadingResend || timer > 0"
+		<v-btn @click="onSubmitResendEmail" :loading="loadingResend" :disabled="loadingResend || timer > 0"
 		 variant="text" color="secondary" class="text-none" :text="`Resend code${timer > 0 ? ` (${timer}s)` : ''}`" />
 	</p>
 </template>
@@ -27,6 +27,7 @@
 import VOtpInput from "vue3-otp-input";
 import { mapActions } from "pinia";
 import { useMainStore } from "@/store/mainStore";
+import * as api from "@/api";
 
 export default {
 	name: "StepOTP",
@@ -54,7 +55,7 @@ export default {
 		timerId: null,
 		otpAttempts: 3,
 		otpDisabled: false,
-		isResendEvent: false,
+		// isResendEvent: false,
 	}),
 	unmounted() {
 		clearInterval(this.timerId)
@@ -63,32 +64,26 @@ export default {
 		...mapActions(useMainStore, {showAlert: 'showAlert'}),
 
 		onCaptchaPassed(captcha) {
-			if(this.isResendEvent) {
+			// if(this.isResendEvent) {
 				this.sendRequestResendEmail(captcha)
-			} else {
-				this.sendRequestOTP(captcha)
-			}
+			// } else {
+				// this.sendRequestOTP(captcha)
+			// }
 		},
 
-		async onSubmitOTP() {
-			if(import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true') {
-				window.captchaObj.showCaptcha()
-				//   await this.recaptchaHandler('sign-up', this.sendRequestOTP)
-			} else {
-				await this.sendRequestOTP({})
-			}
-		},
-		async sendRequestOTP(captcha) {
+		// async onSubmitOTP() {
+		// 	if(import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true') {
+		// 		window.captchaObj.showCaptcha()
+		// 		//   await this.recaptchaHandler('sign-up', this.sendRequestOTP)
+		// 	} else {
+		// 		await this.sendRequestOTP({})
+		// 	}
+		// },
+		async sendRequestOTP() {
 			if(this.otpAttempts <= 0) return
-			// this.recaptcha_response = token
 			this.otpDisabled = true
 			this.loading = true
-			const data = await new Promise(resolve => setTimeout(() => {resolve({success: true})}, 500))
-			if(this.action === 'sign-up') {
-				// const data = await this.userStore.signUpConfirmEmail({email: this.otp, recaptcha_response: this.recaptcha_response})
-			} else if(this.action === 'reset-password') {
-				// const data = await this.userStore.resetPasswordConfirmEmail({email: this.otp, recaptcha_response: this.recaptcha_response})
-			}
+      const { data } = await api.otp({email: this.email, code: this.otp})
 			this.loading = false
 			this.otpDisabled = false
 			window.captchaObj.reset();
@@ -107,27 +102,21 @@ export default {
 			}
 		},
 
-		async onResendEmail() {
-			this.isResendEvent = true
+		async onSubmitResendEmail() {
+			// this.isResendEvent = true
 			if(import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true') {
 				window.captchaObj.showCaptcha()
-				//   await this.recaptchaHandler('sign-up', this.sendRequestResendEmail)
 			} else {
 				await this.sendRequestResendEmail({})
 			}
 		},
 		async sendRequestResendEmail(captcha) {
-			this.isResendEvent = false
+			// this.isResendEvent = false
 			this.otpAttempts = 3
 			this.otpDisabled = false
 
 			this.loadingResend = true
-			const data = await new Promise(resolve => setTimeout(() => {resolve({success: true})}, 500))
-			if(this.action === 'sign-up') {
-				// const data = await this.userStore.signUpResendEmail(this.email)
-			} else if(this.action === 'reset-password') {
-				// const data = await this.userStore.resetPasswordResendEmail(this.email)
-			}
+      const { data } = await api.otpResend({ email: this.email, captcha })
 
 			this.loadingResend = false
 			window.captchaObj.reset();
@@ -141,7 +130,9 @@ export default {
 			if(data.success) {
 			}
 		},
-		handleOnComplete (value) {},
+		handleOnComplete (value) {
+      this.sendRequestOTP()
+    },
 		handleOnChange (value) {},
 	}
 }

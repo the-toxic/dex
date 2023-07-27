@@ -1,25 +1,33 @@
 <template>
-  <h3 class="fs24 mb-10">Sign In</h3>
-  <v-form ref="form" @submit.prevent="onSubmit">
-    <v-text-field label="Email"
-      v-model.trim="form.email"
-      :rules="emailRules" class="mb-1" />
+  <template v-if="step === 'email'">
+    <h3 class="fs24 mb-10">Sign In</h3>
+    <v-form ref="form" @submit.prevent="onSubmitEmail">
+      <v-text-field label="Email"
+        v-model.trim="form.email"
+        :rules="emailRules" class="mb-1" />
 
-    <v-text-field label="Password"
-      v-model.trim="form.password"
-      name="password" type="password"
-      :rules="passwordRules" class="mb-1" />
+      <v-text-field label="Password"
+        v-model.trim="form.password"
+        name="password" type="password" hide-details="auto"
+        :rules="passwordRules" class="mb-2" />
 
-    <div id="captchaBox"></div>
+      <v-checkbox v-model="form.remember" label="Remember me" density="compact" hide-details />
 
-    <v-btn type="submit" color="primary" block class="myBtn mt-2 text-none" size="large"
-     :loading="loading" :disabled="loading">Login</v-btn>
+      <div id="captchaBox"></div>
 
-    <router-link :to="{name: 'AuthResetPassword'}" class="mt-8 fs16 d-inline-block text-none text-decoration-none text-secondary">Reset password</router-link>
+      <v-btn type="submit" color="primary" block class="myBtn mt-2 text-none" size="large"
+       :loading="loading" :disabled="loading">Login</v-btn>
 
-    <v-divider class="mt-4" />
-    <v-btn :to="{name: 'Home'}" variant="outlined" color="secondary" class="mt-6 text-none">Back to Home</v-btn>
+      <router-link :to="{name: 'AuthResetPassword'}" class="mt-8 fs16 d-inline-block text-none text-decoration-none text-secondary">Reset password</router-link>
+
+      <v-divider class="mt-4" />
+      <v-btn :to="{name: 'Home'}" variant="outlined" color="secondary" class="mt-6 text-none">Back to Home</v-btn>
     </v-form>
+  </template>
+  <template v-if="step === 'invite'">
+    <StepInvite action="sign-in" ref="stepInvite" :email="form.email" @completed="onCompleteInvite"/>
+  </template>
+
 </template>
 
 <script>
@@ -27,19 +35,24 @@ import { emailRules, passwordRules } from "@/helpers/mixins";
 import { mapActions } from "pinia";
 import { useUserStore } from "@/store/userStore";
 import { useMainStore } from "@/store/mainStore";
+import * as api from "@/api";
+import StepInvite from "@/components/auth/StepInvite.vue";
 
   export default {
     name: 'SignIn',
+    components: { StepInvite },
     data() {
       return {
         loading: false,
-        valid: true,
+        step: 'email', // email | invite
         form: {
           email: '',
           password: '',
-          recaptcha_response: ''
+          remember: '',
         },
-        CAPTCHA_SIGN_IN_ID: import.meta.env.VITE_APP_CAPTCHA_SIGN_IN_ID
+        CAPTCHA_ID: import.meta.env.VITE_APP_CAPTCHA_ID,
+        CAPTCHA_SIGN_IN: import.meta.env.VITE_APP_CAPTCHA_SIGN_IN === 'true',
+        INVITE_REQUIRED: import.meta.env.VITE_APP_INVITE_REQUIRED === 'true'
       }
     },
     created() {
@@ -50,7 +63,7 @@ import { useMainStore } from "@/store/mainStore";
       const _this = this
       initGeetest4(
         {
-          captchaId: _this.CAPTCHA_SIGN_IN_ID,
+          captchaId: _this.CAPTCHA_ID,
           product: "bind", // float | bind | popup
           userInfo: _this.form.email, // optional
           // mask: { bgColor: 'rgba(0,0,0,0.2)' }
@@ -58,59 +71,63 @@ import { useMainStore } from "@/store/mainStore";
         function (captchaObj) {
           captchaObj.appendTo("#captchaBox"); // Insert the validation button into the captchaBox element in the host page
           window.captchaObj = captchaObj
-          // window.captchaObj.showCaptcha()
-          // window.captchaObj.showBox()
-          // window.captchaObj.getValidate()
           captchaObj
-            .onReady(function () {
-              console.log('onReady')
-            })
+            .onReady(function () { /* console.log('onReady')*/ })
+            .onError(function () { console.log('onError', arguments); _this.showAlert('Captcha error. Please try later...') })
             .onSuccess(function () {
-              console.log('onSuccess')
               const captcha = window.captchaObj.getValidate()
-              _this.sendRequest(captcha)
+              console.log('step', _this.step)
+              switch (_this.step) {
+                case 'email': _this.sendRequestEmail(captcha); break
+                case 'invite': _this.$refs.stepInvite.onCaptchaPassed(captcha); break
+              }
             })
-            .onError(function () {
-              console.log('onError', arguments)
-              _this.showAlert('Captcha error. Please try later...')
-            });
         }
       );
+    },
+    unmounted() {
+      window.captchaObj?.destroy()
     },
     computed: {
       emailRules() { return emailRules },
       passwordRules() { return passwordRules },
     },
     methods: {
-      ...mapActions(useUserStore, {signIn: 'signIn'}),
+      ...mapActions(useUserStore, {logIn: 'logIn'}),
       ...mapActions(useMainStore, {showAlert: 'showAlert'}),
-      async onSubmit() {
+
+      async onSubmitEmail() {
         const { valid } = await this.$refs.form.validate()
         if(!valid) return false
 
-        if(import.meta.env.VITE_APP_CAPTCHA_SIGN_IN === 'true') {
+        if(this.CAPTCHA_SIGN_IN) {
           window.captchaObj.showCaptcha()
-        //   await this.recaptchaHandler('sign-in', this.sendRequest) // callback sendRequest(token)
         } else {
-          await this.sendRequest({})
+          await this.sendRequestEmail({})
         }
       },
-      async sendRequest(captcha) {
-        // this.form.recaptcha_response = token
+      async sendRequestEmail(captcha) {
+        this.form.captcha = captcha
 
         this.loading = true
-        // const data = await this.signIn(this.form)
-        const data = await new Promise(resolve => setTimeout(() => {resolve({success: true})}, 500))
+        const { data } = await api.signIn(this.form)
         this.loading = false
         window.captchaObj.reset();
 
         if(data.success) {
-          this.showAlert({msg: 'Successfully. Redirect...', color: 'success'})
-          // window.captchaObj.reset();
-          // window.captchaObj.destroy();
-					// await this.$router.push({name: 'Pairs'})
+          if(this.INVITE_REQUIRED && data.result.need_invite) {
+            this.step = 'invite'
+          } else {
+            this.logIn(data.result.user)
+            await this.$router.replace({name: 'Console'})
+          }
         }
-      }
+      },
+
+      async onCompleteInvite(userObject) {
+        this.logIn(userObject)
+        this.$router.replace({name: 'Console'})
+      },
     }
   }
 </script>

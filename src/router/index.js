@@ -15,7 +15,7 @@ const NewChart = () => import(/* webpackChunkName: "console" */ "@/views/NewChar
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
-  { path: '/console', name: 'Pairs', redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
+  { path: '/console', name: 'Console', redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
   { path: '/console/:network([a-zA-Z0-9]{2,10})/pe/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', component: NewChart },
   { path: '/console/analyse', name: 'Analyse', component: Analyse },
   { path: '/console/liquidity', name: 'Liquidity', component: Liquidity },
@@ -27,7 +27,7 @@ const routes = [
       { path: 'reset-password', name: 'AuthResetPassword', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth")},
       { path: 'reset-password/set-new', name: 'AuthSetNewPassword', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth")},
       { path: 'email-confirm', name: 'AuthEmailConfirm', meta: { limitedWidth: false } },
-    ], /*beforeEnter(to, from, next) { next(!store.getters['user/logged'] ? true : {name: 'Pairs'}) }*/
+    ], /*beforeEnter(to, from, next) { next(!store.getters['user/logged'] ? true : {name: 'Console'}) }*/
   },
   { path: '/:pathMatch(.*)*', component: E404, meta: { layout: AppLayoutsEnum.error }}
 ]

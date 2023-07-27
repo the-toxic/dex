@@ -26,7 +26,7 @@
 
 <script>
 import VOtpInput from "vue3-otp-input";
-import { resetPassword } from "@/api"
+import * as api from "@/api"
 import { emailRules } from "@/helpers/mixins";
 import { mapActions } from "pinia";
 import { useMainStore } from "@/store/mainStore";
@@ -43,14 +43,14 @@ import StepOTP from "@/components/auth/StepOTP.vue";
 
         email: '',
 
-        CAPTCHA_RESET_PASSWORD_ID: import.meta.env.VITE_APP_CAPTCHA_RESET_PASSWORD_ID
+        CAPTCHA_ID: import.meta.env.VITE_APP_CAPTCHA_ID
       }
     },
     mounted() {
       const _this = this
       initGeetest4(
         {
-          captchaId: _this.CAPTCHA_RESET_PASSWORD_ID,
+          captchaId: _this.CAPTCHA_ID,
           product: "bind", // float | bind | popup
           userInfo: _this.email, // optional
           // mask: { bgColor: 'rgba(0,0,0,0.2)' }
@@ -73,6 +73,9 @@ import StepOTP from "@/components/auth/StepOTP.vue";
         }
       );
     },
+    unmounted() {
+      window.captchaObj?.destroy()
+    },
     computed: {
       emailRules() { return emailRules },
     },
@@ -91,11 +94,8 @@ import StepOTP from "@/components/auth/StepOTP.vue";
         }
       },
       async sendRequestEmail(captcha) {
-        // this.form.recaptcha_response = token
-
         this.loading = true
-        const data = await new Promise(resolve => setTimeout(() => {resolve({success: true})}, 500))
-        // const {data} = await resetPassword(this.form)
+        const {data} = await api.resetPassword({email: this.email, captcha})
         this.loading = false
         window.captchaObj.reset();
 
@@ -107,6 +107,7 @@ import StepOTP from "@/components/auth/StepOTP.vue";
       onCompleteOTP() {
         this.step = 'password'
       },
+
       onCompletePassword() {
         this.showAlert({msg: 'Password successfully changed!', color: 'success'})
         this.$router.replace({name: 'AuthSignIn', query: {email: this.email}})

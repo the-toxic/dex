@@ -5,8 +5,8 @@ import {emailRegex} from '@/helpers/common'
 export const PROJECT_NAME = import.meta.env.VITE_APP_PROJECT_NAME
 export const DOCS_HOST = import.meta.env.VITE_APP_DOCS_HOST
 export const emailRules = [
-  v => !!v || 'Email is required',
-  v => emailRegex.test(v) || 'Email is invalid',
+  v => !!v || 'Field is required',
+  v => emailRegex.test(v) || 'Invalid email',
 ]
 export const nameRules = [
   v => !!v || 'Field is required',

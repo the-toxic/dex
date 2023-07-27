@@ -14,10 +14,16 @@ axios.defaults.baseURL = apiDomain + import.meta.env.VITE_APP_API_PATH;
 
 export function httpInt() {
   axios.interceptors.request.use(function(config) {
-    // const pattern = /^https?:\/\//;
-    // if(!pattern.test(config.url)) { // if the request is not sent to an external url
-        // config.headers.Authorization = `Bearer ${token}`
-    // }
+    const pattern = /^https?:\/\//;
+    if(!pattern.test(config.url)) { // if the request is not sent to an external url
+
+      if(!config.url.includes('auth')) {
+        const token = userStore().user?.token
+        if(token) config.headers['access-token'] = token
+      }
+      // config.headers.Authorization = `Basic / Bearer 123423534623abc=`
+      // if(!config.headers['x-path']) config.headers['x-path'] = encodeURI(config.url.split('?')[0])
+    }
     return config;
 
   }, function(err) {
@@ -41,16 +47,15 @@ export function httpInt() {
       await userStore().logOut() // reload page
       await mainStore().showAlert({msg: 'Session expired. Re-login please.', color: 'error'})
       return {data: {success: false}}
-      // if(error.response.config.url.includes('garage/')) {
-      //   await walletStore.logOut()
-      //   await store.dispatch('showWalletDialog', true)
+      // if(error.response.config.url.includes('console/')) {
+      //   await walletStore().logOut()
       //   await mainStore().showAlert({msg: 'Session expired. Need to reconnect MetaMask account.', color: 'error'})
       // }
       // return Promise.reject('Session expired');
 
     }
 
-    const msg = error.response.data?.error?.text || error.response.data?.error?.description
+    const msg = error.response.data?.error?.text || error.response.data?.error?.message || error.response.data?.error?.description
 
     if(msg) {
       if(!isSilenceAlert) await mainStore().showAlert({msg, color: 'error'})

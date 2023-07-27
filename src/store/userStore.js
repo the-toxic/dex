@@ -1,35 +1,27 @@
 import { defineStore } from "pinia";
 import router from "@/router";
-import * as api from "@/api";
 
 const localStorageUser = JSON.parse(window.localStorage.getItem('user'))
 
 export const useUserStore = defineStore('user', {
 	state: () => ({
 		logged: !!localStorageUser,
-    // /** @type {{ text: string, id: number, isFinished: boolean }[]} */
+    // /** @type {{ token: string, id: string, email: string }} */
 		user: localStorageUser || null
 	}),
 	getters: {
+    // token: (state) => state.user.token
 	},
 	actions: {
-    async signIn(payload) {
-      const data = await api.signIn(payload)
-      if(data.success) {
-        this.logged = true;
-        this.user = data.result;
-        window.localStorage.setItem('user', JSON.stringify(data.result))
+    logIn(payload) {
+      if(!('email' in payload)) {
+        console.log('Invalid user Object')
+        return
       }
-      return data
-    },
-
-    async signUp(payload) {
-      // return new Promise(resolve => setTimeout(() => resolve({ success: true }), 1000))
-      const data = await api.signUp(payload)
-      if(data.success) {
-        // window.afterSignup = true
-      }
-      return data
+      this.logged = true;
+      this.user = payload;
+      window.localStorage.setItem('user', JSON.stringify(payload))
+      return true
     },
 
     updateUser(payload) {
@@ -39,14 +31,6 @@ export const useUserStore = defineStore('user', {
         ...payload
       };
       window.localStorage.setItem('user', JSON.stringify(this.user))
-    },
-
-    async resendConfirmEmail(payload) {
-      const data = await api.resendConfirmEmail()
-      // if(!data.success && data.error?.code === 'already_confirmed') {
-        // commit('updateUser', {status: 1})
-      // }
-      return data
     },
 
     logOut() {

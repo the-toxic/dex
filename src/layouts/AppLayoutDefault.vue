@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="drawer" location="bottom" v-if="breakpoints.mobile"><!-- v-if="breakpoints.width <= 768" -->
       <v-list :nav="true" min-height="300">
         <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
-        <v-list-item :to="{name: 'Pairs'}" prepend-icon="mdi-menu-open" title="Pairs"></v-list-item>
+        <v-list-item :to="{name: 'Console'}" prepend-icon="mdi-menu-open" title="Pairs"></v-list-item>
         <v-list-item :to="{name: 'Analyse'}" prepend-icon="mdi-menu-open" title="Analyse"></v-list-item>
         <v-list-item :to="{name: 'Liquidity'}" prepend-icon="mdi-menu-open" title="Liquidity"></v-list-item>
       </v-list>
@@ -26,7 +26,7 @@
       </template>
 
       <v-spacer />
-      <v-btn variant="flat" :to="{name: 'Pairs'}" rounded size="small" class="d-none d-md-inline-flex text-none fs14" :class="route.name === 'Pair' ? 'v-btn--active' : ''">Chart</v-btn>
+      <v-btn variant="flat" :to="{name: 'Console'}" rounded size="small" class="d-none d-md-inline-flex text-none fs14" :class="route.name === 'Pair' ? 'v-btn--active' : ''">Chart</v-btn>
       <v-btn variant="flat" :to="{name: 'Analyse'}" rounded size="small" class="d-none d-md-inline-flex text-none fs14">Analyse</v-btn>
       <v-btn variant="flat" :to="{name: 'Liquidity'}" rounded size="small" class="d-none d-md-inline-flex text-none fs14">Liquidity</v-btn>
       <v-spacer />
@@ -46,7 +46,7 @@
         <v-app-bar-nav-icon size="small" v-if="breakpoints.mobile" @click.stop="drawer = !drawer" />
 
         <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged && !breakpoints.mobile" rounded prepend-icon="mdi-login" class="text-none">Sign In</v-btn>
-        <v-btn @click="null" v-if="userStore.logged && !breakpoints.mobile" rounded prepend-icon="mdi-logout" class="text-none">Log Out</v-btn>
+        <v-btn @click="userStore.logOut()" v-if="userStore.logged && !breakpoints.mobile" rounded prepend-icon="mdi-logout" class="text-none">Log Out</v-btn>
 
         <!-- <v-speed-dial v-if="walletStore.account" v-model="profileBtn" open-on-hover class="d-none d-md-flex" direction="bottom">-->
         <!--   <template v-slot:activator>-->

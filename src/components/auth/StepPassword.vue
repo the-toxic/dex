@@ -5,7 +5,7 @@
 			v-model.trim="password" name="password"
 			:type="visiblePassword ? 'text' : 'password'"
 			:append-inner-icon="visiblePassword ? 'mdi-eye-off' : 'mdi-eye'" @click:append-inner="visiblePassword = !visiblePassword"
-			:rules="passwordRules" />
+			:rules="passwordRules" class="mb-2" />
 
 		<v-text-field label="Repeat Password"
 			v-model.trim="rePassword" type="password"
@@ -18,8 +18,7 @@
 
 <script>
 import { passwordRules } from "@/helpers/mixins";
-// import { mapStores } from "pinia";
-// import { useMainStore } from "@/store/mainStore";
+import * as api from "@/api";
 
 export default {
   name: "StepPassword",
@@ -39,9 +38,9 @@ export default {
 
     rePassword: '',
     visiblePassword: false,
+    INVITE_REQUIRED: import.meta.env.VITE_APP_INVITE_REQUIRED === 'true'
   }),
   computed: {
-    // ...mapStores(useMainStore),
     passwordRules() { return passwordRules },
   },
   methods: {
@@ -50,16 +49,12 @@ export default {
       if(!valid) return false
 
       this.loading = true
-      const data = await new Promise(resolve => setTimeout(() => {resolve({success: true})}, 500))
-      if(this.action === 'sign-up') {
-        // const data = await this.userStore.signUpPassword(this.password)
-      } else if(this.action === 'reset-password') {
-        // const data = await this.userStore.resetPassword(this.password)
-      }
+      const { data } = await api.setPassword(this.password)
       this.loading = false
 
       if(data.success) {
-        this.$emit('completed')
+        const isEndSignUp = !this.INVITE_REQUIRED && this.action === 'sign-up'
+        this.$emit('completed', (isEndSignUp ? data.result.user : null)) // send object user after sign-up
       }
     },
   }

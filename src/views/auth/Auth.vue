@@ -17,20 +17,18 @@
 import AuthSignUp from "@/components/auth/SignUp.vue";
 import AuthSignIn from "@/components/auth/SignIn.vue"
 import AuthResetPassword from "@/components/auth/ResetPassword.vue"
-// import AuthEmailConfirm from "@/views/auth/AuthEmailConfirm.vue"
-import AuthSetNewPassword from "@/views/auth/AuthSetNewPassword.vue";
 import { useUserStore } from "@/store/userStore";
 const userStore = useUserStore()
 
 export default {
   name: "Auth",
-  components: {AuthSetNewPassword, AuthSignUp, AuthSignIn, AuthResetPassword/*, AuthEmailConfirm*/},
+  components: {AuthSignUp, AuthSignIn, AuthResetPassword},
   head: {title: {inner: 'Auth'}},
   data() {return {
 		pageComponent: 'AuthSignUp',
 	}},
 	beforeRouteEnter(to, from, next) {
-		next(vm => userStore.logged ? vm.$router.replace({name: 'Pairs'}) : true)
+		next(vm => userStore.logged ? vm.$router.replace({name: 'Console'}) : true)
 	},
   watch: {
     '$route.name'(routeName) {
@@ -40,7 +38,6 @@ export default {
   },
   created() {
     this.pageComponent = this.$route.name
-		// this.$store.commit('paddingContainer', false)
 
     // this.$recaptchaLoaded().then(_ => {
     //   console.log('loaded')

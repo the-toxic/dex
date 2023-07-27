@@ -52,6 +52,67 @@ const chartStore = () => useChartStore()
 //   return data
 // }
 
+
+// const userData = {
+// 	success: true,
+// 	result: {
+// 		user_id: '1q2w3e',
+// 		email: 'test-user@gmail.com',
+// 		token: '123'
+// 	}
+// }
+const delay = async (ms) => await new Promise(resolve => setTimeout(() => {resolve(true)}, ms))
+
+/** Auth module */
+
+export async function signIn(payload){
+  // return await axios.post(`auth/sign-in`, payload);
+  await delay(500)
+  return {data: {success: true, result: { need_invite: true, /*user: {email: 'qwe@qwe.cc'}*/ }}}
+}
+export async function signUp(payload){
+  // return await axios.post(`auth/sign-up`, payload);
+  await delay(500)
+  return {data: {success: true}}
+}
+export async function resetPassword(payload){
+  // return await axios.post(`auth/reset-password`, payload);
+  await delay(500)
+  return {data: {success: true}}
+}
+
+export async function otp(payload){
+  // return await axios.post(`auth/otp`, payload);
+  await delay(500)
+  return {data: {success: true}}
+}
+export async function otpResend(payload){
+  // return await axios.post(`auth/otp-resend`, payload);
+  await delay(500)
+  return {data: {success: true}}
+}
+export async function setPassword(payload){
+  // return await axios.post(`auth/set-password`, payload);
+  await delay(500)
+  return {data: {success: true, result: { user: {email: 'qwe@qwe.cc'} }}}
+}
+export async function inviteRequest(payload){
+  // return  await axios.post(`auth/invite`, payload);
+  await delay(500)
+  return {data: {success: true, result: { user: {email: 'qwe@qwe.cc'} }}}
+}
+
+
+/** User module */
+export async function changePassword(payload){
+  // return  await axios.post(`user/change-password`, payload);
+  await delay(500)
+  return {data: {success: true}}
+}
+
+
+
+/** Chart page */
 export const searchPair = async (payload) => {
   const {data} = await axios.post(`xhr/search_pair`, payload, {
     headers: { 'x-session-id': chartStore().sessionId },
@@ -85,55 +146,3 @@ export const fetchExchanges = async () => {
   return data
 }
 
-
-
-// if(payload.email === 'demo@plasm.ai' && payload.password === 'Qwerty12')
-// const userData = {
-// 	success: true,
-// 	result: {
-// 		user_id: '1q2w3e',
-// 		email: 'test-user@gmail.com',
-// 		first_name: 'Demo',
-// 		last_name: 'User',
-// 		token: ''
-// 	}
-// }
-
-// sign in
-export async function signIn(payload){
-  const {data} = await axios.post(`auth/sign-in`, payload);
-  return data
-  // if(data.success) {
-  // 	userData.result.token = data.result
-  // 	userData.result.email = payload.email
-  // 	return userData
-  // } else {
-  // 	return {success: false, error: 'Invalid credentials'}
-  // }
-}
-export async function signUp(payload){
-  const {data} = await axios.post(`auth/sign-up`, payload);
-  return data
-}
-export async function confirmEmail(payload){
-  const {data} =  await axios.post(`auth/email-confirm`, {token: payload});
-  // const data = {success: true}
-  return data
-}
-export async function resendConfirmEmail(payload){
-  const {data} = await axios.post(`auth/email-confirm/resend`, payload);
-  return data
-}
-
-export async function resetPassword(payload){
-  return  await axios.post(`auth/reset-password`, payload);
-}
-export async function setNewPassword(payload){
-  return  await axios.post(`auth/reset-password/set-new`, payload);
-}
-
-
-// export async function changePassword(payload){
-//   const {data} = await axios.post(`auth/password`, payload);
-//   return data
-// }
