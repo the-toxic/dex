@@ -24,6 +24,14 @@ export default {
   name: "StepPassword",
   emits: ['completed'],
   props: {
+    email: {
+      type: String,
+      required: true
+    },
+    otp: {
+      type: String,
+      required: true
+    },
     action: {
       type: String,
       validator(value) {
@@ -38,7 +46,6 @@ export default {
 
     rePassword: '',
     visiblePassword: false,
-    INVITE_REQUIRED: import.meta.env.VITE_APP_INVITE_REQUIRED === 'true'
   }),
   computed: {
     passwordRules() { return passwordRules },
@@ -49,11 +56,11 @@ export default {
       if(!valid) return false
 
       this.loading = true
-      const { data } = await api.setPassword(this.password)
+      const { data } = await api.setPassword({password: this.password, email: this.email, code: this.otp })
       this.loading = false
 
       if(data.success) {
-        const isEndSignUp = !this.INVITE_REQUIRED && this.action === 'sign-up'
+        const isEndSignUp = !data.result.invite_code_required && this.action === 'sign-up'
         this.$emit('completed', (isEndSignUp ? data.result.user : null)) // send object user after sign-up
       }
     },

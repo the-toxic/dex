@@ -6,7 +6,7 @@ const localStorageUser = JSON.parse(window.localStorage.getItem('user'))
 export const useUserStore = defineStore('user', {
 	state: () => ({
 		logged: !!localStorageUser,
-    // /** @type {{ token: string, id: string, email: string }} */
+    // /** @type {{ jwt: string, refresh: string, id: string, email: string }} */
 		user: localStorageUser || null
 	}),
 	getters: {

@@ -16,8 +16,10 @@
                 </v-btn>
               </template>
             </v-text-field>
-            <v-text-field label="First name" :model-value="'John'"></v-text-field>
-            <v-text-field label="Last name" :model-value="'Doe'"></v-text-field>
+            <v-text-field label="First name" :model-value="form.first_name"></v-text-field>
+            <v-text-field label="Last name" :model-value="form.last_name"></v-text-field>
+            <v-text-field label="Discord" :model-value="form.discord"></v-text-field>
+            <v-text-field label="Telegram" :model-value="form.telegram"></v-text-field>
             <v-btn type="submit" color="primary" block size="large" class="text-none">Save</v-btn>
           </v-form>
 
@@ -44,6 +46,8 @@ export default {
     form: {
       first_name: '',
       last_name: '',
+      discord: '',
+      telegram: '',
     }
   }),
   computed: {

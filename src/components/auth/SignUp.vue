@@ -29,11 +29,11 @@
   </template>
 
   <template v-if="step === 'otp'">
-    <StepOTP action="sign-up" ref="stepOTP" :email="email" @completed="onCompleteOTP" />
+    <StepOTP action="sign-up" ref="stepOTP" :email="email" :attempts="attempts" @completed="onCompleteOTP" />
   </template>
 
   <template v-if="step === 'password'">
-    <StepPassword action="sign-up" @completed="onCompletePassword" />
+    <StepPassword action="sign-up" :email="email" :otp="otp" @completed="onCompletePassword" />
   </template>
 
   <template v-if="step === 'invite'">
@@ -59,10 +59,11 @@ export default {
 		step: 'email', // email | otp | password | invite
 
     email: '',
+    attempts: 0, // OTP count attempts
+    otp: '',
 
     agree: true,
     CAPTCHA_ID: import.meta.env.VITE_APP_CAPTCHA_ID,
-    INVITE_REQUIRED: import.meta.env.VITE_APP_INVITE_REQUIRED === 'true'
 	}),
   computed: {
     ...mapStores(useUserStore, useMainStore),
@@ -117,17 +118,19 @@ export default {
       window.captchaObj.reset();
 
       if(data.success) {
+        this.attempts = data.result?.attempts || 3
 				this.step = 'otp'
       }
     },
 
-    onCompleteOTP() {
+    onCompleteOTP(otp) {
+      this.otp = otp
       this.step = 'password'
     },
 
-    async onCompletePassword(userObject) {
+    async onCompletePassword(userObject = null) {
       // this.mainStore.showAlert({msg: 'Account successfully created!', color: 'success'})
-      if(this.INVITE_REQUIRED) {
+      if(!userObject) {
         this.step = 'invite'
       } else {
         this.userStore.logIn(userObject)

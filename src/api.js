@@ -66,53 +66,56 @@ const delay = async (ms) => await new Promise(resolve => setTimeout(() => {resol
 /** Auth module */
 
 export async function signIn(payload){
-  // return await axios.post(`auth/sign-in`, payload);
-  await delay(500)
-  return {data: {success: true, result: { need_invite: true, /*user: {email: 'qwe@qwe.cc'}*/ }}}
+  return await axios.post(`auth/sign-in`, payload);
+  // await delay(500)
+  // return {data: {success: true, result: { need_invite: true, /*user: {email: 'qwe@qwe.cc'}*/ }}}
 }
 export async function signUp(payload){
-  // return await axios.post(`auth/sign-up`, payload);
-  await delay(500)
-  return {data: {success: true}}
+  return await axios.post(`auth/sign-up`, payload);
+  // await delay(500)
+  // return {data: {success: true}}
 }
 export async function resetPassword(payload){
-  // return await axios.post(`auth/reset-password`, payload);
-  await delay(500)
-  return {data: {success: true}}
+  return await axios.post(`auth/reset-password`, payload);
+  // await delay(500)
+  // return {data: {success: true}}
 }
 
 export async function otp(payload){
-  // return await axios.post(`auth/otp`, payload);
-  await delay(500)
-  return {data: {success: true}}
+  return await axios.post(`auth/otp`, payload);
+  // await delay(500)
+  // return {data: {success: true}}
 }
 export async function otpResend(payload){
-  // return await axios.post(`auth/otp-resend`, payload);
-  await delay(500)
-  return {data: {success: true}}
+  return await axios.post(`auth/otp-resend`, payload);
+  // await delay(500)
+  // return {data: {success: true}}
 }
 export async function setPassword(payload){
-  // return await axios.post(`auth/set-password`, payload);
-  await delay(500)
-  return {data: {success: true, result: { user: {email: 'qwe@qwe.cc'} }}}
+  return await axios.post(`auth/set-password`, payload);
+  // await delay(500)
+  // return {data: {success: true, result: { user: {email: 'qwe@qwe.cc'} }}}
 }
 export async function inviteRequest(payload){
-  // return  await axios.post(`auth/invite`, payload);
-  await delay(500)
-  return {data: {success: true, result: { user: {email: 'qwe@qwe.cc'} }}}
+  return  await axios.post(`auth/invite`, payload);
+  // await delay(500)
+  // return {data: {success: true, result: { user: {email: 'qwe@qwe.cc'} }}}
+}
+export async function refreshJwt({ token }){
+  return await axios.post(`user/refresh_token`, { token });
 }
 
 
 /** User module */
 export async function updateProfile(payload){
-  // return  await axios.post(`user/profile`, payload);
-  await delay(500)
-  return {data: {success: true}}
+  return  await axios.post(`user/profile`, payload);
+  // await delay(500)
+  // return {data: {success: true}}
 }
 export async function changePassword(payload){
-  // return  await axios.post(`user/change-password`, payload);
-  await delay(500)
-  return {data: {success: true}}
+  return  await axios.post(`user/change-password`, payload);
+  // await delay(500)
+  // return {data: {success: true}}
 }
 
 

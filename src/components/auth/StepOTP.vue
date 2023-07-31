@@ -41,24 +41,27 @@ export default {
 			type: String,
 			required: true
 		},
+    attempts: {
+      type: Number,
+      required: true,
+      validator: (value) => !isNaN(value)
+    },
 		action: {
 			type: String,
-			validator(value) {
-				return ['sign-up', 'reset-password'].includes(value)
-			}
+			validator: (value) => ['sign-up', 'reset-password'].includes(value)
 		},
 	},
-	data: () => ({
+	data() { return  {
 		loading: false,
 		loadingResend: false,
 
 		otp: '',
+    otpAttempts: +this.attempts,
 		timer: 0,
 		timerId: null,
-		otpAttempts: 3,
 		otpDisabled: false,
 		// isResendEvent: false,
-	}),
+	}},
 	unmounted() {
 		clearInterval(this.timerId)
 	},
@@ -92,7 +95,7 @@ export default {
 
 			if(data.success) {
 				// this.step = 'password'
-				this.$emit('completed')
+				this.$emit('completed', this.otp)
 			} else {
 				this.otpAttempts = this.otpAttempts - 1
 				if(this.otpAttempts <= 0) {
@@ -115,7 +118,7 @@ export default {
 		},
 		async sendRequestResendEmail(captcha) {
 			// this.isResendEvent = false
-			this.otpAttempts = 3
+			this.otpAttempts = +this.attempts
 			this.otpDisabled = false
 
 			this.loadingResend = true
@@ -124,14 +127,13 @@ export default {
 			this.loadingResend = false
 			window.captchaObj.reset();
 
-			this.timer = 120
+			this.timer = data.result?.timeout || 180
 			this.timerId = setInterval(() => {
 				this.timer = this.timer - 1
 				if(this.timer <= 0) clearInterval(this.timerId)
 			}, 1000)
 
-			if(data.success) {
-			}
+			if(data.success) {}
 		},
 		handleOnComplete (value) {
       this.sendRequestOTP()

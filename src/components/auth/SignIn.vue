@@ -11,7 +11,7 @@
         name="password" type="password" hide-details="auto"
         :rules="passwordRules" class="mb-2" />
 
-      <v-checkbox v-model="form.remember" label="Remember me" density="compact" hide-details />
+      <v-checkbox v-model="form.remember" label="Remember me" :true-value="true" :false-value="false" density="compact" hide-details />
 
       <div id="captchaBox"></div>
 
@@ -48,11 +48,10 @@ import StepInvite from "@/components/auth/StepInvite.vue";
         form: {
           email: '',
           password: '',
-          remember: '',
+          remember: false,
         },
         CAPTCHA_ID: import.meta.env.VITE_APP_CAPTCHA_ID,
         CAPTCHA_SIGN_IN: import.meta.env.VITE_APP_CAPTCHA_SIGN_IN === 'true',
-        INVITE_REQUIRED: import.meta.env.VITE_APP_INVITE_REQUIRED === 'true'
       }
     },
     created() {
@@ -115,7 +114,7 @@ import StepInvite from "@/components/auth/StepInvite.vue";
         window.captchaObj.reset();
 
         if(data.success) {
-          if(this.INVITE_REQUIRED && data.result.need_invite) {
+          if(data.result?.invite_code_required) {
             this.step = 'invite'
           } else {
             this.logIn(data.result.user)

@@ -55,7 +55,7 @@
           <v-card min-width="300">
             <v-list>
               <v-list-item prepend-icon="mdi-badge-account-outline"
-                 :title="userStore.user.email" subtitle="John Doe"></v-list-item>
+                 :title="userStore.user.email" :subtitle="fullName"></v-list-item>
             </v-list>
             <v-divider></v-divider>
             <v-list>
@@ -138,6 +138,9 @@
   if (mainStore.theme === 'light') {
     toggleTheme()
   }
+
+  const fullName = computed(() => ( userStore.user.first_name || userStore.user.last_name ? `${userStore.user.first_name} ${userStore.user.last_name}` : null ))
+
   function toggleTheme() {
     const newTheme = theme.global.current.value.dark ? 'light' : 'dark'
     theme.global.name.value = newTheme
