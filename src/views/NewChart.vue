@@ -91,8 +91,8 @@ export default {
   // components: {TableHistory},
   data() { return {
     pairInfoLoading: false,
-    title: 'Loading Pair...',
-    description: 'DEX Platform',
+    title: 'Console',
+    description: import.meta.env.VITE_APP_PROJECT_NAME,
     pairName: '...',
     network: '...',
     exchange: '...',

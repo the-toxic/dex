@@ -41,6 +41,7 @@ import { nameRules } from "@/helpers/mixins";
 export default {
   name: 'Profile',
   components: { PasswordModal },
+  head: { title: {inner: 'Profile', complement: import.meta.env.VITE_APP_PROJECT_NAME}},
   data() { return {
     loading: false,
     valid: true,

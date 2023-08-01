@@ -93,7 +93,7 @@
     <v-footer app>
       <div class="d-flex justify-space-between align-center flex-wrap fill-width">
         <div class="footerCopy text-center text-disabled fs14 order-1 order-md-0 pl-md-5 mx-auto mx-md-0 py-2 py-md-0">&copy; {{ new Date().getFullYear() }}
-          <router-link class="text-none grey--text" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span class="white--text">v0.22</span>
+          <router-link class="text-none grey--text" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span class="white--text">All Rights Reserved.</span>
         </div>
         <!--        <v-icon v-if="route.name === 'Pair'" :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">{{ mainStore.wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>-->
         <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-2 pt-md-0 pr-md-2">

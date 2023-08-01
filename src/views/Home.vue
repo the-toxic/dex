@@ -13,7 +13,7 @@ import { PROJECT_NAME } from "@/helpers/mixins";
 
 export default {
   name: 'Home',
-  head: { title: {inner: import.meta.env.VITE_APP_PROJECT_NAME, complement: 'Dex Platform'}},
+  // head: { title: {inner: import.meta.env.VITE_APP_PROJECT_NAME, complement: 'Dex Platform'}},
   data: () => ({
     PROJECT_NAME,
   })

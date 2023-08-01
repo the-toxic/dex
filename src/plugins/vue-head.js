@@ -5,8 +5,8 @@ import VueHead from 'vue-head'
  * https://github.com/ktquez/vue-head
  */
 export function initVueHead(app) {
-  app.use(VueHead, {
+  app.use(VueHead, /*{
     separator: '|',
     complement: import.meta.env.VITE_APP_PROJECT_NAME
-  })
+  }*/)
 }
