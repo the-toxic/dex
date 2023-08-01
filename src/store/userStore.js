@@ -6,7 +6,7 @@ const localStorageUser = JSON.parse(window.localStorage.getItem('user'))
 export const useUserStore = defineStore('user', {
 	state: () => ({
 		logged: !!localStorageUser,
-    // /** @type {{ jwt: string, refresh: string, id: string, email: string }} */
+    // /** @type {{ jwt: string, refresh: string, id: string, email: string ... }} */
 		user: localStorageUser || null
 	}),
 	getters: {
@@ -14,13 +14,14 @@ export const useUserStore = defineStore('user', {
 	},
 	actions: {
     logIn(payload) {
-      if(!('email' in payload)) {
-        console.log('Invalid user Object')
-        return
+      if(!['access_token', 'refresh_token', 'user'].every(key => key in payload)) {
+        console.log('Invalid params for logIn'); return false
       }
       this.logged = true;
-      this.user = payload;
-      window.localStorage.setItem('user', JSON.stringify(payload))
+      payload.user.jwt = payload['access_token']
+      payload.user.refresh = payload['refresh_token']
+      this.user = payload.user;
+      window.localStorage.setItem('user', JSON.stringify(this.user))
       return true
     },
 

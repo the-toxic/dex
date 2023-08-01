@@ -117,7 +117,7 @@ import StepInvite from "@/components/auth/StepInvite.vue";
           if(data.result?.invite_code_required) {
             this.step = 'invite'
           } else {
-            this.logIn(data.result.user)
+            this.logIn(data.result)
             await this.$router.replace({name: 'Console'})
           }
         }

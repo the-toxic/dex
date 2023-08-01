@@ -15,7 +15,7 @@
 	<p class="fs16 text-blue mb-2">If you have invite code you can continue</p>
 	<v-form ref="formInvite" @submit.prevent="onSubmitInvite" class="fill-width">
 		<v-text-field label="Invite code" v-model.trim="invite"
-      :rules="[v => v.trim().length || 'Required field']"/>
+      :rules="[v => !!v.trim().length || 'Required field']"/>
 
 		<v-btn type="submit" color="primary" block class="myBtn mt-2 text-none" size="large"
      :loading="loading" :disabled="loading">Next</v-btn>
@@ -72,7 +72,7 @@ export default {
       window.captchaObj.reset();
 
       if(data.success) {
-        this.$emit('completed', data.result.user) // send object user after sign-up or sign-in
+        this.$emit('completed', data.result) // send object user after sign-up or sign-in
       }
     },
   }

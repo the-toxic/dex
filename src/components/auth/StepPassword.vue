@@ -61,7 +61,7 @@ export default {
 
       if(data.success) {
         const isEndSignUp = !data.result.invite_code_required && this.action === 'sign-up'
-        this.$emit('completed', (isEndSignUp ? data.result.user : null)) // send object user after sign-up
+        this.$emit('completed', (isEndSignUp ? data.result : null)) // send object user after sign-up
       }
     },
   }

@@ -113,7 +113,7 @@ export async function updateProfile(payload){
   // return {data: {success: true}}
 }
 export async function changePassword(payload){
-  return  await axios.post(`user/change-password`, payload);
+  return  await axios.post(`user/password`, payload);
   // await delay(500)
   // return {data: {success: true}}
 }

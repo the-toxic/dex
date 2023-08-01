@@ -16,10 +16,10 @@
                 </v-btn>
               </template>
             </v-text-field>
-            <v-text-field label="First name" :model-value="form.first_name"></v-text-field>
-            <v-text-field label="Last name" :model-value="form.last_name"></v-text-field>
-            <v-text-field label="Discord" :model-value="form.discord"></v-text-field>
-            <v-text-field label="Telegram" :model-value="form.telegram"></v-text-field>
+            <v-text-field label="First name" v-model="form.first_name"></v-text-field>
+            <v-text-field label="Last name" v-model="form.last_name"></v-text-field>
+            <v-text-field label="Discord" v-model="form.discord"></v-text-field>
+            <v-text-field label="Telegram" v-model="form.telegram"></v-text-field>
             <v-btn type="submit" color="primary" block size="large" class="text-none">Save</v-btn>
           </v-form>
 
@@ -40,7 +40,7 @@ import { useMainStore } from "@/store/mainStore";
 export default {
   name: 'Profile',
   components: { PasswordModal },
-  data: () => ({
+  data() { return {
     loading: false,
     valid: true,
     form: {
@@ -49,12 +49,19 @@ export default {
       discord: '',
       telegram: '',
     }
-  }),
+  }},
+  created() {
+    this.form.first_name = this.user.first_name
+    this.form.last_name = this.user.last_name
+    this.form.discord = this.user.discord
+    this.form.telegram = this.user.telegram
+  },
   computed: {
     ...mapState(useUserStore, {user: 'user'})
   },
   methods: {
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),
+    ...mapActions(useUserStore, {updateUser: 'updateUser'}),
 
     async onSubmit() {
       const { valid } = await this.$refs.form.validate()
@@ -65,6 +72,7 @@ export default {
       this.loading = false
 
       if(data.success) {
+        this.updateUser({...this.form})
         this.showAlert({msg: 'Successfully saved', color: 'success'})
       }
     }

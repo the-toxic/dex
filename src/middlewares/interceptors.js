@@ -49,13 +49,14 @@ export function httpInt() {
 
       try {
         const { data } = await refreshJwt({token: userStore().user?.refresh}) // response 403 if expire
-        if(!data?.success || !data.result?.jwt) {
+        if(!data?.success || !data.result?.['access_token']) {
           console.warn('Refresh token is expired!')
           throw new Error(data)
         }
 
         await userStore().updateUser({
-          jwt: data.result.jwt
+          jwt: data.result['access_token'],
+          refresh: data.result['refresh_token'],
         })
 
         // Retry original request
