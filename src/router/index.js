@@ -13,8 +13,8 @@ import Profile from "@/views/Profile.vue";
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
-  { path: '/console', name: 'Console', redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
-  { path: '/console/:network([a-zA-Z0-9]{2,10})/pe/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', component: () => import(/* webpackChunkName: "console" */ "@/views/NewChart.vue") },
+  { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
+  { path: '/console/:network([a-zA-Z0-9]{2,10})/pe/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/NewChart.vue") },
   { path: '/console/analyse', name: 'Analyse', component: Analyse },
   { path: '/console/liquidity', name: 'Liquidity', component: Liquidity },
   { path: '/console/profile', name: 'Profile', component: Profile, meta: { needAuth: true } },

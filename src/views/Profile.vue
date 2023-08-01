@@ -16,10 +16,10 @@
                 </v-btn>
               </template>
             </v-text-field>
-            <v-text-field label="First name" v-model="form.first_name"></v-text-field>
-            <v-text-field label="Last name" v-model="form.last_name"></v-text-field>
-            <v-text-field label="Discord" v-model="form.discord"></v-text-field>
-            <v-text-field label="Telegram" v-model="form.telegram"></v-text-field>
+            <v-text-field label="First name" v-model="form.first_name" :rules="nameRules" class="mb-2"></v-text-field>
+            <v-text-field label="Last name" v-model="form.last_name" :rules="nameRules" class="mb-2"></v-text-field>
+            <v-text-field label="Discord" v-model="form.discord" :rules="[v => (v.length <= 64) || 'Max length 64 chars']" class="mb-2"></v-text-field>
+            <v-text-field label="Telegram" v-model="form.telegram" :rules="[v => (v.length <= 64) || 'Max length 64 chars']" class="mb-2"></v-text-field>
             <v-btn type="submit" color="primary" block size="large" class="text-none">Save</v-btn>
           </v-form>
 
@@ -36,6 +36,7 @@ import { useUserStore } from "@/store/userStore";
 import PasswordModal from "@/components/PasswordModal.vue";
 import { updateProfile } from "@/api";
 import { useMainStore } from "@/store/mainStore";
+import { nameRules } from "@/helpers/mixins";
 
 export default {
   name: 'Profile',
@@ -51,13 +52,14 @@ export default {
     }
   }},
   created() {
-    this.form.first_name = this.user.first_name
-    this.form.last_name = this.user.last_name
-    this.form.discord = this.user.discord
-    this.form.telegram = this.user.telegram
+    this.form.first_name = this.user.first_name || ''
+    this.form.last_name = this.user.last_name || ''
+    this.form.discord = this.user.discord || ''
+    this.form.telegram = this.user.telegram || ''
   },
   computed: {
-    ...mapState(useUserStore, {user: 'user'})
+    ...mapState(useUserStore, {user: 'user'}),
+    nameRules() { return nameRules }
   },
   methods: {
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),

@@ -3,33 +3,33 @@
     <v-navigation-drawer v-model="drawer" location="bottom" v-if="breakpoints.mobile"><!-- v-if="breakpoints.width <= 768" -->
       <v-list :nav="true" min-height="300">
         <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
-        <v-list-item :to="{name: 'Console'}" prepend-icon="mdi-menu-open" title="Pairs"></v-list-item>
-        <v-list-item :to="{name: 'Analyse'}" prepend-icon="mdi-menu-open" title="Analyse"></v-list-item>
-        <v-list-item :to="{name: 'Liquidity'}" prepend-icon="mdi-menu-open" title="Liquidity"></v-list-item>
+        <v-list-item :to="{name: 'Console'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Console"></v-list-item>
+<!--        <v-list-item :to="{name: 'Analyse'}" prepend-icon="mdi-menu-open" title="Analyse"></v-list-item>-->
+<!--        <v-list-item :to="{name: 'Liquidity'}" prepend-icon="mdi-menu-open" title="Liquidity"></v-list-item>-->
         <v-list-item :to="{name: 'Profile'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Profile"></v-list-item>
       </v-list>
       <template v-slot:append>
         <div class="mt-6 pa-3">
-          <v-btn :block="true" :to="{name: 'AuthSignIn'}" v-if="!userStore.logged" color="primary" prepend-icon="mdi-login" class="text-none">Log In</v-btn>
-          <v-btn :block="true" @click="null" v-else color="primary" prepend-icon="mdi-logout" class="text-none">Log Out</v-btn>
+          <v-btn block :to="{name: 'AuthSignIn'}" v-if="!userStore.logged" color="primary" prepend-icon="mdi-login" class="text-none">Sign In</v-btn>
+          <v-btn block @click="userStore.logOut()" v-if="userStore.logged" color="primary" prepend-icon="mdi-logout" class="text-none">Log Out</v-btn>
         </div>
       </template>
     </v-navigation-drawer>
 
 
-    <v-app-bar density="compact" class="mx-auto mb-8">
+    <v-app-bar>
       <template v-slot:prepend>
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
-          <div class="logoBox" @click="navigate">
+          <div class="logoBox ml-4" @click="navigate">
             <img src="@/assets/logo.png" alt="Logo" />
           </div>
         </router-link>
       </template>
 
       <v-spacer />
-      <v-btn variant="flat" :to="{name: 'Console'}" rounded size="small" class="d-none d-md-inline-flex text-none fs14" :class="route.name === 'Pair' ? 'v-btn--active' : ''">Chart</v-btn>
-      <v-btn variant="flat" :to="{name: 'Analyse'}" rounded size="small" class="d-none d-md-inline-flex text-none fs14">Analyse</v-btn>
-      <v-btn variant="flat" :to="{name: 'Liquidity'}" rounded size="small" class="d-none d-md-inline-flex text-none fs14">Liquidity</v-btn>
+       <v-btn variant="flat" :to="{name: 'Console'}" v-if="userStore.logged" rounded class="d-none d-md-inline-flex text-none" :class="route.name === 'Pair' ? 'v-btn--active' : ''">Console</v-btn>
+      <!-- <v-btn variant="flat" :to="{name: 'Analyse'}" rounded class="d-none d-md-inline-flex text-none">Analyse</v-btn>-->
+      <!-- <v-btn variant="flat" :to="{name: 'Liquidity'}" rounded class="d-none d-md-inline-flex text-none">Liquidity</v-btn>-->
       <v-spacer />
 
       <template v-slot:append>
@@ -46,7 +46,8 @@
         <!-- Menu open icon for mobile -->
         <v-app-bar-nav-icon size="small" v-if="breakpoints.mobile" @click.stop="drawer = !drawer" />
 
-        <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged && !breakpoints.mobile" rounded prepend-icon="mdi-login" class="text-none">Sign In</v-btn>
+        <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged && !breakpoints.mobile" rounded class="text-none">Sign In</v-btn>
+        <v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged && !breakpoints.mobile" rounded class="text-none">Sign Up</v-btn>
 
         <v-menu v-if="userStore.logged && !breakpoints.mobile" v-model="userMenu" :close-on-content-click="false" location="bottom">
           <template v-slot:activator="{ props }">
@@ -89,7 +90,7 @@
     </v-main>
 
     <!--  Футер, прибит вниз через атрибут absolute, inset сдвигает его от фильтра в шопе  -->
-    <v-footer :absolute="true" bottom padless class="justify-center fill-width py-1">
+    <v-footer app>
       <div class="d-flex justify-space-between align-center flex-wrap fill-width">
         <div class="footerCopy text-center text-disabled fs14 order-1 order-md-0 pl-md-5 mx-auto mx-md-0 py-2 py-md-0">&copy; {{ new Date().getFullYear() }}
           <router-link class="text-none grey--text" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span class="white--text">v0.22</span>

@@ -102,7 +102,7 @@ export async function inviteRequest(payload){
   // return {data: {success: true, result: { user: {email: 'qwe@qwe.cc'} }}}
 }
 export async function refreshJwt({ token }){
-  return await axios.post(`user/refresh_token`, { token });
+  return await axios.post(`user/refresh`, { token });
 }
 
 

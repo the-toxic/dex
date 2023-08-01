@@ -12,6 +12,7 @@ export default createVuetify({
     themes: {
       dark: {
         colors: {
+          surface: '#141426', // default color btn bg
           primary: '#1867C0',
           secondary: '#5CBBF6',
         },
