@@ -15,7 +15,7 @@
   </template>
 
   <template v-if="step === 'otp'">
-    <StepOTP action="reset-password" ref="stepOTP" :email="email" :attempts="attempts" @completed="onCompleteOTP" />
+    <StepOTP action="reset-password" ref="stepOTP" :email="email" :attempts="attempts" :initial-timer="timer" @completed="onCompleteOTP" />
   </template>
 
   <template v-if="step === 'password'">
@@ -44,6 +44,7 @@ import StepOTP from "@/components/auth/StepOTP.vue";
         email: '',
         attempts: 0,
         otp: '',
+        timer: 0,
 
         CAPTCHA_ID: import.meta.env.VITE_APP_CAPTCHA_ID
       }
@@ -103,6 +104,7 @@ import StepOTP from "@/components/auth/StepOTP.vue";
 
         if(data.success) {
           this.attempts = data.result?.attempts || 0
+          this.timer = data.result?.timer || 180
           this.step = 'otp'
 				}
       },

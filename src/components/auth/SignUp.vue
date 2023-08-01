@@ -29,7 +29,7 @@
   </template>
 
   <template v-if="step === 'otp'">
-    <StepOTP action="sign-up" ref="stepOTP" :email="email" :attempts="attempts" @completed="onCompleteOTP" />
+    <StepOTP action="sign-up" ref="stepOTP" :email="email" :attempts="attempts" :initial-timer="timer" @completed="onCompleteOTP" />
   </template>
 
   <template v-if="step === 'password'">
@@ -61,6 +61,7 @@ export default {
     email: '',
     attempts: 0, // OTP count attempts
     otp: '',
+    timer: 0,
 
     agree: true,
     CAPTCHA_ID: import.meta.env.VITE_APP_CAPTCHA_ID,
@@ -119,6 +120,7 @@ export default {
 
       if(data.success) {
         this.attempts = data.result?.attempts || 3
+        this.timer = data.result?.timer || 180
 				this.step = 'otp'
       }
     },

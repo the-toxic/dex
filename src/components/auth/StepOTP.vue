@@ -16,7 +16,8 @@
 	<v-btn v-if="otpAttempts" @click="sendRequestOTP" color="primary" block class="myBtn mt-8 text-none" size="large"
 	 :loading="loading" :disabled="loading || otp.length !== 6">Next</v-btn>
 
-	<v-btn v-else @click="onSubmitResendEmail" color="primary" block class="myBtn mt-8 text-none" size="large">Request a new code</v-btn>
+	<v-btn v-else @click="onSubmitResendEmail" :loading="loadingResend" :disabled="loadingResend || timer > 0"
+     color="primary" block class="myBtn mt-8 text-none" size="large" :text="`Request a new code${timer > 0 ? ` (${timer}s)` : ''}`"></v-btn>
 
 	<p v-if="otpAttempts" class="mt-6 text-blue-grey-lighten-3">
 		Didn't receive anything?
@@ -46,6 +47,11 @@ export default {
       required: true,
       validator: (value) => !isNaN(value)
     },
+    initialTimer: {
+      type: Number,
+      required: true,
+      validator: (value) => !isNaN(value)
+    },
 		action: {
 			type: String,
 			validator: (value) => ['sign-up', 'reset-password'].includes(value)
@@ -57,12 +63,18 @@ export default {
 
 		otp: '',
     otpAttempts: +this.attempts,
-		timer: 0,
+		timer: +this.initialTimer,
 		timerId: null,
 		otpDisabled: false,
 		// isResendEvent: false,
 	}},
-	unmounted() {
+  created() {
+    this.timerId = setInterval(() => {
+      this.timer = this.timer - 1
+      if(this.timer <= 0) clearInterval(this.timerId)
+    }, 1000)
+  },
+  unmounted() {
 		clearInterval(this.timerId)
 	},
 	methods: {
@@ -128,6 +140,7 @@ export default {
 			window.captchaObj.reset();
 
 			this.timer = data.result?.timeout || 180
+      clearInterval(this.timerId)
 			this.timerId = setInterval(() => {
 				this.timer = this.timer - 1
 				if(this.timer <= 0) clearInterval(this.timerId)
