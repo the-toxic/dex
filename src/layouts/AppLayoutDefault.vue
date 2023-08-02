@@ -94,31 +94,31 @@
     </v-main>
 
 
-    <v-footer app class="d-flex flex-column">
+    <v-footer app absolute class="d-flex flex-column">
 
-      <div class="d-flex w-100 align-center px-4 pb-2">
+      <div class="d-flex flex-wrap w-100 text-center text-md-left align-center px-md-4 pb-2">
         <div class="pt-4">
           <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
             <div class="" @click="navigate">
               <img src="@/assets/logo.png" alt="Logo" />
             </div>
           </router-link>
-          <p class="mb-0 pt-4 pb-4 text-disabled">Unlocking On-Chain Insights for Crypto Investors and Teams!</p>
+          <p class="fs-m14 mb-0 pt-4 pb-4 text-disabled">Unlocking On-Chain Insights for Crypto Investors and Teams!</p>
         </div>
 
-        <v-spacer></v-spacer>
+        <v-spacer class="d-none d-md-block" />
 
-        <div>
-          <v-btn icon size="small" variant="tonal" class="mx-4" href="https://twitter.com/hazbcom" target="_blank"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" /></v-btn>
-          <v-btn icon size="small" variant="tonal" class="mx-4"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" /></v-btn>
-          <v-btn icon size="small" variant="tonal" class="mx-4"><img src="@/assets/social_medium.svg" width="22" height="22" alt="Medium" /></v-btn>
-          <v-btn icon size="small" variant="tonal" class="mx-4"><img src="@/assets/social_discord.svg" width="22" height="22" alt="Discord" /></v-btn>
-          <v-btn icon size="small" variant="tonal" class="mx-4" :href="DOCS_HOST" target="_blank" rel="nofollow"><img src="@/assets/paper.svg" width="22" height="22" alt="Docs" /></v-btn>
+        <div class="fill-width-m mb-4 mb-md-0">
+          <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-4" href="https://twitter.com/hazbcom" target="_blank"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" /></v-btn>
+          <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-4"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" /></v-btn>
+          <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-4"><img src="@/assets/social_medium.svg" width="22" height="22" alt="Medium" /></v-btn>
+          <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-4"><img src="@/assets/social_discord.svg" width="22" height="22" alt="Discord" /></v-btn>
+          <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-4" :href="DOCS_HOST" target="_blank" rel="nofollow"><img src="@/assets/paper.svg" width="22" height="22" alt="Docs" /></v-btn>
         </div>
       </div>
       <v-divider class="fill-width pb-2" />
 
-      <div class="d-flex justify-space-between align-center flex-wrap fill-width px-4">
+      <div class="d-flex justify-space-between align-center flex-wrap fill-width px-md-4">
         <div class="text-center text-disabled fs14 order-1 order-md-0 mx-auto mx-md-0 ">
           &copy; {{ new Date().getFullYear() }}
           <router-link class="text-none text-disabled" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span>All Rights Reserved.</span>
@@ -129,26 +129,6 @@
         </div>
       </div>
     </v-footer>
-
-<!--    <v-footer app>-->
-<!--      <div class="d-flex justify-space-between align-center flex-wrap fill-width">-->
-<!--        <div class="footerCopy text-center text-disabled fs14 order-1 order-md-0 pl-md-5 mx-auto mx-md-0 py-2 py-md-0">&copy; {{ new Date().getFullYear() }}-->
-<!--          <router-link class="text-none grey&#45;&#45;text" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span class="white&#45;&#45;text">All Rights Reserved.</span>-->
-<!--        </div>-->
-<!--        &lt;!&ndash;        <v-icon v-if="route.name === 'Pair'" :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">{{ mainStore.wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>&ndash;&gt;-->
-<!--        <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-2 pt-md-0 pr-md-2">-->
-<!--          <v-btn variant="flat" rounded :to="{name: 'Home'}" class="text-none text-disabled">Landing</v-btn>-->
-<!--          <v-btn variant="flat" rounded target="_blank" rel="nofollow" class="text-none text-disabled">Contacts</v-btn>-->
-<!--          <v-btn variant="flat" rounded :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" class="text-none text-disabled">Legal</v-btn>-->
-
-<!--          <v-btn icon size="small" variant="flat" class="mr-md-1 ml-md-3" href="https://twitter.com/hazbcom" target="_blank"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" /></v-btn>-->
-<!--          <v-btn icon size="small" variant="flat" class="mr-md-1"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" /></v-btn>-->
-<!--          <v-btn icon size="small" variant="flat" class="mr-md-1"><img src="@/assets/social_medium.svg" width="22" height="22" alt="Medium" /></v-btn>-->
-<!--          <v-btn icon size="small" variant="flat" class="mr-md-1"><img src="@/assets/social_discord.svg" width="22" height="22" alt="Discord" /></v-btn>-->
-<!--          <v-btn icon size="small" variant="flat" class="mr-md-1" :href="DOCS_HOST" target="_blank" rel="nofollow"><img src="@/assets/paper.svg" width="22" height="22" alt="Docs" /></v-btn>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </v-footer>-->
 
   </v-app>
 </template>
