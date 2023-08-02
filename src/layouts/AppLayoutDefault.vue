@@ -1,15 +1,17 @@
 <template>
   <v-app :class="{'pageReady': isRouterReady}">
-    <v-navigation-drawer v-model="drawer" location="bottom" v-if="breakpoints.mobile"><!-- v-if="breakpoints.width <= 768" -->
-      <v-list :nav="true" min-height="300">
+    <v-navigation-drawer v-model="drawer" width="500" location="bottom" v-if="breakpoints.mobile"><!-- v-if="breakpoints.width <= 768" -->
+      <v-list :nav="true">
         <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
         <v-list-item :to="{name: 'Console'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Console"></v-list-item>
-<!--        <v-list-item :to="{name: 'Analyse'}" prepend-icon="mdi-menu-open" title="Analyse"></v-list-item>-->
-<!--        <v-list-item :to="{name: 'Liquidity'}" prepend-icon="mdi-menu-open" title="Liquidity"></v-list-item>-->
+        <v-list-item :href="NEWS_HOST" target="news" prepend-icon="mdi-menu-open" title="News"></v-list-item>
+        <v-list-item :href="DOCS_HOST" target="docs" prepend-icon="mdi-menu-open" title="Docs"></v-list-item>
+        <v-list-item :to="{name: 'Career'}" prepend-icon="mdi-menu-open" title="Career"></v-list-item>
+        <v-list-item :to="{name: 'ContactUs'}" prepend-icon="mdi-menu-open" title="Contact Us"></v-list-item>
         <v-list-item :to="{name: 'Profile'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Profile"></v-list-item>
       </v-list>
       <template v-slot:append>
-        <div class="mt-6 pa-3">
+        <div class="pa-3">
           <v-btn block :to="{name: 'AuthSignIn'}" v-if="!userStore.logged" color="primary" prepend-icon="mdi-login" class="text-none">Sign In</v-btn>
           <v-btn block @click="userStore.logOut()" v-if="userStore.logged" color="primary" prepend-icon="mdi-logout" class="text-none">Log Out</v-btn>
         </div>
@@ -28,8 +30,10 @@
 
       <v-spacer />
        <v-btn variant="flat" :to="{name: 'Console'}" v-if="userStore.logged" rounded class="d-none d-md-inline-flex text-none" :class="route.name === 'Pair' ? 'v-btn--active' : ''">Console</v-btn>
-      <!-- <v-btn variant="flat" :to="{name: 'Analyse'}" rounded class="d-none d-md-inline-flex text-none">Analyse</v-btn>-->
-      <!-- <v-btn variant="flat" :to="{name: 'Liquidity'}" rounded class="d-none d-md-inline-flex text-none">Liquidity</v-btn>-->
+       <v-btn variant="flat" :href="NEWS_HOST" target="news" rounded class="d-none d-md-inline-flex text-none">News</v-btn>
+       <v-btn variant="flat" :href="DOCS_HOST" target="docs" rounded class="d-none d-md-inline-flex text-none">Docs</v-btn>
+       <v-btn variant="flat" :to="{name: 'Career'}" rounded class="d-none d-md-inline-flex text-none">Career</v-btn>
+       <v-btn variant="flat" :to="{name: 'ContactUs'}" rounded class="d-none d-md-inline-flex text-none">Contact Us</v-btn>
       <v-spacer />
 
       <template v-slot:append>
@@ -89,26 +93,62 @@
       </router-view>
     </v-main>
 
-    <!--  Футер, прибит вниз через атрибут absolute, inset сдвигает его от фильтра в шопе  -->
-    <v-footer app>
-      <div class="d-flex justify-space-between align-center flex-wrap fill-width">
-        <div class="footerCopy text-center text-disabled fs14 order-1 order-md-0 pl-md-5 mx-auto mx-md-0 py-2 py-md-0">&copy; {{ new Date().getFullYear() }}
-          <router-link class="text-none grey--text" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span class="white--text">All Rights Reserved.</span>
-        </div>
-        <!--        <v-icon v-if="route.name === 'Pair'" :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">{{ mainStore.wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>-->
-        <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-2 pt-md-0 pr-md-2">
-          <v-btn variant="flat" rounded :to="{name: 'Home'}" class="text-none text-disabled">Landing</v-btn>
-          <v-btn variant="flat" rounded target="_blank" rel="nofollow" class="text-none text-disabled">Contacts</v-btn>
-          <v-btn variant="flat" rounded :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" class="text-none text-disabled">Legal</v-btn>
 
-          <v-btn icon size="small" variant="flat" class="mr-md-1 ml-md-3" href="https://twitter.com/hazbcom" target="_blank"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" /></v-btn>
-          <v-btn icon size="small" variant="flat" class="mr-md-1"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" /></v-btn>
-          <v-btn icon size="small" variant="flat" class="mr-md-1"><img src="@/assets/social_medium.svg" width="22" height="22" alt="Medium" /></v-btn>
-          <v-btn icon size="small" variant="flat" class="mr-md-1"><img src="@/assets/social_discord.svg" width="22" height="22" alt="Discord" /></v-btn>
-          <v-btn icon size="small" variant="flat" class="mr-md-1" :href="DOCS_HOST" target="_blank" rel="nofollow"><img src="@/assets/paper.svg" width="22" height="22" alt="Docs" /></v-btn>
+    <v-footer app class="d-flex flex-column">
+
+      <div class="d-flex w-100 align-center px-4 pb-2">
+        <div class="pt-4">
+          <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
+            <div class="" @click="navigate">
+              <img src="@/assets/logo.png" alt="Logo" />
+            </div>
+          </router-link>
+          <p class="mb-0 pt-4 pb-4 text-disabled">Unlocking On-Chain Insights for Crypto Investors and Teams!</p>
+        </div>
+
+        <v-spacer></v-spacer>
+
+        <div>
+          <v-btn icon size="small" variant="tonal" class="mx-4" href="https://twitter.com/hazbcom" target="_blank"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" /></v-btn>
+          <v-btn icon size="small" variant="tonal" class="mx-4"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" /></v-btn>
+          <v-btn icon size="small" variant="tonal" class="mx-4"><img src="@/assets/social_medium.svg" width="22" height="22" alt="Medium" /></v-btn>
+          <v-btn icon size="small" variant="tonal" class="mx-4"><img src="@/assets/social_discord.svg" width="22" height="22" alt="Discord" /></v-btn>
+          <v-btn icon size="small" variant="tonal" class="mx-4" :href="DOCS_HOST" target="_blank" rel="nofollow"><img src="@/assets/paper.svg" width="22" height="22" alt="Docs" /></v-btn>
+        </div>
+      </div>
+      <v-divider class="fill-width pb-2" />
+
+      <div class="d-flex justify-space-between align-center flex-wrap fill-width px-4">
+        <div class="text-center text-disabled fs14 order-1 order-md-0 mx-auto mx-md-0 ">
+          &copy; {{ new Date().getFullYear() }}
+          <router-link class="text-none text-disabled" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span>All Rights Reserved.</span>
+        </div>
+        <div class="text-center mx-auto mx-md-0 order-0 order-md-1">
+          <v-btn variant="flat" rounded :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" class="text-none text-disabled">Terms of Use</v-btn>
+          <v-btn variant="flat" rounded :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" class="text-none text-disabled">Privacy Policy</v-btn>
         </div>
       </div>
     </v-footer>
+
+<!--    <v-footer app>-->
+<!--      <div class="d-flex justify-space-between align-center flex-wrap fill-width">-->
+<!--        <div class="footerCopy text-center text-disabled fs14 order-1 order-md-0 pl-md-5 mx-auto mx-md-0 py-2 py-md-0">&copy; {{ new Date().getFullYear() }}-->
+<!--          <router-link class="text-none grey&#45;&#45;text" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span class="white&#45;&#45;text">All Rights Reserved.</span>-->
+<!--        </div>-->
+<!--        &lt;!&ndash;        <v-icon v-if="route.name === 'Pair'" :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">{{ mainStore.wsConnected ? 'mdi-check-network' : 'mdi-close-network' }}</v-icon>&ndash;&gt;-->
+<!--        <div class="text-center mx-auto mx-md-0 order-0 order-md-1 pt-2 pt-md-0 pr-md-2">-->
+<!--          <v-btn variant="flat" rounded :to="{name: 'Home'}" class="text-none text-disabled">Landing</v-btn>-->
+<!--          <v-btn variant="flat" rounded target="_blank" rel="nofollow" class="text-none text-disabled">Contacts</v-btn>-->
+<!--          <v-btn variant="flat" rounded :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" class="text-none text-disabled">Legal</v-btn>-->
+
+<!--          <v-btn icon size="small" variant="flat" class="mr-md-1 ml-md-3" href="https://twitter.com/hazbcom" target="_blank"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" /></v-btn>-->
+<!--          <v-btn icon size="small" variant="flat" class="mr-md-1"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" /></v-btn>-->
+<!--          <v-btn icon size="small" variant="flat" class="mr-md-1"><img src="@/assets/social_medium.svg" width="22" height="22" alt="Medium" /></v-btn>-->
+<!--          <v-btn icon size="small" variant="flat" class="mr-md-1"><img src="@/assets/social_discord.svg" width="22" height="22" alt="Discord" /></v-btn>-->
+<!--          <v-btn icon size="small" variant="flat" class="mr-md-1" :href="DOCS_HOST" target="_blank" rel="nofollow"><img src="@/assets/paper.svg" width="22" height="22" alt="Docs" /></v-btn>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </v-footer>-->
 
   </v-app>
 </template>
@@ -122,7 +162,7 @@
   import { useMainStore } from "@/store/mainStore";
   import { useUserStore } from "@/store/userStore";
   import { useWalletStore } from "@/store/walletStore";
-  import { PROJECT_NAME, DOCS_HOST } from "@/helpers/mixins";
+  import { PROJECT_NAME, DOCS_HOST, NEWS_HOST } from "@/helpers/mixins";
 
   import { showChartSearch } from "@/helpers/chart/chart";
   // import { connect as web3Connect, disconnect as web3Disconnect } from "@/helpers/web3";

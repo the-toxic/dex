@@ -7,16 +7,16 @@ import { useMainStore } from "@/store/mainStore";
 
 import Home from "@/views/Home.vue";
 import E404 from "@/views/E404.vue";
-import Analyse from "@/views/Analyse.vue";
-import Liquidity from "@/views/Liquidity.vue";
+import Career from "@/views/Career.vue";
+import ContactUs from "@/views/ContactUs.vue";
 import Profile from "@/views/Profile.vue";
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
   { path: '/console/:network([a-zA-Z0-9]{2,10})/pe/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/NewChart.vue") },
-  { path: '/console/analyse', name: 'Analyse', component: Analyse },
-  { path: '/console/liquidity', name: 'Liquidity', component: Liquidity },
+  { path: '/console/career', name: 'Career', component: Career },
+  { path: '/console/contact-us', name: 'ContactUs', component: ContactUs },
   { path: '/console/profile', name: 'Profile', component: Profile, meta: { needAuth: true } },
   // { path: '/auth/sign-in', name: 'AuthSignIn', component: () => import(/* webpackChunkName: "auth" */ '@/views/auth/Login.vue'), meta: { layout: AppLayoutsEnum.auth } },
   { path: '/auth', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth"), meta: { layout: AppLayoutsEnum.auth }, children: [

@@ -157,6 +157,8 @@ export default {
       visible_plots_set: 'ohlcv', // Support: open, high, low, close. With 'value': "ohlcv"
       // volume_precision: 2, // кол-во десятичных символов в объеме
       data_status: 'streaming', // streaming | endofday | pulsed | delayed_streaming
+      logo_urls: '', // pairInfo.token0.icon // add in ver 25.002
+      exchange_logo: '', // add in ver 25.002
     };
 
     // symbolInfo.checkInvert = function () {
