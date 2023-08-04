@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
-      <v-card color="#000" class="mb-0" :loading="pairInfoLoading">
+      <v-card class="mb-0" :loading="pairInfoLoading">
         <v-card-text class="d-flex justify-space-between align-center flex-wrap pa-2">
           <div class="d-flex align-center flex-wrap">
             <div class="bg-white mr-2" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
@@ -14,22 +14,22 @@
                 <span>Pair: {{ shortAddress(pairAddr) }} <CopyLabel icon :text="pairAddr" icon-color="#72747F" /></span>
               </div>
             </div>
-            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #262f4e; height: 40px">
+            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
               <div class="fs12 lh-1_2">Holders</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(holders) }}</div>
             </div>
-            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #262f4e; height: 40px">
+            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
               <div class="fs12 lh-1_2">Total Supply</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(totalSupply) }}</div>
             </div>
-            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #262f4e; height: 40px">
+            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
               <div class="fs12 lh-1_2">24hr Volume</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(volume24h) }}</div>
             </div>
-            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #262f4e; height: 40px">
+            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
               <div class="fs12 lh-1_2">Liquidity</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(liquidity) }} {{ rightToken }}</div>
             </div>
-            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #262f4e; height: 40px">
+            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
               <div class="fs12 lh-1_2">Market Cap</div><div class="lh-1_2 fs12" style="color: #fff">${{ shortNumber(marketCap) }}</div>
             </div>
-            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #262f4e; height: 40px">
+            <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
               <div class="fs12 lh-1_2">24hr Swaps</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(txCount24) }}</div>
             </div>
           </div>
@@ -66,7 +66,7 @@
         <!--  <span class="" style="color:#9EA0AF;">Total: {{ shortNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>-->
         <!--</div>-->
       </div>
-      <v-card color="#000" class="mt-2 mb-8">
+      <v-card class="mt-2 mb-8">
         <TableHistory />
       </v-card>
     </v-container>

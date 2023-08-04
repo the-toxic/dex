@@ -18,8 +18,7 @@
       </template>
     </v-navigation-drawer>
 
-
-    <v-app-bar absolute color="#000">
+    <v-app-bar absolute :color="$route.path.startsWith('/console') ? null : '#000'">
       <template v-slot:prepend>
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
           <div class="logoBox ml-4" @click="navigate">
@@ -95,7 +94,7 @@
     </v-main>
 
 
-    <v-footer app absolute class="d-flex flex-column text-center text-md-left">
+    <v-footer app absolute :color="$route.path.startsWith('/console') ? null : '#000'" class="d-flex flex-column text-center text-md-left">
 
       <div class="d-flex flex-wrap w-100 align-center px-md-4 pb-2">
         <div class="pt-4 fill-width-m">
