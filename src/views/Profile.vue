@@ -10,10 +10,10 @@
           <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
             <v-row>
               <v-col cols="12" md="6">
-                <v-text-field label="Email" :model-value="user?.email" readonly variant="solo-filled"></v-text-field>
+                <v-text-field label="Email" :model-value="user?.email" readonly variant="solo-filled" hide-details="auto"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field label="Password" type="password" model-value="12345678" readonly variant="solo-filled">
+                <v-text-field label="Password" type="password" model-value="12345678" readonly variant="solo-filled" hide-details="auto">
                 <template v-slot:append-inner>
                   <v-btn rounded color="secondary" size="small" class="text-none">
                     Change <PasswordModal />
@@ -22,10 +22,10 @@
               </v-text-field>
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field label="First name" v-model="form.first_name" :rules="nameRules"></v-text-field>
+                <v-text-field label="First name" v-model="form.first_name" :rules="nameRules" hide-details="auto"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field label="Last name" v-model="form.last_name" :rules="nameRules"></v-text-field>
+                <v-text-field label="Last name" v-model="form.last_name" :rules="nameRules" hide-details="auto"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field label="Discord" v-model="form.discord" :rules="[v => (v.length <= 64) || 'Max length 64 chars']" hide-details="auto"></v-text-field>
@@ -37,7 +37,7 @@
                 <v-checkbox v-model="form.newsletters" label="Do you wanna receive marketing emails?" :true-value="true" :false-value="false" density="compact" hide-details />
               </v-col>
             </v-row>
-            <v-btn type="submit" color="primary" block size="large" class="text-none mt-3">Save</v-btn>
+            <v-btn type="submit" color="primary" block size="large" class="text-none mt-5">Save</v-btn>
           </v-form>
         </v-responsive>
       </v-card-text>
