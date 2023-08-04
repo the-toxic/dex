@@ -23,7 +23,7 @@
       <template v-slot:prepend>
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
           <div class="logoBox ml-4" @click="navigate">
-            <img src="@/assets/logo.png" alt="Logo" />
+            <img src="@/assets/HAZB.svg" alt="Logo" />
           </div>
         </router-link>
       </template>
@@ -52,7 +52,7 @@
         <v-app-bar-nav-icon size="small" v-if="breakpoints.mobile" @click.stop="drawer = !drawer" />
 
         <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged && !breakpoints.mobile" size="large" rounded class="text-none">Sign In</v-btn>
-        <v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged && !breakpoints.mobile" size="large" rounded color="myPurple" variant="flat" class="mx-5 text-none">Sign Up</v-btn>
+        <v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged && !breakpoints.mobile" size="large" color="white" variant="outlined" class="mx-5 text-none">Sign Up <v-icon icon="mdi-arrow-right" color="white" class="pl-2" /></v-btn>
 
         <v-menu v-if="userStore.logged && !breakpoints.mobile" v-model="userMenu" :close-on-content-click="false" location="bottom">
           <template v-slot:activator="{ props }">
@@ -101,7 +101,7 @@
         <div class="pt-4 fill-width-m">
           <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
             <div class="" @click="navigate">
-              <img src="@/assets/logo.png" alt="Logo" />
+              <img src="@/assets/HAZB.svg" style="height: 28px" alt="Logo" />
             </div>
           </router-link>
           <div class="fill-width-m mb-4 mt-4">
@@ -116,20 +116,20 @@
         <v-row class="py-7">
           <v-col cols="12" md="4">
             <p class="fs20 mb-3 font-weight-bold pl-4">Resources</p>
-            <v-btn :to="{name: 'Home'}" variant="flat" rounded class="text-none mb-1">Home</v-btn><br />
-            <v-btn :href="NEWS_HOST" target="_blank" rel="nofollow" variant="flat" rounded class="text-none mb-1">News</v-btn><br />
-            <v-btn :href="DOCS_HOST" target="_blank" rel="nofollow" variant="flat" rounded class="text-none mb-1">Docs</v-btn>
+            <v-btn :to="{name: 'Home'}" variant="text" :active="false" rounded class="text-none mb-1">Home</v-btn><br />
+            <v-btn :href="NEWS_HOST" target="_blank" rel="nofollow" variant="text" rounded class="text-none mb-1">News</v-btn><br />
+            <v-btn :href="DOCS_HOST" target="_blank" rel="nofollow" variant="text" rounded class="text-none mb-1">Docs</v-btn>
           </v-col>
           <v-col cols="12" md="4">
             <p class="fs20 mb-3 font-weight-bold pl-4">Contacts</p>
-            <v-btn href="https://linktr.ee/hazbcom" target="_blank" rel="nofollow" variant="flat" rounded class="text-none">Link Three</v-btn><br />
-            <v-btn href="mailto:hello@hazb.com" variant="flat" rounded class="text-none">hello@hazb.com</v-btn>
+            <v-btn href="https://linktr.ee/hazbcom" target="_blank" rel="nofollow" variant="text" rounded class="text-none">Link Three</v-btn><br />
+            <v-btn href="mailto:hello@hazb.com" variant="text" rounded class="text-none">hello@hazb.com</v-btn>
           </v-col>
           <v-col cols="12" md="4">
             <p class="fs20 mb-3 font-weight-bold pl-4">Console</p>
-            <v-btn :to="{name: 'AuthSignIn'}" variant="flat" rounded class="text-none">Sign In</v-btn><br />
-            <v-btn :to="{name: 'AuthSignUp'}" variant="flat" rounded class="text-none">Sign Up</v-btn><br />
-            <v-btn :to="{name: 'AuthResetPassword'}" variant="flat" rounded class="text-none">Reset Password</v-btn>
+            <v-btn :to="{name: 'AuthSignIn'}" variant="text" rounded class="text-none">Sign In</v-btn><br />
+            <v-btn :to="{name: 'AuthSignUp'}" variant="text" rounded class="text-none">Sign Up</v-btn><br />
+            <v-btn :to="{name: 'AuthResetPassword'}" variant="text" rounded class="text-none">Reset Password</v-btn>
 
           </v-col>
         </v-row>
@@ -143,8 +143,8 @@
           <router-link class="text-none text-disabled" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span>All Rights Reserved.</span>
         </div>
         <div class="text-center mx-auto mx-md-0 order-0 order-md-1">
-          <v-btn variant="flat" rounded :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" class="text-none text-disabled">Terms of Use</v-btn>
-          <v-btn variant="flat" rounded :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" class="text-none text-disabled">Privacy Policy</v-btn>
+          <v-btn variant="text" rounded :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" class="text-none text-disabled">Terms of Use</v-btn>
+          <v-btn variant="text" rounded :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" class="text-none text-disabled">Privacy Policy</v-btn>
         </div>
       </div>
     </v-footer>

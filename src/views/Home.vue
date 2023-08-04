@@ -1,13 +1,14 @@
 <template>
   <div class="blueGradient">
-    <v-container tag="section" fluid class="firstScreen homeBg text-center">
-      <div class="d-flex flex-column justify-center align-center fill-height mx-auto" style="max-width: 1200px">
+    <v-container tag="section" fluid class="firstScreen relative text-center">
+      <div class="homeBg"></div>
+      <div class="relative d-flex flex-column justify-center align-center fill-height mx-auto" style="max-width: 1200px">
         <h1 class="fs62 font-weight-md-light">Unlocking On-Chain Insights!</h1>
         <div class="fs35 fs-m18 font-weight-light mt-8" style="text-shadow: #3F51B5 1px 1px 20px;">
           <p>Diverse deep into blockchain data to make informed decisions, identify trends, and drive success in the fast-paced crypto world.</p>
           <p>Empower your investments and team strategies with powerful analytics.</p>
         </div>
-        <v-btn size="x-large" color="myPurple" class="fs-m14 mt-12" :to="{name: userLogged ? 'Console' : 'AuthSignIn'}" >{{ userLogged ? 'Open pair explorer' : 'Join us on this data-driven journey!' }}</v-btn>
+        <v-btn size="x-large" color="white" variant="outlined" class="fs-m14 mt-12" :to="{name: userLogged ? 'Console' : 'AuthSignIn'}" >{{ userLogged ? 'Open pair explorer' : 'Join us on this data-driven journey!' }}</v-btn>
       </div>
     </v-container>
 
@@ -36,11 +37,11 @@
       </v-row>
     </v-container>
 
-    <v-container tag="section" fluid class="bg-purple-darken-4 text-center">
+    <v-container tag="section" fluid class="text-center" style="background: #141d26">
       <div class="mb-24 mt-24">
         <h2 class="fs40 fs-m25">Elevate Your Game with Blockchain Analytics!</h2>
         <p class="fs24 fs-m16 mx-auto mt-10" style="max-width: 1000px">Gain Transparency, Identify Opportunities, and Enhance Decision-Making. Embrace the Power of Analytics and Elevate Your Crypto Journey Now!</p>
-        <v-btn size="x-large" color="myPurple" class="fs-m14 mt-12" :to="{name: userLogged ? 'Console' : 'AuthSignIn'}" >{{ userLogged ? 'Open pair explorer' : 'Start Now' }}</v-btn>
+        <v-btn size="x-large" color="white" variant="outlined" class="fs-m14 mt-12" :to="{name: userLogged ? 'Console' : 'AuthSignIn'}" >{{ userLogged ? 'Open pair explorer' : 'Start Now' }}</v-btn>
       </div>
     </v-container>
   </div>
