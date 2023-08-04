@@ -105,8 +105,8 @@
             </div>
           </router-link>
           <div class="fill-width-m mb-4 mt-4">
-            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3 ml-md-0" href="https://twitter.com/hazbcom" target="_blank" style="background: #5865f2"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" style="filter: brightness(100);" /></v-btn>
-            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3" style="background: #29a9eb"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" style="filter: brightness(100);" /></v-btn>
+            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3 ml-md-0" href="https://twitter.com/hazbcom" target="_blank" rel="nofollow" style="background: #5865f2"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" style="filter: brightness(100);" /></v-btn>
+            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3" href="https://t.me/hazbcom" target="_blank" rel="nofollow" style="background: #29a9eb"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" style="filter: brightness(100);" /></v-btn>
             <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3" href="https://linktr.ee/hazbcom" target="_blank" rel="nofollow" style="background: #44e660"><img src="@/assets/social_linktree.png" width="22" height="22" alt="Docs" style="filter: brightness(100);" /></v-btn>
           </div>
         </div>
@@ -127,9 +127,10 @@
           </v-col>
           <v-col cols="12" md="4">
             <p class="fs20 mb-3 font-weight-bold pl-4">Console</p>
-            <v-btn :to="{name: 'AuthSignIn'}" variant="text" rounded class="text-none">Sign In</v-btn><br />
-            <v-btn :to="{name: 'AuthSignUp'}" variant="text" rounded class="text-none">Sign Up</v-btn><br />
-            <v-btn :to="{name: 'AuthResetPassword'}" variant="text" rounded class="text-none">Reset Password</v-btn>
+            <v-btn :to="{name: 'Console'}" v-if="userStore.logged" variant="text" rounded class="text-none">Console</v-btn><br />
+            <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Sign In</v-btn><br />
+            <v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Sign Up</v-btn><br />
+            <v-btn :to="{name: 'AuthResetPassword'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Reset Password</v-btn>
 
           </v-col>
         </v-row>

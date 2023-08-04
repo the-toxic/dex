@@ -19,7 +19,7 @@ $theme-dark-colors: (
   //$utilities: false,
   //$button-height: 40px,
   $body-font-family: sans-serif,
-  $application-background: map-get($theme-dark-colors, '3'), // bg
+  $application-background: #000, // map-get($theme-dark-colors, '3'), // bg
   //$application-color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity)),
   $app-bar-background: map-get($theme-dark-colors, '4'), // top nav
   $navigation-drawer-background: map-get($theme-dark-colors, '4'),

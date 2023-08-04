@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
-      <v-card class="mb-0" :loading="pairInfoLoading">
+      <v-card color="#000" class="mb-0" :loading="pairInfoLoading">
         <v-card-text class="d-flex justify-space-between align-center flex-wrap pa-2">
           <div class="d-flex align-center flex-wrap">
             <div class="bg-white mr-2" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
@@ -66,7 +66,7 @@
         <!--  <span class="" style="color:#9EA0AF;">Total: {{ shortNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>-->
         <!--</div>-->
       </div>
-      <v-card class="mt-2 mb-8">
+      <v-card color="#000" class="mt-2 mb-8">
         <TableHistory />
       </v-card>
     </v-container>
