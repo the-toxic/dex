@@ -138,10 +138,11 @@ $primaryFont: sans-serif;
 //  opacity: 0;
 //}
 
-//.homeBg {
-//  background: url("@/assets/dex-bg.jpg") no-repeat center;
-//  background-size: cover;
-//}
+.homeBg {
+  //background: url("@/assets/dex-bg.jpg") no-repeat center;
+  background: url("@/assets/bg_home.png") no-repeat center;
+  background-size: cover;
+}
 
 //.showSearchBox {
 //  background-color: #181B25;
