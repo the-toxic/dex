@@ -19,7 +19,7 @@
     </v-navigation-drawer>
 
 
-    <v-app-bar absolute>
+    <v-app-bar absolute color="#000">
       <template v-slot:prepend>
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
           <div class="logoBox ml-4" @click="navigate">
@@ -29,21 +29,21 @@
       </template>
 
       <v-spacer />
-       <v-btn variant="flat" :to="{name: 'Home'}" rounded class="d-none d-md-inline-flex text-none">Home</v-btn>
-       <v-btn variant="flat" :to="{name: 'Console'}" v-if="userStore.logged" rounded class="d-none d-md-inline-flex text-none" :class="route.name === 'Pair' ? 'v-btn--active' : ''">Console</v-btn>
-       <v-btn variant="flat" :href="NEWS_HOST" target="news" rounded class="d-none d-md-inline-flex text-none">News</v-btn>
-       <v-btn variant="flat" :href="DOCS_HOST" target="docs" rounded class="d-none d-md-inline-flex text-none">Docs</v-btn>
+       <v-btn variant="text" size="large" :to="{name: 'Home'}" rounded class="d-none d-md-inline-flex text-none">Home</v-btn>
+       <v-btn variant="text" size="large" :to="{name: 'Console'}" v-if="userStore.logged" rounded class="d-none d-md-inline-flex text-none" :class="route.name === 'Pair' ? 'v-btn--active' : ''">Console</v-btn>
+       <v-btn variant="text" size="large" :href="NEWS_HOST" target="news" rounded class="d-none d-md-inline-flex text-none">News</v-btn>
+       <v-btn variant="text" size="large" :href="DOCS_HOST" target="docs" rounded class="d-none d-md-inline-flex text-none">Docs</v-btn>
 <!--       <v-btn variant="flat" :to="{name: 'Career'}" rounded class="d-none d-md-inline-flex text-none">Career</v-btn>-->
 <!--       <v-btn variant="flat" :to="{name: 'ContactUs'}" rounded class="d-none d-md-inline-flex text-none">Contact Us</v-btn>-->
       <v-spacer />
 
       <template v-slot:append>
-        <v-btn v-if="route.name === 'Pair'" icon size="small" @click="showSearch">
+        <v-btn v-if="route.name === 'Pair'" icon @click="showSearch">
           <v-icon small color="#B3B5BD" class="px-2" alt="Show Search">mdi-magnify</v-icon>
         </v-btn>
 
         <v-btn v-if="route.name === 'Pair'" icon size="small">
-          <v-icon right size="small" :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
+          <v-icon right :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
           <v-tooltip activator="parent" location="bottom">Status: {{ !mainStore.wsConnected ? 'Offline' : (mainStore.wsConnected === 'loading' ? 'Connection' : 'Online') }}</v-tooltip>
         </v-btn>
 
@@ -51,8 +51,8 @@
         <!-- Menu open icon for mobile -->
         <v-app-bar-nav-icon size="small" v-if="breakpoints.mobile" @click.stop="drawer = !drawer" />
 
-        <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged && !breakpoints.mobile" rounded class="text-none">Sign In</v-btn>
-        <v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged && !breakpoints.mobile" rounded color="myPurple" variant="flat" class="mx-5 text-none">Sign Up</v-btn>
+        <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged && !breakpoints.mobile" size="large" rounded class="text-none">Sign In</v-btn>
+        <v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged && !breakpoints.mobile" size="large" rounded color="myPurple" variant="flat" class="mx-5 text-none">Sign Up</v-btn>
 
         <v-menu v-if="userStore.logged && !breakpoints.mobile" v-model="userMenu" :close-on-content-click="false" location="bottom">
           <template v-slot:activator="{ props }">
