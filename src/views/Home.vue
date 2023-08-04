@@ -37,7 +37,7 @@
       </v-row>
     </v-container>
 
-    <v-container tag="section" fluid class="text-center" style="background: #141d26">
+    <v-container tag="section" fluid class="text-center" style="background: rgb(24 35 46 / 80%)">
       <div class="mb-24 mt-24">
         <h2 class="fs40 fs-m25">Elevate Your Game with Blockchain Analytics!</h2>
         <p class="fs24 fs-m16 mx-auto mt-10" style="max-width: 1000px">Gain Transparency, Identify Opportunities, and Enhance Decision-Making. Embrace the Power of Analytics and Elevate Your Crypto Journey Now!</p>

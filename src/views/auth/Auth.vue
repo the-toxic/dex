@@ -1,8 +1,8 @@
 <template>
   <div class="text-center fill-width" style="max-width: 500px">
     <v-btn-toggle mandatory variant="tonal" class="d-flex rounded-lg mb-8">
-      <v-btn :to="{name: 'AuthSignIn'}" class="flex-fill px-md-12 px-8 text-none">Sign In</v-btn>
-      <v-btn :to="{name: 'AuthSignUp'}" class="flex-fill px-md-12 px-8 text-none">Sign Up</v-btn>
+      <v-btn :to="{name: 'AuthSignIn'}" color="secondary" class="flex-fill px-md-12 px-8 text-none">Sign In</v-btn>
+      <v-btn :to="{name: 'AuthSignUp'}" color="secondary" class="flex-fill px-md-12 px-8 text-none">Sign Up</v-btn>
     </v-btn-toggle>
 
     <v-card rounded class="rounded-xl" elevation="0">

@@ -1,5 +1,6 @@
 <template>
   <template v-if="step === 'email'">
+    <img src="@/assets/HAZB.svg" class="mb-8" style="height: 28px" alt="Logo" />
     <h3 class="fs24 mb-10">Sign In</h3>
     <v-form ref="form" @submit.prevent="onSubmitEmail">
       <v-text-field label="Email"
