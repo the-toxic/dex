@@ -126,7 +126,7 @@
           </v-col>
           <v-col cols="12" md="4">
             <p class="fs20 mb-3 font-weight-bold pl-4">Console</p>
-            <v-btn :to="{name: 'Console'}" v-if="userStore.logged" variant="text" rounded class="text-none">Console</v-btn><br />
+            <v-btn :to="{name: 'Console'}" v-if="userStore.logged" variant="text" rounded class="text-none">Console</v-btn>
             <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Sign In</v-btn><br />
             <v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Sign Up</v-btn><br />
             <v-btn :to="{name: 'AuthResetPassword'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Reset Password</v-btn>

@@ -24,7 +24,7 @@ $theme-dark-colors: (
   $app-bar-background: map-get($theme-dark-colors, '4'), // top nav
   $navigation-drawer-background: map-get($theme-dark-colors, '4'),
   $footer-background: map-get($theme-dark-colors, '4'),
-  $card-background: rgb(24 35 46 / 80%), // map-get($theme-dark-colors, '6'), // default 1
+  $card-background: #16202b, // map-get($theme-dark-colors, '6'), // default 1
   //$button-background: map-get($theme-dark-colors, '5'),
   //$button-color: map-get($theme-dark-colors, '5'),
 );
