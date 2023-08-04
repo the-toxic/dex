@@ -2,8 +2,8 @@
   <div class="blueGradient">
     <v-container tag="section" fluid class="firstScreen homeBg text-center">
       <div class="d-flex flex-column justify-center align-center fill-height mx-auto" style="max-width: 1200px">
-        <h1 class="fs62 font-weight-md-light" style="text-shadow: 1px 1px black;">Unlocking On-Chain Insights!</h1>
-        <div class="fs35 fs-m18 font-weight-light mt-8" style="text-shadow: 1px 1px 20px black;">
+        <h1 class="fs62 font-weight-md-light">Unlocking On-Chain Insights!</h1>
+        <div class="fs35 fs-m18 font-weight-light mt-8" style="text-shadow: #3F51B5 1px 1px 20px;">
           <p>Diverse deep into blockchain data to make informed decisions, identify trends, and drive success in the fast-paced crypto world.</p>
           <p>Empower your investments and team strategies with powerful analytics.</p>
         </div>
