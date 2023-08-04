@@ -138,10 +138,10 @@ $primaryFont: sans-serif;
 //  opacity: 0;
 //}
 
-.homeBg {
-  background: url("@/assets/dex-bg.jpg") no-repeat center;
-  background-size: cover;
-}
+//.homeBg {
+//  background: url("@/assets/dex-bg.jpg") no-repeat center;
+//  background-size: cover;
+//}
 
 //.showSearchBox {
 //  background-color: #181B25;
@@ -244,3 +244,10 @@ $primaryFont: sans-serif;
 /*.otp-input.is-complete {*/
 /*  background-color: #e4e4e4;*/
 /*}*/
+
+.blueGradient {
+  background: linear-gradient(0deg, #000 0%, #12007f 50%, #000 100%);
+}
+.firstScreen {
+  height: calc(100vh - 64px);
+}
