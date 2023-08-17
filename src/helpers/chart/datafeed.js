@@ -63,13 +63,27 @@ const configurationData = {
 };
 
 const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value)
-const shortAddress = (wallet) => wallet.slice(0,12) + '...' + wallet.slice(-12)
+const shortAddress = (wallet) => wallet.slice(0,8) + '...' + wallet.slice(-8)
 const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
 
 function fillFindedPairs(data) {
   data.forEach(i => {
     i.full_name = `${i.exchange}:${i.symbol}:${i.pair_addr}`
     i.description = `Pair: ${shortAddress(i.pair_addr)} | TX: ${toNumber(i.tx_count)} | ID: ${i.pair_id}`
+
+    // trim exchange name
+    if(i.exchange.slice(-6) === 'Router') {
+      i.exchange = i.exchange.substring(0, i.exchange.length - 7)
+    }
+    // TODO TEMP MOCK!!!
+    if(i.pair_id === 777879) { // TANK/BUSD
+      i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/16447.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
+    } else if(i.pair_id === 309) { // WBNB/BUSD
+      i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
+    }
+    // pancake logo
+    i.exchange_logo = i.exchange_id !== 20 ? '' : 'https://s2.coinmarketcap.com/static/img/coins/64x64/7186.png' // add in ver 25.002
+
   })
   data.sort((a,b) => { // filter by TX count, DESC
     if(a.tx_count > b.tx_count) return -1
@@ -101,6 +115,7 @@ export default {
       onResultReadyCallback([]);
       return
     }
+
     fillFindedPairs(result.content)
 
     onResultReadyCallback(result.content);
@@ -157,8 +172,8 @@ export default {
       visible_plots_set: 'ohlcv', // Support: open, high, low, close. With 'value': "ohlcv"
       // volume_precision: 2, // кол-во десятичных символов в объеме
       data_status: 'streaming', // streaming | endofday | pulsed | delayed_streaming
-      logo_urls: '', // pairInfo.token0.icon // add in ver 25.002
-      exchange_logo: '', // add in ver 25.002
+
+      logo_urls: symbolItem.logo_urls, // add in ver 25.002
     };
 
     // symbolInfo.checkInvert = function () {

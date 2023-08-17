@@ -40,12 +40,12 @@ export const initChart = (pairAddr) => {
     height: '800px',
     // autosize: true, // Full size on container
     disabled_features: ['header_compare', 'volume_force_overlay', 'display_market_status'], // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
-    // enabled_features: [],
+    enabled_features: [
+      'show_symbol_logos', // add in ver 25.001
+      'show_symbol_logo_in_legend', // add in ver 26
+      'show_exchange_logos', // add in ver 25.001
+    ],
     // custom_css_url: 'css/style.css',
-
-    // show_symbol_logos: true, // add in ver 25.001
-    // show_symbol_logo_in_legend: true, // add in ver 26
-    // show_exchange_logos: true, // add in ver 25.001
   });
 
   // init chart 25276
