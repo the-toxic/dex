@@ -2,14 +2,14 @@
 	<h3 class="fs24 mb-6">Whitelist</h3>
 	<p v-if="action === 'sign-up'" class="fs16 mb-4">Thank you for registration!</p>
 	<p class="fs16 mb-6">Follow us:
-		<v-btn icon variant="tonal" color="black" :href="SOCIAL_TWITTER" target="_blank" class="ml-2">
+		<v-btn icon variant="tonal" color="black" :href="SOCIAL_TWITTER" target="_blank" rel="nofollow" class="ml-2">
 			<v-img width="30" height="30" src="@/assets/social_twitter.svg"/>
 		</v-btn>
-		<v-btn icon variant="tonal" color="black" :href="SOCIAL_TELEGRAM" target="_blank" class="ml-2">
+		<v-btn icon variant="tonal" color="black" :href="SOCIAL_TELEGRAM" target="_blank" rel="nofollow" class="ml-2">
 			<v-img width="30" height="30" src="@/assets/social_telegram.svg" class="mr-1"/>
 		</v-btn>
-		<v-btn icon variant="tonal" color="black" :href="SOCIAL_DISCORD" target="_blank" class="ml-2">
-			<v-img width="30" height="30" src="@/assets/social_discord.svg"/>
+		<v-btn icon variant="tonal" color="black" :href="SOCIAL_LINKTREE" target="_blank" rel="nofollow" class="ml-2">
+			<v-img width="30" height="30" src="@/assets/social_linktree.png" style="filter: grayscale(1) brightness(0.6)"/>
 		</v-btn>
 	</p>
 	<p class="fs16 text-blue mb-2">If you have invite code you can continue</p>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { SOCIAL_DISCORD, SOCIAL_TELEGRAM, SOCIAL_TWITTER } from "@/helpers/mixins";
+import { SOCIAL_LINKTREE, SOCIAL_TELEGRAM, SOCIAL_TWITTER } from "@/helpers/mixins";
 import * as api from "@/api";
 
 export default {
@@ -48,9 +48,10 @@ export default {
   data: () => ({
 		loading: false,
 		invite: '',
-    SOCIAL_TWITTER, SOCIAL_TELEGRAM, SOCIAL_DISCORD,
+    SOCIAL_TWITTER, SOCIAL_TELEGRAM, SOCIAL_LINKTREE,
   }),
   methods: {
+    SOCIAL_LINKTREE,
     onCaptchaPassed(captcha) {
       this.sendRequestInvite(captcha)
     },

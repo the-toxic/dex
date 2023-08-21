@@ -24,14 +24,23 @@ export const passwordRules = [
 ],*/
 export const SOCIAL_TWITTER = import.meta.env.VITE_APP_SOCIAL_TWITTER
 export const SOCIAL_TELEGRAM = import.meta.env.VITE_APP_SOCIAL_TELEGRAM
-export const SOCIAL_DISCORD = import.meta.env.VITE_APP_SOCIAL_DISCORD
+export const SOCIAL_LINKTREE = import.meta.env.VITE_APP_SOCIAL_LINKTREE
 
 export const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value)
 export const toCurrency = (value, currency) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'usd' }).format(isNaN(value) ? 0 : +value)
 export const capitalize = (words, separator = ' ') => words.split(separator).map(word => (word.charAt(0).toUpperCase() + word.slice(1))).join(separator)
 export const nowTimestamp = () => +(+new Date()).toString().slice(0, 10)
-export const shortAddress = (wallet) => wallet ? wallet.slice(0,6) + '...' + wallet.slice(-4) : wallet
+export const shortAddress = (wallet, left = 6, right = 4) => wallet ? wallet.slice(0,left) + '...' + wallet.slice(-Math.abs(right)) : wallet
 export const logger = (str) => console.log(str)
+
+export const formatNumber = (num, precision = 2) => {
+  const map = [
+    { suffix: 'T', threshold: 1e12 }, { suffix: 'B', threshold: 1e9 }, { suffix: 'M', threshold: 1e6 }, { suffix: 'K', threshold: 1e3 }, { suffix: '', threshold: 1 },
+  ];
+  const found = map.find((x) => Math.abs(num) >= x.threshold);
+  if (found) return (num / found.threshold).toFixed(precision) + found.suffix;
+  return num;
+}
 
 // // "vue-recaptcha-v3": "^1.9.0",
 // async recaptchaHandler(action, cb) {

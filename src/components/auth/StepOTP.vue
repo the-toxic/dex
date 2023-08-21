@@ -5,7 +5,7 @@
 	<v-otp-input v-if="otpAttempts"
 		ref="otpInput" v-model:value="otp"
 		input-classes="otp-input" separator="" class="otpWrap"
-		:num-inputs="6" :should-auto-focus="true" :is-disabled="otpDisabled"
+		:num-inputs="6" :should-auto-focus="true" :is-disabled="!otpAttempts || loading || loadingResend"
 		input-type="number" :placeholder="['', '', '', '', '', '']"
 		@on-change="handleOnChange" @on-complete="handleOnComplete"
 	/> <!-- letter-numeric -->
@@ -65,8 +65,6 @@ export default {
     otpAttempts: +this.attempts,
 		timer: +this.initialTimer,
 		timerId: null,
-		otpDisabled: false,
-		// isResendEvent: false,
 	}},
   created() {
     this.timerId = setInterval(() => {
@@ -81,11 +79,7 @@ export default {
 		...mapActions(useMainStore, {showAlert: 'showAlert'}),
 
 		onCaptchaPassed(captcha) {
-			// if(this.isResendEvent) {
-				this.sendRequestResendEmail(captcha)
-			// } else {
-				// this.sendRequestOTP(captcha)
-			// }
+      this.sendRequestResendEmail(captcha)
 		},
 
 		// async onSubmitOTP() {
@@ -98,29 +92,20 @@ export default {
 		// },
 		async sendRequestOTP() {
 			if(this.otpAttempts <= 0) return
-			this.otpDisabled = true
 			this.loading = true
       const { data } = await api.otp({email: this.email, code: this.otp})
 			this.loading = false
-			this.otpDisabled = false
 			window.captchaObj.reset();
 
 			if(data.success) {
-				// this.step = 'password'
 				this.$emit('completed', this.otp)
 			} else {
 				this.otpAttempts = this.otpAttempts - 1
-				if(this.otpAttempts <= 0) {
-					this.otpDisabled = true
-				} else {
-					this.showAlert('Incorrect code')
-				}
 				this.$refs.otpInput?.clearInput()
 			}
 		},
 
 		async onSubmitResendEmail() {
-			// this.isResendEvent = true
       if((this.action === 'sign-up' && import.meta.env.VITE_APP_CAPTCHA_SIGN_UP === 'true')
       || (this.action === 'reset-password' && import.meta.env.VITE_APP_CAPTCHA_RESET_PASSWORD === 'true')) {
 				window.captchaObj.showCaptcha()
@@ -129,24 +114,22 @@ export default {
 			}
 		},
 		async sendRequestResendEmail(captcha) {
-			// this.isResendEvent = false
-			this.otpAttempts = +this.attempts
-			this.otpDisabled = false
-
 			this.loadingResend = true
       const { data } = await api.otpResend({ email: this.email, captcha })
-
 			this.loadingResend = false
 			window.captchaObj.reset();
 
-			this.timer = data.result?.timeout || 180
-      clearInterval(this.timerId)
-			this.timerId = setInterval(() => {
-				this.timer = this.timer - 1
-				if(this.timer <= 0) clearInterval(this.timerId)
-			}, 1000)
+			if(data.success) {
+        this.otpAttempts = data.result?.attempts || +this.attempts
+        this.timer = data.result?.timeout || 60
 
-			if(data.success) {}
+        clearInterval(this.timerId)
+        this.timerId = setInterval(() => {
+          this.timer = this.timer - 1
+          if(this.timer <= 0) clearInterval(this.timerId)
+        }, 1000)
+      }
+
 		},
 		handleOnComplete (value) {
       this.sendRequestOTP()

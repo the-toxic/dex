@@ -2,6 +2,7 @@ import { fetchHistoryCandles, searchPair } from '@/api.js'
 import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
 import { useChartStore } from "@/store/chartStore";
 import { useMainStore } from "@/store/mainStore";
+import { formatNumber, shortAddress } from "@/helpers/mixins";
 
 const chartStore = () => useChartStore()
 const mainStore = () => useMainStore()
@@ -62,14 +63,12 @@ const configurationData = {
   }],
 };
 
-const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value)
-const shortAddress = (wallet) => wallet.slice(0,8) + '...' + wallet.slice(-8)
 const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
 
 function fillFindedPairs(data) {
   data.forEach(i => {
     i.full_name = `${i.exchange}:${i.symbol}:${i.pair_addr}`
-    i.description = `Pair: ${shortAddress(i.pair_addr)} | TX: ${toNumber(i.tx_count)} | ID: ${i.pair_id}`
+    i.description = `Pair: ${shortAddress(i.pair_addr, 8, 8)} | TX: ${formatNumber(+i.tx_count)} | ID: ${i.pair_id}`
 
     // trim exchange name
     if(i.exchange.slice(-6) === 'Router') {

@@ -106,7 +106,7 @@ import StepOTP from "@/components/auth/StepOTP.vue";
 
         if(data.success) {
           this.attempts = data.result?.attempts || 0
-          this.timer = data.result?.timer || 180
+          this.timer = data.result?.timeout || 180
           this.step = 'otp'
 				}
       },

@@ -35,7 +35,7 @@
           </div>
           <div>
             <div class="green--text">{{ priceFormatter(lastPrice) }} {{ rightToken }}</div>
-            <div>24hr <span :class="{'red--text': priceChange < 0, 'green--text': priceChange >= 0}">{{ toNumber(priceChange) }}%</span></div>
+            <div>24hr <span :class="{'text-red': priceChange < 0, 'text-green': priceChange >= 0}">{{ toNumber(priceChange) }}%</span></div>
           </div>
         </v-card-text>
       </v-card>

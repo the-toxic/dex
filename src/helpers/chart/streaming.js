@@ -16,7 +16,7 @@ if(window.location.host.includes('.app') || window.location.host.includes('local
 const socket = io(apiDomain, {
   path: '/ws/socket.io',
   transports: ['websocket', 'polling', 'flashsocket'],
-  reconnection: false,
+  // reconnection: false,
   reconnectionAttempts: 5, // reconnect limiter
   query: {
     "session_id": chartStore().sessionId

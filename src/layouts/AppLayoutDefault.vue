@@ -104,9 +104,9 @@
             </div>
           </router-link>
           <div class="fill-width-m mb-4 mt-4">
-            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3 ml-md-0" href="https://twitter.com/hazbcom" target="_blank" rel="nofollow" style="background: #5865f2"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" style="filter: brightness(100);" /></v-btn>
-            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3" href="https://t.me/hazbcom" target="_blank" rel="nofollow" style="background: #29a9eb"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" style="filter: brightness(100);" /></v-btn>
-            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3" href="https://linktr.ee/hazbcom" target="_blank" rel="nofollow" style="background: #44e660"><img src="@/assets/social_linktree.png" width="22" height="22" alt="Docs" style="filter: brightness(100);" /></v-btn>
+            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3 ml-md-0" :href="SOCIAL_TWITTER" target="_blank" rel="nofollow" style="background: #5865f2"><img src="@/assets/social_twitter.svg" width="22" height="22" alt="Twitter" style="filter: brightness(100);" /></v-btn>
+            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3" :href="SOCIAL_TELEGRAM" target="_blank" rel="nofollow" style="background: #29a9eb"><img src="@/assets/social_telegram.svg" width="22" height="22" alt="Telegram" style="filter: brightness(100);" /></v-btn>
+            <v-btn icon size="small" variant="tonal" class="mx-2 mx-md-3" :href="SOCIAL_LINKTREE" target="_blank" rel="nofollow" style="background: #44e660"><img src="@/assets/social_linktree.png" width="22" height="22" alt="Docs" style="filter: brightness(100);" /></v-btn>
           </div>
         </div>
 
@@ -161,7 +161,7 @@
   import { useMainStore } from "@/store/mainStore";
   import { useUserStore } from "@/store/userStore";
   import { useWalletStore } from "@/store/walletStore";
-  import { PROJECT_NAME, DOCS_HOST, NEWS_HOST } from "@/helpers/mixins";
+  import { PROJECT_NAME, DOCS_HOST, NEWS_HOST, SOCIAL_TWITTER, SOCIAL_TELEGRAM, SOCIAL_LINKTREE } from "@/helpers/mixins";
 
   import { showChartSearch } from "@/helpers/chart/chart";
   // import { connect as web3Connect, disconnect as web3Disconnect } from "@/helpers/web3";

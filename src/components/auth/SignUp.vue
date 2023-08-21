@@ -122,7 +122,7 @@ export default {
 
       if(data.success) {
         this.attempts = data.result?.attempts || 3
-        this.timer = data.result?.timer || 180
+        this.timer = data.result?.timeout || 180
 				this.step = 'otp'
       }
     },
