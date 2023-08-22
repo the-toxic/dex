@@ -5,11 +5,10 @@
     </div>
     <v-card class="mb-0" :loading="loading">
       <v-card-text class="d-flex justify-start align-center flex-wrap pa-4">
-        <v-btn rounded class="text-none mr-2" variant="outlined">Hot pairs</v-btn>
-        <v-btn rounded class="text-none mr-2" variant="outlined">Gainers</v-btn>
-        <v-btn rounded class="text-none mr-2" variant="outlined">Loosers</v-btn>
-        <v-btn rounded class="text-none mr-2" variant="outlined">New Pairs</v-btn>
-        <v-btn rounded class="text-none mr-2" variant="outlined">New Pairs</v-btn>
+        <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-fire" color="red" start /> Hot Pairs</v-btn>
+        <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-finance" color="success" start /> Gainers</v-btn>
+        <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-emoticon-poop" start color="brown-lighten-1" /> Loosers</v-btn>
+        <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-new-box" start /> New Pairs</v-btn>
         <div class="flex-fill"></div>
         <v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>
       </v-card-text>
@@ -40,7 +39,7 @@
           </template>
           <template v-slot:item.txs="{ item }">{{ formatNumber(item.columns.txs) }}</template>
           <template v-slot:item.volume="{ item }">${{formatNumber(item.columns.volume) }}</template>
-          <template v-slot:item.price="{ item }">{{ toCurrency(item.columns.price) }}</template>
+          <template v-slot:item.price="{ item }">${{ priceFormatter(item.columns.price) }}</template>
           <template v-slot:item.liquidity="{ item }">${{ formatNumber(item.columns.liquidity) }}</template>
           <template v-slot:item.action="{ item }">
             <v-btn :to="{name: 'Pair', params: {network: item.raw.network, pairAddr: item.raw.pair_addr}}"
@@ -54,6 +53,7 @@
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchPairs } from "@/api";
 import { formatNumber, toCurrency, toNumber } from "@/helpers/mixins";
+import { priceFormatter } from "@/helpers/common";
 
 export default {
   name: 'Pairs',
@@ -67,7 +67,6 @@ export default {
       { title: 'TXs', key: 'txs', align: 'center' },
       { title: 'Volume', key: 'volume', align: 'center' },
       { title: '% 24h', key: 'change_24h', align: 'center' },
-      { title: 'Swaps', key: 'swaps', align: 'center' },
       { title: 'Liquidity', key: 'liquidity', align: 'center' },
       { title: 'Action', key: 'action', align: 'center' },
     ],
@@ -76,6 +75,7 @@ export default {
     totalItems: 0,
   }),
   methods: {
+    priceFormatter,
     formatNumber,
     toCurrency,
     toNumber,
