@@ -10,7 +10,7 @@ import App from './App.vue'
 const app = createApp(App)
 app.use(createPinia())
 
-import router from './router'
+import router from './router.js'
 import vuetify from './plugins/vuetify'
 // const { default: vuetify } = await import('@/plugins/vuetify')
 import { initVueGtag } from '@/plugins/vue-gtag'

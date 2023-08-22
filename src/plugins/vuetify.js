@@ -15,7 +15,6 @@ export default createVuetify({
           surface: '#141d26', // default color btn bg
           primary: '#1867C0',
           secondary: '#5CBBF6',
-          myPurple: '#881a7a',
           myBlue: '#12007F',
         },
       },
