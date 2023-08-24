@@ -1,9 +1,9 @@
 <template>
   <v-dialog v-model="dialog" activator="parent" max-width="400px">
-    <v-card class="myCard2" :loading="loading">
+    <v-card :loading="loading">
       <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
 
-        <v-card-title class="thirtyFont mb-3 pt-7" style="font-size: 25px;">Change Password</v-card-title>
+        <v-card-title class="mb-3 pt-7" style="font-size: 25px;">Change Password</v-card-title>
         <v-card-text>
           <v-text-field label="Old Password"
             v-model="form.old_password" type="password" class="mb-2"

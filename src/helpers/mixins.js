@@ -34,6 +34,7 @@ export const shortAddress = (wallet, left = 6, right = 4) => wallet ? wallet.sli
 export const logger = (str) => console.log(str)
 
 export const formatNumber = (num, precision = 2) => {
+  // return new Intl.NumberFormat("en-US", { notation: "compact", compactDisplay: "short", minimumFractionDigits: 2, maximumFractionDigits: 3, style: "currency", currency: "USD", }).format(11111112.00007111);
   if (num < 1000) return num;
   const map = [
     { suffix: 'T', threshold: 1e12 }, { suffix: 'B', threshold: 1e9 }, { suffix: 'M', threshold: 1e6 }, { suffix: 'K', threshold: 1e3 }, { suffix: '', threshold: 1 },

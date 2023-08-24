@@ -117,18 +117,36 @@ export async function changePassword(payload){
   // await delay(500)
   // return {data: {success: true}}
 }
+export async function deleteAccount(){
+  return  await axios.post(`user/delete`);
+}
 
 /** Explorer page */
 export const fetchPairs = async (payload) => {
-  // const {data} = await axios.get(`xhr/pairs`);
-  // return data
-  await delay(500)
-  return {data: {success: true, result: { items: [
-      {id: 1, token: 'TANK/BUSD', price: 0.002, txs: 11451, volume: 350112, change_24h: 1.45, swaps: 0, liquidity: 1234000, network: 'bsc', pair_addr: '0x4e14498c6f679c6421db117bc9e9b08671d42996', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/16447.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
-      {id: 2, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, swaps: 0, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
-    ],
-    total: 1
-  }}}
+  console.log(payload.sortBy)
+  payload.sortDir = payload.sortBy.order
+  payload.sortBy = payload.sortBy.key
+  const {data} = await axios.post(`xhr/pair_explorer`, payload);
+  if(data.success) {
+    data.result.map(i => {
+      i.network = 'bsc'
+      return i
+    })
+    return {data: {success: true, result: { total: 999, items: data.result } } }
+  } else {
+    return {data: {success: false }}
+  }
+  // await delay(500)
+  // return {data: {success: true, result: { items: [
+  //     {token_id: 1, pair_name: 'TANK/BUSD', last_price: 0.002, txs: 11451, volume: 350112, change_24h: 1.45, liquidity: 1234000, network: 'bsc', pair_addr: '0x4e14498c6f679c6421db117bc9e9b08671d42996', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/16447.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
+  //     {id: 2, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
+  //     {id: 3, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
+  //     {id: 4, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
+  //     {id: 5, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
+  //     {id: 6, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
+  //   ],
+  //   total: 6
+  // }}}
 }
 
 /** Pair page */
