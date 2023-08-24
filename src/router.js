@@ -13,10 +13,11 @@ import Profile from "@/views/Profile.vue";
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
-  { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pairs' } },
-  { path: '/console/explorer', name: 'Pairs', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pairs.vue") },
+  { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pairs',  params: {network: 'bsc'} } },
+  { path: '/console/:network([a-zA-Z0-9]{2,10})/explorer', name: 'Pairs', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pairs.vue") },
+  { path: '/console/:network([a-zA-Z0-9]{2,10})/big-swaps', name: 'BigSwaps', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/BigSwaps.vue") },
   // { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
-  { path: '/console/pair/:network([a-zA-Z0-9]{2,10})/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },
+  { path: '/console/:network([a-zA-Z0-9]{2,10})/pair/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },
   { path: '/console/career', name: 'Career', component: Career },
   { path: '/console/contact-us', name: 'ContactUs', component: ContactUs },
   { path: '/console/profile', name: 'Profile', component: Profile, meta: { needAuth: true } },

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { setCookie } from '@/helpers/common'
 import { useChartStore } from "@/store/chartStore";
+
 const chartStore = () => useChartStore()
 
 
@@ -52,112 +53,87 @@ const chartStore = () => useChartStore()
 //   return data
 // }
 
-
-// const userData = {
-// 	success: true,
-// 	result: {
-// 		user_id: '1q2w3e',
-// 		email: 'test-user@gmail.com',
-// 		token: '123'
-// 	}
-// }
-const delay = async (ms) => await new Promise(resolve => setTimeout(() => {resolve(true)}, ms))
+const delay = async (ms) => await new Promise(resolve => setTimeout(() => {
+  resolve(true)
+}, ms))
 
 /** Auth module */
 
-export async function signIn(payload){
+export async function signIn(payload) {
   return await axios.post(`auth/sign-in`, payload);
-  // await delay(500)
-  // return {data: {success: true, result: { need_invite: true, /*user: {email: 'qwe@qwe.cc'}*/ }}}
-}
-export async function signUp(payload){
-  return await axios.post(`auth/sign-up`, payload);
-  // await delay(500)
-  // return {data: {success: true}}
-}
-export async function resetPassword(payload){
-  return await axios.post(`auth/reset-password`, payload);
-  // await delay(500)
-  // return {data: {success: true}}
 }
 
-export async function otp(payload){
+export async function signUp(payload) {
+  return await axios.post(`auth/sign-up`, payload);
+}
+
+export async function resetPassword(payload) {
+  return await axios.post(`auth/reset-password`, payload);
+}
+
+export async function otp(payload) {
   return await axios.post(`auth/otp`, payload);
-  // await delay(500)
-  // return {data: {success: true}}
 }
-export async function otpResend(payload){
+
+export async function otpResend(payload) {
   return await axios.post(`auth/otp-resend`, payload);
-  // await delay(500)
-  // return {data: {success: true}}
 }
-export async function setPassword(payload){
+
+export async function setPassword(payload) {
   return await axios.post(`auth/set-password`, payload);
-  // await delay(500)
-  // return {data: {success: true, result: { user: {email: 'qwe@qwe.cc'} }}}
 }
-export async function inviteRequest(payload){
-  return  await axios.post(`auth/invite`, payload);
-  // await delay(500)
-  // return {data: {success: true, result: { user: {email: 'qwe@qwe.cc'} }}}
+
+export async function inviteRequest(payload) {
+  return await axios.post(`auth/invite`, payload);
 }
-export async function refreshJwt({ token }){
+
+export async function refreshJwt({ token }) {
   return await axios.post(`user/refresh`, { token });
 }
 
 
 /** User module */
-export async function updateProfile(payload){
-  return  await axios.post(`user/profile`, payload);
-  // await delay(500)
-  // return {data: {success: true}}
+export async function updateProfile(payload) {
+  return await axios.post(`user/profile`, payload);
 }
-export async function changePassword(payload){
-  return  await axios.post(`user/password`, payload);
-  // await delay(500)
-  // return {data: {success: true}}
+
+export async function changePassword(payload) {
+  return await axios.post(`user/password`, payload);
 }
-export async function deleteAccount(){
-  return  await axios.post(`user/delete`);
+
+export async function deleteAccount() {
+  return await axios.post(`user/delete`);
 }
 
 /** Explorer page */
 export const fetchPairs = async (payload) => {
-  console.log(payload.sortBy)
   payload.sortDir = payload.sortBy.order
   payload.sortBy = payload.sortBy.key
-  const {data} = await axios.post(`xhr/pair_explorer`, payload);
-  if(data.success) {
-    data.result.map(i => {
-      i.network = 'bsc'
-      return i
-    })
-    return {data: {success: true, result: { total: 999, items: data.result } } }
-  } else {
-    return {data: {success: false }}
+  return await axios.post(`xhr/pair_explorer`, payload);
+}
+export const fetchBigSwaps = async (payload) => {
+  await delay(500)
+  return {
+    success: true, result: [
+      {pair_id: '1', date: '2023-08-25 12:13:14', type: 'sell', pair_name: 'WBNB/USDT', quantity: 333.45, variation: 4.33, total: 333.45, total_usd: 72111.55,
+        token0: {symbol: 'WBNB', name: 'Wrapped BNB', icon: 'https://api.hazb.app/images/tokens/smartchain/0xbb4C/0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c.png'}, token1: {symbol: 'USDT', name: 'Tether USD', icon: 'https://api.hazb.app/images/tokens/smartchain/0x55d3/0x55d398326f99059fF775485246999027B3197955.png'},
+        maker_addr: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640',
+        tx_addr: '0xd2486b717dd2426729f48302b9b6a2e1b67a70ab8796568a36745f62f4ad3bff',
+        pair_addr: '0xd2486b717dd2426729f48302b9b6a2e1b67a70ab8796568a36745f62f4ad3bff',
+      }
+    ]
   }
-  // await delay(500)
-  // return {data: {success: true, result: { items: [
-  //     {token_id: 1, pair_name: 'TANK/BUSD', last_price: 0.002, txs: 11451, volume: 350112, change_24h: 1.45, liquidity: 1234000, network: 'bsc', pair_addr: '0x4e14498c6f679c6421db117bc9e9b08671d42996', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/16447.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
-  //     {id: 2, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
-  //     {id: 3, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
-  //     {id: 4, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
-  //     {id: 5, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
-  //     {id: 6, token: 'WBNB/BUSD', price: 211, txs: 111451, volume: 1350112, change_24h: -1.45, liquidity: 21234000, network: 'bsc', pair_addr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f', img_left_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', img_right_token: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png' },
-  //   ],
-  //   total: 6
-  // }}}
 }
 
 /** Pair page */
 export const searchPair = async (payload) => {
-  const {data} = await axios.post(`xhr/search_pair`, payload, {
+  const { data } = await axios.post(`xhr/search_pair`, payload, {
     headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
 }
 export const fetchPairInfo = async (pairId) => {
-  const {data} = await axios.get(`xhr/pair_info?pair_id=${pairId}`, {
+  const { data } = await axios.get(`xhr/pair_info?pair_id=${pairId}`, {
     headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
@@ -166,20 +142,20 @@ export const fetchHistoryTable = async (payload) => {
   const chainId = payload.chain_id
   const pairId = payload.pair_id
   const lastBlockId = payload.block_id || 0
-  const {data} = await axios.get(`xhr/txs?chain_id=${chainId}&pair_id=${pairId}&block_id=${lastBlockId}`, {
+  const { data } = await axios.get(`xhr/txs?chain_id=${chainId}&pair_id=${pairId}&block_id=${lastBlockId}`, {
     headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
 }
 export const fetchHistoryCandles = async (body) => {
-  const {data} = await axios.post(`xhr/limit_candles_history`, body, {
+  const { data } = await axios.post(`xhr/limit_candles_history`, body, {
     headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
 }
 
 export const fetchExchanges = async () => {
-  const {data} = await axios.get(`xhr/routers`);
+  const { data } = await axios.get(`xhr/routers`);
   return data
 }
 

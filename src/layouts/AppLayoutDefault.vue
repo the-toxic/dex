@@ -3,7 +3,8 @@
     <v-navigation-drawer v-model="drawer" width="500" location="bottom" v-if="breakpoints.mobile"><!-- v-if="breakpoints.width <= 768" -->
       <v-list :nav="true">
         <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
-        <v-list-item :to="{name: 'Console'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Console"></v-list-item>
+        <v-list-item :to="{name: 'Pairs'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Explorer"></v-list-item>
+        <v-list-item :to="{name: 'BigSwaps'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="BigSwaps"></v-list-item>
         <v-list-item :href="NEWS_HOST" target="news" prepend-icon="mdi-menu-open" title="News"></v-list-item>
         <v-list-item :href="DOCS_HOST" target="docs" prepend-icon="mdi-menu-open" title="Docs"></v-list-item>
 <!--        <v-list-item :to="{name: 'Career'}" prepend-icon="mdi-menu-open" title="Career"></v-list-item>-->
@@ -28,10 +29,18 @@
       </template>
 
       <v-spacer />
-       <v-btn variant="text" :active="false" size="large" :to="{name: 'Home'}" rounded class="d-none d-md-inline-flex text-none">Home</v-btn>
-       <v-btn variant="text" :active="false" size="large" :to="{name: 'Console'}" v-if="userStore.logged" rounded class="d-none d-md-inline-flex text-none">Console</v-btn>
-       <v-btn variant="text" size="large" :href="NEWS_HOST" target="news" rounded class="d-none d-md-inline-flex text-none">News</v-btn>
-       <v-btn variant="text" size="large" :href="DOCS_HOST" target="docs" rounded class="d-none d-md-inline-flex text-none">Docs</v-btn>
+        <v-btn variant="text" :active="false" size="large" :to="{name: 'Home'}" rounded class="d-none d-md-inline-flex text-none">Home</v-btn>
+        <v-menu v-if="userStore.logged" v-model="consoleSubMenu" :close-on-content-click="false" location="bottom">
+            <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" variant="text" :active="false" size="large" append-icon="mdi-menu-down" rounded class="d-none d-md-inline-flex text-none">Console</v-btn>
+            </template>
+            <v-list>
+              <v-list-item title="Explorer" :to="{name: 'Pairs'}" />
+              <v-list-item title="Big Swaps" :to="{name: 'BigSwaps'}" />
+            </v-list>
+        </v-menu>
+        <v-btn variant="text" size="large" :href="NEWS_HOST" target="news" rounded class="d-none d-md-inline-flex text-none">News</v-btn>
+        <v-btn variant="text" size="large" :href="DOCS_HOST" target="docs" rounded class="d-none d-md-inline-flex text-none">Docs</v-btn>
 <!--       <v-btn variant="flat" :to="{name: 'Career'}" rounded class="d-none d-md-inline-flex text-none">Career</v-btn>-->
 <!--       <v-btn variant="flat" :to="{name: 'ContactUs'}" rounded class="d-none d-md-inline-flex text-none">Contact Us</v-btn>-->
       <v-spacer />
@@ -174,6 +183,7 @@
 
   const drawer = ref(false)
   const userMenu = ref(false)
+  const consoleSubMenu = ref(false)
 
   if (mainStore.theme === 'light') {
     toggleTheme()

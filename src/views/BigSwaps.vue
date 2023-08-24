@@ -1,17 +1,17 @@
 <template>
   <v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
     <div class="d-flex align-center">
-      <h1 class="text-h4 mt-2 mb-2">EXPLORER</h1>
+      <h1 class="text-h4 mt-2 mb-2">BIG SWAPS EXPLORER</h1>
     </div>
 
     <v-card class="mb-0">
       <v-card-text class="d-flex justify-start align-center flex-wrap pa-4">
-        <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-fire" color="red" start /> Hot Pairs</v-btn>
-        <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-finance" color="success" start /> Gainers</v-btn>
-        <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-emoticon-poop" start color="brown-lighten-1" /> Loosers</v-btn>
-        <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-new-box" start /> New Pairs</v-btn>
-        <div class="flex-fill"></div>
-        <v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>
+        <v-spacer />
+				<div class="d-flex align-center" style="min-width: 300px">
+					<v-text-field v-model="minAmount" label="Minimum USD amount" placeholder="More than $10k" rounded variant="outlined"
+						persistent-placeholder density="compact" prepend-inner-icon="mdi-currency-usd" hide-details class="mr-4"/>
+        	<v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>
+				</div>
       </v-card-text>
     </v-card>
 
@@ -38,15 +38,18 @@
 					<span class="text-secondary ml-3">{{ item.raw.token0.name }}</span>
 				</v-btn>
 			</template>
-			<template v-slot:item.price="{ item }">${{ priceFormatter(item.raw.last_price) }}</template>
-			<template v-slot:item.txs="{ item }">{{ formatNumber(item.raw.txs) }}</template>
-			<template v-slot:item.volume="{ item }">{{formatNumber(item.raw.volume_token0) }}</template>
-			<template v-slot:item.change_24h="{ item }">
-				<v-chip :color="item.raw.change_24h > 0 ? 'success': (item.raw.change_24h < 0 ? 'error' : 'white')">
-					{{ item.raw.change_24h > 0 ? '+' : (item.raw.change_24h < 0 ? '-' : '') }} {{ Math.abs(item.raw.change_24h) || 0 }}%
+			<template v-slot:item.type="{ item }">
+				<v-chip :color="item.raw.type === 'buy' ? 'success': 'error'" class="text-capitalize">{{ item.raw.type}}</v-chip>
+			</template>
+			<template v-slot:item.quantity="{ item }">{{ formatNumber(item.raw.quantity) }}</template>
+			<template v-slot:item.total="{ item }">{{ formatNumber(item.raw.total) }}</template>
+			<template v-slot:item.total_usd="{ item }">${{ priceFormatter(item.raw.total_usd) }}</template>
+			<template v-slot:item.variation="{ item }">
+				<v-chip :color="isNaN(item.raw.variation) ? 'white': (item.raw.variation < 0 ? 'error' : 'success')">
+					{{ isNaN(item.raw.variation) ? '' : (item.raw.variation < 0 ? '-' : '+') }} {{ isNaN(item.raw.variation) ? 'Unknown' : Math.abs(item.raw.variation) }}%
 				</v-chip>
 			</template>
-			<template v-slot:item.liquidity="{ item }">${{ formatNumber(item.raw.liquidity) || 0 }}</template>
+			<template v-slot:item.maker="{ item }"><a :href="item.raw.maker_addr" target="_blank">{{ shortAddress(item.raw.maker_addr) }}</a></template>
 			<template v-slot:item.action="{ item }">
 				<v-btn :to="{name: 'Pair', params: {network: this.network, pairAddr: item.raw.pair_addr}}"
 					 icon="mdi-eye" variant="text" size="small" color="secondary"></v-btn>
@@ -57,40 +60,44 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { fetchPairs } from "@/api";
-import { formatNumber, toCurrency, toNumber } from "@/helpers/mixins";
+import { fetchBigSwaps } from "@/api";
+import { formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { priceFormatter } from "@/helpers/common";
 
 export default {
-  name: 'Pairs',
+  name: 'BigSwaps',
   components: { VDataTableServer },
-  data: () => ({
+  data() { return {
     loading: false,
-		network: 'bsc',
     itemsPerPage: 10,
-		sortBy: [{key: 'txs', order: 'desc'}],
+		sortBy: [{key: 'date', order: 'desc'}],
+		network: 'bsc', // ether | bsc
     headers: [
       { title: 'Token', key: 'pair_name', align: 'start', sortable: false },
-      { title: 'Price', key: 'price', align: 'center' },
-      { title: 'TXs', key: 'txs', align: 'center' },
-      { title: 'Volume', key: 'volume', align: 'center' },
-      { title: '% 24h', key: 'change_24h', align: 'center' },
-      { title: 'Liquidity', key: 'liquidity', align: 'center' },
+      { title: 'Execution Time', key: 'date', align: 'center' },
+      { title: 'Type', key: 'type', align: 'center' },
+      { title: 'Quantity', key: 'quantity', align: 'center' },
+			{ title: 'Total BNB', key: 'total', align: 'center' },
+      { title: 'Total USD', key: 'total_usd', align: 'center' },
+      { title: 'Variation', key: 'variation', align: 'center' },
+      { title: 'Maker', key: 'maker', align: 'center', sortable: false },
       { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
     search: '',
     items: [],
+		minAmount: '',
     totalItems: 999,
-  }),
+  }},
 	async created() {
 		this.network = this.$route.params.network.toString().toLowerCase()
 		if(!['bsc', 'ether'].includes(this.network)) this.$router.replace({name: 'Console'})
 	},
   methods: {
+		shortAddress,
     priceFormatter, formatNumber, toCurrency, toNumber,
     async loadItems ({ page, itemsPerPage, sortBy }) {
       this.loading = true
-      const { data } = await fetchPairs({ page, itemsPerPage, sortBy, search: this.search.trim() })
+      const data = await fetchBigSwaps({ page, itemsPerPage, sortBy, search: this.search.trim() })
       this.loading = false
       if(data.success) {
         this.items = data.result
