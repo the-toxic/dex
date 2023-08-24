@@ -4,7 +4,7 @@
       <v-card class="mb-0" :loading="pairInfoLoading">
         <v-card-text class="d-flex justify-space-between align-center flex-wrap pa-2">
           <div class="d-flex align-center flex-wrap">
-            <v-btn icon="mdi-arrow-left" :to="{name: 'Pairs'}" size="x-large" density="compact" class="mr-2" />
+            <v-btn icon="mdi-arrow-left" :to="{name: 'Console'}" size="x-large" density="compact" class="mr-2" />
             <div class="mr-2" :class="{'bg-blue-grey-darken-3': !pairInfo || !pairInfo.token0.icon}" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
               <img v-if="pairInfo && pairInfo.token0.icon" :src="pairInfo.token0.icon" width="40" height="40" alt="Logo">
             </div>
