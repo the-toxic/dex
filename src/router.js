@@ -9,7 +9,6 @@ import Home from "@/views/Home.vue";
 import E404 from "@/views/E404.vue";
 import Career from "@/views/Career.vue";
 import ContactUs from "@/views/ContactUs.vue";
-import Profile from "@/views/Profile.vue";
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -20,7 +19,10 @@ const routes = [
   { path: '/console/:network([a-zA-Z0-9]{2,10})/pair/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },
   { path: '/console/career', name: 'Career', component: Career },
   { path: '/console/contact-us', name: 'ContactUs', component: ContactUs },
-  { path: '/console/profile', name: 'Profile', component: Profile, meta: { needAuth: true } },
+  { path: '/console/portfolio', name: 'Portfolio', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Portfolio.vue") },
+  { path: '/console/alerts', name: 'Alerts', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Alerts.vue") },
+  { path: '/console/watchlist', name: 'WatchList', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/WatchList.vue") },
+  { path: '/console/profile', name: 'Profile', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Profile.vue") },
   // { path: '/auth/sign-in', name: 'AuthSignIn', component: () => import(/* webpackChunkName: "auth" */ '@/views/auth/Login.vue'), meta: { layout: AppLayoutsEnum.auth } },
   { path: '/auth', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth"), meta: { layout: AppLayoutsEnum.auth }, children: [
       { path: '', redirect: '/auth/sign-in'},

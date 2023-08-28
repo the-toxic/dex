@@ -125,6 +125,24 @@ export const fetchBigSwaps = async (payload) => {
   }
 }
 
+/** Whitelist page */
+export const fetchWhitelistWallets = async (payload) => {
+  await delay(500)
+  return {
+    success: true, result: [
+      {label: 'Cool wallet', description: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'}
+    ]
+  }
+}
+export const fetchWhitelistTokens = async (payload) => {
+  await delay(500)
+  return {
+    success: true, result: [
+      {network: 'bsc', name: 'TANK', price: 0.0021, percent_5_holders: 23.44, change_7d: 4112445.11,  change_30d: -2144771.22, market_cap: 23040111.22, address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'}
+    ]
+  }
+}
+
 /** Pair page */
 export const searchPair = async (payload) => {
   const { data } = await axios.post(`xhr/search_pair`, payload, {
