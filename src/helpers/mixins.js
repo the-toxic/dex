@@ -31,7 +31,7 @@ export const toCurrency = (value, currency) => new Intl.NumberFormat('en-US', { 
 export const capitalize = (words, separator = ' ') => words.split(separator).map(word => (word.charAt(0).toUpperCase() + word.slice(1))).join(separator)
 export const nowTimestamp = () => +(+new Date()).toString().slice(0, 10)
 export const shortAddress = (wallet, left = 6, right = 4) => wallet ? wallet.slice(0,left) + '...' + wallet.slice(-Math.abs(right)) : wallet
-export const shortString = (string, length = 16) => string.length > length ? string.slice(0,length) : string
+export const shortString = (string, length = 16) => !string ? '' : (string.length > length ? string.slice(0,length) : string)
 export const logger = (str) => console.log(str)
 
 export const formatNumber = (num, precision = 2) => {

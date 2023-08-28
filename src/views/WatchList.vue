@@ -5,21 +5,21 @@
     </div>
 
 		<v-tabs v-model="tab" class="mt-6 mb-6 border-b">
-			<v-tab value="wallets">Wallets</v-tab>
-			<v-tab value="tokens">Tokens</v-tab>
-			<v-tab value="nfts">NFTs</v-tab>
+			<v-tab value="wallets" class="text-none">WALLETS</v-tab>
+			<v-tab value="tokens" class="text-none">TOKENS</v-tab>
+			<v-tab value="nfts" class="text-none">NFTs</v-tab>
 		</v-tabs>
 
 		<v-window v-model="tab">
 			<v-window-item value="wallets">
 				<v-card class="mb-0">
 					<v-card-text class="d-flex justify-start align-center flex-wrap pa-4">
-						<p class="font-weight-bold mb-2 mb-md-0">Wallet watchlist (1/1000)</p>
+						<p class="font-weight-bold mb-2 mb-md-0">Wallet Watchlist ({{ itemsWallets.length }}/1000)</p>
 						<v-spacer />
 						<div class="d-flex flex-wrap align-center">
-							<v-btn rounded class="text-none mb-2 mb-md-0" color="primary">Add Wallet</v-btn>
-							<v-btn rounded class="text-none mb-2 mb-md-0 ml-3" variant="outlined">Import Database</v-btn>
-							<v-btn rounded class="text-none mb-2 mb-md-0 ml-3" variant="outlined">Export</v-btn>
+							<WatchlistWalletModal />
+							<v-btn rounded class="text-none mb-2 mb-md-0 ml-3" variant="outlined" disabled>Import</v-btn>
+							<v-btn rounded class="text-none mb-2 mb-md-0 ml-3" variant="outlined" disabled>Export</v-btn>
 						</div>
 					</v-card-text>
 				</v-card>
@@ -42,15 +42,21 @@
 						</v-btn>
 					</template>
 					<template v-slot:item.address="{ item }"><a :href="item.raw.address" target="_blank">{{ shortAddress(item.raw.address) }}</a></template>
-					<template v-slot:item.description="{ item }">{{ shortString(item.raw.description) }}</template>
+					<template v-slot:item.note="{ item }">{{ shortString(item.raw.note) }}</template>
 					<template v-slot:item.action="{ item }">
 						<v-btn :to="{name: 'Console'}" icon="mdi-square-edit-outline" variant="text" size="small" color="secondary"></v-btn>
-						<v-btn :to="{name: 'Console'}" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
+						<v-btn @click="showDeleteDialog('wallet', item.raw.id)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
 					</template>
 				</v-data-table-server>
 			</v-window-item>
 
 			<v-window-item value="tokens">
+				<v-card class="mb-0">
+					<v-card-text class="d-flex justify-start align-center flex-wrap pa-4">
+						<p class="font-weight-bold mb-2 mb-md-0">Token Watchlist ({{ itemsTokens.length }}/100)</p>
+						<v-spacer />
+					</v-card-text>
+				</v-card>
 				<v-data-table-server
 					v-model:items-per-page="itemsPerPage"
 					v-model:sort-by="sortBy"
@@ -77,28 +83,50 @@
 					</template>
 					<template v-slot:item.market_cap="{ item }">{{ formatNumber(item.raw.market_cap) }}</template>
 					<template v-slot:item.action="{ item }">
-						<v-btn :to="{name: 'Console'}" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
+						<v-btn @click="showDeleteDialog('token', item.raw.id)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
 					</template>
 				</v-data-table-server>
 			</v-window-item>
 
 			<v-window-item value="nfts">
-				Soon...
+				<v-card class="mb-0">
+					<v-card-text class="d-flex justify-start align-center flex-wrap pa-4">
+						<p class="font-weight-bold mb-2 mb-md-0">NFT Watchlist (0/100)</p>
+					</v-card-text>
+					<v-card-text class="d-flex flex-column justify-center align-center text-center pa-4" style="height: 300px">
+						<v-icon icon="mdi-alert-octagon-outline" class="fs60" />
+						<p class="text-h4 mt-4">You NFT watchlist is empty.</p>
+						<p class="mt-5 text-disabled text-h6" style="max-width: 360px">Click on the "Star" icon in the NFT list to add this NFT to the watchlist</p>
+					</v-card-text>
+				</v-card>
 			</v-window-item>
 		</v-window>
+
+		<v-dialog v-model="deleteDialog" max-width="500">
+			<v-card>
+				<v-card-text class="text-center py-16 px-10">
+					<p class="text-h5 mb-6">This row will be removed.<br>Are your sure?</p>
+					<div class="d-flex justify-center align-center">
+						<v-btn color="red" @click="deleteEntity" :loading="deleteLoading" :disabled="deleteLoading" class="mr-6">Delete</v-btn>
+						<v-btn color="white" @click="deleteDialog = false" class="text-none">Cancel</v-btn>
+					</div>
+				</v-card-text>
+			</v-card>
+		</v-dialog>
 
   </v-container>
 </template>
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { fetchWhitelistTokens, fetchWhitelistWallets } from "@/api";
+import { deleteWatchlistItem, fetchWhitelistTokens, fetchWhitelistWallets } from "@/api";
 import { formatNumber, shortAddress, shortString, toCurrency, toNumber } from "@/helpers/mixins";
 import { priceFormatter } from "@/helpers/common";
+import WatchlistWalletModal from "@/components/WatchlistWalletModal.vue";
 
 export default {
   name: 'WatchList',
-  components: { VDataTableServer },
+  components: { WatchlistWalletModal, VDataTableServer },
   data() { return {
     loading: false,
 		tab: 'wallets',
@@ -108,7 +136,7 @@ export default {
     headersWallets: [
       { title: 'Label', key: 'label', align: 'start', sortable: false },
       { title: 'Address', key: 'address', align: 'center', sortable: false },
-      { title: 'Description', key: 'description', align: 'center', sortable: false },
+      { title: 'Note', key: 'note', align: 'center', sortable: false },
       { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
     headersTokens: [
@@ -123,13 +151,20 @@ export default {
     itemsWallets: [],
     itemsTokens: [],
     totalItems: 999,
+
+		deleteDialog: false,
+		deleteLoading: false,
+		deleteItem: {
+			entity: null,
+			id: null
+		},
   }},
 
   methods: {
 		shortString, shortAddress, priceFormatter, formatNumber, toCurrency, toNumber,
     async loadItemsWallets ({ page, itemsPerPage, sortBy }) {
       this.loading = true
-      const data = await fetchWhitelistWallets({ page, itemsPerPage, sortBy })
+      const { data } = await fetchWhitelistWallets({ page, itemsPerPage, sortBy })
       this.loading = false
       if(data.success) {
         this.itemsWallets = data.result
@@ -138,12 +173,28 @@ export default {
 
     async loadItemsTokens ({ page, itemsPerPage, sortBy }) {
       this.loading = true
-      const data = await fetchWhitelistTokens({ page, itemsPerPage, sortBy })
+      const { data } = await fetchWhitelistTokens({ page, itemsPerPage, sortBy })
       this.loading = false
       if(data.success) {
         this.itemsTokens = data.result
       }
     },
+
+    async showDeleteDialog (entity, id) {
+			this.deleteDialog = true
+			this.deleteItem.entity = entity
+			this.deleteItem.id = id
+		},
+    async deleteEntity () {
+      this.deleteLoading = true
+      const { data } = await deleteWatchlistItem(this.deleteItem)
+      this.deleteLoading = false
+			this.deleteDialog = false
+      if(data.success) {
+				console.log(data)
+      }
+    },
+
   },
 }
 </script>

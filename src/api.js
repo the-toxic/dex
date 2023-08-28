@@ -129,18 +129,32 @@ export const fetchBigSwaps = async (payload) => {
 export const fetchWhitelistWallets = async (payload) => {
   await delay(500)
   return {
-    success: true, result: [
-      {label: 'Cool wallet', description: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'}
-    ]
+    data: {success: true, result: [
+      {id: 1, label: 'Cool wallet 1', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5641'},
+      {id: 2, label: 'Cool wallet 2', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5642'},
+      {id: 3, label: 'Cool wallet 3', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5643'},
+    ]}
   }
+  // return  await axios.post(`user/watchlist_wallets`, payload)
+}
+export const saveWatchlistWallet = async (payload) => {
+  await delay(500)
+  return { data: {success: true, result: { ...payload }} }
+  // return  await axios.post(`user/save_watchlist_wallet`, payload)
+}
+export const deleteWatchlistItem = async (payload) => {
+  await delay(500)
+  return { data: {success: true, result: { ...payload }} }
+  // return  await axios.post(`user/delete_watchlist_item`, payload)
 }
 export const fetchWhitelistTokens = async (payload) => {
   await delay(500)
   return {
-    success: true, result: [
-      {network: 'bsc', name: 'TANK', price: 0.0021, percent_5_holders: 23.44, change_7d: 4112445.11,  change_30d: -2144771.22, market_cap: 23040111.22, address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'}
-    ]
+    data: {success: true, result: [
+      {id: 1, network: 'bsc', name: 'TANK', price: 0.0021, percent_5_holders: 23.44, change_7d: 4112445.11,  change_30d: -2144771.22, market_cap: 23040111.22, address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'}
+    ]}
   }
+  // return  await axios.post(`user/watchlist_tokens`, payload)
 }
 
 /** Pair page */
