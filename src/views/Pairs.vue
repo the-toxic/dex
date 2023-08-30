@@ -15,7 +15,7 @@
       </v-card-text>
     </v-card>
 
-		<v-text-field v-model="search" label="Search by Tokens" append-inner-icon="mdi-magnify" single-line hide-details/>
+		<v-text-field v-model="search" label="Search by Tokens..." prepend-inner-icon="mdi-magnify" single-line hide-details/>
 
 		<v-data-table-server
 			v-model:items-per-page="itemsPerPage"
