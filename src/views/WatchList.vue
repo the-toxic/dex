@@ -12,12 +12,15 @@
 
 		<v-window v-model="tab">
 			<v-window-item value="wallets">
+
+				<WatchlistWalletModal :injectData="watchlistWalletData" />
+
 				<v-card class="mb-0">
 					<v-card-text class="d-flex justify-start align-center flex-wrap pa-4">
 						<p class="font-weight-bold mb-2 mb-md-0">Wallet Watchlist ({{ itemsWallets.length }}/1000)</p>
 						<v-spacer />
 						<div class="d-flex flex-wrap align-center">
-							<WatchlistWalletModal />
+							<v-btn @click="watchlistWalletData = {id: 'new'}" rounded class="text-none mb-2 mb-md-0" color="primary">Add Wallet</v-btn>
 							<v-btn rounded class="text-none mb-2 mb-md-0 ml-3" variant="outlined" disabled>Import</v-btn>
 							<v-btn rounded class="text-none mb-2 mb-md-0 ml-3" variant="outlined" disabled>Export</v-btn>
 						</div>
@@ -35,7 +38,7 @@
 					@update:options="loadItemsWallets"
 				>
 					<template v-slot:item.label="{ item }">
-						<v-btn :to="{name: 'Console'}" rounded variant="text"  class="text-none">
+						<v-btn @click="watchlistWalletData = {id: item.raw.id}" rounded variant="text"  class="text-none">
 							<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ item.index + 1 }}</span>
 							<v-icon icon="mdi-ethereum" />
 							{{ item.raw.label }}
@@ -44,7 +47,7 @@
 					<template v-slot:item.address="{ item }"><a :href="item.raw.address" target="_blank">{{ shortAddress(item.raw.address) }}</a></template>
 					<template v-slot:item.note="{ item }">{{ shortString(item.raw.note) }}</template>
 					<template v-slot:item.action="{ item }">
-						<v-btn :to="{name: 'Console'}" icon="mdi-square-edit-outline" variant="text" size="small" color="secondary"></v-btn>
+						<v-btn @click="watchlistWalletData = {id: item.raw.id}" icon="mdi-square-edit-outline" variant="text" size="small" color="secondary"></v-btn>
 						<v-btn @click="showDeleteDialog('wallet', item.raw.id)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
 					</template>
 				</v-data-table-server>
@@ -152,6 +155,8 @@ export default {
     itemsTokens: [],
     totalItems: 999,
 
+		watchlistWalletData: {},
+
 		deleteDialog: false,
 		deleteLoading: false,
 		deleteItem: {
@@ -192,6 +197,7 @@ export default {
 			this.deleteDialog = false
       if(data.success) {
 				console.log(data)
+					// this.loadItemsWallets()
       }
     },
 

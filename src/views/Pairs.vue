@@ -49,7 +49,7 @@
 			<template v-slot:item.liquidity="{ item }">${{ formatNumber(item.raw.liquidity) || 0 }}</template>
 			<template v-slot:item.action="{ item }">
 				<v-btn :to="{name: 'Pair', params: {network: this.network, pairAddr: item.raw.pair_addr}}"
-					 icon="mdi-eye" variant="text" size="small" color="secondary"></v-btn>
+					 icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
 			</template>
 		</v-data-table-server>
   </v-container>

@@ -124,18 +124,40 @@ export const fetchBigSwaps = async (payload) => {
     ]
   }
 }
+export const fetchSC = async (payload) => {
+  // payload.sortDir = payload.sortBy.order
+  // payload.sortBy = payload.sortBy.key
+  // return await axios.post(`xhr/sc`, payload);
+  await delay(500)
+  return { data: {
+    success: true, result: {
+      items: [
+        { wallet: '0x12312321312323', tx_id: '0xF235647334734', bought: 4123.12345, sold: 1234.11111, different: 2987.111111, cost: 4222.12345, revenue: 6211.235235, profit: 2000.12345, roi: 40.12 },
+        { wallet: '0x12312321312323', tx_id: '0xF235647334734', bought: 4123.12345, sold: 1234.11111, different: 2987.111111, cost: 4222.12345, revenue: 6211.235235, profit: 2000.12345, roi: 40.12 },
+      ],
+      totalItems: 2,
+      total: { bought: 8223.12345, sold: 2460.11111, different: 5987.111111, cost: 8444.12345, revenue: 12422.235235, profit: 4000.12345, roi: 40.12 }
+  }}}
+}
 
 /** Whitelist page */
 export const fetchWhitelistWallets = async (payload) => {
   await delay(500)
   return {
     data: {success: true, result: [
-      {id: 1, label: 'Cool wallet 1', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5641'},
-      {id: 2, label: 'Cool wallet 2', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5642'},
-      {id: 3, label: 'Cool wallet 3', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5643'},
+      {id: 1, label: 'Cool wallet 1', network: 'bsc', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5641'},
+      {id: 2, label: 'Cool wallet 2', network: 'bsc', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5642'},
+      {id: 3, label: 'Cool wallet 3', network: 'bsc', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5643'},
     ]}
   }
   // return  await axios.post(`user/watchlist_wallets`, payload)
+}
+export const fetchWhitelistWalletItem = async (id) => {
+  await delay(500)
+  return {
+    data: {success: true, result: {id: 1, label: 'Cool wallet 1', network: 'bsc', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5641'}}
+  }
+  // return  await axios.get(`user/get_watchlist_wallet`, {id})
 }
 export const saveWatchlistWallet = async (payload) => {
   await delay(500)

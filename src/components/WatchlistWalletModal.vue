@@ -1,8 +1,8 @@
 <template>
-  <v-dialog v-model="dialog" max-width="400px">
-		<template v-slot:activator="{ props }">
-			<v-btn v-bind="props" rounded class="text-none mb-2 mb-md-0" color="primary">Add Wallet</v-btn>
-		</template>
+  <v-dialog v-model="dialog" max-width="500">
+<!--		<template v-slot:activator="{ props }">-->
+<!--			<v-btn v-bind="props" rounded class="text-none mb-2 mb-md-0" color="primary">Add Wallet</v-btn>-->
+<!--		</template>-->
     <v-card :loading="loading">
       <v-form ref="form" v-model="valid" @submit.prevent="onSubmit" class="px-4">
         <v-card-title class="mb-3 pt-7" style="font-size: 25px;">Watchlist Wallet</v-card-title>
@@ -31,14 +31,14 @@
 import { mapActions } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 import { passwordRules } from "@/helpers/mixins";
-import { saveWatchlistWallet } from "@/api";
+import { fetchWhitelistWalletItem, saveWatchlistWallet } from "@/api";
 
 export default {
   name: "WatchlistWalletModal",
   props: {
-    disabled: {
-      type: Boolean,
-      default: false
+		injectData: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -54,12 +54,33 @@ export default {
       },
     }
   },
+	watch: {
+		injectData(newVal, oldVal) {
+			console.log('watch', newVal)
+			if(newVal.id === 'new') { // click create
+				this.dialog = true
+				this.resetForm()
+			} else if(!isNaN(newVal.id)) { // click edit
+				this.dialog = true
+				this.resetForm()
+				this.loadData(newVal.id)
+			}
+		}
+	},
   computed: {
     passwordRules() { return passwordRules},
   },
   methods: {
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),
 
+		async loadData(id) {
+			this.loading = true
+			const {data} = await fetchWhitelistWalletItem(id)
+			this.loading = false
+			if(data.success) {
+				this.form = {...this.form, ...data.result}
+			}
+		},
     async onSubmit() {
       const { valid } = await this.$refs.form.validate()
       if(!valid) return false
@@ -73,7 +94,10 @@ export default {
         this.dialog = false
         this.showAlert({msg: 'Successfully saved', color: 'success'})
       }
-    }
+    },
+		resetForm() {
+			this.$nextTick(() => this.$refs.form.reset()) // resetValidation()
+		}
   }
 }
 </script>

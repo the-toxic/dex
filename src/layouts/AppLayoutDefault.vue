@@ -5,6 +5,7 @@
         <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
         <v-list-item :to="{name: 'Pairs', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Explorer"></v-list-item>
         <v-list-item :to="{name: 'BigSwaps', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="BigSwaps"></v-list-item>
+        <v-list-item :to="{name: 'SC'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="SC"></v-list-item>
         <v-list-item :href="NEWS_HOST" target="news" prepend-icon="mdi-menu-open" title="News"></v-list-item>
         <v-list-item :href="DOCS_HOST" target="docs" prepend-icon="mdi-menu-open" title="Docs"></v-list-item>
 <!--        <v-list-item :to="{name: 'Career'}" prepend-icon="mdi-menu-open" title="Career"></v-list-item>-->
@@ -40,6 +41,7 @@
 				<v-list>
 					<v-list-item title="Explorer" :to="{name: 'Pairs', params: {network: 'bsc'}}" />
 					<v-list-item title="Big Swaps" :to="{name: 'BigSwaps', params: {network: 'bsc'}}" />
+					<v-list-item title="SC" :to="{name: 'SC'}" />
 				</v-list>
 			</v-menu>
 			<v-btn variant="text" size="large" :href="NEWS_HOST" target="news" rounded class="d-none d-md-inline-flex text-none">News <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-btn>
