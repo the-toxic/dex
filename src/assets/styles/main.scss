@@ -258,3 +258,11 @@ $primaryFont: sans-serif;
 .firstScreen {
   height: calc(100vh - 64px);
 }
+
+.datePickerInput {
+  border: 1px solid #bbbdbf;
+  border-radius: 20px;
+  width: 310px;
+  height: 36px;
+  padding: 5px 15px;
+}

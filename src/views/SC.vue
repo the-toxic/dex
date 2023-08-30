@@ -4,15 +4,14 @@
       <h1 class="text-h4 mt-2 mb-2">SC</h1>
     </div>
 
-    <v-card class="mb-0">
-      <v-card-text class="d-flex justify-center align-center flex-wrap pa-4">
-        <v-spacer />
+		<div class="d-flex justify-center align-center flex-wrap pa-4" style="background: #141d26">
+			<input type="text" ref="datepickerBuy" placeholder="Period of Buy tokens" class="datePickerInput mr-4" />
+			<input type="text" ref="datepickerSell" placeholder="Period of Sell tokens" class="datePickerInput" />
+			<v-spacer />
+<!--			<v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>-->
+		</div>
 
-        <v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>
-      </v-card-text>
-    </v-card>
-
-		<v-text-field v-model="search" label="Search by Wallets" append-inner-icon="mdi-magnify" single-line hide-details/>
+		<v-text-field v-model="search" label="Search by Wallets..." prepend-inner-icon="mdi-magnify" single-line hide-details/>
 
 		<v-data-table-server
 			v-model:items-per-page="itemsPerPage"
@@ -49,8 +48,7 @@
 			<template v-slot:item.action="{ item }">
 				<v-btn :to="{name: 'Console'}" icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
 			</template>
-			<template v-slot:tfoot="qq">
-<!--				<v-divider />-->
+			<template v-slot:tfoot>
 				<tfoot>
 				<tr class="text-surface-variant text-center">
 					<td colspan="2" class="text-left">Total</td>
@@ -76,6 +74,7 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
+import { easepick, AmpPlugin, RangePlugin, PresetPlugin, TimePlugin } from '@easepick/bundle';
 import { fetchSC } from "@/api";
 import { formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { priceFormatter } from "@/helpers/common";
@@ -102,9 +101,48 @@ export default {
     search: '',
     items: [],
     totalItems: 0,
-		totalInfo: {}
+		totalInfo: {},
+
+		pickerBuy: null
   }),
-  methods: {
+	mounted() {
+		const _this = this
+		this.pickerBuy = new easepick.create({
+			// https://easepick.com/packages/core.html
+			element: _this.$refs['datepickerBuy'],
+			autoApply: false,
+			zIndex: 10,
+			format: 'YYYY-MM-DD HH:mm',
+			plugins: [ AmpPlugin, RangePlugin, PresetPlugin, TimePlugin ],
+			css: [ 'https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css' ],
+			setup(picker) {
+				picker.on('select', (e) => {
+					const { end, start } = e.detail;
+					console.log('Buy', start.toISOString(), end.toISOString())
+				});
+			},
+		});
+		// this.pickerBuy.getDate()
+		// this.pickerBuy.clear()
+
+		const pickerSell = new easepick.create({
+			element: _this.$refs['datepickerSell'],
+			autoApply: false,
+			zIndex: 10,
+			format: 'YYYY-MM-DD HH:mm',
+			plugins: [ AmpPlugin, RangePlugin, PresetPlugin, TimePlugin ],
+			css: [ 'https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css' ],
+			setup(picker) {
+				picker.on('select', (e) => {
+					const { end, start } = e.detail;
+					console.log('Sell', start.toISOString(), end.toISOString())
+				});
+			},
+		});
+		// picker.getDate();
+		// picker.setDate('2023-01-01 - 2023-08-08');
+	},
+	methods: {
 		shortAddress, priceFormatter, formatNumber, toCurrency, toNumber,
 
     async loadItems ({ page, itemsPerPage, sortBy }) {
