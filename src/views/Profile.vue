@@ -77,14 +77,12 @@
 
 <script>
 import { mapActions, mapState } from "pinia";
-import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range.js'
+import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
 import { useUserStore } from "@/store/userStore";
 import PasswordModal from "@/components/PasswordModal.vue";
 import { deleteAccount, updateProfile } from "@/api";
 import { useMainStore } from "@/store/mainStore";
 import { nameRules } from "@/helpers/mixins";
-
-window.moment = moment
 
 export default {
   name: 'Profile',
@@ -98,6 +96,7 @@ export default {
       last_name: '',
       discord: '',
       telegram: '',
+			tz: '',
       newsletters: false
     },
     deleteCheckbox: false,
@@ -108,6 +107,7 @@ export default {
     this.form.last_name = this.user.last_name || ''
     this.form.discord = this.user.discord || ''
     this.form.telegram = this.user.telegram || ''
+    this.form.tz = this.user.tz || ''
     this.form.newsletters = this.user.newsletters || false
   },
   computed: {
