@@ -73,7 +73,7 @@
 
 					<v-menu v-model="docsSubMenu" :close-on-content-click="false" location="bottom">
 						<template v-slot:activator="{ props }">
-							<v-btn rounded v-bind="props" icon="mdi-text-box-outline" title="Docs"></v-btn>
+							<v-btn v-bind="props" icon="mdi-text-box-outline" title="Docs"></v-btn>
 						</template>
 						<v-list>
 							<v-list-item :href="DOCS_HOST" target="docs">Docs <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-list-item>
@@ -83,7 +83,7 @@
 
 					<v-menu v-if="userStore.logged" v-model="userSubMenu" :close-on-content-click="false" location="bottom">
 						<template v-slot:activator="{ props }">
-							<v-btn v-bind="props" rounded icon="mdi-account" title="Account"></v-btn>
+							<v-btn v-bind="props" icon="mdi-account" title="Account"></v-btn>
 						</template>
 						<v-card min-width="300">
 							<v-list>

@@ -34,7 +34,14 @@
                 <v-text-field label="Telegram" v-model="form.telegram" :rules="[v => (v.length <= 64) || 'Max length 64 chars']" hide-details="auto"></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
-                <v-checkbox v-model="form.newsletters" label="Do you wanna receive marketing emails?" :true-value="true" :false-value="false" density="compact" hide-details />
+								<v-autocomplete label="TimeZone" v-model="form.tz"
+									:items="tzList" class="mb-3"
+									:rules="[v => !!v || 'Required Field']"
+									:hint="`Current time in ${form.tz}:  ${currentTimeLocale}`" persistent-hint
+								/>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-checkbox v-model="form.newsletters" label="Do you wanna receive marketing emails?" :true-value="true" :false-value="false" density="compact" hide-details class="mt-md-2" />
               </v-col>
             </v-row>
             <v-btn type="submit" color="primary" block size="large" class="text-none mt-5">Save</v-btn>
@@ -70,11 +77,14 @@
 
 <script>
 import { mapActions, mapState } from "pinia";
+import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range.js'
 import { useUserStore } from "@/store/userStore";
 import PasswordModal from "@/components/PasswordModal.vue";
 import { deleteAccount, updateProfile } from "@/api";
 import { useMainStore } from "@/store/mainStore";
 import { nameRules } from "@/helpers/mixins";
+
+window.moment = moment
 
 export default {
   name: 'Profile',
@@ -102,7 +112,13 @@ export default {
   },
   computed: {
     ...mapState(useUserStore, {user: 'user'}),
-    nameRules() { return nameRules }
+    nameRules() { return nameRules },
+		tzList() {
+			return moment.tz.names()
+		},
+		currentTimeLocale() {
+			return moment.tz(this.form.tz).format('HH:mm z')
+		},
   },
   methods: {
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),

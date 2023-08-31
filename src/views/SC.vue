@@ -55,8 +55,8 @@
 					<td>{{ formatNumber(totalInfo.bought) }}</td>
 					<td>{{ formatNumber(totalInfo.sold) }}</td>
 					<td>{{ formatNumber(totalInfo.different) }}</td>
-					<td>{{ toCurrency(totalInfo.cost) }}</td>
-					<td>{{ toCurrency(totalInfo.revenue) }}</td>
+					<td>{{ toCurrency(totalInfo.cost) }}, avg</td>
+					<td>{{ toCurrency(totalInfo.revenue) }}, avg</td>
 					<td>{{ toCurrency(totalInfo.profit) }}</td>
 					<td>
 						<v-chip :color="totalInfo.roi > 0 ? 'success': (totalInfo.roi < 0 ? 'error' : 'white')">
