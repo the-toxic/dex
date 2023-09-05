@@ -53,21 +53,21 @@
       <div id="tv_chart_container"></div>
 
       <div class="d-flex flex-wrap justify-space-between align-center mt-6">
-        <div style="color:#C1C4D6;">History Transactions</div>
-        <!--<div style="color:#72747F;">-->
-        <!--  <span class="mr-3">TXs count</span>-->
-        <!--  <span class="" style="color:#305D5E;">Buy: {{ toNumber(buyTxCount24) }}</span> |-->
-        <!--  <span class="" style="color:#77393B;">Sell: {{ toNumber(sellTxCount24) }}</span> |-->
-        <!--  <span class="" style="color:#9EA0AF;">Total: {{ toNumber(buyTxCount24 + sellTxCount24) }}</span>-->
-        <!--</div>-->
-        <!--<div style="color:#72747F;">-->
-        <!--  <span class="mr-3">Volume</span>-->
-        <!--  <span class="" style="color:#305D5E;">Buy: {{ shortNumber(buyVolume24) }} {{ rightToken }}</span> |-->
-        <!--  <span class="" style="color:#77393B;">Sell: {{ shortNumber(sellVolume24) }} {{ rightToken }}</span> |-->
-        <!--  <span class="" style="color:#9EA0AF;">Total: {{ shortNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>-->
-        <!--</div>-->
+        <div class="text-h5 mx-auto" style="color:#C1C4D6;">Last Transactions</div>
+				<!--        <div style="color:#72747F;">
+          <span class="mr-3">TXs count</span>
+          <span class="" style="color:#305D5E;">Buy: {{ toNumber(buyTxCount24) }}</span> |
+          <span class="" style="color:#77393B;">Sell: {{ toNumber(sellTxCount24) }}</span> |
+          <span class="" style="color:#9EA0AF;">Total: {{ toNumber(buyTxCount24 + sellTxCount24) }}</span>
+        </div>
+        <div style="color:#72747F;">
+          <span class="mr-3">Volume</span>
+          <span class="" style="color:#305D5E;">Buy: {{ shortNumber(buyVolume24) }} {{ rightToken }}</span> |
+          <span class="" style="color:#77393B;">Sell: {{ shortNumber(sellVolume24) }} {{ rightToken }}</span> |
+          <span class="" style="color:#9EA0AF;">Total: {{ shortNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>
+        </div>-->
       </div>
-      <v-card class="mt-2 mb-8">
+      <v-card class="mt-2 mb-8 rounded-xl">
         <TableHistory />
       </v-card>
     </v-container>

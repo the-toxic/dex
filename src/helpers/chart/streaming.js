@@ -114,7 +114,7 @@ function candleMessageHandler(data) {
 
   const channelString = `0~${pair_id}~${resolution}`;
   const subscriptionItem = channelToSubscription.get(channelString);
-  if (subscriptionItem === undefined) { return }
+  if (subscriptionItem === undefined || subscriptionItem.lastBar === undefined) { return } // lastBar undefined when /limit_candles_history = [empty]
   const lastBar = subscriptionItem.lastBar;
   // const resolution = subscriptionItem.resolution; // 1D, 60 & e.g.
   // const resolution = subscriptionItem.handlers[0].id.split('#_')[1]; // 1D, 60 & e.g.
