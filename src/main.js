@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import VueVirtualScroller from 'vue-virtual-scroller'
 import CopyLabel from "@/components/CopyLabel.vue";
 
 
@@ -22,7 +21,6 @@ app
   .use(vuetify)
   .use(router)
   .component('CopyLabel', CopyLabel)
-  .use(VueVirtualScroller)
 
 httpInt();
 initVueGtag(app)
