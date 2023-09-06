@@ -47,9 +47,11 @@
 
 	import { useChartStore } from "@/store/chartStore";
 	const chartStore = useChartStore()
+	const { activeSymbol } = storeToRefs(chartStore) // for use in watch
 
 	import { shortAddress } from "@/helpers/mixins";
 	import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
+	import { storeToRefs } from "pinia";
 
 	/** DATA */
 	const loading = ref(true)
@@ -78,7 +80,8 @@
 	)
 
 	/** WATCH */
-	watch(() => chartStore.activeSymbol, async (newVal, oldVal) => {
+	watch(activeSymbol, async (newVal, oldVal) => {
+	// watch(() => chartStore.activeSymbol, async (newVal, oldVal) => {
 		if(!newVal) return
 		loading.value = true
 		await chartStore.loadHistoryTable({
@@ -96,7 +99,7 @@
 		}
 	}
 
-	const blockchainDomain = computed(() => {return chartStore.activeSymbol['type'] === 'BSC' ? 'https://bscscan.com' : 'https://etherscan.io'})
+	const blockchainDomain = computed(() => {return activeSymbol['type'] === 'BSC' ? 'https://bscscan.com' : 'https://etherscan.io'})
 </script>
 
 <style>
