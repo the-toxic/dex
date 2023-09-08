@@ -5,8 +5,13 @@
         <v-card-text class="d-flex justify-space-between align-center flex-wrap pa-2">
           <div class="d-flex align-center flex-wrap">
             <v-btn icon="mdi-arrow-left" :to="{name: 'Console'}" size="x-large" density="compact" class="mr-2" />
-            <div class="mr-2" :class="{'bg-blue-grey-darken-3': !pairInfo || !pairInfo.token0.icon}" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
-              <img v-if="pairInfo && pairInfo.token0.icon" :src="pairInfo.token0.icon" width="40" height="40" alt="Logo">
+            <div class="mr-2" :class="{'bg-blue-grey-darken-3': !pairInfo || !iconToken0}" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
+							<v-img :src="iconToken0" width="40" height="40" alt="Logo">
+								<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center pt-3 fs28">?</div></template>
+								<template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
+									<v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular></div>
+								</template>
+							</v-img>
             </div>
             <div class="mr-3">
               <h2 class="fs16 font-weight-regular" style="color: #D9DCEE">{{ tokenName }}</h2>
@@ -168,6 +173,10 @@ export default {
   computed: {
     PROJECT_NAME() { return PROJECT_NAME },
     ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'lastPrice', 'leftToken', 'rightToken', "lastTXs"]),
+		iconToken0() {
+			const apiDomain = import.meta.env.VITE_APP_API_DOMAIN
+			return !this.pairInfo ? '' : `${apiDomain}/images/tokens/binance-smart-chain/${this.pairInfo.token0.address.slice(0,4)}/${this.pairInfo.token0.address}/default.png`
+		},
     buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
     tokenName() { return this.pairInfo ?  this.pairInfo.token0.name : 'Loading...' },
     buyVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.buy_volume_24h) : 0 },
