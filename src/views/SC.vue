@@ -26,13 +26,13 @@
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->
 			<template v-slot:item.wallet="{ item }">
-				<v-btn :to="{name: 'Console'}" rounded class="text-none">
+				<v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">
 					<span class="text-disabled mr-1" style="width: 30px;">#{{ item.index + 1 }}</span>
 					{{ shortAddress(item.raw.wallet) }}
 				</v-btn>
 			</template>
 			<template v-slot:item.tx_id="{ item }">
-				<v-btn rounded :href="`https://${item.raw.tx_id}`" target="_blank" class="text-none">{{ shortAddress(item.raw.tx_id) }} <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-btn>
+				<v-btn rounded variant="text" :href="`https://${item.raw.tx_id}`" target="_blank" class="text-none">{{ shortAddress(item.raw.tx_id) }} <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-btn>
 			</template>
 			<template v-slot:item.bought="{ item }">{{ formatNumber(item.raw.bought) }}</template>
 			<template v-slot:item.sold="{ item }">{{ formatNumber(item.raw.sold) }}</template>
@@ -46,7 +46,7 @@
 				</v-chip>
 			</template>
 			<template v-slot:item.action="{ item }">
-				<v-btn :to="{name: 'Console'}" icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
+				<v-btn :to="{name: 'Console'}" icon="mdi-eye-outline" variant="text" size="small" :active="false" color="secondary"></v-btn>
 			</template>
 			<template v-slot:tfoot>
 				<tfoot>

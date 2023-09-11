@@ -50,7 +50,7 @@
 
 			<!-- Right Side-->
       <template v-slot:append>
-        <v-btn v-if="route.name === 'Pair'" icon @click="showSearch">
+        <v-btn icon @click="showSearch">
           <v-icon small color="#B3B5BD" class="px-2" alt="Show Search">mdi-magnify</v-icon>
         </v-btn>
 
@@ -147,7 +147,7 @@
           </v-col>
           <v-col cols="12" md="4">
             <p class="fs20 mb-3 font-weight-bold pl-4">Console</p>
-            <v-btn :to="{name: 'Console'}" v-if="userStore.logged" variant="text" rounded class="text-none">DEX</v-btn>
+            <v-btn :to="{name: 'Console'}" v-if="userStore.logged" variant="text" :active="false" rounded class="text-none">DEX</v-btn>
             <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Sign In</v-btn><br />
             <v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Sign Up</v-btn><br />
             <v-btn :to="{name: 'AuthResetPassword'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Reset Password</v-btn>
@@ -170,6 +170,8 @@
       </div>
     </v-footer>
 
+		<SearchDialog />
+
   </v-app>
 </template>
 
@@ -185,6 +187,7 @@
   import { PROJECT_NAME, DOCS_HOST, NEWS_HOST, SOCIAL_TWITTER, SOCIAL_TELEGRAM, SOCIAL_LINKTREE } from "@/helpers/mixins";
 
   import { showChartSearch } from "@/helpers/chart/chart";
+	import SearchDialog from "@/components/SearchDialog.vue";
   // import { connect as web3Connect, disconnect as web3Disconnect } from "@/helpers/web3";
 
   const mainStore = useMainStore()
@@ -217,7 +220,7 @@
   const isRouterReady = computed(() => route.name !== null)
 
   function showSearch() {
-    showChartSearch()
+    mainStore.searchDialog = true
   }
   function connect() {
     drawer.value = false

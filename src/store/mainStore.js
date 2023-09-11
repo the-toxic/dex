@@ -12,8 +12,10 @@ export const useMainStore = defineStore('main', {
       color: ''
     },
     wsConnected: false,
+    searchDialog: false,
     dialog: false,
-    subscribeForm: false,
+    chains: [],
+    // subscribeForm: false,
     showCookie: showCookiePopup,
 	}),
 	getters: {
@@ -42,9 +44,15 @@ export const useMainStore = defineStore('main', {
     showDialog(name) {
       this.dialog = name || false
     },
-    showSubscribeForm(visible) {
-      this.subscribeForm = visible || false
+    toggleSearchDialog(payload) {
+      this.searchDialog = payload
     },
+    setChains(payload) {
+      this.chains = payload
+    },
+    // showSubscribeForm(visible) {
+    //   this.subscribeForm = visible || false
+    // },
     cookieAccept() {
       window.localStorage.setItem('cookiePopup', 'accept')
       this.showCookie = false

@@ -12,18 +12,26 @@ import ContactUs from "@/views/ContactUs.vue";
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
-  { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pairs',  params: {network: 'bsc'} } },
-  { path: '/console/:network([a-zA-Z0-9]{2,10})/explorer', name: 'Pairs', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pairs.vue") },
-  { path: '/console/:network([a-zA-Z0-9]{2,10})/big-swaps', name: 'BigSwaps', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/BigSwaps.vue") },
-  { path: '/console/sc', name: 'SC', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/SC.vue") },
+  { path: '/console', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/components/Console"), children: [
+    { path: '', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pairs',  params: {network: 'bsc'} } },
+    { path: ':network([a-zA-Z0-9-]{2,10})/explorer', name: 'Pairs', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pairs.vue") },
+    { path: ':network([a-zA-Z0-9-]{2,10})/big-swaps', name: 'BigSwaps', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/BigSwaps.vue") },
+
+    { path: 'entity/:id([a-zA-Z0-9-]{1,32})', name: 'Entity', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Entity.vue") },
+    { path: 'token/:id([a-zA-Z0-9-]{1,32})', name: 'Token', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
+    { path: 'wallet/:id([a-zA-Z0-9-]{1,32})', name: 'Wallet', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
+
+    { path: 'sc', name: 'SC', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/SC.vue") },
+    { path: ':network([a-zA-Z0-9-]{2,10})/pair/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },
+    { path: 'career', name: 'Career', component: Career },
+    { path: 'contact-us', name: 'ContactUs', component: ContactUs },
+    { path: 'portfolio', name: 'Portfolio', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Portfolio.vue") },
+    { path: 'alerts', name: 'Alerts', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Alerts.vue") },
+    { path: 'watchlist', name: 'WatchList', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/WatchList.vue") },
+    { path: 'profile', name: 'Profile', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Profile.vue") },
+
+  ]},
   // { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
-  { path: '/console/:network([a-zA-Z0-9]{2,10})/pair/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },
-  { path: '/console/career', name: 'Career', component: Career },
-  { path: '/console/contact-us', name: 'ContactUs', component: ContactUs },
-  { path: '/console/portfolio', name: 'Portfolio', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Portfolio.vue") },
-  { path: '/console/alerts', name: 'Alerts', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Alerts.vue") },
-  { path: '/console/watchlist', name: 'WatchList', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/WatchList.vue") },
-  { path: '/console/profile', name: 'Profile', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Profile.vue") },
   // { path: '/auth/sign-in', name: 'AuthSignIn', component: () => import(/* webpackChunkName: "auth" */ '@/views/auth/Login.vue'), meta: { layout: AppLayoutsEnum.auth } },
   { path: '/auth', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth"), meta: { layout: AppLayoutsEnum.auth }, children: [
       { path: '', redirect: '/auth/sign-in'},

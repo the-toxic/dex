@@ -11,8 +11,8 @@
 						persistent-placeholder class="mb-2" :rules="[v => !!v || 'Required field']"></v-text-field>
           <v-text-field label="Label*" v-model="form.label" placeholder="Custom name of wallet"
 						persistent-placeholder class="mb-2" :rules="[v => !!v || 'Required field']"></v-text-field>
-          <v-select label="Network*" v-model="form.network" class="mb-2"
-						:items="[{value: 'bsc', title: 'BSC'}, {value: 'ether', title: 'Ethereum'}]"></v-select>
+          <v-select label="Chain*" v-model="form.network" class="mb-2"
+						:items="chains.map(v => ({value: v.name.toLowerCase(), title: v.name}))"></v-select>
           <v-textarea label="Note" v-model="form.note" placeholder="Custom note for self"
 						persistent-placeholder :rules="[v => !v || v.length < 512  || 'Required field']" counter class="mb-2"></v-textarea>
         </v-card-text>
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 import { passwordRules } from "@/helpers/mixins";
 import { fetchWhitelistWalletItem, saveWatchlistWallet } from "@/api";
@@ -68,6 +68,7 @@ export default {
 		}
 	},
   computed: {
+		...mapState(useMainStore, {chains: 'chains'}),
     passwordRules() { return passwordRules},
   },
   methods: {
