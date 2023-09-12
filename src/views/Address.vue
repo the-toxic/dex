@@ -1,14 +1,11 @@
 <template>
 	<v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
 		<div class="d-flex align-center">
-			<h1 class="text-h4 mt-2 mb-2">{{ type.toUpperCase() }} {{ item?.address }}</h1>
+			<h1 class="text-h4 mt-2 mb-2">{{ type.toUpperCase() }} {{ item?.name || item?.address }}</h1>
 		</div>
 		<div v-if="loading"><v-progress-circular :size="50" :width="4" color="white" indeterminate class="ma-2" /></div>
 		<template v-else-if="item">
-			<div>ID: {{ item.id }}</div>
-			<div>Type: {{ item.type }}</div>
-			<div>Name: {{ item.name }}</div>
-			<div>Address: {{ item.address }}</div>
+			<pre>{{ item }}</pre>
 		</template>
 	</v-container>
 </template>

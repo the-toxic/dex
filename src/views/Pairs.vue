@@ -15,20 +15,21 @@
       </v-card-text>
     </v-card>
 
-		<v-text-field v-model="search" label="Search by Tokens..." prepend-inner-icon="mdi-magnify" single-line hide-details/>
+		<v-text-field v-model.lazy="searchInput" label="Search by Tokens..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" />
 
 		<v-data-table-server
 			v-model:items-per-page="itemsPerPage"
 			v-model:sort-by="sortBy"
+			v-model:page="page"
 			:headers="headers"
 			:items-length="totalItems"
 			:items="rows"
-			:search="search"
 			:loading="loading"
 			class="elevation-1"
 			id="pair_id"
-			@update:options="loadItems"
+			:items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
 		>
+<!--			@update:options="loadItems"-->
 			<template v-slot:item.pair_name="{ item }">
 				<v-btn :to="{name: 'Pair', params: {network: this.network, pairAddr: item.raw.pair_addr}}" rounded variant="text"  class="text-none">
 					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ item.index + 1 }}</span>
@@ -61,8 +62,9 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { fetchPairs } from "@/api";
-import { formatNumber, toCurrency, toNumber } from "@/helpers/mixins";
+import { useDebounceFn } from "@vueuse/core";
+import { fetchPairs, fetchSearch } from "@/api";
+import { API_DOMAIN, formatNumber, toCurrency, toNumber } from "@/helpers/mixins";
 import { priceFormatter } from "@/helpers/common";
 import { mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
@@ -72,10 +74,12 @@ export default {
   components: { VDataTableServer },
 
   data: () => ({
+		API_DOMAIN,
     loading: false,
 		network: 'bsc',
     itemsPerPage: 10,
 		sortBy: [{key: 'txs', order: 'desc'}],
+		page: 1,
     headers: [
       { title: 'Token', key: 'pair_name', align: 'start', sortable: false },
       { title: 'Price', key: 'price', align: 'center' },
@@ -85,7 +89,7 @@ export default {
       { title: 'Liquidity', key: 'liquidity', align: 'center' },
       { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
-    search: '',
+    searchInput: '',
     items: [],
     totalItems: 999,
   }),
@@ -93,15 +97,26 @@ export default {
 	async created() {
 		this.network = this.$route.params.network.toString().toLowerCase()
 		if(!['bsc', 'ethereum'].includes(this.network)) this.$router.replace({name: 'Console'})
+
+		this.debouncedFn = useDebounceFn(async () => {
+			await this.loadItems()
+		}, 500)
+
+		await this.loadItems()
+	},
+	watch: {
+		searchInput(newVal) {
+			console.log('watch')
+			this.debouncedFn()
+		},
 	},
 	computed: {
 		...mapState(useMainStore, {chains: 'chains'}),
-		iconFolder() { return this.chains.find(v => v.name.toLowerCase() === this.network)['icon_folder'] },
+		iconFolder() { return !this.chains.length ? '' : this.chains.find(v => v.name.toLowerCase() === this.network)['icon_folder'] },
 		rows() {
-			const apiDomain = import.meta.env.VITE_APP_API_DOMAIN
 			return this.items.map(item => {
-				item.iconToken0 = `${apiDomain}${this.iconFolder}${item.token0.address.toLowerCase().slice(0,4)}/${item.token0.address.toLowerCase()}/default.png`
-				item.iconToken1 = `${apiDomain}${this.iconFolder}${item.token1.address.toLowerCase().slice(0,4)}/${item.token1.address.toLowerCase()}/default.png`
+				item.iconToken0 = !this.iconFolder ? '' : `${API_DOMAIN}${this.iconFolder}${item.token0.address.toLowerCase().slice(0,4)}/${item.token0.address.toLowerCase()}/default.png`
+				item.iconToken1 = !this.iconFolder ? '' : `${API_DOMAIN}${this.iconFolder}${item.token1.address.toLowerCase().slice(0,4)}/${item.token1.address.toLowerCase()}/default.png`
 				return item
 			})
 		}
@@ -109,9 +124,14 @@ export default {
   methods: {
     priceFormatter, formatNumber, toCurrency, toNumber,
 
-    async loadItems ({ page, itemsPerPage, sortBy }) {
+    async loadItems () {
       this.loading = true
-			const { data } = await fetchPairs({ page, itemsPerPage, sortBy, search: this.search.trim() })
+			const { data } = await fetchPairs({
+				page: this.page,
+				itemsPerPage: this.itemsPerPage,
+				sortBy: this.sortBy,
+				search: this.searchInput.trim()
+			})
 			this.loading = false
 			if(data.success) {
 				this.items = data.result

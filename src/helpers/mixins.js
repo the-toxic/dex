@@ -3,6 +3,7 @@ import {emailRegex} from '@/helpers/common'
 // import {urlRegex} from '@/helpers/common'
 
 export const PROJECT_NAME = import.meta.env.VITE_APP_PROJECT_NAME
+export const API_DOMAIN = import.meta.env.VITE_APP_API_DOMAIN
 export const DOCS_HOST = import.meta.env.VITE_APP_DOCS_HOST
 export const NEWS_HOST = import.meta.env.VITE_APP_NEWS_HOST
 

@@ -81,7 +81,7 @@
 
 <script>
 import { initChart } from "@/helpers/chart/chart";
-import { PROJECT_NAME, shortAddress, toNumber } from "@/helpers/mixins";
+import { API_DOMAIN, PROJECT_NAME, shortAddress, toNumber } from "@/helpers/mixins";
 import TableHistory from "@/components/TableHistory.vue";
 import { priceFormatter, shortNumber } from "@/helpers/common";
 import { mapActions, mapState } from "pinia";
@@ -96,6 +96,7 @@ export default {
   },
   // components: {TableHistory},
   data() { return {
+		API_DOMAIN,
     pairInfoLoading: false,
     title: 'Console',
     description: import.meta.env.VITE_APP_PROJECT_NAME,
@@ -174,8 +175,7 @@ export default {
     PROJECT_NAME() { return PROJECT_NAME },
     ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'lastPrice', 'leftToken', 'rightToken', "lastTXs"]),
 		iconToken0() {
-			const apiDomain = import.meta.env.VITE_APP_API_DOMAIN
-			return !this.pairInfo ? '' : `${apiDomain}/images/tokens/binance-smart-chain/${this.pairInfo.token0.address.slice(0,4)}/${this.pairInfo.token0.address}/default.png`
+			return !this.pairInfo ? '' : `${API_DOMAIN}/images/tokens/binance-smart-chain/${this.pairInfo.token0.address.slice(0,4)}/${this.pairInfo.token0.address}/default.png`
 		},
     buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
     tokenName() { return this.pairInfo ?  this.pairInfo.token0.name : 'Loading...' },

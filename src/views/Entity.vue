@@ -5,8 +5,7 @@
 		</div>
 		<div v-if="loading"><v-progress-circular :size="50" :width="4" color="white" indeterminate class="ma-2" /></div>
 		<template v-else-if="item">
-			<div>ID: {{item.id}}</div>
-			<div>Name: {{item.name}}</div>
+			<pre>{{ item }}</pre>
 		</template>
 	</v-container>
 </template>
@@ -31,7 +30,8 @@ export default {
 			const { data } = await fetchEntity(this.id)
 			this.loading = false
 			if(!data.success) {
-				this.$router.replace({name: 'Console'}); return
+				this.$router.replace({name: 'Console'})
+				return
 			}
 			this.item = data.result
 		}

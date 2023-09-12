@@ -17,9 +17,9 @@ const routes = [
     { path: ':network([a-zA-Z0-9-]{2,10})/explorer', name: 'Pairs', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pairs.vue") },
     { path: ':network([a-zA-Z0-9-]{2,10})/big-swaps', name: 'BigSwaps', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/BigSwaps.vue") },
 
-    { path: 'entity/:id([a-zA-Z0-9-]{1,32})', name: 'Entity', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Entity.vue") },
-    { path: 'token/:id([a-zA-Z0-9-]{1,32})', name: 'Token', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
-    { path: 'wallet/:id([a-zA-Z0-9-]{1,32})', name: 'Wallet', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
+    { path: 'entity/:id([a-zA-Z0-9-]{36})', name: 'Entity', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Entity.vue") },
+    { path: 'token/:id([a-zA-Z0-9-]{42})', name: 'Token', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
+    { path: 'wallet/:id([a-zA-Z0-9-]{42})', name: 'Wallet', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
 
     { path: 'sc', name: 'SC', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/SC.vue") },
     { path: ':network([a-zA-Z0-9-]{2,10})/pair/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },

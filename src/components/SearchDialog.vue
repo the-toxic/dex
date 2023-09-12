@@ -3,14 +3,19 @@
 <!--		<template v-slot:activator="{ props }">-->
 <!--			<v-btn v-bind="props" rounded class="text-none mb-2 mb-md-0" color="primary">Search</v-btn>-->
 <!--		</template>-->
-    <v-card :loading="loading">
+    <v-card :loading="loading" class="rounded-xl">
 			<v-card-title class="mb-3 pt-7" style="font-size: 25px;">Global Search</v-card-title>
 			<v-card-text class="mb-4">
 				<v-text-field v-model="searchInput" placeholder="Wallet address, token, entity, e.g." ref="searchInput"
 					persistent-placeholder class="mb-2"></v-text-field>
 				<v-list v-if="results.length" height="500">
-					<v-list-item v-for="item in results" :title="item.name" @click="onResultClick" :subtitle="item.type"
-					 :to="{name: item.type === 'entity' ? 'Entity' : (item.type === 'token' ? 'Token' : 'Wallet'), params: {id: item.id}}" ></v-list-item>
+					<v-list-item v-for="item in results"
+					 :title="item.name || item.address" @click="onResultClick"
+					 :subtitle="item.type"
+					 :to="{
+						  name: item.type === 'entity' ? 'Entity' : (item.type === 'token' ? 'Token' : 'Wallet'),
+					 		params: {id: item.type === 'entity' ? item.id : item.address}
+					 }" ></v-list-item>
 				</v-list>
 				<v-alert v-else height="500" class="text-center bg-blue-grey-darken-4">Please enter search query</v-alert>
 			</v-card-text>
@@ -49,7 +54,7 @@ export default {
 			const {data} = await fetchSearch(this.searchInput)
 			this.loading = false
 			if(data.success) {
-				this.results = data.result
+				this.results = Object.values(data.result)
 			}
 		}, 500)
 	},
@@ -58,12 +63,10 @@ export default {
 			this.debouncedFn()
 		},
 		searchDialog(newVal) {
-			console.log('searchDialog', newVal)
 			this.dialog = newVal
 			this.$nextTick(() => this.$refs['searchInput'].focus())
 		},
 		dialog(newVal) {
-			console.log('dialog', newVal)
 			this.toggleSearchDialog(newVal)
 		}
 	},

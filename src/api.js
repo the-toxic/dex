@@ -220,33 +220,30 @@ export const fetchExchanges = async () => {
 
 
 export const fetchSearch = async (payload) => {
-  await delay(500)
-  return { data: {
-      success: true, result: [
-        { type: 'entity', id: 'binance', name: 'Binance' },
-        { type: 'token', id: '1245-12453-152325-34234', name: 'TANK', address: '0x25412r3rd332r4ft5f46f23r111' },
-        { type: 'wallet', id: '1246-346373-346456-34636', name: '0x25412r3rd332r4ft5f46f23r', address: '0x25412r3rd332r4ft5f46f23r' }
-      ]
-    }}
-  // const { data } = await axios.get(`search?q=${payload}`);
-  // return data
+  return await axios.get(`search?q=${payload}`);
+  // await delay(500)
+  // return { data: {
+  //     success: true, result: [
+  //       { type: 'entity', id: 'binance', name: 'Binance' },
+  //       { type: 'token', id: '0x1234', name: 'TANK', address: '0x25412r3rd332r4ft5f46f23r111' },
+  //       { type: 'wallet', id: '0x5678', name: '0x5678', address: '0x5678' }
+  //     ]
+  //   }}
 }
 
 export const fetchEntity = async (id) => {
-  await delay(500)
-  return { data: {
-    success: true, result: { type: 'entity', id: '1234', name: 'Binance Entity' }
-  }}
-  // const { data } = await axios.get(`entity?id=${id}`);
-  // return data
+  return await axios.get(`entity/${id}`);
+  // await delay(500)
+  // return { data: {
+  //   success: true, result: { type: 'entity', id: '1234-1234-1234-1234', name: 'Binance Entity' }
+  // }}
 }
 
 export const fetchAddress = async (id) => {
-  await delay(500)
-  if(id === '1245-12453-152325-34234')
-    return { data: { success: true, result: { type: 'token', name: 'TANK', id: '1245-12453-152325-34234', address: '0x25412r3rd332r4ft5f46f23r' } }}
-  else
-    return { data: { success: true, result: { type: 'wallet', name: '0x25412r3rd332r4ft5f46f23r', id: '1246-346373-346456-34636', address: '0x25412r3rd332r4ft5f46f23r' } }}
-  // const { data } = await axios.get(`address?id=${id}`);
-  // return data
+  return await axios.get(`address/${id}`);
+  // await delay(500)
+  // if(id === '0x1234')
+  //   return { data: { success: true, result: { type: 'token', name: 'TANK', id: '1245-12453-152325-34234', address: '0x25412r3rd332r4ft5f46f23r' } }}
+  // else
+  //   return { data: { success: true, result: { type: 'wallet', name: '0x5678', id: '2342-2422-2222-3333', address: '0x5678' } }}
 }
