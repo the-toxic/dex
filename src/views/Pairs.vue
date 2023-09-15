@@ -14,7 +14,7 @@
         <v-btn @click="filterOpened = !filterOpened" rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>
 				<v-divider class="my-3" />
 				<div v-if="filterOpened">
-					<v-select label="Chain" v-model="network" :items="[{value: 'bsc', title: 'BSC'}, {value: 'ethereum', title: 'Ethereum'}]"
+					<v-select label="Chain" v-model="network" :items="[{value: 'all', title: 'All'}, {value: 'bsc', title: 'BSC'}, {value: 'ethereum', title: 'Ethereum'}]"
 						variant="underlined" rounded hide-details density="comfortable"></v-select>
 				</div>
       </v-card-text>
@@ -102,7 +102,7 @@ export default {
 
 	async created() {
 		this.network = this.$route.params.network.toString().toLowerCase()
-		if(!['bsc', 'ethereum'].includes(this.network)) this.$router.replace({name: 'Console'})
+		if(!['all', 'bsc', 'ethereum'].includes(this.network)) this.$router.replace({name: 'Console'})
 
 		this.debouncedFn = useDebounceFn(async () => {
 			await this.loadItems()
@@ -118,16 +118,17 @@ export default {
 		network(newVal, oldVal) {
 			if(!oldVal) return
 			console.log('chain', newVal)
+			this.$router.replace({params: {network: newVal}})
 			this.loadItems()
 		}
 	},
 	computed: {
 		...mapState(useMainStore, {chains: 'chains'}),
-		iconFolder() { return !this.chains.length ? '' : this.chains.find(v => v.name.toLowerCase() === this.network)['icon_folder'] },
 		rows() {
 			return this.items.map(item => {
-				item.iconToken0 = !this.iconFolder ? '' : `${API_DOMAIN}${this.iconFolder}${item.token0.address.toLowerCase().slice(0,4)}/${item.token0.address.toLowerCase()}/default.png`
-				item.iconToken1 = !this.iconFolder ? '' : `${API_DOMAIN}${this.iconFolder}${item.token1.address.toLowerCase().slice(0,4)}/${item.token1.address.toLowerCase()}/default.png`
+				const iconFolder = !this.chains ? null : this.chains[item.chain_id]['icon_folder']
+				item.iconToken0 = !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${item.token0.address.toLowerCase().slice(0,4)}/${item.token0.address.toLowerCase()}/default.png`
+				item.iconToken1 = !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${item.token1.address.toLowerCase().slice(0,4)}/${item.token1.address.toLowerCase()}/default.png`
 				return item
 			})
 		}
@@ -142,7 +143,7 @@ export default {
 				itemsPerPage: this.itemsPerPage,
 				sortBy: this.sortBy,
 				search: this.searchInput.trim(),
-				chain: this.network === 'bsc' ? 2 : 1
+				chain_id: this.network === 'all' ? 0 : (this.network === 'bsc' ? 2 : 1)
 			})
 			this.loading = false
 			if(data.success) {

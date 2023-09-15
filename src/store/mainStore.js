@@ -14,7 +14,7 @@ export const useMainStore = defineStore('main', {
     wsConnected: false,
     searchDialog: false,
     dialog: false,
-    chains: [],
+    chains: null,
     // subscribeForm: false,
     showCookie: showCookiePopup,
 	}),

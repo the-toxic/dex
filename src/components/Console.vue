@@ -10,7 +10,7 @@ import { useMainStore } from "@/store/mainStore";
 export default {
 	name: "Console",
 	created() {
-		if(!this.chains.length)
+		if(!this.chains)
 			this.loadChains()
 	},
 	computed: {
@@ -22,7 +22,7 @@ export default {
 		async loadChains () {
 			const { data } = await fetchChains()
 			if(data.success) {
-				this.setChains(Object.values(data.result))
+				this.setChains(data.result)
 			}
 		}
 	}
