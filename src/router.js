@@ -21,11 +21,11 @@ const routes = [
     { path: 'token/:id([a-zA-Z0-9-]{42})', name: 'Token', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
     { path: 'wallet/:id([a-zA-Z0-9-]{42})', name: 'Wallet', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
 
+    { path: 'entities', name: 'Entities', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Entities.vue") },
     { path: 'sc', name: 'SC', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/SC.vue") },
     { path: ':network([a-zA-Z0-9-]{2,10})/pair/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },
     { path: 'career', name: 'Career', component: Career },
     { path: 'contact-us', name: 'ContactUs', component: ContactUs },
-    { path: 'portfolio', name: 'Portfolio', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Portfolio.vue") },
     { path: 'alerts', name: 'Alerts', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Alerts.vue") },
     { path: 'watchlist', name: 'WatchList', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/WatchList.vue") },
     { path: 'profile', name: 'Profile', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Profile.vue") },

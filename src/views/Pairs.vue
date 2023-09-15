@@ -11,7 +11,12 @@
         <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-emoticon-poop" start color="brown-lighten-1" /> Losers</v-btn>
         <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-new-box" start /> New Pairs</v-btn>
         <div class="flex-fill"></div>
-        <v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>
+        <v-btn @click="filterOpened = !filterOpened" rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>
+				<v-divider class="my-3" />
+				<div v-if="filterOpened">
+					<v-select label="Chain" v-model="network" :items="[{value: 'bsc', title: 'BSC'}, {value: 'ethereum', title: 'Ethereum'}]"
+						variant="underlined" rounded hide-details density="comfortable"></v-select>
+				</div>
       </v-card-text>
     </v-card>
 
@@ -76,7 +81,8 @@ export default {
   data: () => ({
 		API_DOMAIN,
     loading: false,
-		network: 'bsc',
+		filterOpened: true,
+		network: '',
     itemsPerPage: 10,
 		sortBy: [{key: 'txs', order: 'desc'}],
 		page: 1,
@@ -109,6 +115,11 @@ export default {
 			console.log('watch')
 			this.debouncedFn()
 		},
+		network(newVal, oldVal) {
+			if(!oldVal) return
+			console.log('chain', newVal)
+			this.loadItems()
+		}
 	},
 	computed: {
 		...mapState(useMainStore, {chains: 'chains'}),
@@ -130,7 +141,8 @@ export default {
 				page: this.page,
 				itemsPerPage: this.itemsPerPage,
 				sortBy: this.sortBy,
-				search: this.searchInput.trim()
+				search: this.searchInput.trim(),
+				chain: this.network === 'bsc' ? 2 : 1
 			})
 			this.loading = false
 			if(data.success) {

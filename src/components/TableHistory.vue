@@ -15,7 +15,7 @@
 		<div v-bind="containerProps" style="height: 600px; min-width: 1450px">
 			<div v-bind="wrapperProps">
 				<div v-for="item in list" :key="item.index" class="txsTableRow" >
-					<div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.data.parsedDate }}</div>
+					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.data.parsedDate }}</div>
 					<div class="txsTableTd text-uppercase" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.data.type }}</div>
 					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.data.parsedPrice) }}</div>
 					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.data.amount_token0) }}</div>
@@ -119,6 +119,7 @@
 		flex: 1;
 		white-space: nowrap;
 		text-align: center;
+		font-size: 14px;
 		&.buyTd { color: #27a69a }
 		&.sellTd { color: #f0534f }
 		& a:hover {

@@ -247,3 +247,9 @@ export const fetchAddress = async (id) => {
   // else
   //   return { data: { success: true, result: { type: 'wallet', name: '0x5678', id: '2342-2422-2222-3333', address: '0x5678' } }}
 }
+
+export const saveEntity = async (payload) => {
+  // return await axios.post(`entity`, payload);
+  await delay(500)
+  return { data: { success: true, result: 'ok' }}
+}

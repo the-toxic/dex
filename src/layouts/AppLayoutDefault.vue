@@ -5,6 +5,7 @@
         <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
         <v-list-item :to="{name: 'Pairs', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Explorer"></v-list-item>
         <v-list-item :to="{name: 'BigSwaps', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="BigSwaps"></v-list-item>
+        <v-list-item :to="{name: 'Entities'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Entities"></v-list-item>
         <v-list-item :to="{name: 'SC'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="SC"></v-list-item>
         <v-list-item :href="NEWS_HOST" target="news" prepend-icon="mdi-menu-open" title="News"></v-list-item>
         <v-list-item :href="DOCS_HOST" target="docs" prepend-icon="mdi-menu-open" title="Docs"></v-list-item>
@@ -67,7 +68,7 @@
 					<v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged" size="large" rounded class="text-none">Sign In</v-btn>
 					<v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged" size="large" color="white" variant="outlined" class="mx-5 text-none">Sign Up <v-icon icon="mdi-arrow-right" color="white" class="pl-2" /></v-btn>
 
-					<v-btn :to="{name: 'Portfolio'}" v-if="userStore.logged" rounded class="text-none">Portfolio</v-btn>
+					<v-btn :to="{name: 'Entities'}" v-if="userStore.logged" rounded class="text-none">Entities</v-btn>
 					<v-btn :to="{name: 'Alerts'}" v-if="userStore.logged" rounded class="text-none">Alerts</v-btn>
 					<v-btn :to="{name: 'WatchList'}" v-if="userStore.logged" rounded class="text-none">Watch List</v-btn>
 
