@@ -27,13 +27,13 @@
               <div class="fs12 lh-1_2">Total Supply</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(totalSupply) }}</div>
             </div>
             <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
-              <div class="fs12 lh-1_2">24hr Volume</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(volume24h) }}</div>
+              <div class="fs12 lh-1_2">24hr Volume</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(toNumber(volume24h)) }}</div>
             </div>
             <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
-              <div class="fs12 lh-1_2">Liquidity</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(liquidity) }} {{ rightToken }}</div>
+              <div class="fs12 lh-1_2">Liquidity</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(toNumber(liquidity)) }} {{ rightToken }}</div>
             </div>
             <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
-              <div class="fs12 lh-1_2">Market Cap</div><div class="lh-1_2 fs12" style="color: #fff">${{ shortNumber(marketCap) }}</div>
+              <div class="fs12 lh-1_2">Market Cap</div><div class="lh-1_2 fs12" style="color: #fff">${{ shortNumber(toNumber(marketCap)) }}</div>
             </div>
             <div class="d-flex justify-center flex-column rounded px-2 mr-2" style="background: #141825; height: 40px">
               <div class="fs12 lh-1_2">24hr Swaps</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(txCount24) }}</div>

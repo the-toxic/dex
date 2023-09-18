@@ -63,7 +63,7 @@
 		// const items = Object.assign([], chartStore.lastTXs)
 
 		return chartStore.lastTXs.map(item => {
-			item.parsedPrice = priceFormatter(+item.amount_token1/+item.amount_token0)
+			item.parsedPrice = +item.amount_token1/+item.amount_token0
 			item.parsedDate = new Date((item.date + tzOffset) * 1000).toISOString().slice(0, 19).split('T').join(' ')
 			item.router = chartStore.exchangesList.hasOwnProperty(item.router_id) ? chartStore.exchangesList[item.router_id] : { title: '—', address: null }
 			return item
