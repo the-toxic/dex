@@ -29,11 +29,11 @@ export const initChart = (pairAddr) => {
       // "volume.volume.color.0": "#00FFFF",
     // },
     time_frames: [
-      { text: "1M", resolution: "1H", description: "1 Month range on 1H candles", title: "1 Month range" },
-      { text: "1Y", resolution: "1D", description: "1 Year range on 1D candles", title: "1 Year range" }
+      // { text: "1M", resolution: "1H", description: "1 Month range on 1H candles", title: "1 Month range" },
+      // { text: "1Y", resolution: "1D", description: "1 Year range on 1D candles", title: "1 Year range" }
     ],
     favorites: {
-      intervals: ["1", "15", "60", "1D", "1W"],
+      intervals: ["1", "15", "60", "1D"], // "1W"
     },
     fullscreen: false, // displays the chart in the fullscreen mode
     width: '100%',

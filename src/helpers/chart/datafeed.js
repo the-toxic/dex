@@ -18,6 +18,7 @@ let findedPairs = [
 //   exchange: 'PanCake v2', // Binance - symbol exchange name
 //   exchange_id: 11,
 //   need_invert: false,
+//   chain_id: 1 // 1 - eth, 2 - bsc
 //   type: 'BSC', // As example Network name, or stock | "futures" | "crypto" | "forex" | "index" | any custom string
 //   description: '', // require for initial load page, or library show full_name
 //   tx_count: 111
@@ -199,7 +200,7 @@ export default {
       const { success, result } = await fetchHistoryCandles({
         pair_id: symbolInfo.pair_id,
         to_ts: to, // 1467676800
-        limit: 1000,
+        limit: 300,
         span: resolution,
       });
 
