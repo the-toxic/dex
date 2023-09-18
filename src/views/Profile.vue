@@ -58,7 +58,7 @@
         <v-spacer />
         <v-btn color="red" :disabled="!deleteCheckbox" class="text-none">Delete Account
           <v-dialog v-model="dialogDelete" activator="parent" max-width="500px">
-              <v-card>
+              <v-card rounded class="rounded-xl">
 								<v-card-text class="text-center py-16 px-10">
 									<p class="mb-6">YOUR DATA WILL BE DELETED.<br>DELETION CANNOT BE UNDONE.</p>
 									<div class="d-flex justify-center align-center">

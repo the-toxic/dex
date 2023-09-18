@@ -248,8 +248,24 @@ export const fetchAddress = async (id) => {
   //   return { data: { success: true, result: { type: 'wallet', name: '0x5678', id: '2342-2422-2222-3333', address: '0x5678' } }}
 }
 
+export const fetchPrivateEntities = async () => {
+  // return await axios.get(`private-entity`);
+  await delay(500)
+  return { data: {
+    success: true, result: [
+        {label: 'My Entity 1', uuid: '1231231231-1231231231-1231231231-123111', wallets: [{id: 1, label: 'My wallet 1', address: '0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE'}, {id: 2, label: '', address: '0xDEa42D23ed4C1483bC54F25Ba869f573385606da'}], icon: 'mdi-wallet'},
+        {label: 'My Entity 2', uuid: '1231231231-1231231231-1231231231-123111', wallets: [{id: 3, label: 'My wallet 3', address: '0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE'}, {id: 4, label: 'My wallet 4', address: '0xDEa42D23ed4C1483bC54F25Ba869f573385606da'}], icon: 'mdi-wallet'},
+      ]
+  }}
+}
+
 export const saveEntity = async (payload) => {
-  // return await axios.post(`entity`, payload);
+  // return await axios.post(`private-entity`, payload);
+  await delay(500)
+  return { data: { success: true, result: 'ok' }}
+}
+export const removeEntity = async (id) => {
+  // return await axios.delete(`private-entity/${id}`);
   await delay(500)
   return { data: { success: true, result: 'ok' }}
 }
