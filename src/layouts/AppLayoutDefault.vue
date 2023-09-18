@@ -35,6 +35,7 @@
 
 			<!-- Center Side-->
 			<v-btn variant="text" :active="false" size="large" :to="{name: 'Home'}" rounded class="d-none d-md-inline-flex text-none">Home</v-btn>
+			<v-btn variant="text" :active="false" size="large" :to="{name: 'Dashboard'}" rounded class="d-none d-md-inline-flex text-none">Dashboard</v-btn>
 			<v-menu v-if="userStore.logged" v-model="consoleSubMenu" :close-on-content-click="false" location="bottom">
 				<template v-slot:activator="{ props }">
 						<v-btn v-bind="props" variant="text" :active="false" size="large" append-icon="mdi-menu-down" rounded class="d-none d-md-inline-flex text-none">DEX</v-btn>

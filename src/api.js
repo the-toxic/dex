@@ -269,3 +269,12 @@ export const removeEntity = async (id) => {
   await delay(500)
   return { data: { success: true, result: 'ok' }}
 }
+
+export const fetchDashboard = async (id) => {
+  // return await axios.get('dashboard');
+  await delay(500)
+  return { data: { success: true, result: [
+    {title: 'Default', uuid: '1234-12312-123123-123123', widgets: []},
+    {title: 'My Dash 2', uuid: '2222-12312-123123-123123', widgets: []},
+  ] }}
+}

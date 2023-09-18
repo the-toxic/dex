@@ -14,6 +14,7 @@ const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/console', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/components/Console"), children: [
     { path: '', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pairs',  params: {network: 'bsc'} } },
+    { path: 'dashboard', name: 'Dashboard', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Dashboard.vue") },
     { path: ':network([a-zA-Z0-9-]{2,10})/explorer', name: 'Pairs', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pairs.vue") },
     { path: ':network([a-zA-Z0-9-]{2,10})/big-swaps', name: 'BigSwaps', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/BigSwaps.vue") },
 
