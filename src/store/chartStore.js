@@ -11,6 +11,12 @@ const getDefaultState = () => {
     exchangesList: {},
   }
 }
+const invertAmounts = (txs) => txs.map(i => {
+  const temp0 = i.amount_token0
+  i.amount_token0 = i.amount_token1
+  i.amount_token1 = temp0
+  return i
+})
 
 export const useChartStore = defineStore('chart', {
 	state: () => (
@@ -40,7 +46,10 @@ export const useChartStore = defineStore('chart', {
     async loadHistoryTable({pair_id, chain_id}) {
       const {success, result} = await fetchHistoryTable({pair_id, chain_id})
       if(success && result?.length) {
-          this.lastTXs = result
+          if(this.activeSymbol.need_invert)
+            this.lastTXs = invertAmounts(result)
+          else
+            this.lastTXs = result
       }
     },
     async addNewTx(newTx) {
@@ -56,10 +65,14 @@ export const useChartStore = defineStore('chart', {
       })
       if(success && result?.length) {
         // проходимся по результату и если в блоке есть та-же tx или свежее, чем последняя в сторе, образеем их
-        const data = result.filter(item => {
+        let data = result.filter(item => {
           if(lastTx.block_id !== item.block_id) return true
           return (lastTx.tx !== item.tx && lastTx.date > item.date)
         })
+
+        if(this.activeSymbol.need_invert)
+          data = invertAmounts(data)
+
         this.lastTXs.push(...data) // add to end array
       }
     },

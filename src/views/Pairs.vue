@@ -36,7 +36,7 @@
 		>
 <!--			@update:options="loadItems"-->
 			<template v-slot:item.pair_name="{ item }">
-				<v-btn :to="{name: 'Pair', params: {network: this.network, pairAddr: item.raw.pair_addr}}" rounded variant="text"  class="text-none">
+				<v-btn :to="{name: 'Pair', params: {pairAddr: item.raw.pair_addr}}" rounded variant="text"  class="text-none">
 					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ item.index + 1 }}</span>
 					<v-img :src="item.raw.iconToken0" width="24" height="24" :alt="item.raw.token0.symbol" class="va-top rounded-xl">
 						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
@@ -58,7 +58,7 @@
 			</template>
 			<template v-slot:item.liquidity="{ item }">${{ formatNumber(item.raw.liquidity) || 0 }}</template>
 			<template v-slot:item.action="{ item }">
-				<v-btn :to="{name: 'Pair', params: {network: this.network, pairAddr: item.raw.pair_addr}}"
+				<v-btn :to="{name: 'Pair', params: {pairAddr: item.raw.pair_addr}}"
 					 icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
 			</template>
 		</v-data-table-server>

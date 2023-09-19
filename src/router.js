@@ -16,6 +16,7 @@ const routes = [
     { path: '', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pairs',  params: {network: 'bsc'} } },
     { path: 'dashboard', name: 'Dashboard', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Dashboard.vue") },
     { path: ':network([a-zA-Z0-9-]{2,10})/explorer', name: 'Pairs', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pairs.vue") },
+    { path: 'dex/:pairAddr(0x[a-zA-Z0-9]{40})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },
     { path: ':network([a-zA-Z0-9-]{2,10})/big-swaps', name: 'BigSwaps', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/BigSwaps.vue") },
 
     { path: 'entity/:id([a-zA-Z0-9-]{36})', name: 'Entity', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Entity.vue") },
@@ -24,7 +25,6 @@ const routes = [
 
     { path: 'entities', name: 'Entities', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Entities.vue") },
     { path: 'sc', name: 'SC', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/SC.vue") },
-    { path: ':network([a-zA-Z0-9-]{2,10})/pair/:pairAddr([a-zA-Z0-9]{42})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },
     { path: 'career', name: 'Career', component: Career },
     { path: 'contact-us', name: 'ContactUs', component: ContactUs },
     { path: 'alerts', name: 'Alerts', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Alerts.vue") },

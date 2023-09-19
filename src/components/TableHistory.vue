@@ -102,7 +102,7 @@
 	const blockchainDomain = computed(() => {return activeSymbol.value['type'] === 'BSC' ? 'https://bscscan.com' : 'https://etherscan.io'})
 </script>
 
-<style>
+<style lang="scss">
 	.txsTableHead { /* thead tr */
 		display: flex;
 		padding: 6px 12px;

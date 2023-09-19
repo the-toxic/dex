@@ -7,7 +7,6 @@ export const initChart = (pairAddr) => {
     // debug: true,
     // symbol: 'UNKNOWN ROUTER:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // default symbol
     symbol: pairAddr,
-    symbol_search_request_delay: 1000, // delay before request in search field
     interval: '15', // default interval
     container: 'tv_chart_container',
     datafeed: Datafeed,
@@ -15,8 +14,10 @@ export const initChart = (pairAddr) => {
     // locale: getLanguageFromURL() || 'en',
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     theme: 'Dark',
+    // symbol_search_request_delay: 1000, // delay before request in search field
     overrides: {
-      volumePaneSize: "medium"
+      volumePaneSize: "small",
+      // "paneProperties.legendProperties.showSeriesOHLC": false // not work
       // "paneProperties.background": "#131722",
       // "paneProperties.vertGridProperties.color": "#363c4e",
       // "paneProperties.horzGridProperties.color": "#363c4e",
@@ -37,9 +38,9 @@ export const initChart = (pairAddr) => {
     },
     fullscreen: false, // displays the chart in the fullscreen mode
     width: '100%',
-    height: '800px',
+    height: '100%',
     // autosize: true, // Full size on container
-    disabled_features: ['header_compare', 'volume_force_overlay', 'display_market_status'], // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
+    disabled_features: ['header_symbol_search', 'header_compare', 'volume_force_overlay', 'display_market_status'], // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
     enabled_features: [
       'show_symbol_logos', // add in ver 25.001
       'show_symbol_logo_in_legend', // add in ver 26
