@@ -43,7 +43,7 @@
           <strong>{{ shortNumber(buyVolume24) }} {{ rightToken }} / {{ shortNumber(sellVolume24) }} {{ rightToken }}</strong>
         </template>
       </v-progress-linear>-->
-			<template v-if="tabContent === 'dex'">
+			<div v-show="tabContent === 'dex'">
 				<div class="d-flex">
 					<div class="mr-5" style="width: 400px">
 						<v-card>
@@ -114,8 +114,9 @@
 						<Converter v-if="pairInfo" :token="pairInfo.token0.symbol" class="mt-5"/>
 						<v-skeleton-loader v-else class="mt-5" style="height: 180px" />
 					</div>
-					<div class="fill-width" style="height: 534px">
-						<ChartTV :pair-addr="pairAddr" />
+					<div class="d-flex justify-center align-center fill-width" style="height: 534px">
+						<ChartTV v-show="pairInfo" :pair-addr="pairAddr" />
+						<v-progress-circular v-show="!pairInfo" :size="50" :width="4" color="white" indeterminate />
 					</div>
 				</div>
 
@@ -137,9 +138,16 @@
 				<v-card class="mt-2 mb-8 rounded-xl">
 					<TableHistory />
 				</v-card>
+			</div>
+
+			<template v-if="tabContent === 'analyze'">
+				<h2>Transactions</h2>
+				<DexAnalyzeTxsTable />
+
+				<h2 class="mt-5">Grouped by Wallets</h2>
+				<DexAnalyzeTxsGroupTable />
 			</template>
 
-			<template v-if="tabContent === 'analyze'"><h1>Analyze</h1></template>
 			<template v-if="tabContent === 'pair'"><h1>Pair</h1></template>
 
     </v-container>
@@ -155,10 +163,12 @@ import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 import { useChartStore } from "@/store/chartStore";
 import ChartTV from "@/components/ChartTV.vue";
 import Converter from "@/components/Converter.vue";
+import DexAnalyzeTxsTable from "@/components/DexAnalyzeTxsTable.vue";
+import DexAnalyzeTxsGroupTable from "@/components/DexAnalyzeTxsGroupTable.vue";
 
 export default {
   name: "Pair",
-  components: { Converter, ChartTV, TableHistory, VSkeletonLoader },
+  components: { DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory, VSkeletonLoader },
   head: {
     title() { return { inner: this.title }},
     meta() { return [{ name: 'description', content: this.description, id: 'desc' }]},

@@ -26,7 +26,6 @@
 			:items="rows"
 			:loading="loading"
 			class="elevation-1"
-			id="pair_id"
 			@update:options="loadItems"
 		>
 			<template v-slot:item.pair_name="{ item }">

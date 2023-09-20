@@ -281,3 +281,95 @@ export const fetchDashboard = async (id) => {
     {title: 'My Dash 2', uuid: '2222-12312-123123-123123', widgets: []},
   ] }}
 }
+
+export const fetchDexAnalyzeTxs = async () => {
+  // return await axios.get('dexAnalyzeTxs');
+  await delay(500)
+  return { data: { success: true, result: {
+    items: [
+      {
+        wallet: '0x0000000000000000000000000000000000000000',
+        profit: 500,
+        roi: 50,
+        buy_date: '2023-09-20 14:22:33',
+        buy_tx_id: '0x0000000000000000000000000000000000000000',
+        buy_amount: 10,
+        buy_price: 100,
+        buy_total: 1000,
+        sell_date: '2023-09-22 15:22:33',
+        sell_tx_id: '0x0000000000000000000000000000000000000000',
+        sell_amount: 10,
+        sell_price: 150,
+        sell_total: 1500
+      },
+      {
+        wallet: '0x0000000000000000000000000000000000000000',
+        profit: 500,
+        roi: 50,
+        buy_date: '2023-09-21 14:22:33',
+        buy_tx_id: '0x0000000000000000000000000000000000000000',
+        buy_amount: 10,
+        buy_price: 100,
+        buy_total: 1000,
+        sell_date: '2023-09-23 15:22:33',
+        sell_tx_id: '0x0000000000000000000000000000000000000000',
+        sell_amount: 10,
+        sell_price: 150,
+        sell_total: 1500
+      },
+    ],
+    totalItems: 2,
+    total: {
+      profit: 1000,
+      roi: 50,
+      buy_amount: 20,
+      buy_price: 100,
+      buy_total: 2000,
+      sell_amount: 20,
+      sell_price: 150,
+      sell_total: 3000,
+    }
+  }}}
+}
+
+export const fetchDexAnalyzeGroupTxs = async () => {
+  // return await axios.get('dexAnalyzeTxs');
+  await delay(500)
+  return { data: { success: true, result: {
+    items: [
+      {
+        wallet: '0x0000000000000000000000000000000000000000',
+        profit: 500,
+        roi: 50,
+        buy_amount: 10,
+        buy_price: 100,
+        buy_total: 1000,
+        sell_amount: 10,
+        sell_price: 150,
+        sell_total: 1500
+      },
+      {
+        wallet: '0x0000000000000000000000000000000000000000',
+        profit: 500,
+        roi: 50,
+        buy_amount: 10,
+        buy_price: 100,
+        buy_total: 1000,
+        sell_amount: 10,
+        sell_price: 150,
+        sell_total: 1500
+      },
+    ],
+    totalItems: 2,
+    total: {
+      profit: 1000,
+      roi: 50,
+      buy_amount: 20,
+      buy_price: 100,
+      buy_total: 2000,
+      sell_amount: 20,
+      sell_price: 150,
+      sell_total: 3000,
+    }
+  }}}
+}
