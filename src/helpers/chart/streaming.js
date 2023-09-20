@@ -30,7 +30,7 @@ const socket = io(apiDomain, {
 // socket.onerror = function(event) { console.log('on error', event) };
 
 socket.on('connect', () => {
-  console.log('[socket] Connected. ID:', socket.id);
+  // console.log('[socket] Connected. ID:', socket.id);
   mainStore().setConnected(true)
 });
 
@@ -133,7 +133,7 @@ function candleMessageHandler(data) {
       close: tradePrice,
       volume: tradeVolume
     };
-    console.log('[socket] Generate new bar', bar);
+    console.log('[socket] Generate new bar'/*, bar*/);
   } else {
     bar = {
       ...lastBar,

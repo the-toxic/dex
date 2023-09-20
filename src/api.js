@@ -249,33 +249,28 @@ export const fetchAddress = async (id) => {
 }
 
 export const fetchPrivateEntities = async () => {
-  // return await axios.get(`private-entity`);
-  await delay(500)
-  return { data: {
-    success: true, result: [
-        {
-          label: 'My Entity 1',
-          uuid: '1231231231-1231231231-1231231231-123111',
-          wallets: [
-            {id: 1, label: 'My wallet 1', address: '0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE'},
-            {id: 2, label: '', address: '0xDEa42D23ed4C1483bC54F25Ba869f573385606da'}
-          ],
-          // icon: 'mdi-wallet',
-        },
-        {label: 'My Entity 2', uuid: '1231231231-1231231231-1231231231-123111', wallets: [{id: 3, label: 'My wallet 3', address: '0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE'}, {id: 4, label: 'My wallet 4', address: '0xDEa42D23ed4C1483bC54F25Ba869f573385606da'}], icon: 'mdi-wallet'},
-      ]
-  }}
+  return await axios.get(`entities`);
+  // await delay(500)
+  // return { data: {
+  //   success: true, result: [
+  //       {
+  //         name: 'My Entity 1',
+  //         uuid: '1231231231-1231231231-1231231231-123111',
+  //         addresses: [
+  //           {id: 1, label: 'My wallet 1', address: '0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE'},
+  //           {id: 2, label: '', address: '0xDEa42D23ed4C1483bC54F25Ba869f573385606da'}
+  //         ],
+  //       },
+  //     ]
+  // }}
 }
 
 export const saveEntity = async (payload) => {
-  // return await axios.post(`private-entity`, payload);
-  await delay(500)
-  return { data: { success: true, result: 'ok' }}
+  const isEdit = payload.uuid.length
+  return await axios.post(`entity${isEdit ? '/'+payload.uuid : '' }`, payload);
 }
-export const removeEntity = async (id) => {
-  // return await axios.delete(`private-entity/${id}`);
-  await delay(500)
-  return { data: { success: true, result: 'ok' }}
+export const removeEntity = async (uuid) => {
+  return await axios.delete(`entity/${uuid}`);
 }
 
 export const fetchDashboard = async (id) => {

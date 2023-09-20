@@ -9,7 +9,7 @@ const AppLayoutToFileMap = {
 export async function loadLayoutMiddleware(route) {
   const layout = route.meta?.layout;
   const normalizedLayoutName = layout || AppLayoutsEnum.default;
-  console.log('Layout:', normalizedLayoutName)
+  // console.log('Layout:', normalizedLayoutName)
   const fileName = AppLayoutToFileMap[normalizedLayoutName];
   const fileNameWithoutExtension = fileName.split(".vue")[0];
 
