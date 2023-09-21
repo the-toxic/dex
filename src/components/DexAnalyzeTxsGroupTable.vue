@@ -18,8 +18,8 @@
 			<template v-slot:column.wallet="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>
 			<template v-slot:column.profit="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>
 			<template v-slot:column.roi="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>
-			<template v-slot:column.buys="{ column }"><div class="bg-green-darken-4 mx-n4 fill-height pt-4">{{ column.title }}</div></template>
-			<template v-slot:column.sells="{ column }"><div class="bg-red-darken-4 mx-n4 fill-height pt-4">{{ column.title }}</div></template>
+			<template v-slot:column.buys="{ column }"><div class="mx-n4 fill-height pt-4" style="background: #334c35">{{ column.title }}</div></template>
+			<template v-slot:column.sells="{ column }"><div class="mx-n4 fill-height pt-4" style="background: #693131">{{ column.title }}</div></template>
 
 			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.raw.wallet) }}</v-btn></template>
 			<template v-slot:item.profit="{ item }">{{ toCurrency(item.raw.profit) }}</template>

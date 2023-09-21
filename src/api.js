@@ -373,3 +373,40 @@ export const fetchDexAnalyzeGroupTxs = async () => {
     }
   }}}
 }
+
+export const fetchDexPairTxs = async () => {
+  // return await axios.get('dexPairTxs');
+  await delay(500)
+  return { data: { success: true, result: {
+    items: [
+      {
+        wallet: '0x0000000000000000000000000000000000000000',
+        date: '2023-10-11 12:22:22',
+        type: 'adds',
+        token0_amount: 1122444,
+        token0_total: 80000,
+        token1_amount: 80000,
+        token1_total: 80000,
+        total: 160000,
+      },
+      {
+        wallet: '0x0000000000000000000000000000000000000000',
+        date: '2023-10-12 12:22:22',
+        type: 'removes',
+        token0_amount: 1122444,
+        token0_total: 80000,
+        token1_amount: 80000,
+        token1_total: 80000,
+        total: 160000,
+      },
+    ],
+    totalItems: 2,
+    total: {
+      token0_amount: 1122444*2,
+      token0_total: 80000*2,
+      token1_amount: 80000*2,
+      token1_total: 80000*2,
+      total: 160000*2,
+    }
+  }}}
+}
