@@ -1,5 +1,5 @@
 <template>
-	<div class="fill-height" ref="chartContainer"></div>
+	<div class="fill-height fill-width" ref="chartContainer"></div>
 </template>
 
 <script>
@@ -38,6 +38,12 @@ const defaultChartOptions = {
 		lineColor: '#2B2B43',
 		textColor: '#D9D9D9',
 	},
+	// localization: {
+	// 	priceFormatter: Intl.NumberFormat('en-US', {
+	// 		style: "currency",
+	// 		currency: "USD", // Currency for data points
+	// 	}).format,
+	// },
 	watermark: {
 		color: 'rgba(0, 0, 0, 0)',
 	},

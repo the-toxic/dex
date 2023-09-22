@@ -1,6 +1,6 @@
 <template>
 
-	<v-text-field v-model="searchInput" label="Search by Wallets..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" />
+	<v-text-field v-model="searchInput" label="Search by Wallets..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" density="compact" />
 
 	<div class="overflow-x-auto">
 		<v-data-table-server style="min-width: 1300px"
@@ -11,19 +11,19 @@
 			:items-length="totalItems"
 			:items="items"
 			:loading="loading"
-			class="elevation-1"
+			class="elevation-1 fs14" density="compact"
 			:items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->
-			<template v-slot:column.wallet="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>
-			<template v-slot:column.profit="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>
-			<template v-slot:column.roi="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>
-			<template v-slot:column.buys="{ column }"><div class="mx-n4 fill-height pt-4" style="background: #334c35">{{ column.title }}</div></template>
-			<template v-slot:column.sells="{ column }"><div class="mx-n4 fill-height pt-4" style="background: #693131">{{ column.title }}</div></template>
+<!--			<template v-slot:column.wallet="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
+<!--			<template v-slot:column.profit="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
+<!--			<template v-slot:column.roi="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
+			<template v-slot:column.buys="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #334c35">{{ column.title }}</div></template>
+			<template v-slot:column.sells="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #693131">{{ column.title }}</div></template>
 
 			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.raw.wallet) }}</v-btn></template>
 			<template v-slot:item.profit="{ item }">{{ toCurrency(item.raw.profit) }}</template>
-			<template v-slot:item.roi="{ item }"><v-chip :color="item.raw.roi > 0 ? 'success': (item.raw.roi < 0 ? 'error' : 'white')">{{ item.raw.roi > 0 ? '+' : (item.raw.roi < 0 ? '-' : '') }} {{ Math.abs(item.raw.roi) || 0 }}%</v-chip></template>
+			<template v-slot:item.roi="{ item }"><v-chip :color="item.raw.roi > 0 ? 'success': (item.raw.roi < 0 ? 'error' : 'white')" size="small">{{ item.raw.roi > 0 ? '+' : (item.raw.roi < 0 ? '-' : '') }} {{ Math.abs(item.raw.roi) || 0 }}%</v-chip></template>
 			<template v-slot:item.buy_amount="{ item }">{{ formatNumber(item.raw.buy_amount) }}</template>
 			<template v-slot:item.sell_amount="{ item }">{{ formatNumber(item.raw.sell_amount) }}</template>
 			<template v-slot:item.buy_price="{ item }">${{ priceFormatter(item.raw.buy_price) }}</template>
@@ -37,7 +37,7 @@
 					<td colspan="1" class="text-right">Total</td>
 					<td>{{ toCurrency(totalInfo.profit) }}</td>
 					<td>
-						<v-chip :color="totalInfo.roi > 0 ? 'success': (totalInfo.roi < 0 ? 'error' : 'white')">
+						<v-chip :color="totalInfo.roi > 0 ? 'success': (totalInfo.roi < 0 ? 'error' : 'white')" size="small">
 							{{ totalInfo.roi > 0 ? '+' : (totalInfo.roi < 0 ? '-' : '') }} {{ Math.abs(totalInfo.roi) || 0 }}%, avg
 						</v-chip>
 					</td>
@@ -69,7 +69,7 @@ export default {
     loading: false,
     itemsPerPage: 20,
 		page: 1,
-		sortBy: [{key: 'date', order: 'desc'}],
+		sortBy: [{key: 'profit', order: 'desc'}],
     headers: [
 			[
 				{ title: 'Wallet', key: 'wallet', align: 'center', sortable: false, rowspan: 2 },

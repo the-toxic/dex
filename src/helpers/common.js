@@ -44,9 +44,9 @@ export function priceFormatter(price) {
     return toNumber(price)
   else if (price > 100)
     return parseFloat(price).toFixed(2).toString()
-  else if(price > 1e-6)
+  else if(price > 1e-6) // 0.000001 - 100
     return parseFloat(parseFloat(price).toExponential(4)).toString()
-  else
+  else // < 0.000001
     return exponentToNumber(+parseFloat(price).toExponential(4))
 }
 

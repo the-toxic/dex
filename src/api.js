@@ -381,7 +381,7 @@ export const fetchDexPairTxs = async () => {
     items: [
       {
         wallet: '0x0000000000000000000000000000000000000000',
-        date: '2023-10-11 12:22:22',
+        date: '2023-09-22 12:22:22',
         type: 'adds',
         token0_amount: 1122444,
         token0_total: 80000,
@@ -391,7 +391,7 @@ export const fetchDexPairTxs = async () => {
       },
       {
         wallet: '0x0000000000000000000000000000000000000000',
-        date: '2023-10-12 12:22:22',
+        date: '2023-09-12 12:22:22',
         type: 'removes',
         token0_amount: 1122444,
         token0_total: 80000,
@@ -407,6 +407,59 @@ export const fetchDexPairTxs = async () => {
       token1_amount: 80000*2,
       token1_total: 80000*2,
       total: 160000*2,
+    }
+  }}}
+}
+
+export const fetchDexPairWallets = async () => {
+  // return await axios.get('dexPairWallets');
+  await delay(500)
+  return { data: { success: true, result: {
+    items: [
+      {
+        wallet: '0x0000000000000000000000000000000000000000',
+        removed: 1,
+        count_adds: 7,
+        count_removes: 1,
+        count_total: 8,
+        token0_was: 100000,
+        token0_now: 110000,
+        token0_profit: 10000,
+        token0_roi: 10,
+        token1_was: 100000,
+        token1_now: 110000,
+        token1_profit: 10000,
+        token1_roi: 10,
+      },
+      {
+        wallet: '0x0000000000000000000000000000000000000000',
+        removed: 0,
+        count_adds: 5,
+        count_removes: 2,
+        count_total: 7,
+        token0_was: 100000,
+        token0_now: 110000,
+        token0_profit: 10000,
+        token0_roi: 10,
+        token1_was: 100000,
+        token1_now: 110000,
+        token1_profit: 10000,
+        token1_roi: 10,
+      },
+    ],
+    totalItems: 2,
+    total: {
+      count_adds: 12,
+      count_removes: 3,
+      count_total: 15,
+      token0_was: 100000*2,
+      token0_now: 110000*2,
+      token0_profit: 10000*2,
+      token0_roi: 10,
+      token1_was: 100000*2,
+      token1_now: 110000*2,
+      token1_profit: 10000*2,
+      token1_roi: 10,
     }
   }}}
 }

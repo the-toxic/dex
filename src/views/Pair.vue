@@ -149,24 +149,24 @@
 			</template>
 
 			<template v-if="tabContent === 'pair'">
-				<div class="d-flex justify-space-between align-center">
+				<div class="d-flex justify-space-between align-center" style="gap: 20px;">
 					<v-card>
 						<v-card-text>
 							<v-list>
-								<v-list-item @click=""><span class="text-disabled">Pair created:</span> <span>2023-10-11</span> <template v-slot:append><span class="text-disabled">1y 23d 8h ago</span></template></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">Creator: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn><template v-slot:append><v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" rounded density="comfortable" /></template></v-list-item>
+								<v-list-item @click=""><span class="text-disabled">Pair created:</span> <span>{{ pairMeta.created }}</span> <template v-slot:append><span class="text-disabled">{{ pairMeta.createdAgo }}</span></template></v-list-item>
+								<v-list-item @click=""><span class="text-disabled">Creator: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn><template v-slot:append><v-btn text="EXP" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" /></template></v-list-item>
 								<v-list-item @click=""><span class="text-disabled">Total Liquidity: </span> <span>{{ toCurrency(35112) }}</span></v-list-item>
 								<v-list-item @click=""><span class="text-disabled">Pooled TANK: {{ toNumber(14542111) }}</span> <span>{{ toCurrency(17643) }}</span></v-list-item>
 								<v-list-item @click=""><span class="text-disabled">Pooled BUSD:{{ toNumber(17643) }}</span> <span>{{ toCurrency(17643) }}</span></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">Pair: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn> <template v-slot:append><v-btn text="LPs" append-icon="mdi-open-in-new" variant="text" rounded density="comfortable" /> <v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" rounded density="comfortable" /></template></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">TANK: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn> <template v-slot:append><v-btn text="HLD" append-icon="mdi-open-in-new" variant="text" rounded density="comfortable" /> <v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" rounded density="comfortable" /></template></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">BUSD: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn> <template v-slot:append><v-btn text="HLD" append-icon="mdi-open-in-new" variant="text" rounded density="comfortable" /> <v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" rounded density="comfortable" /></template></v-list-item>
+								<v-list-item @click=""><span class="text-disabled">Pair: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn> <template v-slot:append><v-btn text="LPs" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" /> <v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" /></template></v-list-item>
+								<v-list-item @click=""><span class="text-disabled">TANK: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn> <template v-slot:append><v-btn text="HLD" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" /> <v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" /></template></v-list-item>
+								<v-list-item @click=""><span class="text-disabled">BUSD: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn> <template v-slot:append><v-btn text="HLD" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" /> <v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" /></template></v-list-item>
 							</v-list>
 						</v-card-text>
 					</v-card>
 
 					<!-- Right side -->
-					<div>
+					<div class="flex-fill">
 						<v-tabs v-model="tabChartVariant">
 							<v-tab value="liquidity" variant="flat" class="text-none">Liquidity</v-tab>
 							<v-tab value="volume" variant="flat" class="text-none">Volume</v-tab>
@@ -187,7 +187,7 @@
 				<DexPairTxsTable />
 
 				<h2 class="mt-7">Wallets</h2>
-				table...
+				<DexPairWalletsTable />
 			</template>
 
     </v-container>
@@ -195,6 +195,7 @@
 </template>
 
 <script>
+import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
 import { API_DOMAIN, PROJECT_NAME, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import TableHistory from "@/components/TableHistory.vue";
 import { priceFormatter, shortNumber } from "@/helpers/common";
@@ -207,10 +208,11 @@ import DexAnalyzeTxsTable from "@/components/DexAnalyzeTxsTable.vue";
 import DexAnalyzeTxsGroupTable from "@/components/DexAnalyzeTxsGroupTable.vue";
 import LWChart from "@/components/LWChart.vue";
 import DexPairTxsTable from "@/components/DexPairTxsTable.vue";
+import DexPairWalletsTable from "@/components/DexPairWalletsTable.vue";
 
 export default {
   name: "Pair",
-  components: { DexPairTxsTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory, VSkeletonLoader },
+  components: { DexPairWalletsTable, DexPairTxsTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory, VSkeletonLoader },
   head: {
     title() { return { inner: this.title }},
     meta() { return [{ name: 'description', content: this.description, id: 'desc' }]},
@@ -229,8 +231,13 @@ export default {
     pairAddr: '',
     loadingOldTxs: true,
 
+		pairMeta: {
+			created: '2023-01-22',
+			createdAgo: moment('2023-01-22').fromNow()
+		},
+
 		chartType: 'area',
-		chartOptions: {width: '1000', height: 384},
+		chartOptions: {height: 384},
 		seriesOptions: {},
 		chartData: [
 			{ time: '2018-10-19', value: 35.98 },

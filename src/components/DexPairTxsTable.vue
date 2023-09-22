@@ -1,6 +1,6 @@
 <template>
 
-		<div class="d-flex justify-space-between align-center flex-wrap pa-4" style="background: #141d26">
+		<div class="d-flex justify-space-between align-center flex-wrap px-4 py-2" style="background: #141d26">
 			<input type="text" ref="datepickerPeriod" placeholder="Period" class="datePickerInput mr-4" />
 			<div>
 				Type:
@@ -10,10 +10,11 @@
 					<v-btn value="removes" color="error" class="text-none">Removes</v-btn>
 				</v-btn-toggle>
 			</div>
+			<v-switch label="Show Creator TXs" v-model="filter.isCreator" hide-details color="primary" class="flex-grow-0" />
 			<!-- <v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>-->
 		</div>
 
-		<v-text-field v-model="searchInput" label="Search by Wallet..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" />
+		<v-text-field v-model="searchInput" label="Search by Wallet..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" density="compact" />
 
 		<v-data-table-server
 			v-model:items-per-page="itemsPerPage"
@@ -23,26 +24,38 @@
 			:items-length="totalItems"
 			:items="rows"
 			:loading="loading"
-			class="elevation-1"
+			class="elevation-1 fs14" density="compact"
 			@update:options="loadItems"
 		>
 			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.raw.wallet) }}</v-btn></template>
-			<template v-slot:item.type="{ item }"><v-chip :color="item.raw.type === 'adds' ? 'success':'error'" class="text-uppercase">{{ item.raw.type }}</v-chip></template>
+			<template v-slot:item.type="{ item }"><v-chip :color="item.raw.type === 'adds' ? 'success':'error'" class="text-uppercase" size="small">{{ item.raw.type }}</v-chip></template>
 			<template v-slot:item.token0_amount="{ item }">{{ toNumber(item.raw.token0_amount) }}</template>
 			<template v-slot:item.token1_amount="{ item }">{{ toNumber(item.raw.token1_amount) }}</template>
 			<template v-slot:item.token0_total="{ item }">{{ toCurrency(item.raw.token0_total) }}</template>
 			<template v-slot:item.token1_total="{ item }">{{ toCurrency(item.raw.token1_total) }}</template>
 			<template v-slot:item.total="{ item }">{{ toCurrency(item.raw.total) }}</template>
+
+			<template v-slot:tfoot>
+				<tfoot>
+				<tr class="text-surface-variant text-center">
+					<td colspan="4" class="text-right">Total</td>
+					<td>{{ toNumber(totalInfo.token0_amount) }}</td>
+					<td>${{ priceFormatter(totalInfo.token0_total) }}</td>
+					<td>{{ toNumber(totalInfo.token1_amount) }}</td>
+					<td>${{ priceFormatter(totalInfo.token1_total) }}</td>
+					<td>${{ priceFormatter(totalInfo.total) }}</td>
+				</tr>
+				</tfoot>
+			</template>
 		</v-data-table-server>
 </template>
 
 <script>
+import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchDexPairTxs } from "@/api";
 import { API_DOMAIN, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { priceFormatter } from "@/helpers/common";
-import { mapState } from "pinia";
-import { useMainStore } from "@/store/mainStore";
 import { useDebounceFn } from "@vueuse/core";
 import { AmpPlugin, easepick, PresetPlugin, RangePlugin, TimePlugin } from "@easepick/bundle";
 
@@ -74,7 +87,8 @@ export default {
 
 		pickerPeriod: '',
 		filter: {
-			type: 'all'
+			type: 'all',
+			isCreator: 0
 		}
   }},
 	async created() {
@@ -109,7 +123,7 @@ export default {
 		// ...mapState(useMainStore, {chains: 'chains'}),
 		rows() {
 			return this.items.map(item => {
-				item.ago = '1y 5m 1d 2h'
+				item.ago = moment(item.date).fromNow() //'1y 5m 1d 2h'
 				return item
 			})
 		}
