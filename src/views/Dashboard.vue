@@ -6,7 +6,7 @@
 				<!-- <v-chip text="My Dashboard" size="large" />-->
 			</div>
 			<div class="v-col-auto">
-				<v-select v-model="activeDashSelect" :items="items" item-title="name" item-value="id" :loading="loading"
+				<v-select v-model="activeDashSelect" :items="parsedItems" :loading="loading" hide-no-data
 					density="compact" variant="outlined" hide-details class="va-middle d-inline-block" />
 				<v-btn color="white" variant="outlined" @click="editDashboard" prepend-icon="mdi-square-edit-outline" class="text-none mx-3">Edit</v-btn>
 				<v-btn color="white" variant="outlined" @click="addDashboard" class="text-none" prepend-icon="mdi-monitor-dashboard">New Dashboard</v-btn>
@@ -76,22 +76,22 @@ export default {
 		this.loadData()
 	},
 	computed: {
-		// parsedItems() { return !this.items ? [] : this.items.map(i => ({value: i.id, title: i.title})) }
+		parsedItems() { return !this.items ? [] : this.items.map(i => ({value: +i.id, title: i.name})) }
 	},
 	methods: {
 		...mapActions(useMainStore, ['showAlert']),
-    async loadData () {
+    async loadData (selectedIdAfterLoad = null) {
       this.loading = true
       const { data } = await fetchDashboards()
       this.loading = false
 
       if(data.success) {
         this.items = Object.keys(data.result).map(id => ({
-					id,
+					id: +id,
 					name: data.result[id].name,
 					widgets: data.result[id].widgets
 				}))
-				this.activeDashSelect = this.items[0]?.id
+				this.activeDashSelect = +selectedIdAfterLoad || +this.items[0]?.id
       }
     },
 		addDashboard() {
@@ -100,9 +100,9 @@ export default {
 		},
 		async editDashboard() {
 			this.dialog = true
-			const item = this.items.find(i => i.id === this.activeDashSelect)
-			this.form.id = item.id
-			this.form.name = item.name
+			const { id, name } = this.items.find(i => +i.id === this.activeDashSelect)
+			this.form.id = +id
+			this.form.name = name
 		},
 		resetForm() {
 			this.form.id = null
@@ -124,7 +124,7 @@ export default {
 			if(data.success) {
 				this.dialog = false
 				this.showAlert({msg: 'Successfully save', color: 'success'})
-				await this.loadData()
+				await this.loadData(data.result?.id || this.activeDashSelect)
 			}
 		},
 		async onDeleteItem() {

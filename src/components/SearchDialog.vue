@@ -8,14 +8,17 @@
 			<v-card-text class="mb-4">
 				<v-text-field v-model="searchInput" placeholder="Wallet address, token, entity, e.g." ref="searchInput"
 					:loading="loading" persistent-placeholder class="mb-2"></v-text-field>
-				<v-list v-if="results.length" height="500">
-					<v-list-item v-for="item in results"
-					 :title="item.name || item.address" @click="onResultClick"
-					 :subtitle="item.type"
-					 :to="{
-						  name: item.type === 'entity' ? 'Entity' : (item.type === 'token' ? 'Token' : 'Wallet'),
-					 		params: {id: item.type === 'entity' ? item.id : item.address}
-					 }" ></v-list-item>
+				<v-list v-if="Object.keys(results).length" height="500">
+					<template v-for="(items, type) in results">
+						<v-list-subheader class="text-uppercase">{{ type }}</v-list-subheader>
+						<v-list-item v-for="item in items"
+						 :title="item.name || item.address" @click="onResultClick"
+						 :to="{
+								name: type === 'entities' ? 'Entity' : (type === 'tokens' ? 'Token' : (type === 'pairs' ? 'Pair' : 'Wallet')),
+								params: { [type === 'pairs' ? 'pairAddr' : 'id']: (type === 'entities' ? item.id : item.address) }
+						 }"
+						  ></v-list-item>
+					</template>
 				</v-list>
 				<v-alert v-else height="500" class="text-center bg-blue-grey-darken-4">Please enter search query</v-alert>
 			</v-card-text>
@@ -42,19 +45,23 @@ export default {
       dialog: false,
       loading: false,
 			searchInput: '',
-			results: []
+			results: {}
     }
   },
 	created() {
 		this.debouncedFn = useDebounceFn(async () => {
 			if(!this.searchInput.trim()) {
-				this.results = []; return
+				this.results = {}; return
 			}
 			this.loading = true
 			const {data} = await fetchSearch(this.searchInput)
 			this.loading = false
 			if(data.success) {
-				this.results = Object.values(data.result)
+				Object.keys(data.result).map(k => {
+					if(!data.result[k].length)
+						delete data.result[k]
+				})
+				this.results = data.result
 			}
 		}, 500)
 	},
