@@ -76,11 +76,11 @@ function fillFindedPairs(data) {
     i.description = `${i.symbol} | ${i.exchange} | ${i.type} | ${shortAddress(i.pair_addr)}`
 
     // TODO TEMP MOCK!!!
-    if(i.pair_id === 777879) { // TANK/BUSD
-      i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/16447.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
-    } else if(i.pair_id === 309) { // WBNB/BUSD
-      i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
-    }
+    // if(i.pair_id === 777879) { // TANK/BUSD
+    //   i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/16447.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
+    // } else if(i.pair_id === 309) { // WBNB/BUSD
+    //   i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
+    // }
     // pancake logo
     // i.exchange_logo = i.exchange_id !== 20 ? '' : 'https://s2.coinmarketcap.com/static/img/coins/64x64/7186.png' // add in ver 25.002
 
@@ -90,6 +90,9 @@ function fillFindedPairs(data) {
     if(a.tx_count < b.tx_count) return 1
     return 0
   })
+
+  chartStore().similarityPools = [...data]
+
   findedPairs = [...data]
 }
 
@@ -173,7 +176,7 @@ export default {
       // volume_precision: 2, // кол-во десятичных символов в объеме
       data_status: 'streaming', // streaming | endofday | pulsed | delayed_streaming
 
-      logo_urls: symbolItem.logo_urls, // TODO переделать на статичные иконки // add in ver 25.002
+      // logo_urls: symbolItem.logo_urls, // TODO переделать на статичные иконки // add in ver 25.002
     };
 
     // symbolInfo.checkInvert = function () {

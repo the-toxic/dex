@@ -273,13 +273,20 @@ export const removeEntity = async (uuid) => {
   return await axios.delete(`entity/${uuid}`);
 }
 
-export const fetchDashboard = async (id) => {
-  // return await axios.get('dashboard');
-  await delay(500)
-  return { data: { success: true, result: [
-    {title: 'Default', uuid: '1234-12312-123123-123123', widgets: []},
-    {title: 'My Dash 2', uuid: '2222-12312-123123-123123', widgets: []},
-  ] }}
+export const fetchDashboards = async () => {
+  return await axios.get('dashboards');
+  // await delay(500)
+  // return { data: { success: true, result: [
+  //   {name: 'Default', id: 1, widgets: []},
+  //   {name: 'My Dash 2', id: 2, widgets: []},
+  // ] }}
+}
+export const saveDashboard = async (payload) => {
+  const isEdit = !!payload.id
+  return await axios.post(`dashboard${isEdit ? '/'+payload.id : '' }`, payload);
+}
+export const removeDashboard = async (id) => {
+  return await axios.delete(`dashboard/${id}`);
 }
 
 export const fetchDexAnalyzeTxs = async () => {

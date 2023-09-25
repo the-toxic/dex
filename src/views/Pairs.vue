@@ -5,22 +5,23 @@
     </div>
 
     <v-card class="mb-0">
-      <v-card-text class="d-flex justify-start align-center flex-wrap pa-4">
+      <v-card-text class="d-flex justify-space-between align-center flex-wrap pa-4">
         <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-fire" color="red" start /> Hot Pairs</v-btn>
         <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-finance" color="success" start /> Gainers</v-btn>
         <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-emoticon-poop" start color="brown-lighten-1" /> Losers</v-btn>
         <v-btn rounded class="text-none mr-2" variant="outlined"><v-icon icon="mdi-new-box" start /> New Pairs</v-btn>
         <div class="flex-fill"></div>
-        <v-btn @click="filterOpened = !filterOpened" rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>
-				<v-divider class="my-3" />
-				<div v-if="filterOpened">
-					<v-select label="Chain" v-model="network" :items="[{value: 'all', title: 'All'}, {value: 'bsc', title: 'BSC'}, {value: 'ethereum', title: 'Ethereum'}]"
-						variant="underlined" rounded hide-details density="comfortable"></v-select>
-				</div>
+<!--        <v-btn @click="filterOpened = !filterOpened" rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>-->
+<!--				<v-divider class="my-3" />-->
+<!--				<div v-if="filterOpened">-->
+					<v-select label="Chain" v-model="network" class="flex-grow-0" style="width: 150px"
+						:items="[{value: 'all', title: 'All'}, {value: 'bsc', title: 'BSC'}, {value: 'ethereum', title: 'Ethereum'}]"
+						variant="outlined" rounded hide-details density="compact"></v-select>
+<!--				</div>-->
       </v-card-text>
     </v-card>
 
-		<v-text-field v-model.lazy="searchInput" label="Search by Tokens..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" />
+<!--		<v-text-field v-model.lazy="searchInput" label="Search by Tokens..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" />-->
 
 		<v-data-table-server
 			v-model:items-per-page="itemsPerPage"
@@ -104,17 +105,17 @@ export default {
 		this.network = this.$route.params.network.toString().toLowerCase()
 		if(!['all', 'bsc', 'ethereum'].includes(this.network)) this.$router.replace({name: 'Console'})
 
-		this.debouncedFn = useDebounceFn(async () => {
-			await this.loadItems()
-		}, 500)
+		// this.debouncedFn = useDebounceFn(async () => {
+		// 	await this.loadItems()
+		// }, 500)
 
 		await this.loadItems()
 	},
 	watch: {
-		searchInput(newVal) {
-			console.log('watch')
-			this.debouncedFn()
-		},
+		// searchInput(newVal) {
+		// 	console.log('watch')
+		// 	this.debouncedFn()
+		// },
 		network(newVal, oldVal) {
 			if(!oldVal) return
 			console.log('chain', newVal)

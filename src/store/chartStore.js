@@ -6,6 +6,7 @@ const getDefaultState = () => {
   return {
     activeSymbol: null,
     pairInfo: null,
+    similarityPools: [],
     lastTXs: [],
     sessionId,
     exchangesList: {},

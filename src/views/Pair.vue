@@ -15,7 +15,7 @@
 								</template>
 							</v-img>
             </div>
-						<h2 class="fs24 font-weight-regular mr-3" style="color: #D9DCEE">{{ tokenName }}</h2>
+						<h2 class="fs24 font-weight-regular mr-3" style="color: #D9DCEE">{{ tokenTitle }}</h2>
 						<v-btn size="small" icon="mdi-star-outline" class="mr-3"></v-btn>
 						<v-btn size="small" icon="mdi-bell" class="mr-3"></v-btn>
 						<v-btn size="small" icon="mdi-information-outline" class="mr-3"></v-btn>
@@ -33,7 +33,7 @@
 							<v-btn value="analyze" class="text-none" >Analyze</v-btn>
 							<v-btn value="pair" class="text-none" >Pair</v-btn>
 						</v-btn-toggle>
-						<v-select v-model="pairSelect" :items="[pairName]"  variant="outlined" class="d-inline-block va-middle" hide-details density="compact" />
+						<v-select v-model="pairSelect" :items="pairSelectItems" :loading="pairInfoLoading"  variant="outlined" class="d-inline-block va-middle" hide-details density="compact" />
           </div>
         </v-card-text>
       </v-card>
@@ -50,27 +50,24 @@
 							<v-card-text>
 								<div class="d-flex mb-3" style="gap: 10px">
 									<div class="flex-fill pa-2 text-center border rounded-lg">
-										5M <div :class="{'text-red': priceChange < 0, 'text-green': priceChange >= 0}">{{ toNumber(priceChange) }}%</div>
+										1H <div :class="{'text-red': priceChange24H < 0, 'text-green': priceChange24H >= 0}">{{ toNumber(priceChange24H) }}%</div>
 									</div>
 									<div class="flex-fill pa-2 text-center border rounded-lg">
-										1H <div :class="{'text-red': priceChange < 0, 'text-green': priceChange >= 0}">{{ toNumber(priceChange) }}%</div>
+										6H <div :class="{'text-red': priceChange24H < 0, 'text-green': priceChange24H >= 0}">{{ toNumber(priceChange24H) }}%</div>
 									</div>
 									<div class="flex-fill pa-2 text-center border rounded-lg">
-										6H <div :class="{'text-red': priceChange < 0, 'text-green': priceChange >= 0}">{{ toNumber(priceChange) }}%</div>
+										12H <div :class="{'text-red': priceChange24H < 0, 'text-green': priceChange24H >= 0}">{{ toNumber(priceChange24H) }}%</div>
 									</div>
 									<div class="flex-fill pa-2 text-center border rounded-lg">
-										24H <div :class="{'text-red': priceChange < 0, 'text-green': priceChange >= 0}">{{ toNumber(priceChange) }}%</div>
+										24H <div :class="{'text-red': priceChange24H < 0, 'text-green': priceChange24H >= 0}">{{ toNumber(priceChange24H) }}%</div>
 									</div>
 								</div>
 
-								<v-tabs v-model="tabPeriod" fixed-tabs>
-									<v-tab value="5m" variant="flat">5M</v-tab>
-									<v-tab value="1h" variant="flat">1H</v-tab>
-									<v-tab value="6h" variant="flat">6H</v-tab>
-									<v-tab value="24h" variant="flat">24H</v-tab>
+								<v-tabs v-model="currentPeriodTab" fixed-tabs>
+									<v-tab v-for="period in periodsChanges" :value="period" variant="flat">{{ period }}</v-tab>
 								</v-tabs>
-								<v-window v-model="tabPeriod">
-									<v-window-item v-for="period in ['5m', '1h', '6h', '24h']" :value="period">
+								<v-window v-model="currentPeriodTab">
+									<v-window-item v-for="period in periodsChanges" :value="period">
 										<div class="pa-4 rounded border bg-blue-grey-darken-4 d-flex">
 											<div>
 												<p class="text-disabled">TXs</p><p>53</p>
@@ -209,6 +206,7 @@ import DexAnalyzeTxsGroupTable from "@/components/DexAnalyzeTxsGroupTable.vue";
 import LWChart from "@/components/LWChart.vue";
 import DexPairTxsTable from "@/components/DexPairTxsTable.vue";
 import DexPairWalletsTable from "@/components/DexPairWalletsTable.vue";
+import { useMainStore } from "@/store/mainStore";
 
 export default {
   name: "Pair",
@@ -219,15 +217,16 @@ export default {
   },
   // components: {TableHistory},
   data() { return {
-		tabContent: 'dex',
-		tabPeriod: '5m',
-		tabChartVariant: 'liquidity',
-		pairSelect: null,
-		API_DOMAIN,
-    pairInfoLoading: false,
     title: 'Console',
     description: import.meta.env.VITE_APP_PROJECT_NAME,
-    pairName: '...',
+		tabContent: 'dex',
+		periodsChanges: ['1H', '6H', '12H', '24H'],
+		currentPeriodTab: '1H',
+		tabChartVariant: 'liquidity',
+		API_DOMAIN,
+    pairInfoLoading: false,
+		pairSelect: null,
+    pairSymbol: '...',
     pairAddr: '',
     loadingOldTxs: true,
 
@@ -399,29 +398,12 @@ export default {
     if(!this.pairAddr.startsWith('0x'))
       return this.$router.replace({name: 'Console'})
   },
-	mounted() {
-		// const chart = createChart(this.$refs.chart1, { width: 400, height: 300 });
-		// const lineSeries = chart.addLineSeries();
-		// lineSeries.setData([
-		// 	{ time: '2019-04-11', value: 80.01 },
-		// 	{ time: '2019-04-12', value: 96.63 },
-		// 	{ time: '2019-04-13', value: 76.64 },
-		// 	{ time: '2019-04-14', value: 81.89 },
-		// 	{ time: '2019-04-15', value: 74.43 },
-		// 	{ time: '2019-04-16', value: 80.01 },
-		// 	{ time: '2019-04-17', value: 96.63 },
-		// 	{ time: '2019-04-18', value: 76.64 },
-		// 	{ time: '2019-04-19', value: 81.89 },
-		// 	{ time: '2019-04-20', value: 74.43 },
-		// ]);
-	},
-
 	watch: {
     async activeSymbol(newVal, oldVal) {
       if(!newVal) return // on resetState
       // console.log('activeSymbol change', newVal, oldVal)
-      this.pairName = newVal.symbol
-      this.pairSelect = newVal.symbol
+      this.pairSymbol = newVal.symbol
+      this.pairSelect = newVal.full_name
       this.pairAddr = newVal.pair_addr
       this.updateTitle()
       if(oldVal && (newVal.type !== oldVal.type || newVal.pair_addr !== oldVal.pair_addr)) {
@@ -431,29 +413,39 @@ export default {
       await this.getPairInfo(newVal.pair_id)
       this.pairInfoLoading = false
     },
+		pairSelect(newVal, oldVal) {
+			console.log('pairSelect', newVal, oldVal)
+			window.tvWidget.activeChart().setSymbol(newVal)
+		},
     lastPrice() {
       this.updateTitle()
     }
   },
   computed: {
     PROJECT_NAME() { return PROJECT_NAME },
-    ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'lastPrice', 'leftToken', 'rightToken', "lastTXs"]),
+    ...mapState(useMainStore, ['chains']),
+    ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'similarityPools', 'lastPrice', 'leftToken', 'rightToken', "lastTXs"]),
 		iconToken0() {
-			return !this.pairInfo ? '' : `${API_DOMAIN}/images/tokens/binance-smart-chain/${this.pairInfo.token0.address.slice(0,4)}/${this.pairInfo.token0.address}/default.png`
+			const iconFolder = !this.chains || !this.activeSymbol ? null : this.chains[this.activeSymbol.chain_id]['icon_folder']
+			return !this.pairInfo || !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${this.pairInfo.token0.address.toLowerCase().slice(0,4)}/${this.pairInfo.token0.address.toLowerCase()}/default.png`
 		},
-    buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
-    tokenName() { return this.pairInfo ?  this.pairInfo.token0.name : 'Loading...' },
-    buyVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.buy_volume_24h) : 0 },
-    sellVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.sell_volume_24h) : 0 },
+    tokenTitle() { return this.pairInfo ?  this.pairInfo.token0.name : 'Loading...' },
+		pairSelectItems() {
+			// return this.pairInfo.pool.similarity_pools.map(i => {return { value: `None:${i.name}:${i.address}`, title: i.name }})
+			return this.similarityPools.map(i => ({ value: i.full_name, title: i.symbol }))
+		},
+    // buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
+    // buyVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.buy_volume_24h) : 0 },
+    // sellVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.sell_volume_24h) : 0 },
     // buyTxCount24() { return this.pairInfo ? this.pairInfo.pool.buy_tx_count_24h : 0 },
     // sellTxCount24() { return this.pairInfo ? this.pairInfo.pool.sell_tx_count_24h : 0 },
-    holders() { return this.pairInfo ? this.pairInfo.token0.holders : 0 },
-    totalSupply() { return this.pairInfo ? this.pairInfo.token0.total_supply : 0 },
-    volume24h() { return this.pairInfo ? this.pairInfo.pool.volume_24h : 0 },
-    liquidity() { return this.pairInfo ? this.pairInfo.pool.total_liquidity : 0 },
-    txCount24() { return this.pairInfo ? this.pairInfo.pool.tx_count_24h : 0 },
-    marketCap() { return this.pairInfo ? this.pairInfo.token0.total_supply * this.lastPrice : 0 },
-    priceChange() { return this.pairInfo ? this.pairInfo.pool.price_change_24h : 0 },
+    // holders() { return this.pairInfo ? this.pairInfo.token0.holders : 0 },
+    // totalSupply() { return this.pairInfo ? this.pairInfo.token0.total_supply : 0 },
+    // volume24h() { return this.pairInfo ? this.pairInfo.pool.volume_24h : 0 },
+    // liquidity() { return this.pairInfo ? this.pairInfo.pool.total_liquidity : 0 },
+    // txCount24() { return this.pairInfo ? this.pairInfo.pool.tx_count_24h : 0 },
+    // marketCap() { return this.pairInfo ? this.pairInfo.token0.total_supply * this.lastPrice : 0 },
+    priceChange24H() { return this.pairInfo ? this.pairInfo.pool.price_change_24h : 0 },
   },
   methods: {
 		toCurrency,
@@ -461,8 +453,8 @@ export default {
     ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
 
     updateTitle() {
-      this.title = `${this.pairName} - ${priceFormatter(this.lastPrice)}`
-      this.description = `Analyse ${this.pairName} of ${this.PROJECT_NAME} | ${this.pairAddr}`
+      this.title = `${this.pairSymbol} - ${priceFormatter(this.lastPrice)}`
+      this.description = `Analyse ${this.pairSymbol} of ${this.PROJECT_NAME} | ${this.pairAddr}`
       this.$emit('updateHead') // update title
     },
   }

@@ -6,10 +6,10 @@
 				<!-- <v-chip text="My Dashboard" size="large" />-->
 			</div>
 			<div class="v-col-auto">
-				<v-select v-model="activeDash" :items="items" item-title="title" item-value="uuid" :loading="loading"
+				<v-select v-model="activeDashSelect" :items="items" item-title="name" item-value="id" :loading="loading"
 					density="compact" variant="outlined" hide-details class="va-middle d-inline-block" />
-				<v-btn color="white" variant="outlined" @click="editDash" class="text-none mx-3">Edit</v-btn>
-				<v-btn color="white" variant="outlined" @click="createDash" class="text-none" prepend-icon="mdi-monitor-dashboard">New Dashboard</v-btn>
+				<v-btn color="white" variant="outlined" @click="editDashboard" prepend-icon="mdi-square-edit-outline" class="text-none mx-3">Edit</v-btn>
+				<v-btn color="white" variant="outlined" @click="addDashboard" class="text-none" prepend-icon="mdi-monitor-dashboard">New Dashboard</v-btn>
 			</div>
 		</div>
 		<div class="text-center" style="padding-top: 20%">
@@ -17,45 +17,130 @@
 			<v-btn v-else color="primary" @click="addWidget" rounded class="text-none"
 			 @mouseenter="soonText = 'Soon'" @mouseleave="soonText = 'Add Widget'"  prepend-icon="mdi-view-dashboard-edit-outline">{{ soonText }}</v-btn>
 		</div>
+
+		<v-dialog v-model="dialog" max-width="700">
+			<v-card :loading="dialogLoader">
+				<v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
+					<v-card-title class="mb-3 pt-7" style="font-size: 25px;">Dashboard Editor</v-card-title>
+					<v-card-text>
+						<v-text-field label="Name*" v-model="form.name" :disabled="form.name === 'Default'" class="mb-2" :rules="[v => !!v || 'Required field']" density="compact" />
+					</v-card-text>
+					<v-card-actions>
+						<v-btn v-if="form.id" @click="removeDash" :disabled="dialogLoader || form.name === 'Default'" color="red" variant="text">DELETE</v-btn>
+						<v-spacer></v-spacer>
+						<v-btn variant="text" @click="dialog = false" color="disabled">Close</v-btn>
+						<v-btn type="submit" variant="text" color="primary" :loading="dialogLoader" :disabled="dialogLoader || form.name === 'Default'">Save</v-btn>
+					</v-card-actions>
+				</v-form>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="dialogDelete" max-width="500">
+			<v-card rounded class="rounded-xl">
+				<v-card-text class="text-center py-16 px-10">
+					<p class="fs20 mb-6">Are you sure you want to delete?</p>
+					<div class="d-flex justify-center align-center">
+						<v-btn color="red" @click="onDeleteItem" :loading="dialogLoader" :disabled="dialogLoader" class="text-none mr-6">Delete</v-btn>
+						<v-btn color="white" @click="dialogDelete = false" class="text-none">Cancel</v-btn>
+					</div>
+				</v-card-text>
+			</v-card>
+		</v-dialog>
   </v-container>
 </template>
 
 <script>
-import { fetchDashboard } from "@/api";
+import { fetchDashboards, removeDashboard, saveDashboard } from "@/api";
+import { mapActions } from "pinia";
+import { useMainStore } from "@/store/mainStore";
 
 export default {
   name: 'Dashboard',
   data: () => ({
     loading: false,
-		activeDash: null,
+		activeDashSelect: null,
     items: [],
-		soonText: 'Add Widget'
+		soonText: 'Add Widget',
+
+		dialog: false,
+		dialogLoader: false,
+		valid: true,
+		form: {
+			id: null,
+			name: null,
+		},
+		dialogDelete: false,
+		// deletedId: null
   }),
 	created() {
 		this.loadData()
 	},
 	computed: {
-		// parsedItems() { return !this.items ? [] : this.items.map(i => ({value: i.uuid, title: i.title})) }
+		// parsedItems() { return !this.items ? [] : this.items.map(i => ({value: i.id, title: i.title})) }
 	},
 	methods: {
+		...mapActions(useMainStore, ['showAlert']),
     async loadData () {
       this.loading = true
-      const { data } = await fetchDashboard()
+      const { data } = await fetchDashboards()
       this.loading = false
+
       if(data.success) {
-        this.items = data.result
-				this.activeDash = this.items[0]
+        this.items = Object.keys(data.result).map(id => ({
+					id,
+					name: data.result[id].name,
+					widgets: data.result[id].widgets
+				}))
+				this.activeDashSelect = this.items[0]?.id
       }
     },
-		createDash() {
-
+		addDashboard() {
+			this.dialog = true
+			this.resetForm()
 		},
-		editDash() {
-
+		async editDashboard() {
+			this.dialog = true
+			const item = this.items.find(i => i.id === this.activeDashSelect)
+			this.form.id = item.id
+			this.form.name = item.name
 		},
-		addWidget() {
+		resetForm() {
+			this.form.id = null
+			this.$nextTick(() => this.$refs.form.reset()) // resetValidation()
+		},
+		async removeDash() {
+			// this.deletedId = item.id
+			this.dialogDelete = true
+		},
 
-		}
+		async onSubmit() {
+			const { valid } = await this.$refs.form.validate()
+			if(!valid) return false
+
+			this.dialogLoader = true
+			const { data } = await saveDashboard(this.form)
+			this.dialogLoader = false
+
+			if(data.success) {
+				this.dialog = false
+				this.showAlert({msg: 'Successfully save', color: 'success'})
+				await this.loadData()
+			}
+		},
+		async onDeleteItem() {
+			this.dialogLoader = true
+			const { data } = await removeDashboard(this.form.id)
+			this.dialogLoader = false
+			this.dialogDelete = false
+			this.dialog = false
+			// this.deletedId = null
+
+			if(data.success) {
+				this.showAlert({msg: 'Successfully removed', color: 'success'})
+				await this.loadData()
+			}
+		},
+		addWidget() {}
   },
 }
 </script>
