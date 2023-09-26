@@ -12,7 +12,7 @@
 					<template v-for="(items, type) in results">
 						<v-list-subheader class="text-uppercase">{{ type }}</v-list-subheader>
 						<v-list-item v-for="item in items"
-						 :title="item.name || item.address" @click="onResultClick"
+						 :title="`${item.name} ${item.address && '('+shortAddress(item.address)+')'}`" @click="onResultClick"
 						 :to="{
 								name: type === 'entities' ? 'Entity' : (type === 'tokens' ? 'Token' : (type === 'pairs' ? 'Pair' : 'Wallet')),
 								params: { [type === 'pairs' ? 'pairAddr' : 'id']: (type === 'entities' ? item.id : item.address) }
@@ -31,6 +31,7 @@ import { mapActions, mapState } from "pinia";
 import { useDebounceFn } from "@vueuse/core";
 import { useMainStore } from "@/store/mainStore";
 import { fetchSearch } from "@/api";
+import { shortAddress } from "@/helpers/mixins";
 
 export default {
   name: "SearchDialog",
@@ -63,7 +64,7 @@ export default {
 				})
 				this.results = data.result
 			}
-		}, 500)
+		}, 1000)
 	},
 	watch: {
 		searchInput(newVal) {
@@ -81,6 +82,7 @@ export default {
 		...mapState(useMainStore, {searchDialog: 'searchDialog'})
 	},
   methods: {
+		shortAddress,
     ...mapActions(useMainStore, {showAlert: 'showAlert', toggleSearchDialog: 'toggleSearchDialog'}),
 
 		onResultClick() {
