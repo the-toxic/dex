@@ -44,9 +44,9 @@
 			<template v-slot:item.type="{ item }">
 				<v-chip :color="item.raw.type === 'buy' ? 'success': 'error'" class="text-capitalize">{{ item.raw.type}}</v-chip>
 			</template>
-			<template v-slot:item.quantity="{ item }">{{ formatNumber(item.raw.quantity) }}</template>
-			<template v-slot:item.total="{ item }">{{ formatNumber(item.raw.total) }}</template>
-			<template v-slot:item.total_usd="{ item }">${{ priceFormatter(item.raw.total_usd) }}</template>
+			<template v-slot:item.quantity="{ item }">{{ formatBigNumber(item.raw.quantity) }}</template>
+			<template v-slot:item.total="{ item }">{{ formatBigNumber(item.raw.total) }}</template>
+			<template v-slot:item.total_usd="{ item }">${{ formatNumber(item.raw.total_usd) }}</template>
 			<template v-slot:item.variation="{ item }">
 				<v-chip :color="isNaN(item.raw.variation) ? 'white': (item.raw.variation < 0 ? 'error' : 'success')">
 					{{ isNaN(item.raw.variation) ? '' : (item.raw.variation < 0 ? '-' : '+') }} {{ isNaN(item.raw.variation) ? 'Unknown' : Math.abs(item.raw.variation) }}%
@@ -64,7 +64,7 @@
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchBigSwaps } from "@/api";
-import { API_DOMAIN, priceFormatter, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
+import { API_DOMAIN, formatNumber, formatBigNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 import { useDebounceFn } from "@vueuse/core";
@@ -123,7 +123,7 @@ export default {
 		}
 	},
   methods: {
-		shortAddress, priceFormatter, formatNumber, toCurrency, toNumber,
+		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
 
 		async loadItems () {
       this.loading = true

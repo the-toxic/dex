@@ -24,12 +24,12 @@
 			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.raw.wallet) }}</v-btn></template>
 			<template v-slot:item.profit="{ item }">{{ toCurrency(item.raw.profit) }}</template>
 			<template v-slot:item.roi="{ item }"><v-chip :color="item.raw.roi > 0 ? 'success': (item.raw.roi < 0 ? 'error' : 'white')" size="small">{{ item.raw.roi > 0 ? '+' : (item.raw.roi < 0 ? '-' : '') }} {{ Math.abs(item.raw.roi) || 0 }}%</v-chip></template>
-			<template v-slot:item.buy_amount="{ item }">{{ formatNumber(item.raw.buy_amount) }}</template>
-			<template v-slot:item.sell_amount="{ item }">{{ formatNumber(item.raw.sell_amount) }}</template>
-			<template v-slot:item.buy_price="{ item }">${{ priceFormatter(item.raw.buy_price) }}</template>
-			<template v-slot:item.sell_price="{ item }">${{ priceFormatter(item.raw.sell_price) }}</template>
-			<template v-slot:item.buy_total="{ item }">${{ priceFormatter(item.raw.buy_total) }}</template>
-			<template v-slot:item.sell_total="{ item }">${{ priceFormatter(item.raw.sell_total) }}</template>
+			<template v-slot:item.buy_amount="{ item }">{{ formatBigNumber(item.raw.buy_amount) }}</template>
+			<template v-slot:item.sell_amount="{ item }">{{ formatBigNumber(item.raw.sell_amount) }}</template>
+			<template v-slot:item.buy_price="{ item }">${{ formatNumber(item.raw.buy_price) }}</template>
+			<template v-slot:item.sell_price="{ item }">${{ formatNumber(item.raw.sell_price) }}</template>
+			<template v-slot:item.buy_total="{ item }">${{ formatNumber(item.raw.buy_total) }}</template>
+			<template v-slot:item.sell_total="{ item }">${{ formatNumber(item.raw.sell_total) }}</template>
 
 			<template v-slot:tfoot>
 				<tfoot>
@@ -41,12 +41,12 @@
 							{{ totalInfo.roi > 0 ? '+' : (totalInfo.roi < 0 ? '-' : '') }} {{ Math.abs(totalInfo.roi) || 0 }}%, avg
 						</v-chip>
 					</td>
-					<td>{{ formatNumber(totalInfo.buy_amount) }}</td>
-					<td>${{ priceFormatter(totalInfo.buy_price) }}</td>
-					<td>${{ priceFormatter(totalInfo.buy_total) }}</td>
-					<td>{{ formatNumber(totalInfo.sell_amount) }}</td>
-					<td>${{ priceFormatter(totalInfo.sell_price) }}</td>
-					<td>${{ priceFormatter(totalInfo.sell_total) }}</td>
+					<td>{{ formatBigNumber(totalInfo.buy_amount) }}</td>
+					<td>${{ formatNumber(totalInfo.buy_price) }}</td>
+					<td>${{ formatNumber(totalInfo.buy_total) }}</td>
+					<td>{{ formatBigNumber(totalInfo.sell_amount) }}</td>
+					<td>${{ formatNumber(totalInfo.sell_price) }}</td>
+					<td>${{ formatNumber(totalInfo.sell_total) }}</td>
 				</tr>
 				</tfoot>
 			</template>
@@ -58,7 +58,7 @@
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { easepick, AmpPlugin, RangePlugin, PresetPlugin, TimePlugin } from '@easepick/bundle';
 import { fetchDexAnalyzeGroupTxs } from "@/api";
-import { formatNumber, priceFormatter, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
+import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 
 export default {
@@ -103,7 +103,7 @@ export default {
 		},
 	},
 	methods: {
-		shortAddress, priceFormatter, formatNumber, toCurrency, toNumber,
+		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
 
     async loadItems () {
       this.loading = true

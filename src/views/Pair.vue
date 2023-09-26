@@ -19,7 +19,7 @@
 						<v-btn size="small" icon="mdi-star-outline" class="mr-3"></v-btn>
 						<v-btn size="small" icon="mdi-bell" class="mr-3"></v-btn>
 						<v-btn size="small" icon="mdi-information-outline" class="mr-3"></v-btn>
-						<div class="fs18 mr-3">{{ priceFormatter(lastPrice) }} {{ rightToken }}</div>
+						<div class="fs18 mr-3">{{ formatNumber(lastPrice) }} {{ rightToken }}</div>
 						<div class="fs16 text-disabled mr-3">{{ toCurrency(lastPrice) }}</div>
           </div>
 					<!-- <div v-if="pairInfo" class="lh-1_2">
@@ -193,7 +193,7 @@
 
 <script>
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
-import { API_DOMAIN, PROJECT_NAME, shortAddress, priceFormatter, toCurrency, toNumber } from "@/helpers/mixins";
+import { API_DOMAIN, PROJECT_NAME, shortAddress, formatNumber, toCurrency, toNumber } from "@/helpers/mixins";
 import TableHistory from "@/components/TableHistory.vue";
 import { mapActions, mapState } from "pinia";
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
@@ -454,11 +454,11 @@ export default {
   },
   methods: {
 		toCurrency,
-    shortAddress, toNumber, priceFormatter,  // from mixins
+    shortAddress, toNumber, formatNumber,  // from mixins
     ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
 
     updateTitle() {
-      this.title = `${this.pairSymbol} - ${priceFormatter(this.lastPrice)}`
+      this.title = `${this.pairSymbol} - ${formatNumber(this.lastPrice)}`
       this.description = `Analyse ${this.pairSymbol} of ${this.PROJECT_NAME} | ${this.pairAddr}`
       this.$emit('updateHead') // update title
     },

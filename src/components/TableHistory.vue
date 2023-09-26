@@ -17,9 +17,9 @@
 				<div v-for="item in list" :key="item.index" class="txsTableRow" >
 					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.data.parsedDate }}</div>
 					<div class="txsTableTd text-uppercase" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.data.type }}</div>
-					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.data.parsedPrice) }}</div>
-					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.data.amount_token0) }}</div>
-					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.data.amount_token1) }}</div>
+					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ formatNumber(item.data.parsedPrice, true) }}</div>
+					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ formatNumber(item.data.amount_token0, true) }}</div>
+					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ formatNumber(item.data.amount_token1, true) }}</div>
 					<div class="txsTableTd text-center" style="flex-grow: 2">
 						<a v-if="item.data.router.address" :href="`${blockchainDomain}/address/${item.data.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.data.router.title }}</a>
 						<span v-else>{{ item.data.router.title }}</span>
@@ -48,7 +48,7 @@
 	const chartStore = useChartStore()
 	const { activeSymbol } = storeToRefs(chartStore) // for use in watch
 
-	import { shortAddress, priceFormatter } from "@/helpers/mixins";
+	import { shortAddress, formatNumber } from "@/helpers/mixins";
 	import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 	import { storeToRefs } from "pinia";
 

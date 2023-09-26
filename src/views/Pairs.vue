@@ -49,15 +49,15 @@
 					<span class="text-secondary ml-3">{{ item.raw.token0.name }}</span>
 				</v-btn>
 			</template>
-			<template v-slot:item.price="{ item }">${{ priceFormatter(item.raw.last_price) }}</template>
-			<template v-slot:item.txs="{ item }">{{ formatNumber(item.raw.txs) }}</template>
-			<template v-slot:item.volume="{ item }">{{formatNumber(item.raw.volume_token0) }}</template>
+			<template v-slot:item.price="{ item }">${{ formatNumber(item.raw.last_price) }}</template>
+			<template v-slot:item.txs="{ item }">{{ formatBigNumber(item.raw.txs) }}</template>
+			<template v-slot:item.volume="{ item }">{{formatBigNumber(item.raw.volume_token0) }}</template>
 			<template v-slot:item.change_24h="{ item }">
 				<v-chip :color="item.raw.change_24h > 0 ? 'success': (item.raw.change_24h < 0 ? 'error' : 'white')">
 					{{ item.raw.change_24h > 0 ? '+' : (item.raw.change_24h < 0 ? '-' : '') }} {{ Math.abs(item.raw.change_24h) || 0 }}%
 				</v-chip>
 			</template>
-			<template v-slot:item.liquidity="{ item }">${{ formatNumber(item.raw.liquidity) || 0 }}</template>
+			<template v-slot:item.liquidity="{ item }">${{ formatBigNumber(item.raw.liquidity) || 0 }}</template>
 			<template v-slot:item.action="{ item }">
 				<v-btn :to="{name: 'Pair', params: {pairAddr: item.raw.pair_addr}}"
 					 icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
@@ -68,9 +68,8 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { useDebounceFn } from "@vueuse/core";
-import { fetchPairs, fetchSearch } from "@/api";
-import { API_DOMAIN, formatNumber, priceFormatter, toCurrency, toNumber } from "@/helpers/mixins";
+import { fetchPairs } from "@/api";
+import { API_DOMAIN, formatBigNumber, formatNumber, toCurrency, toNumber } from "@/helpers/mixins";
 import { mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 
@@ -134,7 +133,7 @@ export default {
 		}
 	},
   methods: {
-    priceFormatter, formatNumber, toCurrency, toNumber,
+    formatNumber, formatBigNumber, toCurrency, toNumber,
 
     async loadItems () {
       this.loading = true

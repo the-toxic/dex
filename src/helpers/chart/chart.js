@@ -1,6 +1,5 @@
 import Datafeed from "./datafeed.js";
 // import { symbolItemByInfo } from "@/helpers/common";
-// import { priceFormatter } from "@/helpers/mixins";
 
 export const initChart = (pairAddr) => {
   window.tvWidget = new TradingView.widget({
@@ -53,7 +52,7 @@ export const initChart = (pairAddr) => {
   // onChartReady 25409
 
   tvWidget.onChartReady(() => {
-    // tvWidget.activeChart().priceFormatter().format = priceFormatter; // function
+    // tvWidget.activeChart().priceFormatter().format = formatNumber; // function
 
     tvWidget.headerReady().then(function() {
       // const button = tvWidget.createButton();

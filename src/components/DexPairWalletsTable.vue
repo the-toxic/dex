@@ -30,14 +30,14 @@
 			<template v-slot:item.count_removes="{ item }">{{ toNumber(item.raw.count_removes) }}</template>
 			<template v-slot:item.count_total="{ item }">{{ toNumber(item.raw.count_total) }}</template>
 
-			<template v-slot:item.token0_was="{ item }">${{ priceFormatter(item.raw.token0_was) }}</template>
-			<template v-slot:item.token0_now="{ item }">${{ priceFormatter(item.raw.token0_now) }}</template>
-			<template v-slot:item.token0_profit="{ item }">${{ priceFormatter(item.raw.token0_profit) }}</template>
+			<template v-slot:item.token0_was="{ item }">${{ formatNumber(item.raw.token0_was) }}</template>
+			<template v-slot:item.token0_now="{ item }">${{ formatNumber(item.raw.token0_now) }}</template>
+			<template v-slot:item.token0_profit="{ item }">${{ formatNumber(item.raw.token0_profit) }}</template>
 			<template v-slot:item.token0_roi="{ item }"><v-chip :color="item.raw.token0_roi > 0 ? 'success': (item.raw.token0_roi < 0 ? 'error' : 'white')" size="small">{{ item.raw.token0_roi > 0 ? '+' : (item.raw.token0_roi < 0 ? '-' : '') }} {{ Math.abs(item.raw.token0_roi) || 0 }}%</v-chip></template>
 
-			<template v-slot:item.token1_was="{ item }">${{ priceFormatter(item.raw.token1_was) }}</template>
-			<template v-slot:item.token1_now="{ item }">${{ priceFormatter(item.raw.token1_now) }}</template>
-			<template v-slot:item.token1_profit="{ item }">${{ priceFormatter(item.raw.token1_profit) }}</template>
+			<template v-slot:item.token1_was="{ item }">${{ formatNumber(item.raw.token1_was) }}</template>
+			<template v-slot:item.token1_now="{ item }">${{ formatNumber(item.raw.token1_now) }}</template>
+			<template v-slot:item.token1_profit="{ item }">${{ formatNumber(item.raw.token1_profit) }}</template>
 			<template v-slot:item.token1_roi="{ item }"><v-chip :color="item.raw.token1_roi > 0 ? 'success': (item.raw.token1_roi < 0 ? 'error' : 'white')" size="small">{{ item.raw.token1_roi > 0 ? '+' : (item.raw.token1_roi < 0 ? '-' : '') }} {{ Math.abs(item.raw.token1_roi) || 0 }}%</v-chip></template>
 
 			<template v-slot:tfoot>
@@ -47,13 +47,13 @@
 					<td>{{ toNumber(totalInfo.count_adds) }}</td>
 					<td>{{ toNumber(totalInfo.count_removes) }}</td>
 					<td>{{ toNumber(totalInfo.count_total) }}</td>
-					<td>${{ priceFormatter(totalInfo.token0_was) }}</td>
-					<td>${{ priceFormatter(totalInfo.token0_now) }}</td>
-					<td>${{ priceFormatter(totalInfo.token0_profit) }}</td>
+					<td>${{ formatNumber(totalInfo.token0_was) }}</td>
+					<td>${{ formatNumber(totalInfo.token0_now) }}</td>
+					<td>${{ formatNumber(totalInfo.token0_profit) }}</td>
 					<td><v-chip :color="totalInfo.token0_roi > 0 ? 'success': (totalInfo.token0_roi < 0 ? 'error' : 'white')" size="small">{{ totalInfo.token0_roi > 0 ? '+' : (totalInfo.token0_roi < 0 ? '-' : '') }} {{ Math.abs(totalInfo.token0_roi) || 0 }}%, avg</v-chip></td>
-					<td>${{ priceFormatter(totalInfo.token1_was) }}</td>
-					<td>${{ priceFormatter(totalInfo.token1_now) }}</td>
-					<td>${{ priceFormatter(totalInfo.token1_profit) }}</td>
+					<td>${{ formatNumber(totalInfo.token1_was) }}</td>
+					<td>${{ formatNumber(totalInfo.token1_now) }}</td>
+					<td>${{ formatNumber(totalInfo.token1_profit) }}</td>
 					<td><v-chip :color="totalInfo.token1_roi > 0 ? 'success': (totalInfo.token1_roi < 0 ? 'error' : 'white')" size="small">{{ totalInfo.token1_roi > 0 ? '+' : (totalInfo.token1_roi < 0 ? '-' : '') }} {{ Math.abs(totalInfo.token1_roi) || 0 }}%, avg</v-chip></td>
 				</tr>
 				</tfoot>
@@ -66,7 +66,7 @@
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { easepick, AmpPlugin, RangePlugin, PresetPlugin, TimePlugin } from '@easepick/bundle';
 import { fetchDexPairWallets } from "@/api";
-import { formatNumber, priceFormatter, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
+import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 
 export default {
@@ -141,7 +141,7 @@ export default {
 		},
 	},
 	methods: {
-		shortAddress, priceFormatter, formatNumber, toCurrency, toNumber,
+		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
 
     async loadItems () {
       this.loading = true

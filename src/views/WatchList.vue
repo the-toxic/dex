@@ -76,15 +76,15 @@
 							{{ item.raw.name }}
 						</v-btn>
 					</template>
-					<template v-slot:item.price="{ item }">${{ priceFormatter(item.raw.price) }}</template>
-					<template v-slot:item.percent_5_holders="{ item }">{{ formatNumber(item.raw.percent_5_holders) }}%</template>
+					<template v-slot:item.price="{ item }">${{ formatNumber(item.raw.price) }}</template>
+					<template v-slot:item.percent_5_holders="{ item }">{{ formatBigNumber(item.raw.percent_5_holders) }}%</template>
 					<template v-slot:item.change_7d="{ item }">
-						<v-chip :color="item.raw.change_7d < 0 ? 'error' : 'success'">{{ item.raw.change_7d < 0 ? '-' : '+' }} {{ priceFormatter(Math.abs(item.raw.change_7d)) }}</v-chip>
+						<v-chip :color="item.raw.change_7d < 0 ? 'error' : 'success'">{{ item.raw.change_7d < 0 ? '-' : '+' }} {{ formatNumber(Math.abs(item.raw.change_7d)) }}</v-chip>
 					</template>
 					<template v-slot:item.change_30d="{ item }">
-						<v-chip :color="item.raw.change_30d < 0 ? 'error' : 'success'">{{ item.raw.change_30d < 0 ? '-' : '+' }} {{ priceFormatter(Math.abs(item.raw.change_30d)) }}</v-chip>
+						<v-chip :color="item.raw.change_30d < 0 ? 'error' : 'success'">{{ item.raw.change_30d < 0 ? '-' : '+' }} {{ formatNumber(Math.abs(item.raw.change_30d)) }}</v-chip>
 					</template>
-					<template v-slot:item.market_cap="{ item }">{{ formatNumber(item.raw.market_cap) }}</template>
+					<template v-slot:item.market_cap="{ item }">{{ formatBigNumber(item.raw.market_cap) }}</template>
 					<template v-slot:item.action="{ item }">
 						<v-btn @click="showDeleteDialog('token', item.raw.id)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
 					</template>
@@ -123,7 +123,7 @@
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { deleteWatchlistItem, fetchWhitelistTokens, fetchWhitelistWallets } from "@/api";
-import { formatNumber, priceFormatter, shortAddress, shortString, toCurrency, toNumber } from "@/helpers/mixins";
+import { formatBigNumber, formatNumber, shortAddress, shortString, toCurrency, toNumber } from "@/helpers/mixins";
 import WatchlistWalletModal from "@/components/WatchlistWalletModal.vue";
 
 export default {
@@ -165,7 +165,7 @@ export default {
   }},
 
   methods: {
-		shortString, shortAddress, priceFormatter, formatNumber, toCurrency, toNumber,
+		shortString, shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
     async loadItemsWallets ({ page, itemsPerPage, sortBy }) {
       this.loading = true
       const { data } = await fetchWhitelistWallets({ page, itemsPerPage, sortBy })

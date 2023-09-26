@@ -28,9 +28,9 @@
     <template v-slot="{ item }" v-if="!loading && rows.length">
       <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.parsedDate }}</div>
       <div class="txsTableTd text-uppercase" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.type }}</div>
-      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.parsedPrice) }}</div>
-      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.amount_token0) }}</div>
-      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ priceFormatter(item.amount_token1) }}</div>
+      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ formatNumber(item.parsedPrice) }}</div>
+      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ formatNumber(item.amount_token0) }}</div>
+      <div class="txsTableTd" :class="item.type === 'buy' ? 'buyTd' : 'sellTd'">{{ formatNumber(item.amount_token1) }}</div>
       <div class="txsTableTd text-center" style="flex-grow: 2">
         <a v-if="item.router.address" :href="`${blockchainDomain}/address/${item.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.router.title }}</a>
         <span v-else>{{ item.router.title }}</span>
@@ -62,9 +62,9 @@
         :class="{'buy': item.type === 'buy', 'sell': item.type === 'sell'}" >
       <td>{{ item.parsedDate }}</td>
       <td class="text-uppercase">{{ item.type }}</td>
-      <td>{{ priceFormatter(item.parsedPrice) }}</td>
-      <td>{{ priceFormatter(item.amount_token0) }}</td>
-      <td>{{ priceFormatter(item.amount_token1) }}</td>
+      <td>{{ formatNumber(item.parsedPrice) }}</td>
+      <td>{{ formatNumber(item.amount_token0) }}</td>
+      <td>{{ formatNumber(item.amount_token1) }}</td>
       <td>
         <a v-if="item.router.address" :href="`https://bscscan.com/address/${item.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.router.title }}</a>
         <span v-else>{{ item.router.title }}</span>
@@ -90,7 +90,7 @@ import { useChartStore } from "@/store/chartStore";
 const chartStore = useChartStore()
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-import { shortAddress, priceFormatter } from "@/helpers/mixins";
+import { shortAddress, formatNumber } from "@/helpers/mixins";
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 
 
@@ -111,7 +111,7 @@ export default {
       const items = Object.assign([], this.lastTXs)
       // const items = [...this.lastTXs]
       return items.map(item => {
-        item.parsedPrice = priceFormatter(+item.amount_token1/+item.amount_token0)
+        item.parsedPrice = formatNumber(+item.amount_token1/+item.amount_token0)
         item.parsedDate = new Date((item.date + this.tzOffset) * 1000).toISOString().slice(0, 19).split('T').join(' ')
         item.router = this.exchangesList.hasOwnProperty(item.router_id) ? this.exchangesList[item.router_id] : { title: '—', address: null }
         return item
@@ -136,7 +136,7 @@ export default {
 		// lastTXs(newVal, oldVal) {
 		// 	console.log('lastTXs', newVal.length, oldVal.length)
 		// 	const result = this.lastTXs.map(item => {
-		// 		item.parsedPrice = priceFormatter(+item.amount_token1/+item.amount_token0)
+		// 		item.parsedPrice = formatNumber(+item.amount_token1/+item.amount_token0)
 		// 		item.parsedDate = new Date((item.date + this.tzOffset) * 1000).toISOString().slice(0, 19).split('T').join(' ')
 		// 		item.router = this.exchangesList.hasOwnProperty(item.router_id) ? this.exchangesList[item.router_id] : { title: '—', address: null }
 		// 		return item
@@ -145,7 +145,7 @@ export default {
 		// }
   },
   methods: {
-    shortAddress, priceFormatter,
+    shortAddress, formatNumber,
     infiniteScrolling(isIntersecting, entries, observer) {
       if (entries[0].isIntersecting) {
         console.log('Load Oldest TXs on Scroll...')

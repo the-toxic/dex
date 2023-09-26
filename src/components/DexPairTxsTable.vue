@@ -40,10 +40,10 @@
 				<tr class="text-surface-variant text-center">
 					<td colspan="4" class="text-right">Total</td>
 					<td>{{ toNumber(totalInfo.token0_amount) }}</td>
-					<td>${{ priceFormatter(totalInfo.token0_total) }}</td>
+					<td>${{ formatNumber(totalInfo.token0_total) }}</td>
 					<td>{{ toNumber(totalInfo.token1_amount) }}</td>
-					<td>${{ priceFormatter(totalInfo.token1_total) }}</td>
-					<td>${{ priceFormatter(totalInfo.total) }}</td>
+					<td>${{ formatNumber(totalInfo.token1_total) }}</td>
+					<td>${{ formatNumber(totalInfo.total) }}</td>
 				</tr>
 				</tfoot>
 			</template>
@@ -54,7 +54,7 @@
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchDexPairTxs } from "@/api";
-import { API_DOMAIN, formatNumber, priceFormatter, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
+import { API_DOMAIN, formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import { AmpPlugin, easepick, PresetPlugin, RangePlugin, TimePlugin } from "@easepick/bundle";
 
@@ -128,7 +128,7 @@ export default {
 		}
 	},
   methods: {
-		shortAddress, priceFormatter, formatNumber, toCurrency, toNumber,
+		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
 
 		async loadItems () {
       this.loading = true

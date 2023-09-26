@@ -34,9 +34,9 @@
 			<template v-slot:item.tx_id="{ item }">
 				<v-btn rounded variant="text" :href="`https://${item.raw.tx_id}`" target="_blank" class="text-none">{{ shortAddress(item.raw.tx_id) }} <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-btn>
 			</template>
-			<template v-slot:item.bought="{ item }">{{ formatNumber(item.raw.bought) }}</template>
-			<template v-slot:item.sold="{ item }">{{ formatNumber(item.raw.sold) }}</template>
-			<template v-slot:item.different="{ item }">{{ formatNumber(item.raw.different) }}</template>
+			<template v-slot:item.bought="{ item }">{{ formatBigNumber(item.raw.bought) }}</template>
+			<template v-slot:item.sold="{ item }">{{ formatBigNumber(item.raw.sold) }}</template>
+			<template v-slot:item.different="{ item }">{{ formatBigNumber(item.raw.different) }}</template>
 			<template v-slot:item.cost="{ item }">{{ toCurrency(item.raw.cost) }}</template>
 			<template v-slot:item.revenue="{ item }">{{ toCurrency(item.raw.revenue) }}</template>
 			<template v-slot:item.profit="{ item }">{{ toCurrency(item.raw.profit) }}</template>
@@ -52,9 +52,9 @@
 				<tfoot>
 				<tr class="text-surface-variant text-center">
 					<td colspan="2" class="text-left">Total</td>
-					<td>{{ formatNumber(totalInfo.bought) }}</td>
-					<td>{{ formatNumber(totalInfo.sold) }}</td>
-					<td>{{ formatNumber(totalInfo.different) }}</td>
+					<td>{{ formatBigNumber(totalInfo.bought) }}</td>
+					<td>{{ formatBigNumber(totalInfo.sold) }}</td>
+					<td>{{ formatBigNumber(totalInfo.different) }}</td>
 					<td>{{ toCurrency(totalInfo.cost) }}, avg</td>
 					<td>{{ toCurrency(totalInfo.revenue) }}, avg</td>
 					<td>{{ toCurrency(totalInfo.profit) }}</td>
@@ -76,7 +76,7 @@
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { easepick, AmpPlugin, RangePlugin, PresetPlugin, TimePlugin } from '@easepick/bundle';
 import { fetchSC } from "@/api";
-import { formatNumber, priceFormatter, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
+import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 
 export default {
   name: 'SC',
@@ -142,7 +142,7 @@ export default {
 		// picker.setDate('2023-01-01 - 2023-08-08');
 	},
 	methods: {
-		shortAddress, priceFormatter, formatNumber, toCurrency, toNumber,
+		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
 
     async loadItems ({ page, itemsPerPage, sortBy }) {
       this.loading = true
