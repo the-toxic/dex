@@ -7,6 +7,10 @@ import { formatNumber, shortAddress } from "@/helpers/mixins";
 const chartStore = () => useChartStore()
 const mainStore = () => useMainStore()
 
+chartStore().$subscribe((mutation, state) => {
+  console.log('chartStore subscribe', mutation.events.key, mutation.events.newValue, mutation.events.oldValue/*, state*/)
+})
+
 const lastBarsCache = new Map();
 
 let findedPairs = [
@@ -138,14 +142,15 @@ export default {
     const symbolItem = findedPairs.find(({full_name}) => full_name === symbolFullName);
 
     if (!symbolItem) {
-      console.log('[resolveSymbol]: Cannot resolve symbol', symbolFullName);
-      onResolveErrorCallback('cannot resolve symbol');
+      await loadDefaultPair(symbolFullName) // on change pair
+      // console.log('[resolveSymbol]: Cannot resolve symbol', symbolFullName);
+      // onResolveErrorCallback('cannot resolve symbol');
       return;
     }
 
     // symbolItem.chain_id = symbolItem.type === 'BSC' ? 2 : (symbolItem.type === 'Ethereum' ? 1 : 0)
 
-    chartStore().setSymbol(symbolItem).then()
+    chartStore().setActiveSymbol(symbolItem).then()
 
     const symbolInfo = {
       name: symbolItem.symbol,

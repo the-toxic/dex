@@ -21,20 +21,19 @@ export default {
 		item: null
 	}},
 	created() {
-		this.id = this.$route.params.id.toString().toLowerCase()
 		this.loadData()
 	},
 	// beforeRouteUpdate(to, from) { console.log('beforeRouteUpdate') }, // not work ??
 	watch: {
 		'$route.params.id'(newVal, oldVal) {
-			if(newVal) {
-				this.id = newVal.toString().toLowerCase()
-				this.loadData()
-			}
+			console.log('watch $route.params.id', newVal, oldVal)
+			if(!oldVal || !newVal || newVal.startsWith('0x')) return // load page or redirect to token/wallet
+			this.loadData()
 		}
 	},
 	methods: {
 		async loadData() {
+			this.id = this.$route.params.id.toString().toLowerCase()
 			this.loading = true
 			const { data } = await fetchEntity(this.id)
 			this.loading = false

@@ -70,7 +70,7 @@ export const initChart = (pairAddr) => {
     // tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
     //   // symbolInfo.needInvert = symbolInfo.checkInvert()
     //   // const symbolItem = symbolItemByInfo(symbolInfo)
-    //   // store.dispatch('chart/setSymbol', symbolItem).then()
+    //   // store.dispatch('chart/setActiveSymbol', symbolItem).then()
     // });
 
     // let f = () => { console.log('bars loaded'); };

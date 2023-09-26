@@ -35,7 +35,7 @@ export const useChartStore = defineStore('chart', {
     lastPrice: state => state.lastTXs.length ? (state.lastTXs[0].amount_token1 / state.lastTXs[0].amount_token0) : 0
 	},
 	actions: {
-    async setSymbol(payload) {
+    async setActiveSymbol(payload) {
       this.activeSymbol = payload
     },
     async getPairInfo(pairId) {

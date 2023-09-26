@@ -24,12 +24,18 @@ export default {
 	created() {
 		this.loadData()
 	},
-	beforeRouteUpdate(to, from) { console.log('beforeRouteUpdate') }, // not work ??
+	// beforeRouteUpdate(to, from) { console.log('beforeRouteUpdate') }, // not work ??
 	watch: {
-		'$route.name'(newVal, oldVal) {
-			if(['Token', 'Wallet'].includes(newVal)) {
-				this.loadData()
-			}
+		// '$route.name'(newVal) {
+		// 	console.log('watch $route.name', newVal)
+		// 	if(['Token', 'Wallet'].includes(newVal)) {
+		// 		this.loadData()
+		// 	}
+		// },
+		'$route.params.id'(newVal, oldVal) {
+			console.log('watch $route.params.id', newVal, oldVal)
+			if (!oldVal || !newVal || !newVal.startsWith('0x')) return // load page or redirect to entity
+			this.loadData()
 		}
 	},
 	methods: {

@@ -399,9 +399,13 @@ export default {
       return this.$router.replace({name: 'Console'})
   },
 	watch: {
+		// '$route.params.pairAddr'(newVal) {
+			// console.log('watch $route.params.pairAddr', newVal)
+			// if(newVal) {}
+		// },
     async activeSymbol(newVal, oldVal) {
+      console.log('activeSymbol change', newVal, oldVal)
       if(!newVal) return // on resetState
-      // console.log('activeSymbol change', newVal, oldVal)
       this.pairSymbol = newVal.symbol
       this.pairSelect = newVal.full_name
       this.pairAddr = newVal.pair_addr
@@ -414,8 +418,9 @@ export default {
       this.pairInfoLoading = false
     },
 		pairSelect(newVal, oldVal) {
+			if(!oldVal) return
 			console.log('pairSelect', newVal, oldVal)
-			window.tvWidget.activeChart().setSymbol(newVal)
+			window.tvWidget.activeChart().setActiveSymbol(newVal)
 		},
     lastPrice() {
       this.updateTitle()
