@@ -69,8 +69,7 @@
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { easepick, AmpPlugin, RangePlugin, PresetPlugin, TimePlugin } from '@easepick/bundle';
 import { fetchDexAnalyzeTxs } from "@/api";
-import { formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
-import { priceFormatter } from "@/helpers/common";
+import { formatNumber, priceFormatter, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 
 export default {

@@ -54,8 +54,7 @@
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchDexPairTxs } from "@/api";
-import { API_DOMAIN, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
-import { priceFormatter } from "@/helpers/common";
+import { API_DOMAIN, formatNumber, priceFormatter, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import { AmpPlugin, easepick, PresetPlugin, RangePlugin, TimePlugin } from "@easepick/bundle";
 

@@ -70,8 +70,7 @@
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { useDebounceFn } from "@vueuse/core";
 import { fetchPairs, fetchSearch } from "@/api";
-import { API_DOMAIN, formatNumber, toCurrency, toNumber } from "@/helpers/mixins";
-import { priceFormatter } from "@/helpers/common";
+import { API_DOMAIN, formatNumber, priceFormatter, toCurrency, toNumber } from "@/helpers/mixins";
 import { mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 

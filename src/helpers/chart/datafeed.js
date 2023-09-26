@@ -2,14 +2,14 @@ import { fetchHistoryCandles, searchPair } from '@/api.js'
 import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
 import { useChartStore } from "@/store/chartStore";
 import { useMainStore } from "@/store/mainStore";
-import { formatNumber, shortAddress } from "@/helpers/mixins";
+import { shortAddress } from "@/helpers/mixins";
 
 const chartStore = () => useChartStore()
 const mainStore = () => useMainStore()
 
-chartStore().$subscribe((mutation, state) => {
-  console.log('chartStore subscribe', mutation.events.key, mutation.events.newValue, mutation.events.oldValue/*, state*/)
-})
+// chartStore().$subscribe((mutation, state) => {
+//   console.log('chartStore subscribe', mutation.events.key, mutation.events.newValue, mutation.events.oldValue/*, state*/)
+// })
 
 const lastBarsCache = new Map();
 

@@ -19,55 +19,41 @@ const urlRegex = /^(?:(?:https?):\/\/)?(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d
 //   }
 // }
 
-export function shortNumber(num) {
-  num = num.toString().replace(/[^0-9.]/g, '');
-  if (num < 1000) return num;
+// export function shortNumber(num) {
+//   num = num.toString().replace(/[^0-9.]/g, '');
+//   if (num < 1000) return num;
+//
+//   let si = [
+//     {v: 1E3, s: "k"},
+//     {v: 1E6, s: "M"},
+//     {v: 1E9, s: "B"},
+//     // {v: 1E12, s: "T"}, {v: 1E15, s: "P"}, {v: 1E18, s: "E"}
+//   ];
+//   let index;
+//   for (index = si.length - 1; index > 0; index--) {
+//     if (num >= si[index].v) break;
+//   }
+//   return (num / si[index].v).toFixed(2).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1") + si[index].s;
+// }
 
-  let si = [
-    {v: 1E3, s: "k"},
-    {v: 1E6, s: "M"},
-    {v: 1E9, s: "B"},
-    // {v: 1E12, s: "T"}, {v: 1E15, s: "P"}, {v: 1E18, s: "E"}
-  ];
-  let index;
-  for (index = si.length - 1; index > 0; index--) {
-    if (num >= si[index].v) break;
-  }
-  return (num / si[index].v).toFixed(2).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1") + si[index].s;
-}
-
-const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value)
-
-export function priceFormatter(price) {
-  price = +price
-  if (price >= 1000)
-    return toNumber(price)
-  else if (price > 100)
-    return parseFloat(price).toFixed(2).toString()
-  else if(price > 1e-6) // 0.000001 - 100
-    return parseFloat(parseFloat(price).toExponential(4)).toString()
-  else // < 0.000001
-    return exponentToNumber(+parseFloat(price).toExponential(4))
-}
-
-const exponentToNumber = function(exp) {
-  const data = String(exp).split(/[eE]/);
-  if (data.length === 1) return data[0];
-
-  let z = '',
-    sign = exp < 0 ? '-' : '',
-    str = data[0].replace('.', ''),
-    mag = Number(data[1]) + 1;
-
-  if (mag < 0) {
-    z = sign + '0.';
-    while (mag++) z += '0';
-    return z + str.replace(/^-/, '');
-  }
-  mag -= str.length;
-  while (mag--) z += '0';
-  return str + z;
-}
+// const exponentToNumber = function(exp) {
+//   const data = String(exp).split(/[eE]/);
+//   if (data.length === 1) return data[0];
+//
+//   let z = '',
+//     sign = exp < 0 ? '-' : '',
+//     str = data[0].replace('.', ''),
+//     mag = Number(data[1]) + 1;
+//
+//   if (mag < 0) {
+//     z = sign + '0.';
+//     while (mag++) z += '0';
+//     return z + str.replace(/^-/, '');
+//   }
+//   mag -= str.length;
+//   while (mag--) z += '0';
+//   return str + z;
+// }
 
 function getQueryParams(param = null) {
   const urlSearchParams = new URLSearchParams(window.location.search);
@@ -113,4 +99,4 @@ function debounce(fn, delay) {
   }
 }
 
-export { exponentToNumber, getQueryParams, debounce, emailRegex, urlRegex, setCookie, getCookie, deleteCookie }
+export { getQueryParams, debounce, emailRegex, urlRegex, setCookie, getCookie, deleteCookie }

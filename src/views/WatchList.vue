@@ -123,8 +123,7 @@
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { deleteWatchlistItem, fetchWhitelistTokens, fetchWhitelistWallets } from "@/api";
-import { formatNumber, shortAddress, shortString, toCurrency, toNumber } from "@/helpers/mixins";
-import { priceFormatter } from "@/helpers/common";
+import { formatNumber, priceFormatter, shortAddress, shortString, toCurrency, toNumber } from "@/helpers/mixins";
 import WatchlistWalletModal from "@/components/WatchlistWalletModal.vue";
 
 export default {

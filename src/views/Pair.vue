@@ -193,9 +193,8 @@
 
 <script>
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
-import { API_DOMAIN, PROJECT_NAME, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
+import { API_DOMAIN, PROJECT_NAME, shortAddress, priceFormatter, toCurrency, toNumber } from "@/helpers/mixins";
 import TableHistory from "@/components/TableHistory.vue";
-import { priceFormatter, shortNumber } from "@/helpers/common";
 import { mapActions, mapState } from "pinia";
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 import { useChartStore } from "@/store/chartStore";
@@ -399,10 +398,11 @@ export default {
       return this.$router.replace({name: 'Console'})
   },
 	watch: {
-		// '$route.params.pairAddr'(newVal) {
-			// console.log('watch $route.params.pairAddr', newVal)
-			// if(newVal) {}
-		// },
+		'$route.params.pairAddr'(newVal, oldVal) {
+			console.log('watch $route.params.pairAddr', newVal, oldVal)
+			if(!newVal) return
+			window.tvWidget.activeChart().setSymbol(newVal)
+		},
     async activeSymbol(newVal, oldVal) {
       console.log('activeSymbol change', newVal, oldVal)
       if(!newVal) return // on resetState
@@ -420,7 +420,7 @@ export default {
 		pairSelect(newVal, oldVal) {
 			if(!oldVal) return
 			console.log('pairSelect', newVal, oldVal)
-			window.tvWidget.activeChart().setActiveSymbol(newVal)
+			window.tvWidget.activeChart().setSymbol(newVal)
 		},
     lastPrice() {
       this.updateTitle()
@@ -454,7 +454,7 @@ export default {
   },
   methods: {
 		toCurrency,
-    shortAddress, toNumber, shortNumber, priceFormatter,  // from mixins
+    shortAddress, toNumber, priceFormatter,  // from mixins
     ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
 
     updateTitle() {

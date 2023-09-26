@@ -1,6 +1,6 @@
 import Datafeed from "./datafeed.js";
 // import { symbolItemByInfo } from "@/helpers/common";
-// import { priceFormatter } from "@/helpers/common";
+// import { priceFormatter } from "@/helpers/mixins";
 
 export const initChart = (pairAddr) => {
   window.tvWidget = new TradingView.widget({

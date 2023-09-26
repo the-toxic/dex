@@ -85,13 +85,12 @@
 </template>
 
 <script>
-import { priceFormatter } from "@/helpers/common";
 import { mapState } from "pinia";
 import { useChartStore } from "@/store/chartStore";
 const chartStore = useChartStore()
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-import { shortAddress } from "@/helpers/mixins";
+import { shortAddress, priceFormatter } from "@/helpers/mixins";
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 
 
@@ -146,14 +145,13 @@ export default {
 		// }
   },
   methods: {
-    shortAddress,
+    shortAddress, priceFormatter,
     infiniteScrolling(isIntersecting, entries, observer) {
       if (entries[0].isIntersecting) {
         console.log('Load Oldest TXs on Scroll...')
         chartStore.loadOldTXs().then()
       }
     },
-    priceFormatter(num) { return priceFormatter(num) }
   }
 }
 </script>

@@ -26,7 +26,7 @@ export default {
 	// beforeRouteUpdate(to, from) { console.log('beforeRouteUpdate') }, // not work ??
 	watch: {
 		'$route.params.id'(newVal, oldVal) {
-			console.log('watch $route.params.id', newVal, oldVal)
+			// console.log('watch $route.params.id', newVal, oldVal)
 			if(!oldVal || !newVal || newVal.startsWith('0x')) return // load page or redirect to token/wallet
 			this.loadData()
 		}

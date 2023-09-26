@@ -43,13 +43,12 @@
 <script setup>
 	import { computed, ref, watch } from "vue";
 	import { useVirtualList } from '@vueuse/core'
-	import { priceFormatter } from "@/helpers/common";
 
 	import { useChartStore } from "@/store/chartStore";
 	const chartStore = useChartStore()
 	const { activeSymbol } = storeToRefs(chartStore) // for use in watch
 
-	import { shortAddress } from "@/helpers/mixins";
+	import { shortAddress, priceFormatter } from "@/helpers/mixins";
 	import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 	import { storeToRefs } from "pinia";
 

@@ -35,15 +35,33 @@ export const shortAddress = (wallet, left = 6, right = 4) => wallet ? wallet.sli
 export const shortString = (string, length = 16) => !string ? '' : (string.length > length ? string.slice(0,length) : string)
 export const logger = (str) => console.log(str)
 
-export const formatNumber = (num, precision = 2) => {
+export function priceFormatter(number, shortBigNumber = false) {
+  number = +number
+  if (number >= 1000)
+    return shortBigNumber ? formatNumber(number) : toNumber(number)
+  else if (number > 100)
+    return parseFloat(number).toFixed(2).toString()
+  else if (number > 1)
+    return parseFloat(number).toFixed(3).toString()
+  else if(number > 1e-4) // 0.0001 - 1
+    return parseFloat(parseFloat(number).toExponential(4)).toString()
+  else // < 0.000001
+    return formatLowestNumber(number) // return exponentToNumber(+parseFloat(price).toExponential(4))
+}
+
+export const formatNumber = (num) => {
   // return new Intl.NumberFormat("en-US", { notation: "compact", compactDisplay: "short", minimumFractionDigits: 2, maximumFractionDigits: 3, style: "currency", currency: "USD", }).format(11111112.00007111);
-  if (num < 1000) return num;
-  const map = [
-    { suffix: 'T', threshold: 1e12 }, { suffix: 'B', threshold: 1e9 }, { suffix: 'M', threshold: 1e6 }, { suffix: 'K', threshold: 1e3 }, { suffix: '', threshold: 1 },
-  ];
+  const map = [ { suffix: 'T', threshold: 1e12 }, { suffix: 'B', threshold: 1e9 }, { suffix: 'M', threshold: 1e6 }, { suffix: 'K', threshold: 1e3 }, { suffix: '', threshold: 1 }, ];
   const found = map.find((x) => Math.abs(num) >= x.threshold);
-  if (found) return (num / found.threshold).toFixed(precision) + found.suffix;
+  if (found) return (num / found.threshold).toFixed(3) + found.suffix;
   return num;
+}
+
+export const formatLowestNumber = (number) => {
+  const endNumbers = Number(number).toExponential().split('e')[0].replace('.', '').substring(0,4)
+  const zeros =  -Math.floor( Math.log10(number) + 1)
+  const subNumber = String.fromCharCode(parseInt(`208${zeros}`,16))
+  return '0.0' + subNumber + endNumbers
 }
 
 // // "vue-recaptcha-v3": "^1.9.0",
