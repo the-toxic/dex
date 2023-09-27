@@ -62,7 +62,12 @@ export const formatBigNumber = (num, minToFormat = 1_000_000) => {
 export const formatLowestNumber = (number) => {
   const endNumbers = Number(number).toExponential().split('e')[0].replace('.', '').substring(0,4)
   const zeros =  -Math.floor( Math.log10(number) + 1)
-  const subNumber = String.fromCharCode(parseInt(`208${zeros}`,16))
+  let subNumber
+  if(zeros > 9) {
+    subNumber = String.fromCharCode(parseInt(`2081`,16)) + String.fromCharCode(parseInt(`208${zeros - 10}`,16))
+  } else {
+    subNumber = String.fromCharCode(parseInt(`208${zeros}`,16))
+  }
   return '0.0' + subNumber + endNumbers
 }
 
