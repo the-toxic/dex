@@ -28,7 +28,7 @@
 					</div>-->
 
           <div> <!-- right side -->
-						<v-btn-toggle v-model="tabContent"  density="comfortable" variant="outlined" class="mr-5">
+						<v-btn-toggle v-model="tabContent" mandatory density="comfortable" variant="outlined" class="mr-5">
 							<v-btn value="dex" class="text-none" >DEX</v-btn>
 							<v-btn value="analyze" class="text-none" >Analyze</v-btn>
 							<v-btn value="pair" class="text-none" >Pair</v-btn>
@@ -393,15 +393,16 @@ export default {
 
   async created() {
 		this.pairAddr = this.$route.params.pairAddr.toString().toLowerCase()
-
-    if(!this.pairAddr.startsWith('0x'))
-      return this.$router.replace({name: 'Console'})
   },
+	unmounted() {
+		this.resetState() // clear chart store
+	},
 	watch: {
 		'$route.params.pairAddr'(newVal, oldVal) {
 			console.log('watch $route.params.pairAddr', newVal, oldVal)
 			if(!newVal) return
 			window.tvWidget.activeChart().setSymbol(newVal)
+			this.resetState()
 		},
     async activeSymbol(newVal, oldVal) {
       console.log('activeSymbol change', newVal, oldVal)
@@ -453,8 +454,7 @@ export default {
     priceChange24H() { return this.pairInfo ? this.pairInfo.pool.price_change_24h : 0 },
   },
   methods: {
-		toCurrency,
-    shortAddress, toNumber, formatNumber,  // from mixins
+		toCurrency, shortAddress, toNumber, formatNumber,  // from mixins
     ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
 
     updateTitle() {

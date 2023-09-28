@@ -8,7 +8,6 @@ const getDefaultState = () => {
     pairInfo: null,
     similarityPools: [],
     lastTXs: [],
-    sessionId,
     exchangesList: {},
   }
 }
@@ -20,9 +19,10 @@ const invertAmounts = (txs) => txs.map(i => {
 })
 
 export const useChartStore = defineStore('chart', {
-	state: () => (
-    getDefaultState()
-  ),
+	state: () => ({
+    ...sessionId,
+    ...getDefaultState()
+  }),
 	getters: {
     // activeSymbol: state => state.activeSymbol,
     // pairInfo: state => state.pairInfo,

@@ -31,7 +31,7 @@ let findedPairs = [
 
 async function loadDefaultPair(symbolFullName) {
   const {success, result} = await searchPair( { search: symbolFullName, exchange: '', network: '' })
-  if(success && result?.content && result.content.length) {
+  if(success && result?.content && result.content.length && result.content.some(i => i.pair_addr === symbolFullName)) {
     fillFindedPairs(result.content)
     window.tvWidget.activeChart().setSymbol(findedPairs[0].full_name)
   } else {
