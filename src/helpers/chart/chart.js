@@ -65,9 +65,10 @@ export const initChart = (pairAddr) => {
 
     // Вызывается только при ручном выборе пары через поиск
     // tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
-    //   // symbolInfo.needInvert = symbolInfo.checkInvert()
-    //   // const symbolItem = symbolItemByInfo(symbolInfo)
-    //   // store.dispatch('chart/setActiveSymbol', symbolItem).then()
+      // console.log('onSymbolChanged subscribe', symbolInfo)
+      // symbolInfo.needInvert = symbolInfo.checkInvert()
+      // const symbolItem = symbolItemByInfo(symbolInfo)
+      // store.dispatch('chart/setActiveSymbol', symbolItem).then()
     // });
 
     // let f = () => { console.log('bars loaded'); };

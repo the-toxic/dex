@@ -7,6 +7,7 @@ const getDefaultState = () => {
     activeSymbol: null,
     pairInfo: null,
     lastTXs: [],
+    similarityPools: [],
     exchangesList: {},
   }
 }
@@ -19,8 +20,7 @@ const invertAmounts = (txs) => txs.map(i => {
 
 export const useChartStore = defineStore('chart', {
 	state: () => ({
-    ...sessionId,
-    similarityPools: [],
+    sessionId,
     ...getDefaultState()
   }),
 	getters: {
@@ -47,7 +47,7 @@ export const useChartStore = defineStore('chart', {
     async loadHistoryTable({pair_id, chain_id}) {
       const {success, result} = await fetchHistoryTable({pair_id, chain_id})
       if(success && result?.length) {
-        if(!this.activeSymbol) console.error('Bug! call loadHistoryTable before init activeSymbol')
+        if(!this.activeSymbol) console.error('Call loadHistoryTable before init activeSymbol')
         if(this.activeSymbol?.need_invert)
           this.lastTXs = invertAmounts(result)
         else

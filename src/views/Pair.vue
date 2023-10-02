@@ -403,7 +403,7 @@ export default {
 			if(typeof newVal === 'undefined') return // on unmount
 			window.tvWidget.activeChart().setSymbol(newVal)
 			// window.tvWidget.activeChart().resetData()
-			this.resetState()
+			// this.resetState()
 		},
     async activeSymbol(newVal, oldVal) {
       console.log('activeSymbol change', newVal, oldVal)

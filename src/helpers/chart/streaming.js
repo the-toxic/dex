@@ -237,6 +237,10 @@ export function subscribeOnStream(
   channelToSubscription.set(channelString, subscriptionItem);
   console.log('[subscribeBars]: Subscribe to streaming. SubAdd Channel:', channelString);
   socket.emit('SubAdd', { subs: [channelString], session_id: chartStore().sessionId });
+
+  // onResetCacheNeededCallback(() => {
+  //   console.log('123')
+  // })
 }
 
 export function unsubscribeFromStream(subscriberUID) {

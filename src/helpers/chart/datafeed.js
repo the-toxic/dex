@@ -13,7 +13,7 @@ const mainStore = () => useMainStore()
 
 const lastBarsCache = new Map();
 
-let findedPairs = [
+// let findedPairs = [
 //   {
 //   symbol: 'TANK/BUSD', // XMR/BTC - short symbol name
 //   full_name: 'Exchange:Symbol:Address'
@@ -27,13 +27,13 @@ let findedPairs = [
 //   description: '', // require for initial load page, or library show full_name
 //   tx_count: 111
 // }
-]
+// ]
 
 async function loadDefaultPair(symbolFullName) {
   const {success, result} = await searchPair( { search: symbolFullName, exchange: '', network: '' })
   if(success && result?.content && result.content.length && result.content.some(i => i.pair_addr === symbolFullName)) {
-    fillFindedPairs(result.content)
-    window.tvWidget.activeChart().setSymbol(findedPairs.find((i => i.pair_addr === symbolFullName)).full_name)
+    fillSimilarityPools(result.content)
+    window.tvWidget.activeChart().setSymbol(chartStore().similarityPools.find((i => i.pair_addr === symbolFullName)).full_name)
   } else {
     await mainStore().showAlert({msg: 'Error. Pair not found', color: 'error'})
     // location.href = '/home?msg=pair404'
@@ -70,7 +70,7 @@ const configurationData = {
 
 const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
 
-function fillFindedPairs(data) {
+function fillSimilarityPools(data) {
   data.forEach(i => {
     // trim exchange name
     if(i.exchange.slice(-6) === 'Router') {
@@ -97,7 +97,6 @@ function fillFindedPairs(data) {
 
   chartStore().similarityPools = [...data]
 
-  findedPairs = [...data]
 }
 
 export default {
@@ -123,7 +122,7 @@ export default {
   //     return
   //   }
   //
-  //   fillFindedPairs(result.content)
+  //   fillSimilarityPools(result.content)
   //
   //   onResultReadyCallback(result.content);
   // },
@@ -134,12 +133,12 @@ export default {
     onResolveErrorCallback,
   ) => {
     console.log('[resolveSymbol]: Method call', symbolFullName);
-    if(!findedPairs.length) {
+    if(!chartStore().similarityPools.length) {
       await loadDefaultPair(symbolFullName)
       return;
     } // on load page get default pair
 
-    const symbolItem = findedPairs.find(({full_name}) => full_name === symbolFullName);
+    const symbolItem = chartStore().similarityPools.find(({full_name}) => full_name === symbolFullName);
 
     if (!symbolItem) {
       await loadDefaultPair(symbolFullName) // on change pair
@@ -272,7 +271,7 @@ export default {
 
   unsubscribeBars: (subscriberUID) => {
     console.log('[unsubscribeBars]: Method call with subscriberUID:', subscriberUID);
-    findedPairs = []
+    // chartStore().similarityPools = []
     unsubscribeFromStream(subscriberUID);
   },
 
