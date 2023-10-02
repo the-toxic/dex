@@ -98,7 +98,10 @@
 		}
 	}
 
-	const blockchainDomain = computed(() => {return activeSymbol.value['type'] === 'BSC' ? 'https://bscscan.com' : 'https://etherscan.io'})
+	const blockchainDomain = computed(() => {
+		if(!activeSymbol.value) return ''
+		return activeSymbol.value['type'] === 'BSC' ? 'https://bscscan.com' : 'https://etherscan.io'
+	})
 </script>
 
 <style lang="scss">

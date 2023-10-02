@@ -400,8 +400,9 @@ export default {
 	watch: {
 		'$route.params.pairAddr'(newVal, oldVal) {
 			console.log('watch $route.params.pairAddr', newVal, oldVal)
-			if(!newVal) return
+			if(typeof newVal === 'undefined') return // on unmount
 			window.tvWidget.activeChart().setSymbol(newVal)
+			// window.tvWidget.activeChart().resetData()
 			this.resetState()
 		},
     async activeSymbol(newVal, oldVal) {

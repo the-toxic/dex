@@ -33,7 +33,7 @@ async function loadDefaultPair(symbolFullName) {
   const {success, result} = await searchPair( { search: symbolFullName, exchange: '', network: '' })
   if(success && result?.content && result.content.length && result.content.some(i => i.pair_addr === symbolFullName)) {
     fillFindedPairs(result.content)
-    window.tvWidget.activeChart().setSymbol(findedPairs[0].full_name)
+    window.tvWidget.activeChart().setSymbol(findedPairs.find((i => i.pair_addr === symbolFullName)).full_name)
   } else {
     await mainStore().showAlert({msg: 'Error. Pair not found', color: 'error'})
     // location.href = '/home?msg=pair404'
@@ -103,7 +103,7 @@ function fillFindedPairs(data) {
 export default {
   onReady: (callback) => {
     // console.log('[onReady]: Method call');
-    setTimeout(() => callback(configurationData));
+    setTimeout(() => callback(configurationData), 0);
   },
 
   // searchSymbols: async (
@@ -168,7 +168,7 @@ export default {
       session: '24x7',
       timezone: 'Etc/UTC',
       minmov: 1, // формат цены
-      pricescale: 100000, // формат цены. 100 - 2 символа после запятой, 1000 - 3 символа
+      pricescale: 10000000000, // формат цены. 100 - 2 символа после запятой, 1000 - 3 символа
       has_intraday: true, // включение минутных свечей, но надо сконфигурировать
       intraday_multipliers: ['1', '5', '15', '30', '60', '180', '720'], // указанные интервалы будут генерить запросы в БД, все остальные будут автоматом генериться либой на основе более, например 5-минутка будет складываться из 5 минутных баров
       has_daily: true,

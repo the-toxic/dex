@@ -188,7 +188,7 @@
   import { useWalletStore } from "@/store/walletStore";
   import { PROJECT_NAME, DOCS_HOST, NEWS_HOST, SOCIAL_TWITTER, SOCIAL_TELEGRAM, SOCIAL_LINKTREE } from "@/helpers/mixins";
 
-  import { showChartSearch } from "@/helpers/chart/chart";
+  // import { showChartSearch } from "@/helpers/chart/chart";
 	import SearchDialog from "@/components/SearchDialog.vue";
   // import { connect as web3Connect, disconnect as web3Disconnect } from "@/helpers/web3";
 

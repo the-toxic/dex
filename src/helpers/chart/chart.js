@@ -49,9 +49,6 @@ export const initChart = (pairAddr) => {
     // custom_css_url: 'css/style.css',
   });
 
-  // init chart 25276
-  // onChartReady 25409
-
   tvWidget.onChartReady(() => {
     tvWidget.activeChart().priceFormatter().format = formatNumber; // function
 
@@ -84,9 +81,9 @@ export const initChart = (pairAddr) => {
   // tvWidget.unsubscribe('onTick', (cb) => {})
 }
 
-export const showChartSearch = () => {
-  window.tvWidget.activeChart().executeActionById('symbolSearch');
-}
+// export const showChartSearch = () => {
+//   window.tvWidget.activeChart().executeActionById('symbolSearch');
+// }
 
 
 
