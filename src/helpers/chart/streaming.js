@@ -82,7 +82,7 @@ socket.on('m', data => {
 })
 
 const humanDate = (date, length = 16) => new Date(date).toISOString().slice(0, length).split('T').join(' ')
-// const checkInvert = (number, needInvert) => (needInvert ? 1 / number : number)
+// const checkInvert = (number, needInvert) => (needInvert ? number : 1 / number)
 
 function candleMessageHandler(data) {
   // 0~14~15~1651066924.0~19.643600704488794~0.05
@@ -102,11 +102,11 @@ function candleMessageHandler(data) {
     return; // fix bug delay call SubRemove
   }
 
-  // if(chartStore().needInvert) {
-  //   const oldAmount0 = amount0
-  //   amount0 = amount1
-  //   amount1 = oldAmount0
-  // }
+  if(chartStore().needInvert) {
+    const oldAmount0 = amount0
+    amount0 = amount1
+    amount1 = oldAmount0
+  }
 
   const tradeTime = parseInt(tradeTimeStr) * 1000;
   const tradePrice = parseFloat(amount1 / amount0);
@@ -174,11 +174,11 @@ function tableMessageHandler(data) {
     return; // fix bug delay call SubRemove
   }
 
-  // if(chartStore().needInvert) {
-  //   const oldAmount0 = amount0
-  //   amount0 = amount1
-  //   amount1 = oldAmount0
-  // }
+  if(chartStore().needInvert) {
+    const oldAmount0 = amount0
+    amount0 = amount1
+    amount1 = oldAmount0
+  }
 
   const item = {
     date: parseInt(tradeTimeStr),

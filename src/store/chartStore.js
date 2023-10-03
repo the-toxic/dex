@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { fetchExchanges, fetchHistoryTable, fetchPairInfo } from "@/api";
+import { needInvert } from "@/helpers/mixins";
 
 const sessionId = Math.random().toString(36).slice(2, 18);
 const getDefaultState = () => {
@@ -41,6 +42,12 @@ export const useChartStore = defineStore('chart', {
     async getPairInfo(pairId) {
       const {success, result} = await fetchPairInfo(pairId)
       if(!success || !result) return
+
+      if(needInvert(result.token0.symbol, result.token1.symbol)) {
+        const  oldToken0 = result.token0
+        result.token0 = result.token1
+        result.token1 = oldToken0
+      }
       this.pairInfo = {...this.pairInfo, ...result}
       return result
     },
@@ -48,9 +55,9 @@ export const useChartStore = defineStore('chart', {
       const {success, result} = await fetchHistoryTable({pair_id, chain_id})
       if(success && result?.length) {
         if(!this.activeSymbol) console.error('Call loadHistoryTable before init activeSymbol')
-        // if(this.activeSymbol?.need_invert)
-        //   this.lastTXs = invertAmounts(result)
-        // else
+        if(this.activeSymbol?.need_invert)
+          this.lastTXs = invertAmounts(result)
+        else
           this.lastTXs = result
       }
     },
@@ -72,8 +79,8 @@ export const useChartStore = defineStore('chart', {
           return (lastTx.tx !== item.tx && lastTx.date > item.date)
         })
 
-        // if(this.activeSymbol.need_invert)
-        //   data = invertAmounts(data)
+        if(this.activeSymbol.need_invert)
+          data = invertAmounts(data)
 
         this.lastTXs.push(...data) // add to end array
       }

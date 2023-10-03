@@ -45,13 +45,13 @@
 					<v-img :src="item.raw.iconToken1" width="24" height="24" :alt="item.raw.token1.symbol" class="va-top rounded-xl mx-2">
 						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
 					</v-img>
-					{{ item.raw.pair_name }}
+					{{ item.raw.token0.symbol }}/{{ item.raw.token1.symbol }}
 					<span class="text-secondary ml-3">{{ item.raw.token0.name }}</span>
 				</v-btn>
 			</template>
 			<template v-slot:item.price="{ item }">${{ formatNumber(item.raw.last_price) }}</template>
 			<template v-slot:item.txs="{ item }">{{ formatBigNumber(item.raw.txs) }}</template>
-			<template v-slot:item.volume="{ item }">{{formatBigNumber(item.raw.volume_token0) }}</template>
+			<template v-slot:item.volume="{ item }">{{formatBigNumber(item.raw.need_invert ? item.raw.volume_token1 : item.raw.volume_token0) }}</template>
 			<template v-slot:item.change_24h="{ item }">
 				<v-chip :color="item.raw.change_24h > 0 ? 'success': (item.raw.change_24h < 0 ? 'error' : 'white')">
 					{{ item.raw.change_24h > 0 ? '+' : (item.raw.change_24h < 0 ? '-' : '') }} {{ Math.abs(item.raw.change_24h) || 0 }}%
@@ -69,7 +69,7 @@
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchPairs } from "@/api";
-import { API_DOMAIN, formatBigNumber, formatNumber, toCurrency, toNumber } from "@/helpers/mixins";
+import { API_DOMAIN, formatBigNumber, formatNumber, needInvert, toCurrency, toNumber } from "@/helpers/mixins";
 import { mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 
@@ -126,8 +126,17 @@ export default {
 		rows() {
 			return this.items.map(item => {
 				const iconFolder = !this.chains ? null : this.chains[item.chain_id]['icon_folder']
+
+				if(needInvert(item.token0.symbol, item.token1.symbol)) {
+					const oldToken0 = item.token0
+					item.token0 = item.token1
+					item.token1 = oldToken0
+					item.last_price = 1 / item.last_price
+					item.need_invert = true
+				}
 				item.iconToken0 = !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${item.token0.address.toLowerCase().slice(0,4)}/${item.token0.address.toLowerCase()}/default.png`
 				item.iconToken1 = !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${item.token1.address.toLowerCase().slice(0,4)}/${item.token1.address.toLowerCase()}/default.png`
+
 				return item
 			})
 		}

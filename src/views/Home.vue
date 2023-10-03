@@ -8,7 +8,7 @@
           <p>Diverse deep into blockchain data to make informed decisions, identify trends, and drive success in the fast-paced crypto world.</p>
           <p>Empower your investments and team strategies with powerful analytics.</p>
         </div>
-        <v-btn size="x-large" color="white" variant="outlined" class="fs-m14 mt-12" :to="{name: userLogged ? 'Console' : 'AuthSignIn'}" >{{ userLogged ? 'Open pair explorer' : 'Join us on this data-driven journey!' }}</v-btn>
+        <v-btn size="x-large" color="white" variant="outlined" class="fs-m14 mt-12" :to="{name: userStore.logged ? 'Console' : 'AuthSignIn'}" >{{ userStore.logged ? 'Open pair explorer' : 'Join us on this data-driven journey!' }}</v-btn>
       </div>
     </v-container>
 
@@ -41,24 +41,13 @@
       <div class="mb-24 mt-24">
         <h2 class="fs40 fs-m25">Elevate Your Game with Blockchain Analytics!</h2>
         <p class="fs24 fs-m16 mx-auto mt-10" style="max-width: 1000px">Gain Transparency, Identify Opportunities, and Enhance Decision-Making. Embrace the Power of Analytics and Elevate Your Crypto Journey Now!</p>
-        <v-btn size="x-large" color="white" variant="outlined" class="fs-m14 mt-12" :to="{name: userLogged ? 'Console' : 'AuthSignIn'}" >{{ userLogged ? 'Open pair explorer' : 'Start Now' }}</v-btn>
+        <v-btn size="x-large" color="white" variant="outlined" class="fs-m14 mt-12" :to="{name: userStore.logged ? 'Console' : 'AuthSignIn'}" >{{ userStore.logged ? 'Open pair explorer' : 'Start Now' }}</v-btn>
       </div>
     </v-container>
   </div>
 </template>
-<script>
-import { PROJECT_NAME } from "@/helpers/mixins";
-import { mapState } from "pinia";
-import { useUserStore } from "@/store/userStore";
 
-export default {
-  name: 'Home',
-  // head: { title: {inner: import.meta.env.VITE_APP_PROJECT_NAME, complement: 'Dex Platform'}},
-  data: () => ({
-    PROJECT_NAME,
-  }),
-  computed: {
-    ...mapState(useUserStore, {userLogged: 'logged'})
-  }
-}
+<script setup>
+import { useUserStore } from "@/store/userStore";
+const userStore = useUserStore()
 </script>

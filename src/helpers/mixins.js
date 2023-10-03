@@ -71,6 +71,12 @@ export const formatLowestNumber = (number) => {
   return '0.0' + subNumber + endNumbers
 }
 
+export const needInvert = (token0, token1) => {
+  const stables = ['BUSD','TUSD','USDT','USDC','DAI','USD','UST']
+  const natives = ['WBNB','BNB','WETH','ETH']
+  return  (stables.includes(token0) && !stables.includes(token1)) || (natives.includes(token0) && !stables.includes(token1))
+}
+
 // // "vue-recaptcha-v3": "^1.9.0",
 // async recaptchaHandler(action, cb) {
 // 	// console.log(this.$recaptchaInstance)

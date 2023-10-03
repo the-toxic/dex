@@ -2,7 +2,7 @@ import { fetchHistoryCandles, searchPair } from '@/api.js'
 import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
 import { useChartStore } from "@/store/chartStore";
 import { useMainStore } from "@/store/mainStore";
-import { shortAddress } from "@/helpers/mixins";
+import { needInvert, shortAddress } from "@/helpers/mixins";
 
 const chartStore = () => useChartStore()
 const mainStore = () => useMainStore()
@@ -79,6 +79,13 @@ function fillSimilarityPools(data) {
     }
     i.full_name = `${i.exchange}:${i.symbol}:${i.pair_addr}`
     i.description = `${i.symbol} | ${i.exchange} | ${i.type} | ${shortAddress(i.pair_addr)}`
+
+    const [token0, token1] = i.symbol.split('/')
+    if(needInvert(token0, token1)) {
+      if(i.need_invert === false) console.warn('BACKEND SEND INVALID `need_invert` IN /search_pair')
+      i.need_invert = true
+      i.symbol = `${token1}/${token0}`
+    }
     // i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/16447.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
     // i.exchange_logo = 'https://s2.coinmarketcap.com/static/img/coins/64x64/7186.png' // for search dialog; add in ver 25.002
   })
@@ -216,18 +223,18 @@ export default {
         if(a.time < b.time) return -1
         return 0
       })
-      // const checkInvert = (number) => (symbolInfo.needInvert ? number : 1 / number)
+      const checkInvert = (number) => (symbolInfo.need_invert ? 1 / number : number)
       let bars = [], lastBar = null;
       result.candles.forEach(bar => {
         // if (bar.time >= from && bar.time < to) {
         // console.log('needInvert', symbolInfo.needInvert)
         bar = {
           time: bar.time * 1000,
-          low: bar.low,
-          high: bar.high,
-          open: lastBar ? lastBar.close : bar.open,
-          close: bar.close,
-          volume: bar.volume1
+          low: checkInvert(bar.low),
+          high: checkInvert(bar.high),
+          open: lastBar ? lastBar.close : checkInvert(bar.open),
+          close: checkInvert(bar.close),
+          volume: symbolInfo.need_invert ? bar.volume0 : bar.volume1
         }
         bars = [...bars, bar];
         lastBar = bar
