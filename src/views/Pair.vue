@@ -7,12 +7,12 @@
 
 					<div class="d-flex align-center flex-wrap">
             <v-btn icon="mdi-arrow-left" :to="{name: 'Console'}" :active="false" size="x-large" density="compact" class="mr-2" />
-            <div class="mr-2" :class="{'bg-blue-grey-darken-3': !pairInfo || !iconToken0}" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
-							<v-img :src="iconToken0" width="40" height="40" alt="Logo">
+            <div class="mr-2" :class="{'bg-blue-grey-darken-3': !pairInfo || !iconToken0 || pairInfoLoading}" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
+							<v-img v-if="!pairInfoLoading" :src="iconToken0" width="40" height="40" alt="Logo">
 								<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center pt-3 fs28">?</div></template>
-								<template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
+								<!-- <template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
 									<v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular></div>
-								</template>
+								</template>-->
 							</v-img>
             </div>
 						<h2 class="fs24 font-weight-regular mr-3" style="color: #D9DCEE">{{ tokenTitle }}</h2>
@@ -20,7 +20,7 @@
 						<v-btn size="small" icon="mdi-bell" class="mr-3"></v-btn>
 						<v-btn size="small" icon="mdi-information-outline" class="mr-3"></v-btn>
 						<div class="fs18 mr-3">{{ formatNumber(lastPrice) }} {{ rightToken }}</div>
-						<div class="fs16 text-disabled mr-3">{{ toCurrency(lastPrice) }}</div>
+						<div v-if="pairInfo && (pairInfo.token0.is_stable || pairInfo.token1.is_stable)" class="fs16 text-disabled mr-3">{{ toCurrency(lastPrice) }}</div>
           </div>
 					<!-- <div v-if="pairInfo" class="lh-1_2">
 						<span class="mr-2">Token: {{shortAddress(pairInfo.token0.address) }} <CopyLabel icon :text="pairInfo.token0.address" icon-color="#72747F" /></span>
@@ -108,12 +108,12 @@
 							</v-card-text>
 						</v-card>
 
-						<Converter v-if="pairInfo" :token="pairInfo.token0.symbol" class="mt-5"/>
+						<Converter v-if="pairInfo && !pairInfoLoading" :token="pairInfo.token0.symbol" class="mt-5"/>
 						<v-skeleton-loader v-else class="mt-5" style="height: 180px" />
 					</div>
 					<div class="d-flex justify-center align-center fill-width" style="height: 534px">
-						<ChartTV v-show="pairInfo" :pair-addr="pairAddr" />
-						<v-progress-circular v-show="!pairInfo" :size="50" :width="4" color="white" indeterminate />
+						<ChartTV v-show="pairInfo && !pairInfoLoading" :pair-addr="pairAddr" />
+						<v-progress-circular v-show="!pairInfo || pairInfoLoading" :size="50" :width="4" color="white" indeterminate />
 					</div>
 				</div>
 
@@ -400,13 +400,31 @@ export default {
 	watch: {
 		'$route.params.pairAddr'(newVal, oldVal) {
 			console.log('watch $route.params.pairAddr', newVal, oldVal)
-			if(typeof newVal === 'undefined') return // on unmount
-			window.tvWidget.activeChart().setSymbol(newVal)
-			// window.tvWidget.activeChart().resetData()
-			// this.resetState()
+			if(typeof newVal === 'undefined' || newVal === null) return // undefined on unmount, null on resetState
+
+			if(!oldVal) { // on load page
+				window.tvWidget.activeChart().setSymbol(newVal)
+			}
+			// on change symbol
+			this.pairInfoLoading = true
+			const similarityItem = this.similarityPools.find(({pair_addr}) => pair_addr === newVal);
+			if(similarityItem) { // global search on similarityPools or double call on change pair select
+				this.setActiveSymbol(similarityItem)
+				window.tvWidget.activeChart().setSymbol(similarityItem.full_name)
+				return
+			}
+			// console.warn('!!!')
+			window.tvWidget.activeChart().setSymbol(newVal+'^'+Math.random()) // disable cache
+
+			this.pairInfoLoading = false
+			// 	window.tvWidget.remove()
+			// 	window.tvWidget = null
+			// 	this.resetState()
+			// 	initChart(newVal)
 		},
+
     async activeSymbol(newVal, oldVal) {
-      console.log('activeSymbol change', newVal, oldVal)
+      console.log('watch activeSymbol', newVal, oldVal)
       if(!newVal) return // on resetState
       this.pairSymbol = newVal.symbol
       this.pairSelect = newVal.full_name
@@ -419,9 +437,13 @@ export default {
       await this.getPairInfo(newVal.pair_id)
       this.pairInfoLoading = false
     },
+
 		pairSelect(newVal, oldVal) {
-			if(!oldVal) return
-			console.log('pairSelect', newVal, oldVal)
+			if(!newVal || !oldVal) return
+			console.log('watch pairSelect', newVal, oldVal)
+			const symbolItem = this.similarityPools.find(({ full_name }) => full_name === newVal);
+			if(!symbolItem) console.error('Not found selected pair in similarityPools')
+			this.setActiveSymbol(symbolItem).then()
 			window.tvWidget.activeChart().setSymbol(newVal)
 		},
     lastPrice() {
@@ -436,7 +458,7 @@ export default {
 			const iconFolder = !this.chains || !this.activeSymbol ? null : this.chains[this.activeSymbol.chain_id]['icon_folder']
 			return !this.pairInfo || !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${this.pairInfo.token0.address.toLowerCase().slice(0,4)}/${this.pairInfo.token0.address.toLowerCase()}/default.png`
 		},
-    tokenTitle() { return this.pairInfo ?  this.pairInfo.token0.name : 'Loading...' },
+    tokenTitle() { return this.pairInfo && !this.pairInfoLoading ?  this.pairInfo.token0.name : 'Loading...' },
 		pairSelectItems() {
 			// return this.pairInfo.pool.similarity_pools.map(i => {return { value: `None:${i.name}:${i.address}`, title: i.name }})
 			return this.similarityPools.map(i => ({ value: i.full_name, title: i.symbol }))
@@ -456,7 +478,7 @@ export default {
   },
   methods: {
 		toCurrency, shortAddress, toNumber, formatNumber,  // from mixins
-    ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
+    ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', setActiveSymbol: 'setActiveSymbol', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
 
     updateTitle() {
       this.title = `${this.pairSymbol} - ${formatNumber(this.lastPrice)}`

@@ -137,7 +137,7 @@ function candleMessageHandler(data) {
   } else {
     bar = {
       ...lastBar,
-      // time: lastBar.time, open: lastBar.close, // TODO проверить, может вместо ...lastBar лучше open: lastBar.close & time: lastBar.time
+      // time: lastBar.time, open: lastBar.close,
       high: Math.max(lastBar.high, tradePrice),
       low: Math.min(lastBar.low, tradePrice),
       close: tradePrice,

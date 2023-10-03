@@ -27,6 +27,7 @@ export default {
   },
   destroyed() {
     window.tvWidget.remove()
+		window.tvWidget = null
     this.resetState()
   },
   // tvWidget.activeChart().symbolExt()

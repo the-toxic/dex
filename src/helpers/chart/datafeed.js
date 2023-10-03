@@ -33,7 +33,8 @@ async function loadDefaultPair(symbolFullName) {
   const {success, result} = await searchPair( { search: symbolFullName, exchange: '', network: '' })
   if(success && result?.content && result.content.length && result.content.some(i => i.pair_addr === symbolFullName)) {
     fillSimilarityPools(result.content)
-    window.tvWidget.activeChart().setSymbol(chartStore().similarityPools.find((i => i.pair_addr === symbolFullName)).full_name)
+    const fullName = chartStore().similarityPools.find((i => i.pair_addr === symbolFullName)).full_name
+    window.tvWidget.activeChart().setSymbol(fullName+'^'+Math.random()) // disable cache
   } else {
     await mainStore().showAlert({msg: 'Error. Pair not found', color: 'error'})
     // location.href = '/home?msg=pair404'
@@ -78,16 +79,8 @@ function fillSimilarityPools(data) {
     }
     i.full_name = `${i.exchange}:${i.symbol}:${i.pair_addr}`
     i.description = `${i.symbol} | ${i.exchange} | ${i.type} | ${shortAddress(i.pair_addr)}`
-
-    // TODO TEMP MOCK!!!
-    // if(i.pair_id === 777879) { // TANK/BUSD
-    //   i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/16447.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
-    // } else if(i.pair_id === 309) { // WBNB/BUSD
-    //   i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
-    // }
-    // pancake logo
-    // i.exchange_logo = i.exchange_id !== 20 ? '' : 'https://s2.coinmarketcap.com/static/img/coins/64x64/7186.png' // add in ver 25.002
-
+    // i.logo_urls = ['https://s2.coinmarketcap.com/static/img/coins/64x64/16447.png', 'https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png'] // pairInfo.token0.icon // add in ver 25.002
+    // i.exchange_logo = 'https://s2.coinmarketcap.com/static/img/coins/64x64/7186.png' // for search dialog; add in ver 25.002
   })
   data.sort((a,b) => { // filter by TX count, DESC
     if(a.tx_count > b.tx_count) return -1
@@ -133,6 +126,8 @@ export default {
     onResolveErrorCallback,
   ) => {
     console.log('[resolveSymbol]: Method call', symbolFullName);
+    symbolFullName = symbolFullName.split('^')[0] // disable cache
+
     if(!chartStore().similarityPools.length) {
       await loadDefaultPair(symbolFullName)
       return;
@@ -141,13 +136,14 @@ export default {
     const symbolItem = chartStore().similarityPools.find(({full_name}) => full_name === symbolFullName);
 
     if (!symbolItem) {
+      // console.warn('similarityPools not found, fetch new', symbolFullName)
       await loadDefaultPair(symbolFullName) // on change pair
       // console.log('[resolveSymbol]: Cannot resolve symbol', symbolFullName);
       // onResolveErrorCallback('cannot resolve symbol');
       return;
     }
 
-    // symbolItem.chain_id = symbolItem.type === 'BSC' ? 2 : (symbolItem.type === 'Ethereum' ? 1 : 0)
+    if(chartStore().activeSymbol && chartStore().activeSymbol.pair_addr === symbolFullName) return // end double call
 
     chartStore().setActiveSymbol(symbolItem).then()
 
@@ -180,7 +176,7 @@ export default {
       // volume_precision: 2, // кол-во десятичных символов в объеме
       data_status: 'streaming', // streaming | endofday | pulsed | delayed_streaming
 
-      // logo_urls: symbolItem.logo_urls, // TODO переделать на статичные иконки // add in ver 25.002
+      // logo_urls: ['imgSrc'], // add in ver 25.002
     };
 
     // symbolInfo.checkInvert = function () {
