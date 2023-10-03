@@ -46,7 +46,8 @@
 			<div v-show="tabContent === 'dex'">
 				<div class="d-flex">
 					<div class="mr-5" style="width: 400px">
-						<v-card>
+						<v-skeleton-loader v-if="!pairInfo || pairInfoLoading" type="image@2"  class="" style="height: 334px; width: 391px" />
+						<v-card v-else>
 							<v-card-text>
 								<div class="d-flex mb-3" style="gap: 10px">
 									<div class="flex-fill pa-2 text-center border rounded-lg">
