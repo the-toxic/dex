@@ -48,9 +48,9 @@ export const useChartStore = defineStore('chart', {
       const {success, result} = await fetchHistoryTable({pair_id, chain_id})
       if(success && result?.length) {
         if(!this.activeSymbol) console.error('Call loadHistoryTable before init activeSymbol')
-        if(this.activeSymbol?.need_invert)
-          this.lastTXs = invertAmounts(result)
-        else
+        // if(this.activeSymbol?.need_invert)
+        //   this.lastTXs = invertAmounts(result)
+        // else
           this.lastTXs = result
       }
     },
@@ -72,8 +72,8 @@ export const useChartStore = defineStore('chart', {
           return (lastTx.tx !== item.tx && lastTx.date > item.date)
         })
 
-        if(this.activeSymbol.need_invert)
-          data = invertAmounts(data)
+        // if(this.activeSymbol.need_invert)
+        //   data = invertAmounts(data)
 
         this.lastTXs.push(...data) // add to end array
       }

@@ -102,11 +102,11 @@ function candleMessageHandler(data) {
     return; // fix bug delay call SubRemove
   }
 
-  if(chartStore().needInvert) {
-    const oldAmount0 = amount0
-    amount0 = amount1
-    amount1 = oldAmount0
-  }
+  // if(chartStore().needInvert) {
+  //   const oldAmount0 = amount0
+  //   amount0 = amount1
+  //   amount1 = oldAmount0
+  // }
 
   const tradeTime = parseInt(tradeTimeStr) * 1000;
   const tradePrice = parseFloat(amount1 / amount0);
@@ -174,11 +174,11 @@ function tableMessageHandler(data) {
     return; // fix bug delay call SubRemove
   }
 
-  if(chartStore().needInvert) {
-    const oldAmount0 = amount0
-    amount0 = amount1
-    amount1 = oldAmount0
-  }
+  // if(chartStore().needInvert) {
+  //   const oldAmount0 = amount0
+  //   amount0 = amount1
+  //   amount1 = oldAmount0
+  // }
 
   const item = {
     date: parseInt(tradeTimeStr),
