@@ -20,7 +20,7 @@
 						<v-btn size="small" icon="mdi-bell" class="mr-3"></v-btn>
 						<v-btn size="small" icon="mdi-information-outline" class="mr-3"></v-btn>
 						<div class="fs18 mr-3">{{ formatNumber(lastPrice) }} {{ rightToken }}</div>
-						<div v-if="pairInfo && (pairInfo.token0.is_stable || pairInfo.token1.is_stable)" class="fs16 text-disabled mr-3">{{ toCurrency(lastPrice) }}</div>
+						<div class="fs16 text-disabled mr-3">{{ priceInUSD }}</div>
           </div>
 					<!-- <div v-if="pairInfo" class="lh-1_2">
 						<span class="mr-2">Token: {{shortAddress(pairInfo.token0.address) }} <CopyLabel icon :text="pairInfo.token0.address" icon-color="#72747F" /></span>
@@ -109,7 +109,7 @@
 							</v-card-text>
 						</v-card>
 
-						<Converter v-if="pairInfo && !pairInfoLoading" :token="pairInfo.token0.symbol" class="mt-5"/>
+						<Converter v-if="pairInfo && !pairInfoLoading" :token0="pairInfo.token0" :token1="pairInfo.token1" :rate="lastPrice" :chainId="activeSymbol.chain_id" class="mt-5"/>
 						<v-skeleton-loader v-else class="mt-5" style="height: 180px" />
 					</div>
 					<div class="d-flex justify-center align-center fill-width" style="height: 534px">
@@ -463,6 +463,14 @@ export default {
 		pairSelectItems() {
 			// return this.pairInfo.pool.similarity_pools.map(i => {return { value: `None:${i.name}:${i.address}`, title: i.name }})
 			return this.similarityPools.map(i => ({ value: i.full_name, title: i.symbol }))
+		},
+		priceInUSD() {
+			if(!this.pairInfo || !this.activeSymbol || !this.chains) return 0
+			if(this.pairInfo.token1.is_stable)
+				return '$'+formatNumber(this.lastPrice)
+
+			const nativeSymbolPrice = this.chains[this.activeSymbol.chain_id]['native_symbol_price']
+			return '$'+formatNumber(this.lastPrice * nativeSymbolPrice)
 		},
     // buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
     // buyVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.buy_volume_24h) : 0 },
