@@ -87,6 +87,7 @@ import { fetchPrivateEntities, removeEntity, saveEntity } from "@/api";
 
 export default {
 	name: 'Entities',
+  head: () => ({ title: 'Entities' }),
 	data() { return {
 		loading: true,
 		items: [],

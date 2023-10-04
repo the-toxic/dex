@@ -3,13 +3,15 @@
 <!--		<template v-slot:activator="{ props }">-->
 <!--			<v-btn v-bind="props" rounded class="text-none mb-2 mb-md-0" color="primary">Search</v-btn>-->
 <!--		</template>-->
-    <v-card class="rounded-xl">
-			<v-card-title class="mb-3 pt-7" style="font-size: 25px;">Global Search</v-card-title>
-			<v-card-text class="mb-4">
-				<v-text-field v-model="searchInput" placeholder="Wallet address, token, entity, e.g." ref="searchInput"
-					:loading="loading" persistent-placeholder class="mb-2"></v-text-field>
+    <v-card>
+<!--			<v-card-title class="mb-3 pt-7" style="font-size: 25px;">Global Search</v-card-title>-->
+      <v-text-field v-model="searchInput" placeholder="Wallet address, token, entity, e.g." ref="searchInput"
+        :loading="loading" prepend-inner-icon="mdi-magnify" persistent-placeholder hide-details>
+        <template v-slot:append-inner><v-btn text="Esc" @click="dialog = false" variant="text" border size="small"/></template>
+      </v-text-field>
+<!--			<v-card-text>-->
 				<v-list v-if="Object.keys(results).length" height="600" density="compact">
-					<template v-for="(items, type) in results">
+					<div v-for="(items, type) in results" class="border">
 						<v-list-subheader class="text-uppercase">{{ type }}</v-list-subheader>
 						<v-list-item v-for="item in items"
 						 :title="`${item.name} ${item.address && '('+shortAddress(item.address)+')'}`" @click="onResultClick"
@@ -24,10 +26,13 @@
 								</v-img>
 							</template>
 						</v-list-item>
-					</template>
+					</div>
 				</v-list>
-				<v-alert v-else height="500" class="text-center bg-blue-grey-darken-4">Please enter search query</v-alert>
-			</v-card-text>
+				<v-alert v-else min-height="600" height="100%" color="transparent" class="text-center">
+          <v-icon icon="mdi-text-box-search-outline" size="150" color="disabled" />
+          <div class="text-disabled">Your search results will appear here</div>
+        </v-alert>
+<!--			</v-card-text>-->
     </v-card>
   </v-dialog>
 </template>

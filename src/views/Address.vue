@@ -15,6 +15,7 @@ import { fetchAddress } from "@/api";
 
 export default {
   name: 'Address',
+  head: () => ({ title: 'Address' }),
 	data() { return {
 		id: null,
 		loading: true,

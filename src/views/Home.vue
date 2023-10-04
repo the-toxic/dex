@@ -48,6 +48,11 @@
 </template>
 
 <script setup>
+import { useHead } from '@unhead/vue'
 import { useUserStore } from "@/store/userStore";
 const userStore = useUserStore()
+useHead({
+  title: 'HAZB - Embrace the future of crypto intelligence today!',
+  titleTemplate: '%s' // remove trailing | HAZB
+})
 </script>

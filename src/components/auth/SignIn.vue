@@ -42,7 +42,7 @@ import StepInvite from "@/components/auth/StepInvite.vue";
   export default {
     name: 'SignIn',
     components: { StepInvite },
-    head: { title: {inner: 'Sign In', complement: import.meta.env.VITE_APP_PROJECT_NAME}},
+    head: { title: 'Sign In' },
     data() {
       return {
         loading: false,

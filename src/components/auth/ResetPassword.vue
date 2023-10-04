@@ -37,7 +37,7 @@ import StepOTP from "@/components/auth/StepOTP.vue";
   export default {
     name: 'ResetPassword',
     components: { StepPassword, StepOTP, VOtpInput },
-    head: { title: {inner: 'Reset Password', complement: import.meta.env.VITE_APP_PROJECT_NAME}},
+    head: { title: 'Reset Password'},
     data() {
       return {
         loading: false,

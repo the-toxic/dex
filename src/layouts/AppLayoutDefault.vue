@@ -25,13 +25,13 @@
 			<!-- LEFT Side-->
 			<template v-slot:prepend>
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
-          <div class="logoBox ml-4" @click="navigate">
+          <div class="logoBox ml-4 mr-8" @click="navigate">
             <img src="@/assets/HAZB.svg" alt="Logo" />
           </div>
         </router-link>
       </template>
 
-      <v-spacer />
+<!--      <v-spacer />-->
 
 			<!-- Center Side-->
 			<v-btn variant="text" :active="false" size="large" :to="{name: 'Home'}" rounded class="d-none d-md-inline-flex text-none">Home</v-btn>
@@ -52,15 +52,11 @@
 
 			<!-- Right Side-->
       <template v-slot:append>
-        <v-btn icon @click="showSearch">
-          <v-icon small color="#B3B5BD" class="px-2" alt="Show Search">mdi-magnify</v-icon>
+        <v-btn @click="showSearch" rounded variant="text" class="text-body-2">
+          <v-icon color="#B3B5BD" class="pr-4" alt="Show Search">mdi-magnify</v-icon>
+          Search
+          <span class="py-0 px-3 ml-3 border rounded text-disabled text-caption">/</span>
         </v-btn>
-
-        <v-btn v-if="route.name === 'Pair'" icon size="small">
-          <v-icon right :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
-          <v-tooltip activator="parent" location="bottom">Status: {{ !mainStore.wsConnected ? 'Offline' : (mainStore.wsConnected === 'loading' ? 'Connection' : 'Online') }}</v-tooltip>
-        </v-btn>
-
 
         <!-- Menu open icon for mobile -->
         <v-app-bar-nav-icon size="small" v-if="breakpoints.mobile" @click.stop="drawer = !drawer" />
@@ -72,6 +68,11 @@
 					<v-btn :to="{name: 'Entities'}" v-if="userStore.logged" rounded class="text-none">Entities</v-btn>
 					<v-btn :to="{name: 'Alerts'}" v-if="userStore.logged" rounded class="text-none">Alerts</v-btn>
 					<v-btn :to="{name: 'WatchList'}" v-if="userStore.logged" rounded class="text-none">Watch List</v-btn>
+
+          <v-btn v-if="route.name === 'Pair'" icon size="small">
+            <v-icon right :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>
+            <v-tooltip activator="parent" location="bottom">Status: {{ !mainStore.wsConnected ? 'Offline' : (mainStore.wsConnected === 'loading' ? 'Connection' : 'Online') }}</v-tooltip>
+          </v-btn>
 
 					<v-menu v-model="docsSubMenu" :close-on-content-click="false" location="bottom">
 						<template v-slot:activator="{ props }">
@@ -178,7 +179,7 @@
 </template>
 
 <script setup>
-  import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
   import { useRoute } from "vue-router";
   import { useTheme, useDisplay } from "vuetify";
   const theme = useTheme()
@@ -224,14 +225,28 @@
   function showSearch() {
     mainStore.searchDialog = true
   }
-  function connect() {
-    drawer.value = false
-    // web3Connect().then(success => {
-    //   console.log('connect', success)
-    // })
+
+  onMounted(() => {
+    window.addEventListener('keydown', searchShortCutHandler)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('keydown', searchShortCutHandler)
+  })
+
+  function searchShortCutHandler(event) {
+    if (/*(event.metaKey || event.ctrlKey) &&*/ event.key === '/') { // event.code === 'Slash'
+      event.preventDefault()
+      showSearch()
+    }
   }
-  function disconnect() {
-    // web3Disconnect()
-  }
+  // function connect() {
+  //   drawer.value = false
+  //   // web3Connect().then(success => {
+  //   //   console.log('connect', success)
+  //   // })
+  // }
+  // function disconnect() {
+  //   // web3Disconnect()
+  // }
 </script>
 

@@ -15,6 +15,7 @@ import { fetchEntity } from "@/api";
 
 export default {
   name: 'Entity',
+  head: () => ({ title: 'Entity' }),
 	data() { return {
 		id: null,
 		loading: true,

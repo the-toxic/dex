@@ -71,6 +71,7 @@ import { useDebounceFn } from "@vueuse/core";
 
 export default {
   name: 'BigSwaps',
+  head: () => ({ title: 'Big Swaps' }),
   components: { VDataTableServer },
   data() { return {
 		API_DOMAIN,

@@ -55,7 +55,7 @@ import StepInvite from "@/components/auth/StepInvite.vue";
 export default {
   name: 'SignUp',
   components: { StepInvite, StepPassword, StepOTP },
-  head: { title: {inner: 'Sign Up', complement: import.meta.env.VITE_APP_PROJECT_NAME}},
+  head: { title: 'Sign Up' },
   data: () => ({
 		loading: false,
 		step: 'email', // email | otp | password | invite

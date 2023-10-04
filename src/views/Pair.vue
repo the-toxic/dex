@@ -33,7 +33,20 @@
 							<v-btn value="analyze" class="text-none" >Analyze</v-btn>
 							<v-btn value="pair" class="text-none" >Pair</v-btn>
 						</v-btn-toggle>
-						<v-select v-model="pairSelect" :items="pairSelectItems" :loading="pairInfoLoading"  variant="outlined" class="d-inline-block va-middle" hide-details density="compact" />
+
+<!--            <v-select v-model="pairSelect" :items="similarityItems" :loading="pairInfoLoading"  variant="outlined" class="d-inline-block va-middle" hide-details density="compact" />-->
+            <v-menu v-if="similarityPools" location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" variant="outlined" :active="false" append-icon="mdi-menu-down" class="text-none">
+                  {{ pairSymbol }} | {{ exchange }} | {{ chainName }}
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item v-for="item in similarityPools" :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}">
+                  {{ item.symbol }} | {{ item.exchange }} | {{ chains[item.chain_id]['name'] }}
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </div>
         </v-card-text>
       </v-card>
@@ -188,7 +201,7 @@
 
 <script>
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
-import { API_DOMAIN, PROJECT_NAME, shortAddress, formatNumber, toCurrency, toNumber, formatBigNumber } from "@/helpers/mixins";
+import { API_DOMAIN, formatBigNumber, formatNumber, PROJECT_NAME, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import TableHistory from "@/components/TableHistory.vue";
 import { mapActions, mapState } from "pinia";
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
@@ -205,21 +218,20 @@ import { useMainStore } from "@/store/mainStore";
 export default {
   name: "Pair",
   components: { DexPairWalletsTable, DexPairTxsTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory, VSkeletonLoader },
-  head: {
-    title() { return { inner: this.title }},
-    meta() { return [{ name: 'description', content: this.description, id: 'desc' }]},
-  },
-  // components: {TableHistory},
+  head() { return  {
+    title: this.pageTitle,
+    // meta: [{name: 'description', content: this.pageDescription}]
+  }},
   data() { return {
-    title: 'Console',
-    description: import.meta.env.VITE_APP_PROJECT_NAME,
-		tabContent: 'dex',
+    pageTitle: 'Load pair...',
+    // pageDescription: '',
+		tabContent: 'dex', // dex | analyze | pair
 		periodsChanges: ['1H', '6H', '12H', '24H'],
 		currentPeriodTab: '1H',
 		tabChartVariant: 'liquidity',
 		API_DOMAIN,
     pairInfoLoading: false,
-		pairSelect: null,
+		// pairSelect: null,
     pairSymbol: '...',
     pairAddr: '',
     loadingOldTxs: true,
@@ -388,6 +400,12 @@ export default {
 
   async created() {
 		this.pairAddr = this.$route.params.pairAddr.toString().toLowerCase()
+
+    if(this.$route.hash) {
+      const hash = this.$route.hash.slice(1)
+      if(['dex', 'analyze', 'pair'].includes(hash))
+        this.tabContent = hash
+    }
   },
 	unmounted() {
 		this.resetState() // clear chart store
@@ -422,7 +440,7 @@ export default {
       console.log('watch activeSymbol', newVal, oldVal)
       if(!newVal) return // on resetState
       this.pairSymbol = newVal.symbol
-      this.pairSelect = newVal.full_name
+      // this.pairSelect = newVal.full_name
       this.pairAddr = newVal.pair_addr
       this.updateTitle()
       if(oldVal && (newVal.type !== oldVal.type || newVal.pair_addr !== oldVal.pair_addr)) {
@@ -433,33 +451,37 @@ export default {
       this.pairInfoLoading = false
     },
 
-		pairSelect(newVal, oldVal) {
-			if(!newVal || !oldVal) return
-			console.log('watch pairSelect', newVal, oldVal)
-			const symbolItem = this.similarityPools.find(({ full_name }) => full_name === newVal);
-			if(!symbolItem) console.error('Not found selected pair in similarityPools')
-			this.setActiveSymbol(symbolItem).then()
-			window.tvWidget.activeChart().setSymbol(newVal)
-		},
-    lastPrice() {
+		// pairSelect(newVal, oldVal) {
+		// 	if(!newVal || !oldVal) return
+		// 	console.log('watch pairSelect', newVal, oldVal)
+		// 	const symbolItem = this.similarityPools.find(({ full_name }) => full_name === newVal);
+		// 	if(!symbolItem) console.error('Not found selected pair in similarityPools')
+		// 	this.setActiveSymbol(symbolItem).then()
+		// 	window.tvWidget.activeChart().setSymbol(newVal)
+		// },
+    tabContent(newVal) {
+      console.log('watch tab', newVal)
+      this.$router.push({hash: '#'+newVal})
+    },
+    priceInUSD() {
       this.updateTitle()
     }
   },
   computed: {
     PROJECT_NAME() { return PROJECT_NAME },
     ...mapState(useMainStore, ['chains']),
-    ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'similarityPools', 'lastPrice', 'leftToken', 'rightToken', "lastTXs"]),
+    ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'similarityPools', 'lastPrice', 'leftToken', 'rightToken', 'lastTXs', 'chainName', 'exchange']),
 		iconToken0() {
 			const iconFolder = !this.chains || !this.activeSymbol ? null : this.chains[this.activeSymbol.chain_id]['icon_folder']
 			return !this.pairInfo || !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${this.pairInfo.token0.address.toLowerCase().slice(0,4)}/${this.pairInfo.token0.address.toLowerCase()}/default.png`
 		},
     tokenTitle() { return this.pairInfo && !this.pairInfoLoading ?  this.pairInfo.token0.name : 'Loading...' },
-		pairSelectItems() {
-			// return this.pairInfo.pool.similarity_pools.map(i => {return { value: `None:${i.name}:${i.address}`, title: i.name }})
-			return this.similarityPools.map(i => ({ value: i.full_name, title: i.symbol }))
-		},
+		// similarityItems() {
+		// 	// return this.pairInfo.pool.similarity_pools.map(i => {return { value: `None:${i.name}:${i.address}`, title: i.name }})
+		// 	return this.similarityPools.map(i => ({ pairAddr: i.pair_addr, title: i.symbol }))
+		// },
 		priceInUSD() {
-			if(!this.pairInfo || !this.activeSymbol || !this.chains) return 0
+			if(!this.pairInfo || !this.activeSymbol || !this.chains) return ''
 			if(this.pairInfo.token1.is_stable)
 				return '$'+formatNumber(this.lastPrice)
 
@@ -470,26 +492,15 @@ export default {
       return this.currentPeriodTab === '1H' ? 'h1' : (this.currentPeriodTab === '6H' ? 'h6' : (this.currentPeriodTab === '12H' ? 'h12' : (this.currentPeriodTab === '24H' ? 'h24' : '') ))
     },
     // buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
-    // buyVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.buy_volume_24h) : 0 },
-    // sellVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.sell_volume_24h) : 0 },
-    // buyTxCount24() { return this.pairInfo ? this.pairInfo.pool.buy_tx_count_24h : 0 },
-    // sellTxCount24() { return this.pairInfo ? this.pairInfo.pool.sell_tx_count_24h : 0 },
-    // holders() { return this.pairInfo ? this.pairInfo.token0.holders : 0 },
-    // totalSupply() { return this.pairInfo ? this.pairInfo.token0.total_supply : 0 },
-    // volume24h() { return this.pairInfo ? this.pairInfo.pool.volume_24h : 0 },
-    // liquidity() { return this.pairInfo ? this.pairInfo.pool.total_liquidity : 0 },
-    // txCount24() { return this.pairInfo ? this.pairInfo.pool.tx_count_24h : 0 },
-    // marketCap() { return this.pairInfo ? this.pairInfo.token0.total_supply * this.lastPrice : 0 },
-    // priceChange24H() { return this.pairInfo ? 1 : 0 },
   },
   methods: {
     formatBigNumber, toCurrency, shortAddress, toNumber, formatNumber,  // from mixins
     ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', setActiveSymbol: 'setActiveSymbol', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
 
     updateTitle() {
-      this.title = `${this.pairSymbol} - ${formatNumber(this.lastPrice)}`
-      this.description = `Analyse ${this.pairSymbol} of ${this.PROJECT_NAME} | ${this.pairAddr}`
-      this.$emit('updateHead') // update title
+      const chain = (!this.activeSymbol || !this.chains) ? '' : this.chains[this.activeSymbol.chain_id]['name']
+      this.pageTitle = !this.activeSymbol ? '' : `${this.priceInUSD} ${this.pairSymbol} - ${this.tokenTitle} | ${this.activeSymbol.exchange} / ${chain}`
+      // this.pageDescription = `Analyse ${this.pairSymbol} of ${this.PROJECT_NAME} | ${this.pairAddr}`
     },
   }
 }

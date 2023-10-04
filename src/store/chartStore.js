@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { fetchExchanges, fetchHistoryTable, fetchPairInfo } from "@/api";
 import { needInvert } from "@/helpers/mixins";
+import { useMainStore } from "@/store/mainStore";
+const mainStore = () => useMainStore()
 
 const sessionId = Math.random().toString(36).slice(2, 18);
 const getDefaultState = () => {
@@ -28,7 +30,8 @@ export const useChartStore = defineStore('chart', {
     // activeSymbol: state => state.activeSymbol,
     // pairInfo: state => state.pairInfo,
     // sessionId: state => state.sessionId,
-    // exchangesList: state => state.exchangesList,
+    chainName: state => (!mainStore().chains || !state.activeSymbol) ? '' : mainStore().chains[state.activeSymbol.chain_id]['name'],
+    exchange: state => state.activeSymbol?.exchange || '',
     needInvert: state => state.activeSymbol?.need_invert || false,
     leftToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[0] : '',
     rightToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[1]: '',

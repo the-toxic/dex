@@ -128,6 +128,7 @@ import WatchlistWalletModal from "@/components/WatchlistWalletModal.vue";
 
 export default {
   name: 'WatchList',
+  head: () => ({ title: 'WatchList' }),
   components: { WatchlistWalletModal, VDataTableServer },
   data() { return {
     loading: false,

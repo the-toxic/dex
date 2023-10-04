@@ -23,7 +23,6 @@ const userStore = useUserStore()
 export default {
   name: "Auth",
   components: {AuthSignUp, AuthSignIn, AuthResetPassword},
-  head: {title: {inner: 'Auth'}},
   data() {return {
 		pageComponent: 'AuthSignUp',
 	}},

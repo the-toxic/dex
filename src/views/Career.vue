@@ -6,6 +6,7 @@
 
 <script>
 export default {
-  name: 'Career'
+  name: 'Career',
+  head: () => ({ title: 'Career' }),
 }
 </script>

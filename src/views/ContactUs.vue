@@ -31,7 +31,7 @@ import { emailRules, nameRules } from "@/helpers/mixins";
 
 export default {
   name: 'ContactUs',
-  head: { title: {inner: 'Contact Us', complement: import.meta.env.VITE_APP_PROJECT_NAME}},
+  head: () => ({ title: 'Contact Us' }),
   data() { return {
     loading: false,
     valid: true,

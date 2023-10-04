@@ -76,7 +76,7 @@ import { useMainStore } from "@/store/mainStore";
 export default {
   name: 'Pairs',
   components: { VDataTableServer },
-
+  head: () => ({ title: 'Explorer' }),
   data: () => ({
 		API_DOMAIN,
     loading: false,

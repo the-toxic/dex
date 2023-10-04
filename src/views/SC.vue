@@ -80,6 +80,7 @@ import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } fro
 
 export default {
   name: 'SC',
+  head: () => ({ title: 'SC' }),
   components: { VDataTableServer },
   data: () => ({
     loading: false,

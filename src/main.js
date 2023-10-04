@@ -15,7 +15,7 @@ import vuetify from './plugins/vuetify'
 import { initVueGtag } from '@/plugins/vue-gtag'
 import { initClipboard } from '@/plugins/clipboard'
 import { httpInt } from './middlewares/interceptors'
-import { initVueHead } from '@/plugins/vue-head'
+import { initUnhead } from '@/plugins/unhead'
 
 app
   .use(vuetify)
@@ -25,7 +25,7 @@ app
 httpInt();
 initVueGtag(app)
 initClipboard(app)
-initVueHead(app)
+initUnhead(app)
 
 app.mount('#app')
 
