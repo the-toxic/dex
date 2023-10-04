@@ -98,7 +98,7 @@ function candleMessageHandler(data) {
     amount1, // 0.05
   ] = data.split('~');
 
-  if(+chartStore().activeSymbol.pair_id !== +pair_id) {
+  if(!chartStore().activeSymbol || +chartStore().activeSymbol.pair_id !== +pair_id) {
     return; // fix bug delay call SubRemove
   }
 
@@ -110,7 +110,7 @@ function candleMessageHandler(data) {
 
   const tradeTime = parseInt(tradeTimeStr) * 1000;
   const tradePrice = parseFloat(amount1 / amount0);
-  const tradeVolume = parseFloat(amount1);
+  const tradeVolume = parseFloat(amount0);
 
   const channelString = `0~${pair_id}~${resolution}`;
   const subscriptionItem = channelToSubscription.get(channelString);
@@ -170,7 +170,7 @@ function tableMessageHandler(data) {
     routerId, // 123
   ] = data.split('~');
 
-  if(+chartStore().activeSymbol.pair_id !== +pair_id) {
+  if(!chartStore().activeSymbol || +chartStore().activeSymbol.pair_id !== +pair_id) {
     return; // fix bug delay call SubRemove
   }
 

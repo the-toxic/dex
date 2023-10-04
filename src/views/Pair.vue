@@ -51,16 +51,16 @@
 							<v-card-text>
 								<div class="d-flex mb-3" style="gap: 10px">
 									<div class="flex-fill pa-2 text-center border rounded-lg">
-										1H <div :class="{'text-red': priceChange24H < 0, 'text-green': priceChange24H >= 0}">{{ toNumber(priceChange24H) }}%</div>
+										1H <div :class="{'text-red': pairInfo.stats.h1.percent < 0, 'text-green': pairInfo.stats.h1.percent >= 0}">{{ toNumber(pairInfo.stats.h1.percent) }}%</div>
 									</div>
 									<div class="flex-fill pa-2 text-center border rounded-lg">
-										6H <div :class="{'text-red': priceChange24H < 0, 'text-green': priceChange24H >= 0}">{{ toNumber(priceChange24H) }}%</div>
+										6H <div :class="{'text-red': pairInfo.stats.h6.percent < 0, 'text-green': pairInfo.stats.h6.percent >= 0}">{{ toNumber(pairInfo.stats.h6.percent) }}%</div>
 									</div>
 									<div class="flex-fill pa-2 text-center border rounded-lg">
-										12H <div :class="{'text-red': priceChange24H < 0, 'text-green': priceChange24H >= 0}">{{ toNumber(priceChange24H) }}%</div>
+										12H <div :class="{'text-red': pairInfo.stats.h12.percent < 0, 'text-green': pairInfo.stats.h12.percent >= 0}">{{ toNumber(pairInfo.stats.h12.percent) }}%</div>
 									</div>
 									<div class="flex-fill pa-2 text-center border rounded-lg">
-										24H <div :class="{'text-red': priceChange24H < 0, 'text-green': priceChange24H >= 0}">{{ toNumber(priceChange24H) }}%</div>
+										24H <div :class="{'text-red': pairInfo.stats.h24.percent < 0, 'text-green': pairInfo.stats.h24.percent >= 0}">{{ toNumber(pairInfo.stats.h24.percent) }}%</div>
 									</div>
 								</div>
 
@@ -71,41 +71,35 @@
 									<v-window-item v-for="period in periodsChanges" :value="period">
 										<div class="pa-4 rounded border bg-blue-grey-darken-4 d-flex">
 											<div>
-												<p class="text-disabled">TXs</p><p>53</p>
-												<p class="text-disabled mt-4">VOLUME</p><p>$666</p>
-												<p class="text-disabled mt-4">MAKERS</p><p>3</p>
+												<p class="text-disabled">TXs</p><p>{{ toNumber(pairInfo.stats[currPeriodKey]['txs']) }}</p>
+												<p class="text-disabled mt-4">VOLUME</p><p>{{ formatBigNumber(pairInfo.stats[currPeriodKey]['volume'], 1000) }}</p>
+												<p class="text-disabled mt-4">MAKERS</p><p>{{ toNumber(pairInfo.stats[currPeriodKey]['makers']) }}</p>
 											</div>
 											<v-divider vertical class="mx-4" />
 											<div class="fill-width">
 												<div class="d-flex justify-space-between">
-													<div class=""><p class="text-disabled">BUYS</p><p>26</p></div>
-													<div class="text-right"><p class="text-disabled">SELLS</p><p>23</p></div>
+													<div class=""><p class="text-disabled">BUYS</p><p>{{ toNumber(pairInfo.stats[currPeriodKey]['buy']) }}</p></div>
+													<div class="text-right"><p class="text-disabled">SELLS</p><p>{{ toNumber(pairInfo.stats[currPeriodKey]['sell']) }}</p></div>
 												</div>
-												<v-progress-linear rounded height="5" model-value="54" color="#51A49A" bg-color="#DE5F57" bg-opacity="1" />
+												<v-progress-linear rounded height="5" :model-value="Math.round(pairInfo.stats[currPeriodKey]['buy'] / (pairInfo.stats[currPeriodKey]['buy'] + pairInfo.stats[currPeriodKey]['sell']) * 100)" color="#51A49A" bg-color="#DE5F57" bg-opacity="1" />
 
 												<div class="d-flex justify-space-between mt-2">
-													<div class=""><p class="text-disabled">BUY VOL</p><p>$333</p></div>
-													<div class="text-right"><p class="text-disabled">SELL VOL</p><p>$345</p></div>
+													<div class=""><p class="text-disabled">BUY VOL</p><p>{{ formatBigNumber(pairInfo.stats[currPeriodKey]['buy_volume'], 1000) }}</p></div>
+													<div class="text-right"><p class="text-disabled">SELL VOL</p><p>{{ formatBigNumber(pairInfo.stats[currPeriodKey]['sell_volume'], 1000) }}</p></div>
 												</div>
-												<v-progress-linear rounded height="5" model-value="44" color="#51A49A" bg-color="#DE5F57" bg-opacity="1" />
+												<v-progress-linear rounded height="5" :model-value="Math.round(pairInfo.stats[currPeriodKey]['buy_volume'] / (pairInfo.stats[currPeriodKey]['buy_volume'] + pairInfo.stats[currPeriodKey]['sell_volume']) * 100)" color="#51A49A" bg-color="#DE5F57" bg-opacity="1" />
 
 												<div class="d-flex justify-space-between mt-2">
-													<div class=""><p class="text-disabled">BUYERS</p><p>2</p></div>
-													<div class="text-right"><p class="text-disabled">SELLERS</p><p>1</p></div>
+                          <div class=""><p class="text-disabled">BUYERS</p><p>{{ toNumber(pairInfo.stats[currPeriodKey]['buyers']) }}</p></div>
+                          <div class="text-right"><p class="text-disabled">SELLERS</p><p>{{ toNumber(pairInfo.stats[currPeriodKey]['sellers']) }}</p></div>
 												</div>
-												<v-progress-linear rounded height="5" model-value="66" color="#51A49A" bg-color="#DE5F57" bg-opacity="1" />
+												<v-progress-linear rounded height="5" :model-value="Math.round(pairInfo.stats[currPeriodKey]['buyers'] / (pairInfo.stats[currPeriodKey]['buyers'] + pairInfo.stats[currPeriodKey]['sellers']) * 100)" color="#51A49A" bg-color="#DE5F57" bg-opacity="1" />
 											</div>
 										</div>
 
 									</v-window-item>
 								</v-window>
 
-					<!--  <div class="fs12 lh-1_2">Holders</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(holders) }}</div>
-								<div class="fs12 lh-1_2">Total Supply</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(totalSupply) }}</div>
-								<div class="fs12 lh-1_2">24hr Volume</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(toNumber(volume24h)) }}</div>
-								<div class="fs12 lh-1_2">Liquidity</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(toNumber(liquidity)) }} {{ rightToken }}</div>
-								<div class="fs12 lh-1_2">Market Cap</div><div class="lh-1_2 fs12" style="color: #fff">${{ shortNumber(toNumber(marketCap)) }}</div>
-								<div class="fs12 lh-1_2">24hr Swaps</div><div class="lh-1_2 fs12" style="color: #fff">{{ shortNumber(txCount24) }}</div>-->
 							</v-card-text>
 						</v-card>
 
@@ -194,7 +188,7 @@
 
 <script>
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
-import { API_DOMAIN, PROJECT_NAME, shortAddress, formatNumber, toCurrency, toNumber } from "@/helpers/mixins";
+import { API_DOMAIN, PROJECT_NAME, shortAddress, formatNumber, toCurrency, toNumber, formatBigNumber } from "@/helpers/mixins";
 import TableHistory from "@/components/TableHistory.vue";
 import { mapActions, mapState } from "pinia";
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
@@ -472,6 +466,9 @@ export default {
 			const nativeSymbolPrice = this.chains[this.activeSymbol.chain_id]['native_symbol_price']
 			return '$'+formatNumber(this.lastPrice * nativeSymbolPrice)
 		},
+    currPeriodKey() {
+      return this.currentPeriodTab === '1H' ? 'h1' : (this.currentPeriodTab === '6H' ? 'h6' : (this.currentPeriodTab === '12H' ? 'h12' : (this.currentPeriodTab === '24H' ? 'h24' : '') ))
+    },
     // buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
     // buyVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.buy_volume_24h) : 0 },
     // sellVolume24() { return this.pairInfo ? Math.round(this.pairInfo.pool.sell_volume_24h) : 0 },
@@ -483,10 +480,10 @@ export default {
     // liquidity() { return this.pairInfo ? this.pairInfo.pool.total_liquidity : 0 },
     // txCount24() { return this.pairInfo ? this.pairInfo.pool.tx_count_24h : 0 },
     // marketCap() { return this.pairInfo ? this.pairInfo.token0.total_supply * this.lastPrice : 0 },
-    priceChange24H() { return this.pairInfo ? this.pairInfo.pool.price_change_24h : 0 },
+    // priceChange24H() { return this.pairInfo ? 1 : 0 },
   },
   methods: {
-		toCurrency, shortAddress, toNumber, formatNumber,  // from mixins
+    formatBigNumber, toCurrency, shortAddress, toNumber, formatNumber,  // from mixins
     ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', setActiveSymbol: 'setActiveSymbol', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
 
     updateTitle() {
