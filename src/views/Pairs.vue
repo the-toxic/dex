@@ -36,6 +36,7 @@
 			:items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
 		>
 <!--			@update:options="loadItems"-->
+      <template v-slot:bottom></template> <!-- hide footer -->
 			<template v-slot:item.pair_name="{ item }">
 				<v-btn :to="{name: 'Pair', params: {pairAddr: item.raw.pair_addr}}" rounded variant="text"  class="text-none">
 					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ item.index + 1 }}</span>

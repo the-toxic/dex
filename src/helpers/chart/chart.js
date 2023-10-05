@@ -30,8 +30,8 @@ export const initChart = (pairAddr) => {
       // "volume.volume.color.0": "#00FFFF",
     // },
     time_frames: [
-      // { text: "1M", resolution: "1H", description: "1 Month range on 1H candles", title: "1 Month range" },
-      // { text: "1Y", resolution: "1D", description: "1 Year range on 1D candles", title: "1 Year range" }
+    //   { text: "1M", resolution: "1H", description: "1 Month range on 1H candles", title: "1 Month range" },
+    //   { text: "1Y", resolution: "1D", description: "1 Year range on 1D candles", title: "1 Year range" }
     ],
     favorites: {
       intervals: ["1", "15", "60", "1D"], // "1W"
@@ -40,13 +40,16 @@ export const initChart = (pairAddr) => {
     width: '100%',
     height: '100%',
     // autosize: true, // Full size on container
-    disabled_features: ['header_symbol_search', 'header_compare', 'volume_force_overlay', 'display_market_status'], // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
+    disabled_features: ['header_symbol_search', 'header_compare', 'volume_force_overlay', 'display_market_status', 'go_to_date'], // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
     // enabled_features: [
     //   'show_symbol_logos', // add in ver 25.001
     //   'show_symbol_logo_in_legend', // add in ver 26
     //   'show_exchange_logos', // add in ver 25.001
     // ],
     // custom_css_url: 'css/style.css',
+    time_scale: {
+      min_bar_spacing: 5, // block micro zoom
+    }
   });
 
   tvWidget.onChartReady(() => {
@@ -64,12 +67,12 @@ export const initChart = (pairAddr) => {
     });
 
     // Вызывается только при ручном выборе пары через поиск
-    // tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
-      // console.log('onSymbolChanged subscribe', symbolInfo)
+    tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
+      tvWidget.activeChart().priceFormatter().format = formatNumber;
       // symbolInfo.needInvert = symbolInfo.checkInvert()
       // const symbolItem = symbolItemByInfo(symbolInfo)
       // store.dispatch('chart/setActiveSymbol', symbolItem).then()
-    // });
+    });
 
     // let f = () => { console.log('bars loaded'); };
     // let subsr = tvWidget.activeChart().onDataLoaded();

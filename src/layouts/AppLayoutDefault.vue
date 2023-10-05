@@ -234,7 +234,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
   })
 
   function searchShortCutHandler(event) {
-    if (/*(event.metaKey || event.ctrlKey) &&*/ event.key === '/') { // event.code === 'Slash'
+    if (/*(event.metaKey || event.ctrlKey) &&*/ event.code === 'Slash') { // event.key === '/'
       event.preventDefault()
       showSearch()
     }
