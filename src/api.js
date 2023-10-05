@@ -201,7 +201,8 @@ export const fetchHistoryTable = async (payload) => {
   const chainId = payload.chain_id
   const pairId = payload.pair_id
   const lastBlockId = payload.block_id || 0
-  const { data } = await axios.get(`xhr/txs?chain_id=${chainId}&pair_id=${pairId}&block_id=${lastBlockId}`, {
+  const lastTx = payload.tx || 0
+  const { data } = await axios.get(`xhr/txs?chain_id=${chainId}&pair_id=${pairId}&block_id=${lastBlockId}&tx=${lastTx}`, {
     headers: { 'x-session-id': chartStore().sessionId },
   });
   return data

@@ -73,7 +73,8 @@ export const useChartStore = defineStore('chart', {
       const {success, result} = await fetchHistoryTable({
         chain_id: this.activeSymbol.chain_id,
         pair_id: this.activeSymbol.pair_id,
-        block_id: lastTx['block_id']
+        block_id: lastTx['block_id'],
+        tx: lastTx['tx']
       })
       if(success && result?.length) {
         // проходимся по результату и если в блоке есть та-же tx или свежее, чем последняя в сторе, образеем их
