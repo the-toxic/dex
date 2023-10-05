@@ -25,24 +25,24 @@
 			:items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->
-			<template v-slot:item.wallet="{ item }">
+			<template v-slot:item.wallet="{ item, internalItem }">
 				<v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">
-					<span class="text-disabled mr-1" style="width: 30px;">#{{ item.index + 1 }}</span>
-					{{ shortAddress(item.raw.wallet) }}
+					<span class="text-disabled mr-1" style="width: 30px;">#{{ internalItem.index + 1 }}</span>
+					{{ shortAddress(item.wallet) }}
 				</v-btn>
 			</template>
 			<template v-slot:item.tx_id="{ item }">
-				<v-btn rounded variant="text" :href="`https://${item.raw.tx_id}`" target="_blank" class="text-none">{{ shortAddress(item.raw.tx_id) }} <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-btn>
+				<v-btn rounded variant="text" :href="`https://${item.tx_id}`" target="_blank" class="text-none">{{ shortAddress(item.tx_id) }} <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-btn>
 			</template>
-			<template v-slot:item.bought="{ item }">{{ formatBigNumber(item.raw.bought) }}</template>
-			<template v-slot:item.sold="{ item }">{{ formatBigNumber(item.raw.sold) }}</template>
-			<template v-slot:item.different="{ item }">{{ formatBigNumber(item.raw.different) }}</template>
-			<template v-slot:item.cost="{ item }">{{ toCurrency(item.raw.cost) }}</template>
-			<template v-slot:item.revenue="{ item }">{{ toCurrency(item.raw.revenue) }}</template>
-			<template v-slot:item.profit="{ item }">{{ toCurrency(item.raw.profit) }}</template>
+			<template v-slot:item.bought="{ item }">{{ formatBigNumber(item.bought) }}</template>
+			<template v-slot:item.sold="{ item }">{{ formatBigNumber(item.sold) }}</template>
+			<template v-slot:item.different="{ item }">{{ formatBigNumber(item.different) }}</template>
+			<template v-slot:item.cost="{ item }">{{ toCurrency(item.cost) }}</template>
+			<template v-slot:item.revenue="{ item }">{{ toCurrency(item.revenue) }}</template>
+			<template v-slot:item.profit="{ item }">{{ toCurrency(item.profit) }}</template>
 			<template v-slot:item.roi="{ item }">
-				<v-chip :color="item.raw.roi > 0 ? 'success': (item.raw.roi < 0 ? 'error' : 'white')">
-					{{ item.raw.roi > 0 ? '+' : (item.raw.roi < 0 ? '-' : '') }} {{ Math.abs(item.raw.roi) || 0 }}%
+				<v-chip :color="item.roi > 0 ? 'success': (item.roi < 0 ? 'error' : 'white')">
+					{{ item.roi > 0 ? '+' : (item.roi < 0 ? '-' : '') }} {{ Math.abs(item.roi) || 0 }}%
 				</v-chip>
 			</template>
 			<template v-slot:item.action="{ item }">

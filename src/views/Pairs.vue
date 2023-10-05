@@ -37,30 +37,30 @@
 		>
 <!--			@update:options="loadItems"-->
       <template v-slot:bottom></template> <!-- hide footer -->
-			<template v-slot:item.pair_name="{ item }">
-				<v-btn :to="{name: 'Pair', params: {pairAddr: item.raw.pair_addr}}" rounded variant="text"  class="text-none">
-					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ item.index + 1 }}</span>
-					<v-img :src="item.raw.iconToken0" width="24" height="24" :alt="item.raw.token0.symbol" class="va-top rounded-xl">
+			<template v-slot:item.pair_name="{ item, internalItem }">
+				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text"  class="text-none">
+					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ internalItem.index + 1 }}</span>
+					<v-img :src="item.iconToken0" width="24" height="24" :alt="item.token0.symbol" class="va-top rounded-xl">
 						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
 					</v-img>
-					<v-img :src="item.raw.iconToken1" width="24" height="24" :alt="item.raw.token1.symbol" class="va-top rounded-xl mx-2">
+					<v-img :src="item.iconToken1" width="24" height="24" :alt="item.token1.symbol" class="va-top rounded-xl mx-2">
 						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
 					</v-img>
-					{{ item.raw.token0.symbol }}/{{ item.raw.token1.symbol }}
-					<span class="text-secondary ml-3">{{ item.raw.token0.name }}</span>
+					{{ item.token0.symbol }}/{{ item.token1.symbol }}
+					<span class="text-secondary ml-3">{{ item.token0.name }}</span>
 				</v-btn>
 			</template>
-			<template v-slot:item.price="{ item }">${{ formatNumber(item.raw.last_price) }}</template>
-			<template v-slot:item.txs="{ item }">{{ formatBigNumber(item.raw.txs) }}</template>
-			<template v-slot:item.volume="{ item }">{{formatBigNumber(item.raw.need_invert ? item.raw.volume_token1 : item.raw.volume_token0) }}</template>
+			<template v-slot:item.price="{ item }">${{ formatNumber(item.last_price) }}</template>
+			<template v-slot:item.txs="{ item }">{{ formatBigNumber(item.txs) }}</template>
+			<template v-slot:item.volume="{ item }">{{formatBigNumber(item.need_invert ? item.volume_token1 : item.volume_token0) }}</template>
 			<template v-slot:item.change_24h="{ item }">
-				<v-chip :color="item.raw.change_24h > 0 ? 'success': (item.raw.change_24h < 0 ? 'error' : 'white')">
-					{{ item.raw.change_24h > 0 ? '+' : (item.raw.change_24h < 0 ? '-' : '') }} {{ Math.abs(item.raw.change_24h) || 0 }}%
+				<v-chip :color="item.change_24h > 0 ? 'success': (item.change_24h < 0 ? 'error' : 'white')">
+					{{ item.change_24h > 0 ? '+' : (item.change_24h < 0 ? '-' : '') }} {{ Math.abs(item.change_24h) || 0 }}%
 				</v-chip>
 			</template>
-			<template v-slot:item.liquidity="{ item }">${{ formatBigNumber(item.raw.liquidity) || 0 }}</template>
+			<template v-slot:item.liquidity="{ item }">${{ formatBigNumber(item.liquidity) || 0 }}</template>
 			<template v-slot:item.action="{ item }">
-				<v-btn :to="{name: 'Pair', params: {pairAddr: item.raw.pair_addr}}"
+				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}"
 					 icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
 			</template>
 		</v-data-table-server>

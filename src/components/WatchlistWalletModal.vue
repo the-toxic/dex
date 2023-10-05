@@ -12,7 +12,7 @@
           <v-text-field label="Label*" v-model="form.label" placeholder="Custom name of wallet"
 						persistent-placeholder class="mb-2" :rules="[v => !!v || 'Required field']"></v-text-field>
           <v-select label="Chain*" v-model="form.network" class="mb-2"
-						:items="chains.map(v => ({value: v.name.toLowerCase(), title: v.name}))"></v-select>
+						:items="Object.keys(chains).map(key => ({value: chains[key].name.toLowerCase(), title: chains[key].name}))"></v-select>
           <v-textarea label="Note" v-model="form.note" placeholder="Custom note for self"
 						persistent-placeholder :rules="[v => !v || v.length < 512  || 'Required field']" counter class="mb-2"></v-textarea>
         </v-card-text>

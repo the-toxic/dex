@@ -27,13 +27,13 @@
 			class="elevation-1 fs14" density="compact"
 			@update:options="loadItems"
 		>
-			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.raw.wallet) }}</v-btn></template>
-			<template v-slot:item.type="{ item }"><v-chip :color="item.raw.type === 'adds' ? 'success':'error'" class="text-uppercase" size="small">{{ item.raw.type }}</v-chip></template>
-			<template v-slot:item.token0_amount="{ item }">{{ toNumber(item.raw.token0_amount) }}</template>
-			<template v-slot:item.token1_amount="{ item }">{{ toNumber(item.raw.token1_amount) }}</template>
-			<template v-slot:item.token0_total="{ item }">{{ toCurrency(item.raw.token0_total) }}</template>
-			<template v-slot:item.token1_total="{ item }">{{ toCurrency(item.raw.token1_total) }}</template>
-			<template v-slot:item.total="{ item }">{{ toCurrency(item.raw.total) }}</template>
+			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
+			<template v-slot:item.type="{ item }"><v-chip :color="item.type === 'adds' ? 'success':'error'" class="text-uppercase" size="small">{{ item.type }}</v-chip></template>
+			<template v-slot:item.token0_amount="{ item }">{{ toNumber(item.token0_amount) }}</template>
+			<template v-slot:item.token1_amount="{ item }">{{ toNumber(item.token1_amount) }}</template>
+			<template v-slot:item.token0_total="{ item }">{{ toCurrency(item.token0_total) }}</template>
+			<template v-slot:item.token1_total="{ item }">{{ toCurrency(item.token1_total) }}</template>
+			<template v-slot:item.total="{ item }">{{ toCurrency(item.total) }}</template>
 
 			<template v-slot:tfoot>
 				<tfoot>

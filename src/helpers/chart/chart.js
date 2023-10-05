@@ -40,7 +40,7 @@ export const initChart = (pairAddr) => {
     width: '100%',
     height: '100%',
     // autosize: true, // Full size on container
-    disabled_features: ['header_symbol_search', 'header_compare', 'volume_force_overlay', 'display_market_status', 'go_to_date'], // "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
+    disabled_features: ['header_symbol_search', 'header_compare', 'volume_force_overlay', 'display_market_status'], // "go_to_date", "header_widget", "header_symbol_search", "left_toolbar", "use_localstorage_for_settings", "header_resolutions"
     // enabled_features: [
     //   'show_symbol_logos', // add in ver 25.001
     //   'show_symbol_logo_in_legend', // add in ver 26

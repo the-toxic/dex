@@ -24,21 +24,21 @@
 			<template v-slot:column.token0_name="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #262626">{{ column.title }}</div></template>
 			<template v-slot:column.token1_name="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #2f1d4a">{{ column.title }}</div></template>
 
-			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.raw.wallet) }}</v-btn></template>
-			<template v-slot:item.removed="{ item }"><v-chip :color="'white'" size="small">{{ item.raw.removed ? 'YES' : 'NO' }}</v-chip></template>
-			<template v-slot:item.count_adds="{ item }">{{ toNumber(item.raw.count_adds) }}</template>
-			<template v-slot:item.count_removes="{ item }">{{ toNumber(item.raw.count_removes) }}</template>
-			<template v-slot:item.count_total="{ item }">{{ toNumber(item.raw.count_total) }}</template>
+			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
+			<template v-slot:item.removed="{ item }"><v-chip :color="'white'" size="small">{{ item.removed ? 'YES' : 'NO' }}</v-chip></template>
+			<template v-slot:item.count_adds="{ item }">{{ toNumber(item.count_adds) }}</template>
+			<template v-slot:item.count_removes="{ item }">{{ toNumber(item.count_removes) }}</template>
+			<template v-slot:item.count_total="{ item }">{{ toNumber(item.count_total) }}</template>
 
-			<template v-slot:item.token0_was="{ item }">${{ formatNumber(item.raw.token0_was) }}</template>
-			<template v-slot:item.token0_now="{ item }">${{ formatNumber(item.raw.token0_now) }}</template>
-			<template v-slot:item.token0_profit="{ item }">${{ formatNumber(item.raw.token0_profit) }}</template>
-			<template v-slot:item.token0_roi="{ item }"><v-chip :color="item.raw.token0_roi > 0 ? 'success': (item.raw.token0_roi < 0 ? 'error' : 'white')" size="small">{{ item.raw.token0_roi > 0 ? '+' : (item.raw.token0_roi < 0 ? '-' : '') }} {{ Math.abs(item.raw.token0_roi) || 0 }}%</v-chip></template>
+			<template v-slot:item.token0_was="{ item }">${{ formatNumber(item.token0_was) }}</template>
+			<template v-slot:item.token0_now="{ item }">${{ formatNumber(item.token0_now) }}</template>
+			<template v-slot:item.token0_profit="{ item }">${{ formatNumber(item.token0_profit) }}</template>
+			<template v-slot:item.token0_roi="{ item }"><v-chip :color="item.token0_roi > 0 ? 'success': (item.token0_roi < 0 ? 'error' : 'white')" size="small">{{ item.token0_roi > 0 ? '+' : (item.token0_roi < 0 ? '-' : '') }} {{ Math.abs(item.token0_roi) || 0 }}%</v-chip></template>
 
-			<template v-slot:item.token1_was="{ item }">${{ formatNumber(item.raw.token1_was) }}</template>
-			<template v-slot:item.token1_now="{ item }">${{ formatNumber(item.raw.token1_now) }}</template>
-			<template v-slot:item.token1_profit="{ item }">${{ formatNumber(item.raw.token1_profit) }}</template>
-			<template v-slot:item.token1_roi="{ item }"><v-chip :color="item.raw.token1_roi > 0 ? 'success': (item.raw.token1_roi < 0 ? 'error' : 'white')" size="small">{{ item.raw.token1_roi > 0 ? '+' : (item.raw.token1_roi < 0 ? '-' : '') }} {{ Math.abs(item.raw.token1_roi) || 0 }}%</v-chip></template>
+			<template v-slot:item.token1_was="{ item }">${{ formatNumber(item.token1_was) }}</template>
+			<template v-slot:item.token1_now="{ item }">${{ formatNumber(item.token1_now) }}</template>
+			<template v-slot:item.token1_profit="{ item }">${{ formatNumber(item.token1_profit) }}</template>
+			<template v-slot:item.token1_roi="{ item }"><v-chip :color="item.token1_roi > 0 ? 'success': (item.token1_roi < 0 ? 'error' : 'white')" size="small">{{ item.token1_roi > 0 ? '+' : (item.token1_roi < 0 ? '-' : '') }} {{ Math.abs(item.token1_roi) || 0 }}%</v-chip></template>
 
 			<template v-slot:tfoot>
 				<tfoot>

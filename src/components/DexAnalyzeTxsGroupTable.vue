@@ -21,15 +21,15 @@
 			<template v-slot:column.buys="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #334c35">{{ column.title }}</div></template>
 			<template v-slot:column.sells="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #693131">{{ column.title }}</div></template>
 
-			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.raw.wallet) }}</v-btn></template>
-			<template v-slot:item.profit="{ item }">{{ toCurrency(item.raw.profit) }}</template>
-			<template v-slot:item.roi="{ item }"><v-chip :color="item.raw.roi > 0 ? 'success': (item.raw.roi < 0 ? 'error' : 'white')" size="small">{{ item.raw.roi > 0 ? '+' : (item.raw.roi < 0 ? '-' : '') }} {{ Math.abs(item.raw.roi) || 0 }}%</v-chip></template>
-			<template v-slot:item.buy_amount="{ item }">{{ formatBigNumber(item.raw.buy_amount) }}</template>
-			<template v-slot:item.sell_amount="{ item }">{{ formatBigNumber(item.raw.sell_amount) }}</template>
-			<template v-slot:item.buy_price="{ item }">${{ formatNumber(item.raw.buy_price) }}</template>
-			<template v-slot:item.sell_price="{ item }">${{ formatNumber(item.raw.sell_price) }}</template>
-			<template v-slot:item.buy_total="{ item }">${{ formatNumber(item.raw.buy_total) }}</template>
-			<template v-slot:item.sell_total="{ item }">${{ formatNumber(item.raw.sell_total) }}</template>
+			<template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
+			<template v-slot:item.profit="{ item }">{{ toCurrency(item.profit) }}</template>
+			<template v-slot:item.roi="{ item }"><v-chip :color="item.roi > 0 ? 'success': (item.roi < 0 ? 'error' : 'white')" size="small">{{ item.roi > 0 ? '+' : (item.roi < 0 ? '-' : '') }} {{ Math.abs(item.roi) || 0 }}%</v-chip></template>
+			<template v-slot:item.buy_amount="{ item }">{{ formatBigNumber(item.buy_amount) }}</template>
+			<template v-slot:item.sell_amount="{ item }">{{ formatBigNumber(item.sell_amount) }}</template>
+			<template v-slot:item.buy_price="{ item }">${{ formatNumber(item.buy_price) }}</template>
+			<template v-slot:item.sell_price="{ item }">${{ formatNumber(item.sell_price) }}</template>
+			<template v-slot:item.buy_total="{ item }">${{ formatNumber(item.buy_total) }}</template>
+			<template v-slot:item.sell_total="{ item }">${{ formatNumber(item.sell_total) }}</template>
 
 			<template v-slot:tfoot>
 				<tfoot>

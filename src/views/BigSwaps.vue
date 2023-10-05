@@ -28,33 +28,33 @@
 			class="elevation-1"
 			@update:options="loadItems"
 		>
-			<template v-slot:item.pair_name="{ item }">
-				<v-btn :to="{name: 'Pair', params: {pairAddr: item.raw.pair_addr}}" rounded variant="text"  class="text-none">
-					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ item.index + 1 }}</span>
-					<v-img :src="item.raw.iconToken0" width="24" height="24" :alt="item.raw.token0.symbol" class="va-top rounded-xl">
+			<template v-slot:item.pair_name="{ item, internalItem }">
+				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text"  class="text-none">
+					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ internalItem.index + 1 }}</span>
+					<v-img :src="item.iconToken0" width="24" height="24" :alt="item.token0.symbol" class="va-top rounded-xl">
 						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
 					</v-img>
-					<v-img :src="item.raw.iconToken1" width="24" height="24" :alt="item.raw.token1.symbol" class="va-top rounded-xl mx-2">
+					<v-img :src="item.iconToken1" width="24" height="24" :alt="item.token1.symbol" class="va-top rounded-xl mx-2">
 						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
 					</v-img>
-					{{ item.raw.pair_name }}
-					<span class="text-secondary ml-3">{{ item.raw.token0.name }}</span>
+					{{ item.pair_name }}
+					<span class="text-secondary ml-3">{{ item.token0.name }}</span>
 				</v-btn>
 			</template>
 			<template v-slot:item.type="{ item }">
-				<v-chip :color="item.raw.type === 'buy' ? 'success': 'error'" class="text-capitalize">{{ item.raw.type}}</v-chip>
+				<v-chip :color="item.type === 'buy' ? 'success': 'error'" class="text-capitalize">{{ item.type}}</v-chip>
 			</template>
-			<template v-slot:item.quantity="{ item }">{{ formatBigNumber(item.raw.quantity) }}</template>
-			<template v-slot:item.total="{ item }">{{ formatBigNumber(item.raw.total) }}</template>
-			<template v-slot:item.total_usd="{ item }">${{ formatNumber(item.raw.total_usd) }}</template>
+			<template v-slot:item.quantity="{ item }">{{ formatBigNumber(item.quantity) }}</template>
+			<template v-slot:item.total="{ item }">{{ formatBigNumber(item.total) }}</template>
+			<template v-slot:item.total_usd="{ item }">${{ formatNumber(item.total_usd) }}</template>
 			<template v-slot:item.variation="{ item }">
-				<v-chip :color="isNaN(item.raw.variation) ? 'white': (item.raw.variation < 0 ? 'error' : 'success')">
-					{{ isNaN(item.raw.variation) ? '' : (item.raw.variation < 0 ? '-' : '+') }} {{ isNaN(item.raw.variation) ? 'Unknown' : Math.abs(item.raw.variation) }}%
+				<v-chip :color="isNaN(item.variation) ? 'white': (item.variation < 0 ? 'error' : 'success')">
+					{{ isNaN(item.variation) ? '' : (item.variation < 0 ? '-' : '+') }} {{ isNaN(item.variation) ? 'Unknown' : Math.abs(item.variation) }}%
 				</v-chip>
 			</template>
-			<template v-slot:item.maker="{ item }"><a :href="item.raw.maker_addr" target="_blank">{{ shortAddress(item.raw.maker_addr) }}</a></template>
+			<template v-slot:item.maker="{ item }"><a :href="item.maker_addr" target="_blank">{{ shortAddress(item.maker_addr) }}</a></template>
 			<template v-slot:item.action="{ item }">
-				<v-btn :to="{name: 'Pair', params: {pairAddr: item.raw.pair_addr}}"
+				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}"
 					 icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
 			</template>
 		</v-data-table-server>

@@ -37,18 +37,18 @@
 					class="elevation-1"
 					@update:options="loadItemsWallets"
 				>
-					<template v-slot:item.label="{ item }">
-						<v-btn @click="watchlistWalletData = {id: item.raw.id}" rounded variant="text"  class="text-none">
-							<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ item.index + 1 }}</span>
+					<template v-slot:item.label="{ item, internalItem }">
+						<v-btn @click="watchlistWalletData = {id: item.id}" rounded variant="text"  class="text-none">
+							<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ internalItem.index + 1 }}</span>
 							<v-icon icon="mdi-ethereum" />
-							{{ item.raw.label }}
+							{{ item.label }}
 						</v-btn>
 					</template>
-					<template v-slot:item.address="{ item }"><a :href="item.raw.address" target="_blank">{{ shortAddress(item.raw.address) }}</a></template>
-					<template v-slot:item.note="{ item }">{{ shortString(item.raw.note) }}</template>
+					<template v-slot:item.address="{ item }"><a :href="item.address" target="_blank">{{ shortAddress(item.address) }}</a></template>
+					<template v-slot:item.note="{ item }">{{ shortString(item.note) }}</template>
 					<template v-slot:item.action="{ item }">
-						<v-btn @click="watchlistWalletData = {id: item.raw.id}" icon="mdi-square-edit-outline" variant="text" size="small" color="secondary"></v-btn>
-						<v-btn @click="showDeleteDialog('wallet', item.raw.id)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
+						<v-btn @click="watchlistWalletData = {id: item.id}" icon="mdi-square-edit-outline" variant="text" size="small" color="secondary"></v-btn>
+						<v-btn @click="showDeleteDialog('wallet', item.id)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
 					</template>
 				</v-data-table-server>
 			</v-window-item>
@@ -73,20 +73,20 @@
 					<template v-slot:item.name="{ item }">
 						<v-btn :to="{name: 'Console'}" rounded variant="text"  class="text-none">
 							<v-icon icon="mdi-ethereum" />
-							{{ item.raw.name }}
+							{{ item.name }}
 						</v-btn>
 					</template>
-					<template v-slot:item.price="{ item }">${{ formatNumber(item.raw.price) }}</template>
-					<template v-slot:item.percent_5_holders="{ item }">{{ formatBigNumber(item.raw.percent_5_holders) }}%</template>
+					<template v-slot:item.price="{ item }">${{ formatNumber(item.price) }}</template>
+					<template v-slot:item.percent_5_holders="{ item }">{{ formatBigNumber(item.percent_5_holders) }}%</template>
 					<template v-slot:item.change_7d="{ item }">
-						<v-chip :color="item.raw.change_7d < 0 ? 'error' : 'success'">{{ item.raw.change_7d < 0 ? '-' : '+' }} {{ formatNumber(Math.abs(item.raw.change_7d)) }}</v-chip>
+						<v-chip :color="item.change_7d < 0 ? 'error' : 'success'">{{ item.change_7d < 0 ? '-' : '+' }} {{ formatNumber(Math.abs(item.change_7d)) }}</v-chip>
 					</template>
 					<template v-slot:item.change_30d="{ item }">
-						<v-chip :color="item.raw.change_30d < 0 ? 'error' : 'success'">{{ item.raw.change_30d < 0 ? '-' : '+' }} {{ formatNumber(Math.abs(item.raw.change_30d)) }}</v-chip>
+						<v-chip :color="item.change_30d < 0 ? 'error' : 'success'">{{ item.change_30d < 0 ? '-' : '+' }} {{ formatNumber(Math.abs(item.change_30d)) }}</v-chip>
 					</template>
-					<template v-slot:item.market_cap="{ item }">{{ formatBigNumber(item.raw.market_cap) }}</template>
+					<template v-slot:item.market_cap="{ item }">{{ formatBigNumber(item.market_cap) }}</template>
 					<template v-slot:item.action="{ item }">
-						<v-btn @click="showDeleteDialog('token', item.raw.id)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
+						<v-btn @click="showDeleteDialog('token', item.id)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
 					</template>
 				</v-data-table-server>
 			</v-window-item>
