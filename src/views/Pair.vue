@@ -146,8 +146,8 @@
 			</div>
 
 			<template v-if="tabContent === 'analyze'">
-				<h2>Transactions</h2>
-				<DexAnalyzeTxsTable />
+<!--				<h2>Transactions</h2>-->
+<!--				<DexAnalyzeTxsTable />-->
 
 				<h2 class="mt-5">Grouped by Wallets</h2>
 				<DexAnalyzeTxsGroupTable />

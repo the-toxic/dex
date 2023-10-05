@@ -1,5 +1,12 @@
 <template>
 
+  <div class="d-flex justify-center align-center flex-wrap pa-4" style="background: #141d26">
+    <input type="text" ref="datepickerBuy" placeholder="Period of Buy tokens" class="datePickerInput mr-4" />
+    <input type="text" ref="datepickerSell" placeholder="Period of Sell tokens" class="datePickerInput" />
+    <v-spacer />
+    <!-- <v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>-->
+  </div>
+
 	<v-text-field v-model="searchInput" label="Search by Wallets..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" density="compact" />
 
 	<div class="overflow-x-auto">
@@ -97,6 +104,42 @@ export default {
 			await this.loadItems()
 		}, 500)
 	},
+  mounted() {
+    const _this = this
+    this.pickerBuy = new easepick.create({
+      // https://easepick.com/packages/core.html
+      element: _this.$refs['datepickerBuy'],
+      autoApply: false,
+      zIndex: 10,
+      format: 'YYYY-MM-DD HH:mm',
+      plugins: [ AmpPlugin, RangePlugin, PresetPlugin, TimePlugin ],
+      css: [ 'https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css' ],
+      setup(picker) {
+        picker.on('select', (e) => {
+          const { end, start } = e.detail;
+          console.log('Buy', start.toISOString(), end.toISOString())
+        });
+      },
+    });
+    // this.pickerBuy.getDate()
+    // this.pickerBuy.clear()
+    this.pickerSell = new easepick.create({
+      element: _this.$refs['datepickerSell'],
+      autoApply: false,
+      zIndex: 10,
+      format: 'YYYY-MM-DD HH:mm',
+      plugins: [ AmpPlugin, RangePlugin, PresetPlugin, TimePlugin ],
+      css: [ 'https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css' ],
+      setup(picker) {
+        picker.on('select', (e) => {
+          const { end, start } = e.detail;
+          console.log('Sell', start.toISOString(), end.toISOString())
+        });
+      },
+    });
+    // picker.getDate();
+    // picker.setDate('2023-01-01 - 2023-08-08');
+  },
 	watch: {
 		searchInput(newVal) {
 			this.debouncedFn()
