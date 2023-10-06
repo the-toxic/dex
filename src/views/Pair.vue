@@ -20,7 +20,7 @@
 						<v-btn size="small" icon="mdi-bell" class="mr-3"></v-btn>
 						<v-btn size="small" icon="mdi-information-outline" class="mr-3"></v-btn>
 						<div class="fs18 mr-3">{{ formatNumber(lastPrice) }} {{ rightToken }}</div>
-						<div class="fs16 text-disabled mr-3">{{ priceInUSD }}</div>
+						<div class="fs16 text-disabled mr-3">${{ formatNumber(token0PriceInUSD) }}</div>
           </div>
 					<!-- <div v-if="pairInfo" class="lh-1_2">
 						<span class="mr-2">Token: {{shortAddress(pairInfo.token0.address) }} <CopyLabel icon :text="pairInfo.token0.address" icon-color="#72747F" /></span>
@@ -116,7 +116,7 @@
 							</v-card-text>
 						</v-card>
 
-						<Converter v-if="pairInfo && !pairInfoLoading" :token0="pairInfo.token0" :token1="pairInfo.token1" :rate="lastPrice" :chainId="activeSymbol.chain_id" class="mt-5"/>
+						<Converter v-if="pairInfo && !pairInfoLoading" :token0="pairInfo.token0" :token1="pairInfo.token1" :rate="lastPrice" :chainId="chainId" class="mt-5"/>
 						<v-skeleton-loader v-else class="mt-5" style="height: 180px" />
 					</div>
 					<div class="d-flex justify-center align-center fill-width" style="height: 534px">
@@ -150,24 +150,65 @@
 <!--				<DexAnalyzeTxsTable />-->
 
 				<h2 class="mt-5">Grouped by Wallets</h2>
-				<DexAnalyzeTxsGroupTable />
+				<DexAnalyzeTxsGroupTable  :chainId="chainId" :pairId="pairId" />
 			</template>
 
 			<template v-if="tabContent === 'pair'">
 				<div class="d-flex justify-space-between align-center" style="gap: 20px;">
-					<v-card>
-						<v-card-text>
-							<v-list>
-								<v-list-item @click=""><span class="text-disabled">Pair created:</span> <span>{{ pairMeta.created }}</span> <template v-slot:append><span class="text-disabled">{{ pairMeta.createdAgo }}</span></template></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">Creator: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn><template v-slot:append><v-btn text="EXP" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" /></template></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">Total Liquidity: </span> <span>{{ toCurrency(35112) }}</span></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">Pooled TANK: {{ toNumber(14542111) }}</span> <span>{{ toCurrency(17643) }}</span></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">Pooled BUSD:{{ toNumber(17643) }}</span> <span>{{ toCurrency(17643) }}</span></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">Pair: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn> <template v-slot:append><v-btn text="LPs" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" /> <v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" /></template></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">TANK: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn> <template v-slot:append><v-btn text="HLD" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" /> <v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" /></template></v-list-item>
-								<v-list-item @click=""><span class="text-disabled">BUSD: </span><v-btn variant="text" rounded density="comfortable">{{ shortAddress('0x123123124124123') }}</v-btn> <template v-slot:append><v-btn text="HLD" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" /> <v-btn text="EXP" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" /></template></v-list-item>
-							</v-list>
-						</v-card-text>
+					<v-card width="400" height="400">
+            <div v-if="!pairInfo || pairInfoLoading" class="d-flex align-center justify-center fill-height">
+              <v-progress-circular :size="50" :width="4" color="white" indeterminate />
+            </div>
+            <v-list v-else>
+              <v-list-item @click="">
+                <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">Pair created:</span></template>
+                {{ new Date(pairInfo.pair.created_at).toJSON().split('T')[0] }}
+                <template v-slot:append><span class="text-disabled">{{ moment(pairInfo.pair.created_at).fromNow() }}</span></template>
+              </v-list-item>
+              <v-list-item @click="">
+                <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 105px;">Creator: </span></template>
+                <v-btn variant="text" rounded density="comfortable" class="text-none">{{ shortAddress(pairInfo.pair.created_by) }}</v-btn>
+                <template v-slot:append><v-btn text="EXP" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" /></template>
+              </v-list-item>
+              <v-list-item @click="">
+                <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">Total Liquidity: </span></template>
+                ${{ formatNumber(pairInfo.pair.token0_reserve * token0PriceInUSD + pairInfo.pair.token1_reserve * token1PriceInUSD) }}
+              </v-list-item>
+              <v-list-item @click="">
+                <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">Pooled {{ pairInfo.token0.symbol }}:</span></template>
+                <div>{{ formatNumber(pairInfo.pair.token0_reserve, true) }}</div>
+                <template v-slot:append>${{ formatNumber(pairInfo.pair.token0_reserve * token0PriceInUSD, true) }}</template>
+              </v-list-item>
+              <v-list-item @click="">
+                <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">Pooled {{ pairInfo.token1.symbol }}:</span></template>
+                <span>{{ formatNumber(pairInfo.pair.token1_reserve, true) }}</span>
+                <template v-slot:append>${{ formatNumber(pairInfo.pair.token1_reserve * token1PriceInUSD, true) }}</template>
+              </v-list-item>
+              <v-list-item @click="">
+                <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">Pair: </span></template>
+                <v-btn @click="$clipboard(pairInfo.pair.address)" variant="text" rounded density="comfortable" class="text-none">{{ shortAddress(pairInfo.pair.address) }}</v-btn>
+                <template v-slot:append>
+                  <v-btn text="LPs" :href="`https://bscscan.com/token/tokenholderchart/${pairInfo.pair.address}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" />
+                  <v-btn text="EXP" :href="`https://bscscan.com/token/${pairInfo.token0.address}?a=${pairInfo.pair.address}`" target="_blank" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" />
+                </template>
+              </v-list-item>
+              <v-list-item @click="">
+                <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">{{ pairInfo.token0.symbol }}: </span></template>
+                <v-btn :to="{name: 'Token', params: {id: pairInfo.token0.address}}" variant="text" rounded density="comfortable" class="text-none">{{ shortAddress(pairInfo.token0.address) }}</v-btn>
+                <template v-slot:append>
+                  <v-btn text="HLD" :href="`https://bscscan.com/token/tokenholderchart/${pairInfo.token0.address}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" />
+                  <v-btn text="EXP" :href="`https://bscscan.com/token/${pairInfo.token0.address}`" target="_blank" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" />
+                </template>
+              </v-list-item>
+              <v-list-item @click="">
+                <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">{{ pairInfo.token1.symbol }}: </span></template>
+                <v-btn :to="{name: 'Token', params: {id: pairInfo.token1.address}}" variant="text" rounded density="comfortable" class="text-none">{{ shortAddress(pairInfo.token1.address) }}</v-btn>
+                <template v-slot:append>
+                  <v-btn text="HLD" :href="`https://bscscan.com/token/tokenholderchart/${pairInfo.token1.address}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" />
+                  <v-btn text="EXP" :href="`https://bscscan.com/token/${pairInfo.token1.address}`" target="_blank" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" />
+                </template>
+              </v-list-item>
+            </v-list>
 					</v-card>
 
 					<!-- Right side -->
@@ -181,8 +222,8 @@
 							:type="chartType"
 							:data="chartData"
 							:autosize="true"
-							:chart-options="chartOptions"
-							:series-options="seriesOptions"
+							:chart-options="{height: 350}"
+							:series-options="{}"
 							ref="lwChart"
 						/>
 					</div>
@@ -231,19 +272,15 @@ export default {
 		tabChartVariant: 'liquidity',
 		API_DOMAIN,
     pairInfoLoading: false,
-		// pairSelect: null,
-    pairSymbol: '...',
     pairAddr: '',
     loadingOldTxs: true,
 
-		pairMeta: {
-			created: '2023-01-22',
-			createdAgo: moment('2023-01-22').fromNow()
-		},
+		// pairMeta: {
+		// 	created: '2023-01-22',
+		// 	createdAgo: moment('2023-01-22').fromNow()
+		// },
 
 		chartType: 'area',
-		chartOptions: {height: 384},
-		seriesOptions: {},
 		chartData: [
 			{ time: '2018-10-19', value: 35.98 },
 			{ time: '2018-10-22', value: 35.75 },
@@ -439,8 +476,6 @@ export default {
     async activeSymbol(newVal, oldVal) {
       console.log('watch activeSymbol', newVal, oldVal)
       if(!newVal) return // on resetState
-      this.pairSymbol = newVal.symbol
-      // this.pairSelect = newVal.full_name
       this.pairAddr = newVal.pair_addr
       this.updateTitle()
       if(oldVal && (newVal.type !== oldVal.type || newVal.pair_addr !== oldVal.pair_addr)) {
@@ -463,16 +498,16 @@ export default {
       console.log('watch tab', newVal)
       this.$router.push({hash: '#'+newVal})
     },
-    priceInUSD() {
+    token0PriceInUSD() {
       this.updateTitle()
     }
   },
   computed: {
     PROJECT_NAME() { return PROJECT_NAME },
     ...mapState(useMainStore, ['chains']),
-    ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'similarityPools', 'lastPrice', 'leftToken', 'rightToken', 'lastTXs', 'chainName', 'exchange']),
+    ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'similarityPools', 'lastPrice', 'leftToken', 'rightToken', 'lastTXs', 'chainName', 'chainId', 'pairId', 'pairSymbol', 'exchange']),
 		iconToken0() {
-			const iconFolder = !this.chains || !this.activeSymbol ? null : this.chains[this.activeSymbol.chain_id]['icon_folder']
+			const iconFolder = !this.chains || !this.activeSymbol ? null : this.chains[this.chainId]['icon_folder']
 			return !this.pairInfo || !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${this.pairInfo.token0.address.toLowerCase().slice(0,4)}/${this.pairInfo.token0.address.toLowerCase()}/default.png`
 		},
     tokenTitle() { return this.pairInfo && !this.pairInfoLoading ?  this.pairInfo.token0.name : 'Loading...' },
@@ -480,13 +515,21 @@ export default {
 		// 	// return this.pairInfo.pool.similarity_pools.map(i => {return { value: `None:${i.name}:${i.address}`, title: i.name }})
 		// 	return this.similarityPools.map(i => ({ pairAddr: i.pair_addr, title: i.symbol }))
 		// },
-		priceInUSD() {
-			if(!this.pairInfo || !this.activeSymbol || !this.chains) return ''
+		token0PriceInUSD() {
+			if(!this.pairInfo || !this.activeSymbol || !this.chains) return 0
 			if(this.pairInfo.token1.is_stable)
-				return '$'+formatNumber(this.lastPrice)
+        return this.lastPrice
 
-			const nativeSymbolPrice = this.chains[this.activeSymbol.chain_id]['native_symbol_price']
-			return '$'+formatNumber(this.lastPrice * nativeSymbolPrice)
+			const nativeSymbolPrice = this.chains[this.chainId]['native_symbol_price']
+			return this.lastPrice * nativeSymbolPrice
+		},
+		token1PriceInUSD() {
+			if(!this.pairInfo || !this.activeSymbol || !this.chains) return 0
+			if(this.pairInfo.token1.is_stable) return 1
+      if(this.pairInfo.token1.symbol === this.chains[this.chainId]['native_symbol']) {
+        return this.chains[this.chainId]['native_symbol_price']
+      }
+      return 0
 		},
     currPeriodKey() {
       return this.currentPeriodTab === '1H' ? 'h1' : (this.currentPeriodTab === '6H' ? 'h6' : (this.currentPeriodTab === '12H' ? 'h12' : (this.currentPeriodTab === '24H' ? 'h24' : '') ))
@@ -494,12 +537,12 @@ export default {
     // buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
   },
   methods: {
-    formatBigNumber, toCurrency, shortAddress, toNumber, formatNumber,  // from mixins
+    moment, formatBigNumber, toCurrency, shortAddress, toNumber, formatNumber,  // from mixins
     ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', setActiveSymbol: 'setActiveSymbol', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
 
     updateTitle() {
-      const chain = (!this.activeSymbol || !this.chains) ? '' : this.chains[this.activeSymbol.chain_id]['name']
-      this.pageTitle = !this.activeSymbol ? '' : `${this.priceInUSD} ${this.pairSymbol} - ${this.tokenTitle} | ${this.activeSymbol.exchange} / ${chain}`
+      const chain = (!this.activeSymbol || !this.chains) ? '' : this.chains[this.chainId]['name']
+      this.pageTitle = !this.activeSymbol ? '' : `$${formatNumber(this.token0PriceInUSD)} ${this.pairSymbol} - ${this.tokenTitle} | ${this.activeSymbol.exchange} / ${chain}`
       // this.pageDescription = `Analyse ${this.pairSymbol} of ${this.PROJECT_NAME} | ${this.pairAddr}`
     },
   }

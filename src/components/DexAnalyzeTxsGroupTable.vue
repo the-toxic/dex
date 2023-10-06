@@ -8,7 +8,6 @@
   </div>
 
 	<v-text-field v-model="searchInput" label="Search by Wallets..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" density="compact" />
-
 	<div class="overflow-x-auto">
 		<v-data-table-server style="min-width: 1300px"
 			v-model:items-per-page="itemsPerPage"
@@ -71,6 +70,10 @@ import { useDebounceFn } from "@vueuse/core";
 export default {
   name: 'DexAnalyzeTxsGroupTable',
   components: { VDataTableServer },
+  props: {
+    chainId: Number,
+    pairId: Number
+  },
   data: () => ({
     loading: false,
     itemsPerPage: 20,
@@ -98,6 +101,9 @@ export default {
     items: [],
     totalItems: 0,
 		totalInfo: {},
+
+    pickerBuy: null,
+    pickerSell: null,
   }),
 	async created() {
 		this.debouncedFn = useDebounceFn(async () => {
@@ -141,6 +147,13 @@ export default {
     // picker.setDate('2023-01-01 - 2023-08-08');
   },
 	watch: {
+    chainId() {
+      this.loadItems()
+    },
+    pairId() {
+      this.loadItems()
+
+    },
 		searchInput(newVal) {
 			this.debouncedFn()
 		},
@@ -149,8 +162,15 @@ export default {
 		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
 
     async loadItems () {
+      if(!this.chainId || !this.pairId) return
       this.loading = true
       const { data } = await fetchDexAnalyzeGroupTxs({
+        chain_id: this.chainId,
+        pair_id: this.pairId,
+        buy_period_start: "2023-09-01 00:00:00",
+        buy_period_end: "2023-09-30 23:59:59",
+        sell_period_start: "2023-09-01 00:00:00",
+        sell_period_end: "2023-09-30 23:59:59",
 				page: this.page,
 				itemsPerPage: this.itemsPerPage,
 				sortBy: this.sortBy,

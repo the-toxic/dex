@@ -340,8 +340,8 @@ export const fetchDexAnalyzeTxs = async () => {
   }}}
 }
 
-export const fetchDexAnalyzeGroupTxs = async () => {
-  // return await axios.get('dexAnalyzeTxs');
+export const fetchDexAnalyzeGroupTxs = async (payload) => {
+  // return await axios.post('xhr/analyze', payload);
   await delay(500)
   return { data: { success: true, result: {
     items: [
