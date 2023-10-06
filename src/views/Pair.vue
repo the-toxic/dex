@@ -167,8 +167,8 @@
               </v-list-item>
               <v-list-item @click="">
                 <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 105px;">Creator: </span></template>
-                <v-btn variant="text" rounded density="comfortable" class="text-none">{{ shortAddress(pairInfo.pair.created_by) }}</v-btn>
-                <template v-slot:append><v-btn text="EXP" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" /></template>
+                <v-btn @click="$clipboard(pairInfo.pair.created_by)" variant="text" rounded density="comfortable" class="text-none">{{ shortAddress(pairInfo.pair.created_by) }}</v-btn>
+                <template v-slot:append><v-btn text="EXP" :href="`${explorerDomain}/address/${pairInfo.pair.created_by}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" /></template>
               </v-list-item>
               <v-list-item @click="">
                 <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">Total Liquidity: </span></template>
@@ -188,24 +188,24 @@
                 <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">Pair: </span></template>
                 <v-btn @click="$clipboard(pairInfo.pair.address)" variant="text" rounded density="comfortable" class="text-none">{{ shortAddress(pairInfo.pair.address) }}</v-btn>
                 <template v-slot:append>
-                  <v-btn text="LPs" :href="`https://bscscan.com/token/tokenholderchart/${pairInfo.pair.address}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" />
-                  <v-btn text="EXP" :href="`https://bscscan.com/token/${pairInfo.token0.address}?a=${pairInfo.pair.address}`" target="_blank" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" />
+                  <v-btn text="LPs" :href="`${explorerDomain}/token/tokenholderchart/${pairInfo.pair.address}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" />
+                  <v-btn text="EXP" :href="`${explorerDomain}/token/${pairInfo.token0.address}?a=${pairInfo.pair.address}`" target="_blank" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" />
                 </template>
               </v-list-item>
               <v-list-item @click="">
                 <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">{{ pairInfo.token0.symbol }}: </span></template>
                 <v-btn :to="{name: 'Token', params: {id: pairInfo.token0.address}}" variant="text" rounded density="comfortable" class="text-none">{{ shortAddress(pairInfo.token0.address) }}</v-btn>
                 <template v-slot:append>
-                  <v-btn text="HLD" :href="`https://bscscan.com/token/tokenholderchart/${pairInfo.token0.address}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" />
-                  <v-btn text="EXP" :href="`https://bscscan.com/token/${pairInfo.token0.address}`" target="_blank" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" />
+                  <v-btn text="HLD" :href="`${explorerDomain}/token/tokenholderchart/${pairInfo.token0.address}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" />
+                  <v-btn text="EXP" :href="`${explorerDomain}/token/${pairInfo.token0.address}`" target="_blank" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" />
                 </template>
               </v-list-item>
               <v-list-item @click="">
                 <template v-slot:prepend><span class="ellipsis text-disabled text-left" style="width: 120px;">{{ pairInfo.token1.symbol }}: </span></template>
                 <v-btn :to="{name: 'Token', params: {id: pairInfo.token1.address}}" variant="text" rounded density="comfortable" class="text-none">{{ shortAddress(pairInfo.token1.address) }}</v-btn>
                 <template v-slot:append>
-                  <v-btn text="HLD" :href="`https://bscscan.com/token/tokenholderchart/${pairInfo.token1.address}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" />
-                  <v-btn text="EXP" :href="`https://bscscan.com/token/${pairInfo.token1.address}`" target="_blank" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" />
+                  <v-btn text="HLD" :href="`${explorerDomain}/token/tokenholderchart/${pairInfo.token1.address}`" target="_blank" append-icon="mdi-open-in-new" size="small" variant="text" rounded density="comfortable" class="text-none" />
+                  <v-btn text="EXP" :href="`${explorerDomain}/token/${pairInfo.token1.address}`" target="_blank" append-icon="mdi-open-in-new" variant="text" size="small" rounded density="comfortable" class="text-none" />
                 </template>
               </v-list-item>
             </v-list>
@@ -232,8 +232,8 @@
 				<h2 class="mt-7">Transactions Info</h2>
 				<DexPairTxsTable />
 
-				<h2 class="mt-7">Wallets</h2>
-				<DexPairWalletsTable />
+<!--				<h2 class="mt-7">Wallets</h2>-->
+<!--				<DexPairWalletsTable />-->
 			</template>
 
     </v-container>
@@ -505,7 +505,7 @@ export default {
   computed: {
     PROJECT_NAME() { return PROJECT_NAME },
     ...mapState(useMainStore, ['chains']),
-    ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'similarityPools', 'lastPrice', 'leftToken', 'rightToken', 'lastTXs', 'chainName', 'chainId', 'pairId', 'pairSymbol', 'exchange']),
+    ...mapState(useChartStore, ['activeSymbol', 'pairInfo', 'similarityPools', 'lastPrice', 'leftToken', 'rightToken', 'lastTXs', 'chainName', 'chainId', 'pairId', 'pairSymbol', 'exchange', 'nativeWrappedSymbol', 'explorerDomain']),
 		iconToken0() {
 			const iconFolder = !this.chains || !this.activeSymbol ? null : this.chains[this.chainId]['icon_folder']
 			return !this.pairInfo || !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${this.pairInfo.token0.address.toLowerCase().slice(0,4)}/${this.pairInfo.token0.address.toLowerCase()}/default.png`
@@ -526,7 +526,7 @@ export default {
 		token1PriceInUSD() {
 			if(!this.pairInfo || !this.activeSymbol || !this.chains) return 0
 			if(this.pairInfo.token1.is_stable) return 1
-      if(this.pairInfo.token1.symbol === this.chains[this.chainId]['native_symbol']) {
+      if(this.pairInfo.token1.symbol === this.nativeWrappedSymbol) {
         return this.chains[this.chainId]['native_symbol_price']
       }
       return 0

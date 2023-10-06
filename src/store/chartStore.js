@@ -39,8 +39,9 @@ export const useChartStore = defineStore('chart', {
     needInvert: state => state.activeSymbol?.need_invert || false,
     leftToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[0] : '',
     rightToken: state => state.activeSymbol ? state.activeSymbol.symbol.split('/')[1]: '',
-    // lastTXs: state => state.lastTXs,
-    lastPrice: state => state.lastTXs.length ? (state.lastTXs[0].amount_token1 / state.lastTXs[0].amount_token0) : 0
+    lastPrice: state => state.lastTXs.length ? (state.lastTXs[0].amount_token1 / state.lastTXs[0].amount_token0) : 0,
+    nativeWrappedSymbol: state => !state.activeSymbol ? '' :  (state.activeSymbol.chain_id === 2 ? 'WBNB' : (state.activeSymbol.chain_id === 1 ? 'WETH' : '')),
+    explorerDomain: state => !state.activeSymbol ? '' : (state.activeSymbol.chain_id === 2 ? 'https://bscscan.com' : (state.activeSymbol.chain_id === 1 ? 'https://etherscan.com' : '')),
 	},
 	actions: {
     async setActiveSymbol(payload) {
