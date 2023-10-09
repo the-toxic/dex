@@ -341,45 +341,45 @@ export const fetchDexAnalyzeTxs = async () => {
 }
 
 export const fetchDexAnalyzeGroupTxs = async (payload) => {
-  // return await axios.post('xhr/analyze', payload);
-  await delay(500)
-  return { data: { success: true, result: {
-    items: [
-      {
-        wallet: '0x0000000000000000000000000000000000000000',
-        profit: 500,
-        roi: 50,
-        buy_amount: 10,
-        buy_price: 100,
-        buy_total: 1000,
-        sell_amount: 10,
-        sell_price: 150,
-        sell_total: 1500
-      },
-      {
-        wallet: '0x0000000000000000000000000000000000000000',
-        profit: 500,
-        roi: 50,
-        buy_amount: 10,
-        buy_price: 100,
-        buy_total: 1000,
-        sell_amount: 10,
-        sell_price: 150,
-        sell_total: 1500
-      },
-    ],
-    totalItems: 2,
-    total: {
-      profit: 1000,
-      roi: 50,
-      buy_amount: 20,
-      buy_price: 100,
-      buy_total: 2000,
-      sell_amount: 20,
-      sell_price: 150,
-      sell_total: 3000,
-    }
-  }}}
+  return axios.post('xhr/analyze', payload);
+  // await delay(500)
+  // return { data: { success: true, result: {
+  //   items: [
+  //     {
+  //       wallet: '0x0000000000000000000000000000000000000000',
+  //       profit: 500,
+  //       roi: 50,
+  //       buy_amount: 10,
+  //       buy_price: 100,
+  //       buy_total: 1000,
+  //       sell_amount: 10,
+  //       sell_price: 150,
+  //       sell_total: 1500
+  //     },
+  //     {
+  //       wallet: '0x0000000000000000000000000000000000000000',
+  //       profit: 500,
+  //       roi: 50,
+  //       buy_amount: 10,
+  //       buy_price: 100,
+  //       buy_total: 1000,
+  //       sell_amount: 10,
+  //       sell_price: 150,
+  //       sell_total: 1500
+  //     },
+  //   ],
+  //   totalItems: 2,
+  //   total: {
+  //     profit: 1000,
+  //     roi: 50,
+  //     buy_amount: 20,
+  //     buy_price: 100,
+  //     buy_total: 2000,
+  //     sell_amount: 20,
+  //     sell_price: 150,
+  //     sell_total: 3000,
+  //   }
+  // }}}
 }
 
 export const fetchDexPairTxs = async () => {

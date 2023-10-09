@@ -55,6 +55,10 @@ export const useChartStore = defineStore('chart', {
         const  oldToken0 = result.token0
         result.token0 = result.token1
         result.token1 = oldToken0
+
+        const oldToken0Reserve = result.pair.token0_reserve
+        result.pair.token0_reserve = result.pair.token1_reserve
+        result.pair.token1_reserve = oldToken0Reserve
       }
       this.pairInfo = {...this.pairInfo, ...result}
       return result
