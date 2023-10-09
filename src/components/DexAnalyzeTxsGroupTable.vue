@@ -31,8 +31,8 @@
 
 			<template v-slot:item.wallet="{ item }"><v-btn @click="$clipboard(item.wallet)" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
 			<template v-slot:item.profit="{ item }">
-        <v-chip :color="item.roi > 0 ? 'success': (item.roi < 0 ? 'error' : 'white')" size="small">
-          {{ toCurrency(item.profit) }}
+        <v-chip :color="item.profit > 0 ? 'success': (item.profit < 0 ? 'error' : 'white')" size="small">
+          {{ toNumber(item.profit) }}
         </v-chip>
       </template>
 			<template v-slot:item.roi="{ item }">
@@ -50,25 +50,27 @@
 			<template v-slot:item.sell_price="{ item }">{{ !item.sell.txs_count ? '-' : formatNumber(item.sell.total / item.sell.token0_amount) }}</template>
 			<template v-slot:item.sell_total="{ item }">{{ !item.sell.txs_count ? '-' : formatNumber(item.sell.total) }}</template>
 
-<!--			<template v-slot:tfoot>-->
-<!--				<tfoot>-->
-<!--				<tr class="text-surface-variant text-center">-->
-<!--					<td colspan="1" class="text-right">Total</td>-->
-<!--					<td>{{ toCurrency(totalInfo.profit) }}</td>-->
-<!--					<td>-->
-<!--						<v-chip :color="totalInfo.roi > 0 ? 'success': (totalInfo.roi < 0 ? 'error' : 'white')" size="small">-->
-<!--							{{ totalInfo.roi > 0 ? '+' : (totalInfo.roi < 0 ? '-' : '') }} {{ Math.abs(totalInfo.roi) || 0 }}%, avg-->
-<!--						</v-chip>-->
-<!--					</td>-->
-<!--					<td>{{ formatBigNumber(totalInfo.buy_amount) }}</td>-->
-<!--					<td>${{ formatNumber(totalInfo.buy_price) }}</td>-->
-<!--					<td>${{ formatNumber(totalInfo.buy_total) }}</td>-->
-<!--					<td>{{ formatBigNumber(totalInfo.sell_amount) }}</td>-->
-<!--					<td>${{ formatNumber(totalInfo.sell_price) }}</td>-->
-<!--					<td>${{ formatNumber(totalInfo.sell_total) }}</td>-->
-<!--				</tr>-->
-<!--				</tfoot>-->
-<!--			</template>-->
+			<template v-slot:tfoot>
+				<tfoot>
+				<tr class="text-surface-variant text-center">
+					<td colspan="1" class="text-right">Total</td>
+					<td>{{ formatBigNumber(totalInfo.profit) || 0 }}</td>
+					<td>
+						<v-chip :color="totalInfo.roi > 0 ? 'success': (totalInfo.roi < 0 ? 'error' : 'white')" size="small">
+							{{ totalInfo.roi > 0 ? '+' : (totalInfo.roi < 0 ? '-' : '') }} {{ Math.abs(totalInfo.roi) || 0 }}%, avg
+						</v-chip>
+					</td>
+					<td>{{ formatNumber(totalInfo.buy_txs) || 0 }}</td>
+					<td>{{ formatBigNumber(totalInfo.buy_amount) || 0 }}</td>
+					<td>{{ formatNumber(totalInfo.buy_price) || 0 }}</td>
+					<td>{{ formatNumber(totalInfo.buy_total) || 0 }}</td>
+					<td>{{ formatNumber(totalInfo.sell_txs) || 0 }}</td>
+					<td>{{ formatBigNumber(totalInfo.sell_amount) || 0 }}</td>
+					<td>{{ formatNumber(totalInfo.sell_price) || 0 }}</td>
+					<td>{{ formatNumber(totalInfo.sell_total) || 0 }}</td>
+				</tr>
+				</tfoot>
+			</template>
 		</v-data-table-server>
 	</div>
 </template>
@@ -120,17 +122,28 @@ export default {
     totalItems: 0,
 		totalInfo: {},
 
+    // periodBuy: [ new Date('2022-02-01 00:00'), new Date('2022-02-07 23:59')]
     periodBuy: [
-			new Date('2022-02-01 00:00'), new Date('2022-02-07 23:59')
-			// '2022-02-01 00:00 - 2022-02-07 23:59', //moment().subtract(1, 'months').startOf("day").toDate(),
-      // '2022-02-11 00:00 - 2022-02-12 23:59', // moment().endOf("day").toDate()
+			moment().subtract(7, 'days').startOf("day").toDate(),
+      moment().endOf("day").toDate()
     ],
-    periodSell: [new Date('2022-02-11 00:00'), new Date('2022-02-12 23:59')],
+    periodSell: [/*new Date('2022-02-11 00:00'), new Date('2022-02-12 23:59')*/],
   }),
 	async created() {
 		this.debouncedFn = useDebounceFn(async () => {
 			await this.loadItems()
 		}, 500)
+
+		this.setTokensToTableHeader()
+
+		if(this.$route['query']['periodBuy']) {
+			const [from, to] = this.$route['query']['periodBuy'].split(' - ')
+			this.periodBuy = [new Date(from), new Date(to)]
+		}
+		if(this.$route['query']['periodSell']) {
+			const [from, to] = this.$route['query']['periodSell'].split(' - ')
+			this.periodSell = [new Date(from), new Date(to)]
+		}
 	},
 	watch: {
     chainId(newVal, oldVal) {
@@ -140,10 +153,7 @@ export default {
     pairId(newVal, oldVal) {
       this.loadItems()
 
-			this.headers[1].find(i => i.key === 'buy_amount').title = 'Amount, '+this.leftToken
-			this.headers[1].find(i => i.key === 'buy_price').title = 'Price, '+this.rightToken
-			this.headers[1].find(i => i.key === 'sell_amount').title = 'Amount, '+this.leftToken
-			this.headers[1].find(i => i.key === 'sell_price').title = 'Amount, '+this.rightToken
+			this.setTokensToTableHeader()
     },
 		searchInput(newVal) {
 			this.debouncedFn()
@@ -157,19 +167,31 @@ export default {
 
     async loadItems () {
       if(!this.chainId || !this.pairId) return
-      this.loading = true
-      const { data } = await fetchDexAnalyzeGroupTxs({
-        chain_id: this.chainId,
-        pair_id: this.pairId,
-        page: this.page,
-        per_page: this.itemsPerPage,
-        sortBy: this.sortBy,
-        search: this.searchInput.trim(),
-        buy_period_start: this.periodBuy[0] ? moment(this.periodBuy[0]).format("YYYY-MM-DD HH:mm:ss") : '',
-        buy_period_end: this.periodBuy[1] ? moment(this.periodBuy[1]).format("YYYY-MM-DD HH:mm:ss") : '',
-        sell_period_start: this.periodSell[0] ? moment(this.periodSell[0]).format("YYYY-MM-DD HH:mm:ss") : '',
-        sell_period_end: this.periodSell[1] ? moment(this.periodSell[1]).format("YYYY-MM-DD HH:mm:ss") : '',
-      })
+			const params = {
+				chain_id: this.chainId,
+				pair_id: this.pairId,
+				page: this.page,
+				per_page: this.itemsPerPage,
+				sortBy: this.sortBy.length ? this.sortBy : [{key: 'profit', order: 'desc'}],
+				search: this.searchInput.trim(),
+				buy_period_start: this.periodBuy[0] ? moment(this.periodBuy[0]).format("YYYY-MM-DD HH:mm:ss") : '',
+				buy_period_end: this.periodBuy[1] ? moment(this.periodBuy[1]).format("YYYY-MM-DD HH:mm:ss") : '',
+				sell_period_start: this.periodSell[0] ? moment(this.periodSell[0]).format("YYYY-MM-DD HH:mm:ss") : '',
+				sell_period_end: this.periodSell[1] ? moment(this.periodSell[1]).format("YYYY-MM-DD HH:mm:ss") : '',
+			};
+
+			setTimeout(() => {
+				const urlQuery = {}
+				if(params.buy_period_start) urlQuery.periodBuy = params.buy_period_start +' - '+ params.buy_period_end
+				if(params.sell_period_start) urlQuery.periodSell = params.sell_period_start +' - '+ params.sell_period_end
+				this.$router.replace({
+					...this.$route,
+					query: urlQuery,
+				})
+			}, 500)
+
+			this.loading = true
+			const { data } = await fetchDexAnalyzeGroupTxs(params)
       this.loading = false
       if(data.success) {
         const items = Object.keys(data.result).map(key => {
@@ -186,10 +208,17 @@ export default {
           return 0
         })
         this.items = items
-        this.totalItems = 0 // data.result.totalItems
-        this.totalInfo = {} // data.result.total
+        this.totalItems = data.result.totalItems || 0 // data.result.totalItems
+        this.totalInfo = data.result.total ||  {} // data.result.total
       }
     },
+		setTokensToTableHeader() {
+			this.headers[0].find(i => i.key === 'profit').title = 'Profit, '+this.rightToken.slice(0,5)
+			this.headers[1].find(i => i.key === 'buy_amount').title = 'Amount, '+this.leftToken.slice(0,5)
+			this.headers[1].find(i => i.key === 'buy_price').title = 'Price, '+this.rightToken.slice(0,5)
+			this.headers[1].find(i => i.key === 'sell_amount').title = 'Amount, '+this.leftToken.slice(0,5)
+			this.headers[1].find(i => i.key === 'sell_price').title = 'Price, '+this.rightToken.slice(0,5)
+		},
     onPeriodChange(type, $event) {
       console.log('onPeriodChange')
       if(type === 'buy') {
@@ -197,6 +226,7 @@ export default {
       } else {
         this.periodSell = $event;
       }
+
       this.loadItems()
     }
   },

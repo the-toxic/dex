@@ -372,9 +372,11 @@ export const fetchDexAnalyzeGroupTxs = async (payload) => {
   //   total: {
   //     profit: 1000,
   //     roi: 50,
+  //     buy_txs: 4,
   //     buy_amount: 20,
   //     buy_price: 100,
   //     buy_total: 2000,
+  //     buy_txs: 4,
   //     sell_amount: 20,
   //     sell_price: 150,
   //     sell_total: 3000,

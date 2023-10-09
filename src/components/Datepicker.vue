@@ -35,7 +35,7 @@ export default {
       zIndex: 10,
       format: 'YYYY-MM-DD HH:mm',
       plugins: [ AmpPlugin, RangePlugin, PresetPlugin, TimePlugin ],
-      AmpPlugin: { resetButton: true },
+      AmpPlugin: { resetButton: true, dropdown: { minYear: 2011, maxYear: null, months: true, years: true }},
       PresetPlugin: { customPreset: _this.customDatepickerPreset() },
       css: [ 'https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css' ],
       setup(picker) {

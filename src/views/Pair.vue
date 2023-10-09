@@ -479,7 +479,7 @@ export default {
       this.pairAddr = newVal.pair_addr
       this.updateTitle()
       if(oldVal && (newVal.type !== oldVal.type || newVal.pair_addr !== oldVal.pair_addr)) {
-        this.$router.push({params: { pairAddr: this.pairAddr }}).then()
+        this.$router.push({...this.$route, params: { pairAddr: this.pairAddr }}).then()
       }
       this.pairInfoLoading = true
       await this.getPairInfo(newVal.pair_id)
@@ -496,7 +496,7 @@ export default {
 		// },
     tabContent(newVal) {
       console.log('watch tab', newVal)
-      this.$router.push({hash: '#'+newVal})
+      this.$router.replace({ hash: '#'+newVal }) // add ...this.$route for save url query on tab change
     },
     token0PriceInUSD() {
       this.updateTitle()

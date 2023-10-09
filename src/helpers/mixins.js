@@ -36,6 +36,7 @@ export const shortString = (string, length = 16) => !string ? '' : (string.lengt
 export const logger = (str) => console.log(str)
 
 export const formatNumber = (number, shortBigNumber = false) => {
+  if(isNaN(number)) return 0
   number = +number
   if(number === 0) return 0
   if (number >= 1000)
