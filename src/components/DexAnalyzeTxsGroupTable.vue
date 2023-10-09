@@ -42,13 +42,13 @@
       </template>
 			<template v-slot:item.buy_txs="{ item }">{{ toNumber(item.buy.txs_count) }}</template>
 			<template v-slot:item.buy_amount="{ item }">{{ !item.buy.txs_count ? '-' : formatBigNumber(item.buy.token0_amount) }}</template>
-			<template v-slot:item.buy_price="{ item }">{{ !item.buy.txs_count ? '-' : '$'+formatNumber(item.buy.total / item.buy.token0_amount) }}</template>
-			<template v-slot:item.buy_total="{ item }">{{ !item.buy.txs_count ? '-' : '$'+formatNumber(item.buy.total) }}</template>
+			<template v-slot:item.buy_price="{ item }">{{ !item.buy.txs_count ? '-' : formatNumber(item.buy.total / item.buy.token0_amount) }}</template>
+			<template v-slot:item.buy_total="{ item }">{{ !item.buy.txs_count ? '-' : formatNumber(item.buy.total) }}</template>
 
 			<template v-slot:item.sell_txs="{ item }">{{ toNumber(item.sell.txs_count) }}</template>
 			<template v-slot:item.sell_amount="{ item }">{{ !item.sell.txs_count ? '-' : formatBigNumber(item.sell.token0_amount) }}</template>
-			<template v-slot:item.sell_price="{ item }">{{ !item.sell.txs_count ? '-' : '$'+formatNumber(item.sell.total / item.sell.token0_amount) }}</template>
-			<template v-slot:item.sell_total="{ item }">{{ !item.sell.txs_count ? '-' : '$'+formatNumber(item.sell.total) }}</template>
+			<template v-slot:item.sell_price="{ item }">{{ !item.sell.txs_count ? '-' : formatNumber(item.sell.total / item.sell.token0_amount) }}</template>
+			<template v-slot:item.sell_total="{ item }">{{ !item.sell.txs_count ? '-' : formatNumber(item.sell.total) }}</template>
 
 <!--			<template v-slot:tfoot>-->
 <!--				<tfoot>-->
@@ -80,6 +80,8 @@ import { fetchDexAnalyzeGroupTxs } from "@/api";
 import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import Datepicker from "@/components/Datepicker.vue";
+import { mapState } from "pinia";
+import { useChartStore } from "@/store/chartStore";
 
 export default {
   name: 'DexAnalyzeTxsGroupTable',
@@ -119,10 +121,11 @@ export default {
 		totalInfo: {},
 
     periodBuy: [
-      moment().subtract(1, 'months').startOf("day").toDate(),
-      moment().endOf("day").toDate()
+			new Date('2022-02-01 00:00'), new Date('2022-02-07 23:59')
+			// '2022-02-01 00:00 - 2022-02-07 23:59', //moment().subtract(1, 'months').startOf("day").toDate(),
+      // '2022-02-11 00:00 - 2022-02-12 23:59', // moment().endOf("day").toDate()
     ],
-    periodSell: ['', ''],
+    periodSell: [new Date('2022-02-11 00:00'), new Date('2022-02-12 23:59')],
   }),
 	async created() {
 		this.debouncedFn = useDebounceFn(async () => {
@@ -137,10 +140,17 @@ export default {
     pairId(newVal, oldVal) {
       this.loadItems()
 
+			this.headers[1].find(i => i.key === 'buy_amount').title = 'Amount, '+this.leftToken
+			this.headers[1].find(i => i.key === 'buy_price').title = 'Price, '+this.rightToken
+			this.headers[1].find(i => i.key === 'sell_amount').title = 'Amount, '+this.leftToken
+			this.headers[1].find(i => i.key === 'sell_price').title = 'Amount, '+this.rightToken
     },
 		searchInput(newVal) {
 			this.debouncedFn()
 		},
+	},
+	computed: {
+		...mapState(useChartStore, ['leftToken', 'rightToken', 'explorerDomain']),
 	},
 	methods: {
 		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
