@@ -37,7 +37,7 @@
       </template>
 			<template v-slot:item.roi="{ item }">
         <v-chip :color="item.roi > 0 ? 'success': (item.roi < 0 ? 'error' : 'white')" size="small">
-          {{ item.roi > 0 ? '+' : (item.roi < 0 ? '-' : '') }} {{ Math.round(Math.abs(item.roi)) || 0 }}%
+          {{ formatNumber(Math.abs(item.roi)) || 0 }}%
         </v-chip>
       </template>
 			<template v-slot:item.buy_txs="{ item }">{{ toNumber(item.buy.txs_count) }}</template>
@@ -54,10 +54,14 @@
 				<tfoot>
 				<tr class="text-surface-variant text-center">
 					<td colspan="1" class="text-right">Total</td>
-					<td>{{ formatBigNumber(totalInfo.profit) || 0 }}</td>
+					<td>
+						<v-chip :color="totalInfo.profit > 0 ? 'success': (totalInfo.profit < 0 ? 'error' : 'white')" size="small">
+							{{ totalInfo.profit > 0 ? '+' : (totalInfo.profit < 0 ? '-' : '') }} {{ formatNumber(Math.abs(totalInfo.profit)) || 0 }}
+						</v-chip>
+					</td>
 					<td>
 						<v-chip :color="totalInfo.roi > 0 ? 'success': (totalInfo.roi < 0 ? 'error' : 'white')" size="small">
-							{{ totalInfo.roi > 0 ? '+' : (totalInfo.roi < 0 ? '-' : '') }} {{ Math.abs(totalInfo.roi) || 0 }}%, avg
+							{{ totalInfo.roi > 0 ? '+' : (totalInfo.roi < 0 ? '-' : '') }} {{ formatNumber(Math.abs(totalInfo.roi)) || 0 }}%, avg
 						</v-chip>
 					</td>
 					<td>{{ formatNumber(totalInfo.buy_txs) || 0 }}</td>
@@ -194,13 +198,12 @@ export default {
 			const { data } = await fetchDexAnalyzeGroupTxs(params)
       this.loading = false
       if(data.success) {
-        const items = Object.keys(data.result).map(key => {
-          data.result[key]['wallet'] = key
-          if(data.result[key]['buy']['txs_count'] === 0 || data.result[key]['sell']['txs_count'] === 0) {
-            data.result[key]['roi'] = 0
-            data.result[key]['profit'] = 0
+        const items = data.result.items.map(i => {
+          if(i['buy']['txs_count'] === 0 || i['sell']['txs_count'] === 0) {
+            i['roi'] = 0
+            i['profit'] = 0
           }
-          return data.result[key]
+          return i
         })
         items.sort((a,b) => { // filter by TX count, DESC
           if(a.profit > b.profit) return -1
