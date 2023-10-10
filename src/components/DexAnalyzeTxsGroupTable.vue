@@ -40,15 +40,15 @@
           {{ formatNumber(Math.abs(item.roi)) || 0 }}%
         </v-chip>
       </template>
-			<template v-slot:item.buy_txs="{ item }">{{ toNumber(item.buy.txs_count) }}</template>
-			<template v-slot:item.buy_amount="{ item }">{{ !item.buy.txs_count ? '-' : formatBigNumber(item.buy.token0_amount) }}</template>
-			<template v-slot:item.buy_price="{ item }">{{ !item.buy.txs_count ? '-' : formatNumber(item.buy.total / item.buy.token0_amount) }}</template>
-			<template v-slot:item.buy_total="{ item }">{{ !item.buy.txs_count ? '-' : formatNumber(item.buy.total) }}</template>
+			<template v-slot:item.buy_txs="{ item }">{{ toNumber(item.buy_txs) }}</template>
+			<template v-slot:item.buy_amount="{ item }">{{ !item.buy_txs ? '-' : formatBigNumber(item.buy_amount) }}</template>
+			<template v-slot:item.buy_price="{ item }">{{ !item.buy_txs ? '-' : formatNumber(item.buy_total / item.buy_amount) }}</template>
+			<template v-slot:item.buy_total="{ item }">{{ !item.buy_txs ? '-' : formatNumber(item.buy_total) }}</template>
 
-			<template v-slot:item.sell_txs="{ item }">{{ toNumber(item.sell.txs_count) }}</template>
-			<template v-slot:item.sell_amount="{ item }">{{ !item.sell.txs_count ? '-' : formatBigNumber(item.sell.token0_amount) }}</template>
-			<template v-slot:item.sell_price="{ item }">{{ !item.sell.txs_count ? '-' : formatNumber(item.sell.total / item.sell.token0_amount) }}</template>
-			<template v-slot:item.sell_total="{ item }">{{ !item.sell.txs_count ? '-' : formatNumber(item.sell.total) }}</template>
+			<template v-slot:item.sell_txs="{ item }">{{ toNumber(item.sell_txs) }}</template>
+			<template v-slot:item.sell_amount="{ item }">{{ !item.sell_txs ? '-' : formatBigNumber(item.sell_amount) }}</template>
+			<template v-slot:item.sell_price="{ item }">{{ !item.sell_txs ? '-' : formatNumber(item.sell_total / item.sell_amount) }}</template>
+			<template v-slot:item.sell_total="{ item }">{{ !item.sell_txs ? '-' : formatNumber(item.sell_total) }}</template>
 
 			<template v-slot:tfoot>
 				<tfoot>
@@ -199,17 +199,17 @@ export default {
       this.loading = false
       if(data.success) {
         const items = data.result.items.map(i => {
-          if(i['buy']['txs_count'] === 0 || i['sell']['txs_count'] === 0) {
+          if(i['buy_txs'] === 0 || i['sell_txs'] === 0) {
             i['roi'] = 0
             i['profit'] = 0
           }
           return i
         })
-        items.sort((a,b) => { // filter by TX count, DESC
-          if(a.profit > b.profit) return -1
-          if(a.profit < b.profit) return 1
-          return 0
-        })
+        // items.sort((a,b) => { // filter by TX count, DESC
+        //   if(a.profit > b.profit) return -1
+        //   if(a.profit < b.profit) return 1
+        //   return 0
+        // })
         this.items = items
         this.totalItems = data.result.totalItems || 0 // data.result.totalItems
         this.totalInfo = data.result.total ||  {} // data.result.total
