@@ -53,16 +53,13 @@ const chartStore = () => useChartStore()
 //   return data
 // }
 
-const delay = async (ms) => await new Promise(resolve => setTimeout(() => {
-  resolve(true)
-}, ms))
+const delay = async (ms) => await new Promise(resolve => setTimeout(() => resolve(true), ms))
 
 /** Auth module */
 
 export async function signIn(payload) {
-  await delay(500)
-  return { data: { success: true, result: { user: {"id":31,"unique_id":"SJEQIQ","email":"admin@hazb.com","first_name":"Admin","last_name":"Admin","tz":"Africa/Juba","status":1,"created_at":"2023-08-18 07:45:02","wallet":"","discord":"","telegram":"","ref_id":0}, access_token:"", refresh_token:""} }}
-
+  // await delay(500)
+  // return { data: { success: true, result: { user: {"id":31,"unique_id":"SJEQIQ","email":"admin@hazb.com","first_name":"Admin","last_name":"Admin","tz":"Africa/Juba","status":1,"created_at":"2023-08-18 07:45:02","wallet":"","discord":"","telegram":"","ref_id":0}, access_token:"", refresh_token:""} }}
   return await axios.post(`auth/sign-in`, payload);
 }
 
@@ -110,11 +107,7 @@ export async function deleteAccount() {
 
 /** Explorer page */
 export const fetchChains = async () => {
-  // TODO temp
-  return { data: { success: true, result: {
-        1: { name: 'Ethereum', native_symbol: 'ETH', native_symbol_price: 1, icon_folder: '' },
-        2: { name: 'BSC', native_symbol: 'BSC', native_symbol_price: 1, icon_folder: '' },
-      } } }
+  // return { data: { success: true, result: { 1: { name: 'Ethereum', native_symbol: 'ETH', native_symbol_price: 1, icon_folder: '' }, 2: { name: 'BSC', native_symbol: 'BSC', native_symbol_price: 1, icon_folder: '' }, } } }
   return await axios.get(`xhr/chains`);
 }
 

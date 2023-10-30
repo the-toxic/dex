@@ -37,7 +37,7 @@
       </template>
 			<template v-slot:item.roi="{ item }">
         <v-chip :color="item.roi > 0 ? 'success': (item.roi < 0 ? 'error' : 'white')" size="small">
-          {{ formatNumber(Math.abs(item.roi)) || 0 }}%
+					{{ item.roi > 0 ? '+' : (item.roi < 0 ? '-' : '') }} {{ formatNumber(Math.abs(item.roi)) || 0 }}%
         </v-chip>
       </template>
 			<template v-slot:item.buy_txs="{ item }">{{ toNumber(item.buy_txs) }}</template>
