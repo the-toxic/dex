@@ -20,7 +20,7 @@
     class="elevation-1 fs14"
     @update:options="loadItems"
   >
-    <template v-slot:item.uuid="{ item }"><v-btn @click="$clipboard(item.uuid)" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ shortAddress(item.uuid) }}</v-btn></template>
+    <template v-slot:item.uuid="{ item }"><v-btn @click="$clipboard(item.uuid)" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn></template>
     <template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
     <template v-slot:item.type="{ item }"><v-chip :color="item.type === 'adds' ? 'success':'error'" class="text-uppercase" size="small">{{ item.type }}</v-chip></template>
     <template v-slot:item.action="{ item }">
@@ -106,13 +106,13 @@ export default {
 		sortBy: [{key: 'id', order: 'desc'}],
 		network: 'bsc', // ether | bsc
     headers: [
-      { title: 'ID', key: 'uuid', align: 'center', sortable: false },
+      { title: 'UUID', key: 'uuid', align: 'center', sortable: false },
       { title: 'Name', key: 'name', align: 'center', sortable: false },
       { title: 'Wallets', key: 'wallets', align: 'center', sortable: false },
       { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
     items: [],
-    totalItems: 999,
+    totalItems: 0,
 		filter: {
 			search: '',
 		},
@@ -157,8 +157,8 @@ export default {
 			})
       this.loading = false
       if(data.success) {
-        this.items = Object.values(data.result) // or data.result.items
-				// this.totalItems = data.result.totalItems
+        this.items = data.result.items
+				this.totalItems = data.result.total
       }
     },
 
