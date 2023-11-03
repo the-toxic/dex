@@ -250,8 +250,57 @@ export const fetchAddress = async (id) => {
   //   return { data: { success: true, result: { type: 'wallet', name: '0x5678', id: '2342-2422-2222-3333', address: '0x5678' } }}
 }
 
-export const fetchPrivateEntities = async () => {
-  return await axios.get(`entities`);
+export const fetchPrivateLabels = async (payload) => {
+  // return await axios.post(`private-labels`, payload);
+  await delay(500)
+  return { data: {
+    success: true, result: {
+      totalItems: 1,
+      items: [
+        {
+          label: 'My Label 1',
+          wallet: '0x0000000000000000000000000000000000000000',
+          network: 'evm',
+          entity: 'Binance',
+          entity_uuid: 1,
+          tags: 'Bot',
+          global_label: 'Qwerty'
+        },
+        {
+          label: 'My Label 2',
+          wallet: '0x0000000000000000000000000000000000000000',
+          network: 'bitcoin',
+          entity: 'My Entity',
+          entity_uuid: 2,
+          tags: 'Bot, MM',
+          global_label: ''
+        },
+        {
+          label: 'My Label 3',
+          wallet: '0x0000000000000000000000000000000000000000',
+          network: 'evm',
+          entity: '',
+          entity_uuid: null,
+          tags: '',
+          global_label: 'Bittrex'
+        },
+      ]
+    }
+  }}
+}
+export const savePrivateTag = async (payload) => {
+  const isEdit = !!payload.id
+  // return await axios.post(`private-tag${isEdit ? '/'+payload.id : '' }`, payload);
+  await delay(500)
+  return { data: { success: true, result: {} }}
+}
+
+export const searchEntities = async (query) => {
+  return await axios.get(`xhr/search-entity?q=${query}`);
+}
+
+export const fetchPrivateEntities = async (payload) => {
+  return await axios.post(`xhr/private/entities`, payload);
   // await delay(500)
   // return { data: {
   //   success: true, result: [

@@ -24,7 +24,7 @@
 <!--		<v-text-field v-model.lazy="searchInput" label="Search by Tokens..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" />-->
 
 		<v-data-table-server
-			v-model:items-per-page="itemsPerPage"
+			v-model:items-per-page="per_page"
 			v-model:sort-by="sortBy"
 			v-model:page="page"
 			:headers="headers"
@@ -83,7 +83,7 @@ export default {
     loading: false,
 		filterOpened: true,
 		network: '',
-    itemsPerPage: 10,
+    per_page: 10,
 		sortBy: [{key: 'txs', order: 'desc'}],
 		page: 1,
     headers: [
@@ -149,7 +149,7 @@ export default {
       this.loading = true
 			const { data } = await fetchPairs({
 				page: this.page,
-				itemsPerPage: this.itemsPerPage,
+				per_page: this.per_page,
 				sortBy: this.sortBy,
 				search: this.searchInput.trim(),
 				chain_id: this.network === 'all' ? 0 : (this.network === 'bsc' ? 2 : 1)

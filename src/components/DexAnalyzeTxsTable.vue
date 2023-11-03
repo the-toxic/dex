@@ -11,7 +11,7 @@
 
 	<div class="overflow-x-auto">
 		<v-data-table-server style="min-width: 1550px"
-			v-model:items-per-page="itemsPerPage"
+			v-model:items-per-page="per_page"
 			v-model:sort-by="sortBy"
 			v-model:page="page"
 			:headers="headers"
@@ -77,7 +77,7 @@ export default {
   components: { VDataTableServer },
   data: () => ({
     loading: false,
-    itemsPerPage: 20,
+    per_page: 20,
 		page: 1,
 		sortBy: [{key: 'profit', order: 'desc'}],
     headers: [
@@ -164,7 +164,7 @@ export default {
       this.loading = true
       const { data } = await fetchDexAnalyzeTxs({
 				page: this.page,
-				itemsPerPage: this.itemsPerPage,
+				per_page: this.per_page,
 				sortBy: this.sortBy,
 				search: this.searchInput.trim(),
 			})

@@ -10,7 +10,7 @@
 
 	<div class="overflow-x-auto">
 		<v-data-table-server style="min-width: 1550px"
-			v-model:items-per-page="itemsPerPage"
+			v-model:items-per-page="per_page"
 			v-model:sort-by="sortBy"
 			v-model:page="page"
 			:headers="headers"
@@ -74,7 +74,7 @@ export default {
   components: { VDataTableServer },
   data: () => ({
     loading: false,
-    itemsPerPage: 20,
+    per_page: 20,
 		page: 1,
 		sortBy: [{key: 'count_total', order: 'desc'}],
     headers: [
@@ -99,7 +99,6 @@ export default {
 				{ title: '%, ROI', key: 'token1_roi', align: 'center' },
     	]
 		],
-		token0_name: 'asd',
 		searchInput: '',
     items: [],
     totalItems: 0,
@@ -147,7 +146,7 @@ export default {
       this.loading = true
       const { data } = await fetchDexPairWallets({
 				page: this.page,
-				itemsPerPage: this.itemsPerPage,
+				per_page: this.per_page,
 				sortBy: this.sortBy,
 				search: this.searchInput.trim(),
 			})

@@ -51,7 +51,6 @@ export default {
     SOCIAL_TWITTER, SOCIAL_TELEGRAM, SOCIAL_LINKTREE,
   }),
   methods: {
-    SOCIAL_LINKTREE,
     onCaptchaPassed(captcha) {
       this.sendRequestInvite(captcha)
     },

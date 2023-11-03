@@ -12,9 +12,9 @@
 	<v-text-field v-model="searchInput" label="Search by Wallets..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" density="compact" />
 	<div class="overflow-x-auto">
 		<v-data-table-server style="min-width: 1300px"
-			v-model:items-per-page="itemsPerPage"
-			v-model:sort-by="sortBy"
 			v-model:page="page"
+			v-model:items-per-page="per_page"
+			v-model:sort-by="sortBy"
 			:headers="headers"
 			:items-length="totalItems"
 			:items="items"
@@ -98,7 +98,7 @@ export default {
   },
   data: () => ({
     loading: false,
-    itemsPerPage: 20,
+    per_page: 20,
 		page: 1,
 		sortBy: [{key: 'profit', order: 'desc'}],
     headers: [
@@ -175,7 +175,7 @@ export default {
 				chain_id: this.chainId,
 				pair_id: this.pairId,
 				page: this.page,
-				per_page: this.itemsPerPage,
+				per_page: this.per_page,
 				sortBy: this.sortBy.length ? this.sortBy : [{key: 'profit', order: 'desc'}],
 				search: this.searchInput.trim(),
 				buy_period_start: this.periodBuy[0] ? moment(this.periodBuy[0]).format("YYYY-MM-DD HH:mm:ss") : '',

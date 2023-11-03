@@ -23,7 +23,7 @@ const routes = [
     { path: 'token/:id([a-zA-Z0-9-]{42})', name: 'Token', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
     { path: 'wallet/:id([a-zA-Z0-9-]{42})', name: 'Wallet', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
 
-    { path: 'entities', name: 'Entities', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Entities.vue") },
+    { path: 'privateLabels', name: 'PrivateLabels', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/PrivateLabels.vue") },
     { path: 'sc', name: 'SC', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/SC.vue") },
     { path: 'career', name: 'Career', component: Career },
     { path: 'contact-us', name: 'ContactUs', component: ContactUs },

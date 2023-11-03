@@ -14,7 +14,8 @@
 		<v-text-field v-model="search" label="Search by Wallets..." prepend-inner-icon="mdi-magnify" single-line hide-details/>
 
 		<v-data-table-server
-			v-model:items-per-page="itemsPerPage"
+			v-model:page="page"
+			v-model:items-per-page="per_page"
 			v-model:sort-by="sortBy"
 			:headers="headers"
 			:items-length="totalItems"
@@ -84,7 +85,8 @@ export default {
   components: { VDataTableServer },
   data: () => ({
     loading: false,
-    itemsPerPage: 20,
+    page: 1,
+    per_page: 20,
 		sortBy: [{key: 'profit', order: 'desc'}],
     headers: [
       { title: 'Wallet', key: 'wallet', align: 'start', sortable: false },
@@ -145,9 +147,14 @@ export default {
 	methods: {
 		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
 
-    async loadItems ({ page, itemsPerPage, sortBy }) {
+    async loadItems () {
       this.loading = true
-      const { data } = await fetchSC({ page, itemsPerPage, sortBy, search: this.search.trim() })
+      const { data } = await fetchSC({
+        page: this.page,
+        per_page: this.per_page,
+        sortBy: this.sortBy,
+        search: this.search.trim()
+      })
       this.loading = false
       if(data.success) {
         this.items = data.result.items

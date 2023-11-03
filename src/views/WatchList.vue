@@ -28,7 +28,8 @@
 				</v-card>
 
 				<v-data-table-server
-					v-model:items-per-page="itemsPerPage"
+					v-model:page="page"
+					v-model:items-per-page="per_page"
 					v-model:sort-by="sortBy"
 					:headers="headersWallets"
 					:items-length="totalItems"
@@ -61,7 +62,8 @@
 					</v-card-text>
 				</v-card>
 				<v-data-table-server
-					v-model:items-per-page="itemsPerPage"
+					v-model:page="page"
+					v-model:items-per-page="per_page"
 					v-model:sort-by="sortBy"
 					:headers="headersTokens"
 					:items-length="totalItems"
@@ -133,7 +135,8 @@ export default {
   data() { return {
     loading: false,
 		tab: 'wallets',
-    itemsPerPage: 10,
+    page: 1,
+    per_page: 10,
 		sortBy: [{key: 'date', order: 'desc'}],
 		network: 'bsc', // ether | bsc
     headersWallets: [
@@ -167,18 +170,26 @@ export default {
 
   methods: {
 		shortString, shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
-    async loadItemsWallets ({ page, itemsPerPage, sortBy }) {
+    async loadItemsWallets () {
       this.loading = true
-      const { data } = await fetchWhitelistWallets({ page, itemsPerPage, sortBy })
+      const { data } = await fetchWhitelistWallets({
+        page: this.page,
+        per_page: this.per_page,
+        sortBy: this.sortBy,
+      })
       this.loading = false
       if(data.success) {
         this.itemsWallets = data.result
       }
     },
 
-    async loadItemsTokens ({ page, itemsPerPage, sortBy }) {
+    async loadItemsTokens () {
       this.loading = true
-      const { data } = await fetchWhitelistTokens({ page, itemsPerPage, sortBy })
+      const { data } = await fetchWhitelistTokens({
+        page: this.page,
+        per_page: this.per_page,
+        sortBy: this.sortBy,
+      })
       this.loading = false
       if(data.success) {
         this.itemsTokens = data.result
