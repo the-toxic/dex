@@ -29,7 +29,7 @@
     </template>
   </v-data-table-server>
 
-  <v-dialog v-model="dialog" max-width="700">
+  <v-dialog v-model="dialog" max-width="730">
     <v-card :loading="dialogLoader">
       <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
         <v-card-title class="mb-3 pt-7" style="font-size: 25px;">Entity Editor</v-card-title>
@@ -44,10 +44,15 @@
             <h4 class="fs16">Wallets</h4>
             <v-btn @click="addEmptyWallet" rounded variant="tonal" size="small" class="text-none" prepend-icon="mdi-wallet-plus-outline">Add Wallet</v-btn>
           </div>
-          <div v-if="!form.addresses.length">Please click button "Add Wallet"</div>
-          <div v-for="(wallet, idx) in form.addresses" :key="idx" class="v-row v-row--no-gutters justify-space-between align-center mb-6 mb-md-1">
+          <div v-if="!form.wallets.length">Please click button "Add Wallet"</div>
+
+          <div v-for="(wallet, idx) in form.wallets" :key="idx"
+             class="v-row v-row--no-gutters justify-space-between align-center mb-6 mb-md-1">
+
+            <div v-if="wallet.global_label" class="v-col-12 mb-1"><span class="text-disabled">Global Label:</span> {{ wallet.global_label }}</div>
+
             <div class="v-col-12 v-col-md-3">
-              <v-text-field label="Label" v-model="wallet.label" placeholder="Custom name" density="compact" :disabled="!!wallet.is_deleted" :rules="[v => !v || v.length < 64 || 'Max length 64 chars']" />
+              <v-text-field label="My Label" v-model="wallet.local_label" placeholder="Custom name" density="compact" :disabled="!!wallet.is_deleted" :rules="[v => !v || v.length < 64 || 'Max length 64 chars']" />
             </div>
             <div class="v-col-12 v-col-md-7">
               <v-text-field label="Address*" placeholder="0x..."  v-model="wallet.address" class="mx-md-3" density="compact" :disabled="!!wallet.is_deleted"
@@ -58,10 +63,15 @@
                 ]" />
             </div>
             <div class="v-col-12 v-col-md">
-              <v-btn variant="outlined" color="white" rounded class="mt-n5" :disabled="!!wallet.is_deleted"><v-icon icon="mdi-ethereum" title="EVM Addresses" /></v-btn>
+              <v-btn variant="outlined" color="white" rounded class="mt-n5" size="small" :disabled="!!wallet.is_deleted">EVM</v-btn>
               <v-btn v-if="!wallet.is_deleted" @click="removeWallet(wallet)" icon="mdi-close" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />
               <v-btn v-else @click="wallet.is_deleted = 0" icon="mdi-restore" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />
             </div>
+            <div v-if="wallet.tags.length" class="v-col-12 mb-4">
+              <v-select label="Tags" :items="wallet.tags" :model-value="wallet.tags.map(i => i.id)" chips multiple
+                item-title="tag" item-value="id" variant="outlined" density="comfortable" readonly hide-details />
+            </div>
+            <v-divider class="mb-2" />
           </div>
         </v-card-text>
         <v-card-actions>
@@ -89,7 +99,7 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { fetchPrivateEntities, saveEntity } from "@/api";
+import { fetchPrivateEntities, getPrivateEntity, saveEntity } from "@/api";
 import { API_DOMAIN, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import { mapActions } from "pinia";
@@ -123,7 +133,7 @@ export default {
     form: {
       uuid: '',
       name: '',
-      addresses: []
+      wallets: []
     },
 
     deleteDialog: false,
@@ -164,35 +174,43 @@ export default {
 
     async editItem(item = null) {
       this.dialog = true
+      await this.$nextTick(() => this.$refs.form.reset()) // or resetValidation()
+      this.form.wallets = []
+
       if(item) {
-        this.form.uuid = item.uuid
-        this.form.name = item.name
-        item.addresses = item.addresses.map(i => {
+        this.dialogLoader = true
+        const { data } = await getPrivateEntity(item.uuid)
+        this.dialogLoader = false
+        if(!data.success) {
+          this.showAlert('Error on load entity')
+          return
+        }
+        this.form.uuid = data.result.entity.uuid
+        this.form.name = data.result.entity.name
+        data.result.wallets = data.result.wallets.map(i => {
           i.is_deleted = 0
           return i
         })
-        this.form.addresses = JSON.parse(JSON.stringify(item.addresses))
+        this.form.wallets = JSON.parse(JSON.stringify(data.result.wallets))
       } else {
-        await this.$nextTick(() => this.$refs.form.reset()) // or resetValidation()
-        this.form.addresses = []
         this.addEmptyWallet()
       }
     },
     addEmptyWallet() {
-      this.form.addresses.push({id: 'new', label: '', address: ''})
+      this.form.wallets.push({id: 'new', local_label: '', address: '', tags: []})
     },
     async removeWallet(wallet) {
       if(wallet.id !== 'new') {
         wallet.is_deleted = 1
       } else {
-        this.form.addresses = this.form.addresses.filter(item => item !== wallet)
+        this.form.wallets = this.form.wallets.filter(item => item !== wallet)
       }
     },
     async onSubmit() {
       const { valid } = await this.$refs.form.validate()
       if(!valid) return false
 
-      const wallets = this.form.addresses.filter(i => !i.is_deleted)
+      const wallets = this.form.wallets.filter(i => !i.is_deleted)
       if(!wallets.length) {
         this.showAlert('Add at least 1 address')
         return

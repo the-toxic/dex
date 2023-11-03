@@ -1,11 +1,11 @@
 <template>
 
   <div class="d-flex justify-space-between align-center flex-wrap px-4 py-2 border-b" style="background: #141d26">
-    <v-btn @click="editItem" variant="tonal" prepend-icon="mdi-plus" color="success" rounded class="text-none" >Add Label</v-btn>
+    <v-btn @click="editItem()" variant="tonal" prepend-icon="mdi-plus" color="success" rounded class="text-none" >Add Label</v-btn>
     <v-spacer />
     <v-switch label="Only EVM" v-model="filter.network" true-value="evm" false-value="" hide-details color="primary" class="flex-grow-0" />
     <div style="width: 280px;">
-      <v-text-field v-model="filter.search" label="Search" placeholder="Labels, wallets, entities, e.g." rounded variant="outlined"
+      <v-text-field v-model="filter.search" label="Search" placeholder="Labels, addresses, entities, e.g." rounded variant="outlined"
         persistent-placeholder density="compact" prepend-inner-icon="mdi-magnify" hide-details  clearable @click:clear="filter.search = ''" class="ml-4"/>
     </div>
   </div>
@@ -23,9 +23,12 @@
     class="elevation-1 fs14"
     @update:options="loadItems"
   >
-    <template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
-    <template v-slot:item.entity="{ item }">{{ item.entity ? item.entity : '&mdash;' }}</template>
-    <template v-slot:item.network="{ item }"><v-chip color="secondary" class="text-uppercase" size="small">{{ item.network }}</v-chip></template>
+    <template v-slot:item.local_label="{ item }">{{ item.local_label ? item.local_label : '&mdash;' }}</template>
+    <template v-slot:item.global_label="{ item }">{{ item.global_label ? item.global_label : '&mdash;' }}</template>
+    <template v-slot:item.address="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn></template>
+    <template v-slot:item.network="{ item }"><v-chip color="secondary" class="text-capitalize" size="small">{{ item.network }}</v-chip></template>
+    <template v-slot:item.entity_name="{ item }">{{ item.entity_name ? item.entity_name : '&mdash;' }}</template>
+    <template v-slot:item.tags="{ item }"><span v-if="!item.tags.length">&mdash;</span><div v-else class="overflow-x-auto text-no-wrap mx-auto" style="width: 300px"><v-chip v-for="i in item.tags" color="white" class="mr-1 my-1" size="small" :text="i.tag" /></div></template>
     <template v-slot:item.action="{ item }">
       <v-btn @click="editItem(item)" icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
       <v-btn @click="showDeleteDialog('tag', item.id)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>
@@ -43,16 +46,16 @@
           <v-select label="Network*" v-model="form.network" class="mt-2"
             :items="[{value: 'evm', title: 'EVM'}, {value: 'bitcoin', title: 'Bitcoin'}]"></v-select>
 
-          <v-text-field label="Wallet*" :placeholder="form.network === 'evm' ? '0x...' : ''"  v-model="form.wallet"  counter
+          <v-text-field label="Address*" :placeholder="form.network === 'evm' ? '0x...' : ''"  v-model="form.address"  counter
             :rules="[
               v => !!v || 'Required field',
               v => form.network !== 'evm' || /^(0x)?[0-9a-f]{40}$/i.test(v) || 'Invalid EVM format',
               v => form.network !== 'bitcoin' || /^[0-9a-z]{26,35}$/i.test(v) || 'Invalid Bitcoin format',
             ]" />
 
-          <v-autocomplete label="Entity" v-model="form.entity_uuid" placeholder="Type more 3 chars for search" clearable no-filter class="mt-2"
-            @update:search="onEntitySearch" :items="entitiesList"></v-autocomplete>
-            <!--:search="searchEntityInput" -->
+          <v-autocomplete label="Entity" v-model="form.entity_uuid" placeholder="Type more 3 chars for search"
+            @update:search="onEntitySearch" :items="entitiesList" clearable no-filter class="mt-2"></v-autocomplete>
+
           <v-textarea label="Description" v-model="form.description" rows="2" :rules="[v => !v || v.length <= 1000 || 'Max length is 1000 chars']" class="mt-2" />
         </v-card-text>
         <v-card-actions>
@@ -92,15 +95,15 @@ export default {
   data() { return {
 		API_DOMAIN,
     loading: false,
-    per_page: 10,
+    per_page: 25,
 		page: 1,
 		sortBy: [{key: 'date', order: 'desc'}],
     headers: [
-      { title: 'Label', key: 'label', align: 'center', sortable: false },
-      { title: 'Wallet', key: 'wallet', align: 'center', sortable: false },
+      { title: 'Address', key: 'address', align: 'center', sortable: false },
+      { title: 'Label', key: 'local_label', align: 'center', sortable: false },
       { title: 'Network', key: 'network', align: 'center', sortable: false },
-      { title: 'Entity', key: 'entity', align: 'center', sortable: false },
-      { title: 'Tags', key: 'tags', align: 'center', sortable: false },
+      { title: 'Entity', key: 'entity_name', align: 'center', sortable: false },
+      { title: 'Tags', key: 'tags', align: 'center', sortable: false, width: 300 },
       { title: 'Global Label', key: 'global_label', align: 'center', sortable: false },
       { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
@@ -117,12 +120,11 @@ export default {
     form: {
       id: null,
       label: '',
-      wallet: '',
+      address: '',
       network: '',
       entity_uuid: '',
       description: '',
     },
-    // searchEntityInput: '',
     entitiesList: [],
 
     deleteDialog: false,
@@ -143,7 +145,7 @@ export default {
 		},
     'filter.network'(newVal, oldVal) {
       this.loadItems()
-    }
+    },
 	},
   methods: {
 		shortAddress,
@@ -160,22 +162,25 @@ export default {
 			})
       this.loading = false
       if(data.success) {
-				this.items = data.result.items
-				this.totalItems = data.result.totalItems
+				this.items = data.result.items.map(i => {
+          i.network = i.is_evm ? 'evm' : 'non-evm'
+          return i
+        })
+				this.totalItems = data.result.total
       }
     },
 
     async editItem(item = null) {
+      console.log(item)
       this.dialog = true
       if(item) {
         this.form.id = item.id
         this.form.label = item.label
-        this.form.wallet = item.wallet
+        this.form.address = item.address
         this.form.network = item.network
-        this.form.entity_uuid = item.entity_uuid
         this.form.description = item.description
-        // this.searchEntityInput = item.entity
-        this.entitiesList = [{value: item.entity_uuid, title: item.entity}]
+        this.form.entity_uuid = item.entity_uuid
+        this.entitiesList = item.entity_uuid ? [{value: item.entity_uuid, title: item.entity_name}] : []
       } else {
         await this.$nextTick(() => this.$refs.form.reset()) // resetValidation()
         this.form.network = 'evm' // default
@@ -186,10 +191,6 @@ export default {
       const { valid } = await this.$refs.form.validate()
       if(!valid) return false
 
-      if(false) {
-        this.showAlert('error text')
-        return
-      }
       this.dialogLoader = true
       const { data } = await savePrivateTag(this.form)
       this.dialogLoader = false
@@ -202,15 +203,16 @@ export default {
     },
 
     async onEntitySearch(query) {
-      console.log('search', query)
-      if(query.trim().length <= 2) {
-        this.entitiesList = []
-        return
-      }
+      // console.log('search', query)
+      if(query.trim().length <= 2) return
+
       const { data } = await searchEntities(query)
       if(data.success) {
-        this.entitiesList = data.result.items.map(i => ({value: i.uuid, title: i.name})) // [{value: 1, title: 'Binance'}, {value: 2, title: 'My Entity'}]
-        // this.searchEntityInput = query
+        this.entitiesList = data.result.items.map(i => ({
+          value: i.uuid,
+          title: i.name,
+          props: { subtitle: i.owner === 'user' ? ' Private Entity' : ''}
+        })) // [{value: 1, title: 'Binance'}, {value: 2, title: 'My Entity'}]
       }
     },
 

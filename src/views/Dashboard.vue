@@ -8,7 +8,7 @@
 			<div class="v-col-auto">
 				<v-select v-model="activeDashSelect" :items="parsedItems" :loading="loading" :disabled="loading || !activeDashSelect" hide-no-data
 					density="compact" variant="outlined" hide-details class="va-middle d-inline-block" />
-				<v-btn color="white" variant="outlined" @click="editDashboard" :disabled="currentIsDefault || loading || !activeDashSelect" prepend-icon="mdi-pencil" class="text-none mx-3">Edit</v-btn>
+				<v-btn color="white" variant="outlined" @click="editDashboard()" :disabled="currentIsDefault || loading || !activeDashSelect" prepend-icon="mdi-pencil" class="text-none mx-3">Edit</v-btn>
 				<v-btn color="text-grey-lighten-1" variant="outlined" @click="addDashboard" :disabled="loading" class="text-none" prepend-icon="mdi-plus">Dashboard</v-btn>
 			</div>
 		</div>

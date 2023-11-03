@@ -251,42 +251,7 @@ export const fetchAddress = async (id) => {
 }
 
 export const fetchPrivateLabels = async (payload) => {
-  // return await axios.post(`private-labels`, payload);
-  await delay(500)
-  return { data: {
-    success: true, result: {
-      totalItems: 1,
-      items: [
-        {
-          label: 'My Label 1',
-          wallet: '0x0000000000000000000000000000000000000000',
-          network: 'evm',
-          entity: 'Binance',
-          entity_uuid: 1,
-          tags: 'Bot',
-          global_label: 'Qwerty'
-        },
-        {
-          label: 'My Label 2',
-          wallet: '0x0000000000000000000000000000000000000000',
-          network: 'bitcoin',
-          entity: 'My Entity',
-          entity_uuid: 2,
-          tags: 'Bot, MM',
-          global_label: ''
-        },
-        {
-          label: 'My Label 3',
-          wallet: '0x0000000000000000000000000000000000000000',
-          network: 'evm',
-          entity: '',
-          entity_uuid: null,
-          tags: '',
-          global_label: 'Bittrex'
-        },
-      ]
-    }
-  }}
+  return await axios.post(`xhr/private/labels`, payload);
 }
 export const savePrivateTag = async (payload) => {
   const isEdit = !!payload.id
@@ -314,6 +279,10 @@ export const fetchPrivateEntities = async (payload) => {
   //       },
   //     ]
   // }}
+}
+
+export const getPrivateEntity = async (uuid) => {
+  return await axios.get(`xhr/private/entities/${uuid}`);
 }
 
 export const saveEntity = async (payload) => {
