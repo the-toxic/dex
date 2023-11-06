@@ -253,11 +253,11 @@ export const fetchAddress = async (id) => {
 export const fetchPrivateLabels = async (payload) => {
   return await axios.post(`xhr/private/labels`, payload);
 }
-export const savePrivateTag = async (payload) => {
+export const savePrivateLabel = async (payload) => {
   const isEdit = !!payload.id
-  // return await axios.post(`private-tag${isEdit ? '/'+payload.id : '' }`, payload);
-  await delay(500)
-  return { data: { success: true, result: {} }}
+  return await axios.post(`xhr/private/label/save${isEdit ? '/'+payload.id : '' }`, payload);
+  // await delay(500)
+  // return { data: { success: true, result: {} }}
 }
 
 export const searchEntities = async (query) => {
@@ -285,8 +285,8 @@ export const getPrivateEntity = async (uuid) => {
   return await axios.get(`xhr/private/entities/${uuid}`);
 }
 
-export const saveEntity = async (payload) => {
-  const isEdit = payload.uuid.length
+export const savePrivateEntity = async (payload) => {
+  const isEdit = !!payload.uuid
   return await axios.post(`entity${isEdit ? '/'+payload.uuid : '' }`, payload);
 }
 export const removeEntity = async (uuid) => {

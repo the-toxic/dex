@@ -19,6 +19,15 @@ export const passwordRules = [
   v => !!v || 'Field is required',
   v => /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])[\w~!?.,@#$%^&*=+-]{6,25}$/.test(v) || 'Password must be at least one lowercase letter, uppercase letter and number. 6 - 25 characters',
 ]
+export const chainTypeWalletRules = chainType => [
+  v => chainType !== 'EVM' || /^0x[0-9a-fA-F]{40}$/g.test(v) || 'Invalid EVM format, check length and lower/upper-case',
+  v => chainType !== 'Bitcoin' || /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/g.test(v) || /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/g.test(v) || 'Invalid Bitcoin format, check length and lower/upper-case',
+  v => chainType !== 'Tron' || /^T[A-Za-z1-9]{33}$/g.test(v) || 'Invalid Tron format, check length and lower/upper-case',
+  v => chainType !== 'Solana' || /^[1-9A-HJ-NP-Za-km-z]{32,44}$/g.test(v) || 'Invalid Solana format, check length and lower/upper-case',
+  v => chainType !== 'Dash' || /X[1-9A-HJ-NP-Za-km-z]{33}$/g.test(v) || 'Invalid Dash format, check length and lower/upper-case',
+  v => chainType !== 'Litecoin' || /^([LM3][a-km-zA-HJ-NP-Z1-9]{26,33}|ltc1[a-z0-9]{39,59})$/.test(v) || 'Invalid Litecoin format, check length and lower/upper-case',
+  v => chainType !== 'Dogecoin' || /^D[5-9A-HJ-NP-U][1-9A-HJ-NP-Za-km-z]{32}$/.test(v) || 'Invalid Dogecoin format, check length and lower/upper-case',
+]
 /*export const urlRules = [
   v => !!v || 'Field is required',
   v => urlRegex.test(v) || 'Invalid site address',

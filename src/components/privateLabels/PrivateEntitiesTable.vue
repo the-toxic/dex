@@ -49,7 +49,15 @@
           <div v-for="(wallet, idx) in form.wallets" :key="idx"
              class="v-row v-row--no-gutters justify-space-between align-center mb-6 mb-md-1">
 
-            <div v-if="wallet.global_label" class="v-col-12 mb-1"><span class="text-disabled">Global Label:</span> {{ wallet.global_label }}</div>
+            <div class="v-col-12 mb-1">
+              <div class="d-flex justify-space-between align-center">
+                <div><template v-if="wallet.global_label"><span class="text-disabled">Global Label:</span> {{ wallet.global_label }}</template></div>
+                <div>
+                  <v-btn v-if="!wallet.is_deleted" @click="removeWallet(wallet)" icon="mdi-close" color="error" variant="text" size="small" density="comfortable" class="" />
+                  <v-btn v-else @click="wallet.is_deleted = 0" icon="mdi-restore" color="error" variant="text" size="small" density="comfortable" class="" />
+                </div>
+              </div>
+            </div>
 
             <div class="v-col-12 v-col-md-3">
               <v-text-field label="My Label" v-model="wallet.local_label" placeholder="Custom name" density="compact" :disabled="!!wallet.is_deleted" :rules="[v => !v || v.length < 64 || 'Max length 64 chars']" />
@@ -62,10 +70,11 @@
                   v => form.network !== 'bitcoin' || /^[0-9a-z]{26,35}$/i.test(v) || 'Invalid Bitcoin format',
                 ]" />
             </div>
-            <div class="v-col-12 v-col-md">
-              <v-btn variant="outlined" color="white" rounded class="mt-n5" size="small" :disabled="!!wallet.is_deleted">EVM</v-btn>
-              <v-btn v-if="!wallet.is_deleted" @click="removeWallet(wallet)" icon="mdi-close" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />
-              <v-btn v-else @click="wallet.is_deleted = 0" icon="mdi-restore" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />
+            <div class="v-col-12 v-col-md-2">
+<!--              <v-btn variant="outlined" color="white" rounded class="mt-n5" size="small">EVM</v-btn>-->
+              <v-select label="Network" v-model="form.chain_type" :items="chainTypes" density="compact" :disabled="!!wallet.is_deleted" class="flex-grow-0" />
+<!--              <v-btn v-if="!wallet.is_deleted" @click="removeWallet(wallet)" icon="mdi-close" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />-->
+<!--              <v-btn v-else @click="wallet.is_deleted = 0" icon="mdi-restore" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />-->
             </div>
             <div v-if="wallet.tags.length" class="v-col-12 mb-4">
               <v-select label="Tags" :items="wallet.tags" :model-value="wallet.tags.map(i => i.id)" chips multiple
@@ -99,10 +108,10 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { fetchPrivateEntities, getPrivateEntity, saveEntity } from "@/api";
+import { fetchPrivateEntities, getPrivateEntity, savePrivateEntity } from "@/api";
 import { API_DOMAIN, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 
 export default {
@@ -153,6 +162,9 @@ export default {
 			this.debouncedFn()
 		},
 	},
+  computed: {
+    ...mapState(useMainStore, {chainTypes: 'chainTypes'})
+  },
   methods: {
 		shortAddress,
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),
@@ -174,7 +186,8 @@ export default {
 
     async editItem(item = null) {
       this.dialog = true
-      await this.$nextTick(() => this.$refs.form.reset()) // or resetValidation()
+      await this.$nextTick(() => this.$refs.form.reset()) // or resetValidation() // cleat only v-model fields: name
+      this.form.uuid = null
       this.form.wallets = []
 
       if(item) {
@@ -216,7 +229,7 @@ export default {
         return
       }
       this.dialogLoader = true
-      const { data } = await saveEntity(this.form)
+      const { data } = await savePrivateEntity(this.form)
       this.dialogLoader = false
 
       if(data.success) {

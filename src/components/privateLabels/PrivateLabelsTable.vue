@@ -1,11 +1,14 @@
 <template>
 
-  <div class="d-flex justify-space-between align-center flex-wrap px-4 py-2 border-b" style="background: #141d26">
+  <div class="d-flex justify-space-between align-center flex-wrap px-4 py-4 border-b" style="background: #141d26">
     <v-btn @click="editItem()" variant="tonal" prepend-icon="mdi-plus" color="success" rounded class="text-none" >Add Label</v-btn>
     <v-spacer />
-    <v-switch label="Only EVM" v-model="filter.network" true-value="evm" false-value="" hide-details color="primary" class="flex-grow-0" />
+    <div style="width: 115px;">
+      <v-select label="Network" v-model="filter.chain_type" hide-details variant="outlined" rounded density="compact"
+        :items="['All', ...chainTypes, 'Unknown']" />
+    </div>
     <div style="width: 280px;">
-      <v-text-field v-model="filter.search" label="Search" placeholder="Labels, addresses, entities, e.g." rounded variant="outlined"
+      <v-text-field v-model="filter.search" label="Search" placeholder="Label, address, entity, e.g." rounded variant="outlined"
         persistent-placeholder density="compact" prepend-inner-icon="mdi-magnify" hide-details  clearable @click:clear="filter.search = ''" class="ml-4"/>
     </div>
   </div>
@@ -26,7 +29,7 @@
     <template v-slot:item.local_label="{ item }">{{ item.local_label ? item.local_label : '&mdash;' }}</template>
     <template v-slot:item.global_label="{ item }">{{ item.global_label ? item.global_label : '&mdash;' }}</template>
     <template v-slot:item.address="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn></template>
-    <template v-slot:item.network="{ item }"><v-chip color="secondary" class="text-capitalize" size="small">{{ item.network }}</v-chip></template>
+    <template v-slot:item.chain_type="{ item }"><v-chip color="secondary" class="text-capitalize" size="small">{{ item.chain_type }}</v-chip></template>
     <template v-slot:item.entity_name="{ item }">{{ item.entity_name ? item.entity_name : '&mdash;' }}</template>
     <template v-slot:item.tags="{ item }"><span v-if="!item.tags.length">&mdash;</span><div v-else class="overflow-x-auto text-no-wrap mx-auto" style="width: 300px"><v-chip v-for="i in item.tags" color="white" class="mr-1 my-1" size="small" :text="i.tag" /></div></template>
     <template v-slot:item.action="{ item }">
@@ -40,17 +43,15 @@
       <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
         <v-card-title class="mb-3 pt-7" style="font-size: 25px;">Label Editor</v-card-title>
         <v-card-text>
-          <v-text-field label="Label*" v-model="form.label" placeholder="Custom name"
+          <v-text-field label="Label*" v-model="form.local_label" placeholder="Custom name"
             :rules="[v => !v || v.length < 64 || 'Max length 64 chars']" />
 
-          <v-select label="Network*" v-model="form.network" class="mt-2"
-            :items="[{value: 'evm', title: 'EVM'}, {value: 'bitcoin', title: 'Bitcoin'}]"></v-select>
+          <v-select label="Network*" v-model="form.chain_type" class="mt-2" :items="chainTypes"></v-select>
 
-          <v-text-field label="Address*" :placeholder="form.network === 'evm' ? '0x...' : ''"  v-model="form.address"  counter
+          <v-text-field label="Address*" :placeholder="form.chain_type === 'EVM' ? '0x...' : ''"  v-model="form.address"  counter
             :rules="[
               v => !!v || 'Required field',
-              v => form.network !== 'evm' || /^(0x)?[0-9a-f]{40}$/i.test(v) || 'Invalid EVM format',
-              v => form.network !== 'bitcoin' || /^[0-9a-z]{26,35}$/i.test(v) || 'Invalid Bitcoin format',
+              ...chainTypeWalletRules(form.chain_type)
             ]" />
 
           <v-autocomplete label="Entity" v-model="form.entity_uuid" placeholder="Type more 3 chars for search"
@@ -83,17 +84,17 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { fetchPrivateLabels, savePrivateTag, searchEntities } from "@/api";
-import { API_DOMAIN, shortAddress } from "@/helpers/mixins";
+import { fetchPrivateLabels, savePrivateLabel, searchEntities } from "@/api";
+import { API_DOMAIN, chainTypeWalletRules, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 
 export default {
   name: 'PrivateLabelsTable',
   components: { VDataTableServer },
   data() { return {
-		API_DOMAIN,
+		API_DOMAIN, chainTypeWalletRules,
     loading: false,
     per_page: 25,
 		page: 1,
@@ -101,7 +102,7 @@ export default {
     headers: [
       { title: 'Address', key: 'address', align: 'center', sortable: false },
       { title: 'Label', key: 'local_label', align: 'center', sortable: false },
-      { title: 'Network', key: 'network', align: 'center', sortable: false },
+      { title: 'Network', key: 'chain_type', align: 'center', sortable: false },
       { title: 'Entity', key: 'entity_name', align: 'center', sortable: false },
       { title: 'Tags', key: 'tags', align: 'center', sortable: false, width: 300 },
       { title: 'Global Label', key: 'global_label', align: 'center', sortable: false },
@@ -111,7 +112,7 @@ export default {
     totalItems: 999,
 		filter: {
       search: '',
-			network: ''
+			chain_type: 'All'
 		},
 
     dialog: false,
@@ -119,9 +120,9 @@ export default {
     valid: true,
     form: {
       id: null,
-      label: '',
+      local_label: '',
       address: '',
-      network: '',
+      chain_type: '',
       entity_uuid: '',
       description: '',
     },
@@ -143,10 +144,13 @@ export default {
 		'filter.search'(newVal) {
 			this.debouncedFn()
 		},
-    'filter.network'(newVal, oldVal) {
+    'filter.chain_type'(newVal, oldVal) {
       this.loadItems()
     },
 	},
+  computed: {
+    ...mapState(useMainStore, {chainTypes: 'chainTypes'})
+  },
   methods: {
 		shortAddress,
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),
@@ -155,35 +159,32 @@ export default {
       this.loading = true
       const { data } = await fetchPrivateLabels({
 				search: this.filter.search.trim(),
-        network: this.filter.network,
+        chain_type: this.filter.chain_type,
 				page: this.page,
         per_page: this.per_page,
 				sortBy: this.sortBy,
 			})
       this.loading = false
       if(data.success) {
-				this.items = data.result.items.map(i => {
-          i.network = i.is_evm ? 'evm' : 'non-evm'
-          return i
-        })
+				this.items = data.result.items
 				this.totalItems = data.result.total
       }
     },
 
     async editItem(item = null) {
-      console.log(item)
       this.dialog = true
       if(item) {
         this.form.id = item.id
-        this.form.label = item.label
+        this.form.local_label = item.local_label
         this.form.address = item.address
-        this.form.network = item.network
+        this.form.chain_type = item.chain_type
         this.form.description = item.description
         this.form.entity_uuid = item.entity_uuid
         this.entitiesList = item.entity_uuid ? [{value: item.entity_uuid, title: item.entity_name}] : []
       } else {
         await this.$nextTick(() => this.$refs.form.reset()) // resetValidation()
-        this.form.network = 'evm' // default
+        this.form.id = null
+        this.form.chain_type = 'EVM' // default
         this.entitiesList = []
       }
     },
@@ -192,7 +193,7 @@ export default {
       if(!valid) return false
 
       this.dialogLoader = true
-      const { data } = await savePrivateTag(this.form)
+      const { data } = await savePrivateLabel(this.form)
       this.dialogLoader = false
 
       if(data.success) {
