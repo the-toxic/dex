@@ -254,8 +254,7 @@ export const fetchPrivateLabels = async (payload) => {
   return await axios.post(`xhr/private/labels`, payload);
 }
 export const savePrivateLabel = async (payload) => {
-  const isEdit = !!payload.id
-  return await axios.post(`xhr/private/label/save${isEdit ? '/'+payload.id : '' }`, payload);
+  return await axios.post(`xhr/private/label/save`, payload);
   // await delay(500)
   // return { data: { success: true, result: {} }}
 }
@@ -286,8 +285,11 @@ export const getPrivateEntity = async (uuid) => {
 }
 
 export const savePrivateEntity = async (payload) => {
-  const isEdit = !!payload.uuid
-  return await axios.post(`entity${isEdit ? '/'+payload.uuid : '' }`, payload);
+  const isEdit = !!payload.has('uuid') && payload.get('uuid') !== 'null'
+
+  return await axios.post(`entity${isEdit ? '/'+payload.get('uuid') : '' }`, payload, {
+    headers: { "Content-Type": "multipart/form-data" } // for send file
+  });
 }
 export const removeEntity = async (uuid) => {
   return await axios.delete(`entity/${uuid}`);

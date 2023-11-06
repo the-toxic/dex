@@ -124,7 +124,7 @@ $primaryFont: sans-serif;
   line-height: 0;
   img {
     vertical-align: middle;
-    height: 26px;
+    height: 32px;
     //@media all and (max-width: 959px){
     //  height: 38px;
     //}
@@ -267,6 +267,10 @@ $primaryFont: sans-serif;
   padding: 5px 15px;
 }
 
+.v-data-table-footer .v-field__outline__start,
+.v-data-table-footer .v-field__outline__end {
+  border: 0 !important;
+}
 .v-data-table__th--sortable > .v-data-table-header__content {
   margin-right: -24px;
 }

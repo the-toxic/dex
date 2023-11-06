@@ -98,8 +98,8 @@ export function httpInt() {
         if(data.detail[0].type === 'value_error.missing') {
           await mainStore().showAlert('Internal error [Invalid params]')
         } else {
-          let field = data.detail[0].loc[1].split('_').join(' ')
-          field = field.charAt(0).toUpperCase() + field.slice(1)
+          let field = data.detail[0].loc[1]?.split('_').join(' ')
+          field = !field ? 'Error' : field.charAt(0).toUpperCase() + field.slice(1)
           const msg = field + ': ' + data.detail[0].msg
           await mainStore().showAlert({msg, color: 'error'})
         }

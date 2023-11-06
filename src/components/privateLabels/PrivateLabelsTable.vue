@@ -25,10 +25,11 @@
     :loading="loading"
     class="elevation-1 fs14"
     @update:options="loadItems"
+    :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
+    <template v-slot:item.address="{ item }"><v-btn @click="$clipboard(item.address)" rounded variant="text" :title="item.address" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn></template>
     <template v-slot:item.local_label="{ item }">{{ item.local_label ? item.local_label : '&mdash;' }}</template>
     <template v-slot:item.global_label="{ item }">{{ item.global_label ? item.global_label : '&mdash;' }}</template>
-    <template v-slot:item.address="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn></template>
     <template v-slot:item.chain_type="{ item }"><v-chip color="secondary" class="text-capitalize" size="small">{{ item.chain_type }}</v-chip></template>
     <template v-slot:item.entity_name="{ item }">{{ item.entity_name ? item.entity_name : '&mdash;' }}</template>
     <template v-slot:item.tags="{ item }"><span v-if="!item.tags.length">&mdash;</span><div v-else class="overflow-x-auto text-no-wrap mx-auto" style="width: 300px"><v-chip v-for="i in item.tags" color="white" class="mr-1 my-1" size="small" :text="i.tag" /></div></template>
@@ -94,9 +95,9 @@ export default {
   name: 'PrivateLabelsTable',
   components: { VDataTableServer },
   data() { return {
-		API_DOMAIN, chainTypeWalletRules,
+		API_DOMAIN,
     loading: false,
-    per_page: 25,
+    per_page: 20,
 		page: 1,
 		sortBy: [{key: 'date', order: 'desc'}],
     headers: [
@@ -152,7 +153,7 @@ export default {
     ...mapState(useMainStore, {chainTypes: 'chainTypes'})
   },
   methods: {
-		shortAddress,
+		shortAddress, chainTypeWalletRules,
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),
 
 		async loadItems () {

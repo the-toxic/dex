@@ -26,7 +26,7 @@
 			<template v-slot:prepend>
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
           <div class="logoBox ml-4 mr-8" @click="navigate">
-            <img src="@/assets/HAZB.svg" alt="Logo" />
+            <img src="@/assets/logo.png" alt="Logo" />
           </div>
         </router-link>
       </template>

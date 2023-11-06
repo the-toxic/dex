@@ -19,6 +19,7 @@
     :loading="loading"
     class="elevation-1 fs14"
     @update:options="loadItems"
+    :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
     <template v-slot:item.uuid="{ item }"><v-btn @click="$clipboard(item.uuid)" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn></template>
     <template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
@@ -36,8 +37,18 @@
         <v-card-text>
           <v-text-field label="Entity Name*" v-model="form.name" class="mb-2" :rules="[v => !!v || 'Required field']" density="compact" />
 
-          <v-file-input label="Upload Icon" accept="image/*" show-size clearable prepend-inner-icon="mdi-account-box-outline" prepend-icon=""
-            :rules="[v => !v || !v.length || v[0].size < 500_000 || 'Image size should be less than 500kB!']"></v-file-input>
+          <div class="bg-surface-variant float-right d-flex align-center rounded ml-2" style="width: 56px; height: 56px">
+            <img ref="touchImageRef" v-show="form.file && form.file.length" style="max-width: 100%; max-height: 100%" />
+            <v-img v-show="!form.file || !form.file.length" :src="iconPath" width="56" height="56">
+              <!-- <template v-slot:error>?</template>-->
+              <template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
+                <v-icon icon="mdi-help-rhombus-outline" size="xx-large" />
+              </div></template>
+            </v-img>
+          </div>
+
+          <v-file-input label="Upload Icon" v-model="form.file" accept="image/*"  prepend-inner-icon="mdi-account-box-outline" prepend-icon=""
+            show-size clearable :rules="[v => !v || !v.length || v[0].size < 500_000 || 'Image size should be less than 500kB!']"></v-file-input>
 
           <v-divider />
           <div class="d-flex justify-space-between align-center mt-4 mb-4">
@@ -63,16 +74,15 @@
               <v-text-field label="My Label" v-model="wallet.local_label" placeholder="Custom name" density="compact" :disabled="!!wallet.is_deleted" :rules="[v => !v || v.length < 64 || 'Max length 64 chars']" />
             </div>
             <div class="v-col-12 v-col-md-7">
-              <v-text-field label="Address*" placeholder="0x..."  v-model="wallet.address" class="mx-md-3" density="compact" :disabled="!!wallet.is_deleted"
+              <v-text-field label="Address*" :placeholder="wallet.chain_type === 'EVM' ? '0x...' : ''"  v-model="wallet.address" class="mx-md-3" density="compact" :disabled="!!wallet.is_deleted"
                 :rules="[
                   v => !!v || 'Required field',
-                  v => form.network !== 'evm' || /^(0x)?[0-9a-f]{40}$/i.test(v) || 'Invalid EVM format',
-                  v => form.network !== 'bitcoin' || /^[0-9a-z]{26,35}$/i.test(v) || 'Invalid Bitcoin format',
+                  ...chainTypeWalletRules(wallet.chain_type)
                 ]" />
             </div>
             <div class="v-col-12 v-col-md-2">
 <!--              <v-btn variant="outlined" color="white" rounded class="mt-n5" size="small">EVM</v-btn>-->
-              <v-select label="Network" v-model="form.chain_type" :items="chainTypes" density="compact" :disabled="!!wallet.is_deleted" class="flex-grow-0" />
+              <v-select label="Network" v-model="wallet.chain_type" :items="chainTypes" density="compact" :disabled="!!wallet.is_deleted" class="flex-grow-0" />
 <!--              <v-btn v-if="!wallet.is_deleted" @click="removeWallet(wallet)" icon="mdi-close" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />-->
 <!--              <v-btn v-else @click="wallet.is_deleted = 0" icon="mdi-restore" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />-->
             </div>
@@ -109,7 +119,7 @@
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchPrivateEntities, getPrivateEntity, savePrivateEntity } from "@/api";
-import { API_DOMAIN, shortAddress } from "@/helpers/mixins";
+import { API_DOMAIN, chainTypeWalletRules, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import { mapActions, mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
@@ -120,7 +130,7 @@ export default {
   data() { return {
 		API_DOMAIN,
     loading: false,
-    per_page: 10,
+    per_page: 20,
 		page: 1,
 		sortBy: [{key: 'id', order: 'desc'}],
 		network: 'bsc', // ether | bsc
@@ -142,6 +152,7 @@ export default {
     form: {
       uuid: '',
       name: '',
+      file: null,
       wallets: []
     },
 
@@ -161,11 +172,24 @@ export default {
 		'filter.search'(newVal) {
 			this.debouncedFn()
 		},
+    'form.file'(newVal, oldVal) {
+      if(newVal && newVal.length) {
+        console.log(newVal[0])
+        this.$refs['touchImageRef'].src = URL.createObjectURL(this.form.file[0])
+      } else if('src' in this.$refs['touchImageRef']){
+        URL.revokeObjectURL(this.$refs['touchImageRef'].src)
+        this.$refs['touchImageRef'].src = ''
+      }
+    }
 	},
   computed: {
-    ...mapState(useMainStore, {chainTypes: 'chainTypes'})
+    ...mapState(useMainStore, {chainTypes: 'chainTypes'}),
+    iconPath() {
+      return this.form.uuid ? API_DOMAIN + `/images/entities/${this.form.uuid}.png` : ''
+    }
   },
   methods: {
+    chainTypeWalletRules,
 		shortAddress,
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),
 
@@ -229,7 +253,15 @@ export default {
         return
       }
       this.dialogLoader = true
-      const { data } = await savePrivateEntity(this.form)
+
+      const formData = new FormData();
+      formData.append("uuid", this.form.uuid);
+      formData.append("name", this.form.name);
+      formData.append("wallets", JSON.stringify(this.form.wallets));
+      if(this.form.file && this.form.file.length)
+        formData.append("file", this.form.file[0]);
+
+      const { data } = await savePrivateEntity(formData)
       this.dialogLoader = false
 
       if(data.success) {
