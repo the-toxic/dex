@@ -5,7 +5,7 @@
     <v-spacer />
     <div style="width: 115px;">
       <v-select label="Network" v-model="filter.chain_type" hide-details variant="outlined" rounded density="compact"
-        :items="['All', ...chainTypes, 'Unknown']" />
+        :items="['All', ...chainTypes]" />
     </div>
     <div style="width: 280px;">
       <v-text-field v-model="filter.search" label="Search" placeholder="Label, address, entity, e.g." rounded variant="outlined"
@@ -58,7 +58,7 @@
           <v-autocomplete label="Entity" v-model="form.entity_uuid" placeholder="Type more 3 chars for search"
             @update:search="onEntitySearch" :items="entitiesList" clearable no-filter class="mt-2"></v-autocomplete>
 
-          <v-textarea label="Description" v-model="form.description" rows="2" :rules="[v => !v || v.length <= 1000 || 'Max length is 1000 chars']" class="mt-2" />
+          <v-textarea label="Note" v-model="form.description" rows="2" :rules="[v => !v || v.length <= 1000 || 'Max length is 1000 chars']" class="mt-2" />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -96,6 +96,7 @@ export default {
   components: { VDataTableServer },
   data() { return {
 		API_DOMAIN,
+    IS_DEBUG: 0,
     loading: false,
     per_page: 20,
 		page: 1,
@@ -105,8 +106,6 @@ export default {
       { title: 'Label', key: 'local_label', align: 'center', sortable: false },
       { title: 'Network', key: 'chain_type', align: 'center', sortable: false },
       { title: 'Entity', key: 'entity_name', align: 'center', sortable: false },
-      { title: 'Tags', key: 'tags', align: 'center', sortable: false, width: 300 },
-      { title: 'Global Label', key: 'global_label', align: 'center', sortable: false },
       { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
     items: [],
@@ -137,6 +136,12 @@ export default {
     },
   }},
 	async created() {
+    if('debug' in this.$route.query) this.IS_DEBUG = 1
+    if(this.IS_DEBUG) {
+      this.headers.push({ title: 'Tags', key: 'tags', align: 'center', sortable: false, width: 300 })
+      this.headers.push({ title: 'Global Label', key: 'global_label', align: 'center', sortable: false })
+    }
+
 		this.debouncedFn = useDebounceFn(async () => {
 			await this.loadItems()
 		}, 500)
@@ -164,6 +169,8 @@ export default {
 				page: this.page,
         per_page: this.per_page,
 				sortBy: this.sortBy,
+        debug: this.IS_DEBUG,
+        is_unused: 0
 			})
       this.loading = false
       if(data.success) {
@@ -205,7 +212,6 @@ export default {
     },
 
     async onEntitySearch(query) {
-      // console.log('search', query)
       if(query.trim().length <= 2) return
 
       const { data } = await searchEntities(query)
@@ -214,7 +220,7 @@ export default {
           value: i.uuid,
           title: i.name,
           props: { subtitle: i.owner === 'user' ? ' Private Entity' : ''}
-        })) // [{value: 1, title: 'Binance'}, {value: 2, title: 'My Entity'}]
+        }))
       }
     },
 

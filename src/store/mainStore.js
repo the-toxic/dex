@@ -15,7 +15,7 @@ export const useMainStore = defineStore('main', {
     searchDialog: false,
     dialog: false,
     chains: null,
-    chainTypes: ['EVM', 'Bitcoin', 'Tron', 'Solana', 'Dash', 'Litecoin', 'Dogecoin'],
+    chainTypes: ['EVM', 'Tron', 'Bitcoin', 'Other'], // 'Solana', 'Dash', 'Litecoin', 'Dogecoin'
     // subscribeForm: false,
     showCookie: showCookiePopup,
 	}),

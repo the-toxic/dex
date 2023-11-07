@@ -4,7 +4,7 @@
     <v-btn @click="editItem()" variant="tonal" prepend-icon="mdi-plus" color="success" rounded class="text-none" >Add Entity</v-btn>
     <v-spacer />
     <div style="width: 280px;">
-      <v-text-field v-model="filter.search" label="Search" placeholder="Labels, wallets, entities, e.g." rounded variant="outlined"
+      <v-text-field v-model="filter.search" label="Search" placeholder="Entity name, UUID e.g." rounded variant="outlined"
         persistent-placeholder density="compact" prepend-inner-icon="mdi-magnify" hide-details  clearable @click:clear="filter.search = ''" class="ml-4"/>
     </div>
   </div>
@@ -50,48 +50,9 @@
           <v-file-input label="Upload Icon" v-model="form.file" accept="image/*"  prepend-inner-icon="mdi-account-box-outline" prepend-icon=""
             show-size clearable :rules="[v => !v || !v.length || v[0].size < 500_000 || 'Image size should be less than 500kB!']"></v-file-input>
 
-          <v-divider />
-          <div class="d-flex justify-space-between align-center mt-4 mb-4">
-            <h4 class="fs16">Wallets</h4>
-            <v-btn @click="addEmptyWallet" rounded variant="tonal" size="small" class="text-none" prepend-icon="mdi-wallet-plus-outline">Add Wallet</v-btn>
-          </div>
-          <div v-if="!form.wallets.length">Please click button "Add Wallet"</div>
+          <v-autocomplete label="Private Labels" v-model="form.wallets" multiple chips closable-chips return-object placeholder="Type more 3 chars for search"
+            @update:search="onLabelSearch" :items="labelsList" :loading="labelsLoading" no-filter class="mt-2"></v-autocomplete>
 
-          <div v-for="(wallet, idx) in form.wallets" :key="idx"
-             class="v-row v-row--no-gutters justify-space-between align-center mb-6 mb-md-1">
-
-            <div class="v-col-12 mb-1">
-              <div class="d-flex justify-space-between align-center">
-                <div><template v-if="wallet.global_label"><span class="text-disabled">Global Label:</span> {{ wallet.global_label }}</template></div>
-                <div>
-                  <v-btn v-if="!wallet.is_deleted" @click="removeWallet(wallet)" icon="mdi-close" color="error" variant="text" size="small" density="comfortable" class="" />
-                  <v-btn v-else @click="wallet.is_deleted = 0" icon="mdi-restore" color="error" variant="text" size="small" density="comfortable" class="" />
-                </div>
-              </div>
-            </div>
-
-            <div class="v-col-12 v-col-md-3">
-              <v-text-field label="My Label" v-model="wallet.local_label" placeholder="Custom name" density="compact" :disabled="!!wallet.is_deleted" :rules="[v => !v || v.length < 64 || 'Max length 64 chars']" />
-            </div>
-            <div class="v-col-12 v-col-md-7">
-              <v-text-field label="Address*" :placeholder="wallet.chain_type === 'EVM' ? '0x...' : ''"  v-model="wallet.address" class="mx-md-3" density="compact" :disabled="!!wallet.is_deleted"
-                :rules="[
-                  v => !!v || 'Required field',
-                  ...chainTypeWalletRules(wallet.chain_type)
-                ]" />
-            </div>
-            <div class="v-col-12 v-col-md-2">
-<!--              <v-btn variant="outlined" color="white" rounded class="mt-n5" size="small">EVM</v-btn>-->
-              <v-select label="Network" v-model="wallet.chain_type" :items="chainTypes" density="compact" :disabled="!!wallet.is_deleted" class="flex-grow-0" />
-<!--              <v-btn v-if="!wallet.is_deleted" @click="removeWallet(wallet)" icon="mdi-close" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />-->
-<!--              <v-btn v-else @click="wallet.is_deleted = 0" icon="mdi-restore" color="error" variant="text" size="small" density="comfortable" class="mt-n5 ml-4" />-->
-            </div>
-            <div v-if="wallet.tags.length" class="v-col-12 mb-4">
-              <v-select label="Tags" :items="wallet.tags" :model-value="wallet.tags.map(i => i.id)" chips multiple
-                item-title="tag" item-value="id" variant="outlined" density="comfortable" readonly hide-details />
-            </div>
-            <v-divider class="mb-2" />
-          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -118,8 +79,8 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { fetchPrivateEntities, getPrivateEntity, removePrivateEntity, savePrivateEntity } from "@/api";
-import { API_DOMAIN, chainTypeWalletRules, shortAddress } from "@/helpers/mixins";
+import { fetchPrivateEntities, fetchPrivateLabels, getPrivateEntity, removePrivateEntity, savePrivateEntity } from "@/api";
+import { API_DOMAIN, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import { mapActions, mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
@@ -129,6 +90,7 @@ export default {
   components: { VDataTableServer },
   data() { return {
 		API_DOMAIN,
+    IS_DEBUG: 0,
     loading: false,
     per_page: 20,
 		page: 1,
@@ -153,8 +115,10 @@ export default {
       uuid: '',
       name: '',
       file: null,
-      wallets: []
+      labels: []
     },
+    labelsList: [],
+    labelsLoading: false,
 
     deleteDialog: false,
     deleteLoading: false,
@@ -164,9 +128,15 @@ export default {
     },
   }},
 	async created() {
+    if('debug' in this.$route.query) this.IS_DEBUG = 1
+
 		this.debouncedFn = useDebounceFn(async () => {
 			await this.loadItems()
 		}, 500)
+
+    this.searchDebouncedFn = useDebounceFn(async (query) => {
+      await this.searchLabels(query)
+    }, 500)
 	},
 	watch: {
 		'filter.search'(newVal) {
@@ -189,7 +159,6 @@ export default {
     }
   },
   methods: {
-    chainTypeWalletRules,
 		shortAddress,
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),
 
@@ -200,6 +169,7 @@ export default {
 				page: this.page,
 				per_page: this.per_page,
 				sortBy: this.sortBy,
+        debug: this.IS_DEBUG
 			})
       this.loading = false
       if(data.success) {
@@ -213,6 +183,7 @@ export default {
       await this.$nextTick(() => this.$refs.form.reset()) // or resetValidation() // cleat only v-model fields: name
       this.form.uuid = null
       this.form.wallets = []
+      this.labelsList = []
 
       if(item) {
         this.dialogLoader = true
@@ -224,43 +195,47 @@ export default {
         }
         this.form.uuid = data.result.entity.uuid
         this.form.name = data.result.entity.name
-        data.result.wallets = data.result.wallets.map(i => {
-          i.is_deleted = 0
-          return i
+        data.result.wallets.forEach(item => {
+          this.form.wallets.push({value: item.id, title: item.local_label, props: { subtitle: item.address}})
+          this.labelsList.push({value: item.id, title: item.local_label, props: { subtitle: item.address}})
         })
-        this.form.wallets = JSON.parse(JSON.stringify(data.result.wallets))
-      } else {
-        this.addEmptyWallet()
       }
     },
-    addEmptyWallet() {
-      this.form.wallets.push({id: 'new', local_label: '', address: '', chain_type: 'EVM', tags: []})
+
+    async onLabelSearch(query) {
+      if(query.trim().length <= 2) return
+      await this.searchDebouncedFn(query)
     },
-    async removeWallet(wallet) {
-      if(wallet.id !== 'new') {
-        wallet.is_deleted = 1
-      } else {
-        this.form.wallets = this.form.wallets.filter(item => item !== wallet)
+    async searchLabels(query) {
+      this.labelsLoading = true
+      const { data } = await fetchPrivateLabels({
+        search: query.trim(),
+        debug: 0,
+        is_unused: 1
+      })
+      this.labelsLoading = false
+
+      if(data.success) {
+        this.labelsList = data.result.items.map(item => ({
+          value: item.id,
+          title: item.local_label || '?',
+          props: { subtitle: item.address}
+        }))
       }
     },
+
     async onSubmit() {
       const { valid } = await this.$refs.form.validate()
       if(!valid) return false
 
-      const wallets = this.form.wallets.filter(i => !i.is_deleted)
-      if(!wallets.length) {
-        this.showAlert('Add at least 1 address')
-        return
-      }
-      this.dialogLoader = true
-
       const formData = new FormData();
       formData.append("uuid", this.form.uuid);
       formData.append("name", this.form.name);
-      formData.append("wallets", JSON.stringify(this.form.wallets));
+      formData.append("wallets", JSON.stringify(this.form.wallets.map(i => i.value)));
       if(this.form.file && this.form.file.length)
         formData.append("file", this.form.file[0]);
 
+      this.dialogLoader = true
       const { data } = await savePrivateEntity(formData)
       this.dialogLoader = false
 

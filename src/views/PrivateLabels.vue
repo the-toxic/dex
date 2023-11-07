@@ -99,114 +99,28 @@
 </template>
 
 <script>
-// import { mapActions } from "pinia";
-// import { shortAddress } from "@/helpers/mixins";
-// import { useMainStore } from "@/store/mainStore";
-// import { fetchPrivateEntities, removeEntity, saveEntity } from "@/api";
 import PrivateLabelsTable from "@/components/privateLabels/PrivateLabelsTable.vue";
 import PrivateEntitiesTable from "@/components/privateLabels/PrivateEntitiesTable.vue";
 
 export default {
-	name: 'PrivateTags',
+	name: 'PrivateLabels',
   components: { PrivateEntitiesTable, PrivateLabelsTable },
-  head: () => ({ title: 'Private Tags' }),
+  head: () => ({ title: 'Private Labels' }),
 	data() { return {
     tab: 'labels', // labels | entities
-		/*loading: true,
-		items: [],
-		dialog: false,
-		dialogLoader: false,
-		valid: true,
-		form: {
-			uuid: '',
-			name: '',
-			addresses: []
-		},
-		dialogDelete: false,
-		deletedId: null*/
 	}},
-	/*created() {
-		this.loadData()
-	},
-	methods: {
-		shortAddress,
-		...mapActions(useMainStore, {showAlert: 'showAlert'}),
-
-		async loadData() {
-			this.loading = true
-			const { data } = await fetchPrivateEntities()
-			this.loading = false
-
-			if(data.success) {
-				this.items = Object.values(data.result)
-			}
-		},
-
-		async editEntity(entity = null) {
-			this.dialog = true
-			if(entity) {
-				this.form.uuid = entity.uuid
-				this.form.name = entity.name
-				entity.addresses = entity.addresses.map(i => {
-					i.is_deleted = 0
-					return i
-				})
-				this.form.addresses = JSON.parse(JSON.stringify(entity.addresses))
-			} else {
-				this.resetForm()
-				this.form.addresses = []
-				this.addEmptyWallet()
-			}
-		},
-		addEmptyWallet() {
-			this.form.addresses.push({id: 'new', label: '', address: ''})
-		},
-		resetForm() {
-			this.$nextTick(() => this.$refs.form.reset()) // resetValidation()
-		},
-		async removeEntity(entity) {
-			this.deletedId = entity.uuid
-			this.dialogDelete = true
-		},
-		async removeWallet(wallet) {
-			if(wallet.id !== 'new') {
-				wallet.is_deleted = 1
-			} else {
-				this.form.addresses = this.form.addresses.filter(item => item !== wallet)
-			}
-		},
-
-		async onSubmit() {
-			const { valid } = await this.$refs.form.validate()
-			if(!valid) return false
-
-			const wallets = this.form.addresses.filter(i => !i.is_deleted)
-			if(!wallets.length) {
-				this.showAlert('Add at least 1 address')
-				return
-			}
-			this.dialogLoader = true
-			const { data } = await saveEntity(this.form)
-			this.dialogLoader = false
-
-			if(data.success) {
-				this.dialog = false
-				this.showAlert({msg: 'Successfully updated', color: 'success'})
-				await this.loadData()
-			}
-		},
-		async onDeleteItem() {
-			this.dialogLoader = true
-			const { data } = await removeEntity(this.deletedId)
-			this.dialogLoader = false
-			this.dialogDelete = false
-			this.deletedId = null
-
-			if(data.success) {
-				this.showAlert({msg: 'Successfully removed', color: 'success'})
-				await this.loadData()
-			}
-		}
-	}*/
+	created() {
+    if(this.$route.hash) {
+      const hash = this.$route.hash.slice(1)
+      if(['labels', 'entities'].includes(hash))
+        this.tab = hash
+    }
+  },
+  watch: {
+    tab(newVal) {
+      console.log('watch tab', newVal)
+      this.$router.replace({...this.$route, hash: '#'+newVal }) // add ...this.$route for save url query on tab change
+    },
+  }
 }
 </script>
