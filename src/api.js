@@ -250,40 +250,27 @@ export const fetchAddress = async (id) => {
   //   return { data: { success: true, result: { type: 'wallet', name: '0x5678', id: '2342-2422-2222-3333', address: '0x5678' } }}
 }
 
+/** Private Labels */
 export const fetchPrivateLabels = async (payload) => {
   return await axios.post(`xhr/private/labels`, payload);
 }
 export const savePrivateLabel = async (payload) => {
   return await axios.post(`xhr/private/label/save`, payload);
-  // await delay(500)
-  // return { data: { success: true, result: {} }}
+}
+export const removePrivateLabel = async (id) => {
+  return await axios.delete(`xhr/private/label/${id}`);
 }
 
-export const searchEntities = async (query) => {
-  return await axios.get(`xhr/search-entity?q=${query}`);
-}
-
+/** Private Entities */
 export const fetchPrivateEntities = async (payload) => {
   return await axios.post(`xhr/private/entities`, payload);
-  // await delay(500)
-  // return { data: {
-  //   success: true, result: [
-  //       {
-  //         name: 'My Entity 1',
-  //         uuid: '1231231231-1231231231-1231231231-123111',
-  //         addresses: [
-  //           {id: 1, label: 'My wallet 1', address: '0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE'},
-  //           {id: 2, label: '', address: '0xDEa42D23ed4C1483bC54F25Ba869f573385606da'}
-  //         ],
-  //       },
-  //     ]
-  // }}
 }
-
 export const getPrivateEntity = async (uuid) => {
   return await axios.get(`xhr/private/entities/${uuid}`);
 }
-
+export const searchEntities = async (query) => {
+  return await axios.get(`xhr/search-entity?q=${query}`);
+}
 export const savePrivateEntity = async (payload) => {
   const isEdit = !!payload.has('uuid') && payload.get('uuid') !== 'null'
 
@@ -291,7 +278,7 @@ export const savePrivateEntity = async (payload) => {
     headers: { "Content-Type": "multipart/form-data" } // for send file
   });
 }
-export const removeEntity = async (uuid) => {
+export const removePrivateEntity = async (uuid) => {
   return await axios.delete(`entity/${uuid}`);
 }
 

@@ -85,7 +85,7 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { fetchPrivateLabels, savePrivateLabel, searchEntities } from "@/api";
+import { fetchPrivateLabels, savePrivateLabel, searchEntities, removePrivateLabel } from "@/api";
 import { API_DOMAIN, chainTypeWalletRules, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import { mapActions, mapState } from "pinia";
@@ -225,7 +225,7 @@ export default {
     },
     async deleteItem () {
       this.deleteLoading = true
-      const { data } = {data: {success: true}} // await deletePrivateTag(this.deletedItem)
+      const { data } = await removePrivateLabel(this.deletedItem.id)
       this.deleteLoading = false
       this.deleteDialog = false
       if (data.success) {

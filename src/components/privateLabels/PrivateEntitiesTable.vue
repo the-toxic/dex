@@ -21,7 +21,7 @@
     @update:options="loadItems"
     :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
-    <template v-slot:item.uuid="{ item }"><v-btn @click="$clipboard(item.uuid)" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn></template>
+    <template v-slot:item.uuid="{ item }"><v-btn @click="$clipboard(item.uuid)" rounded variant="text" density="comfortable" :title="item.uuid" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn></template>
     <template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
     <template v-slot:item.type="{ item }"><v-chip :color="item.type === 'adds' ? 'success':'error'" class="text-uppercase" size="small">{{ item.type }}</v-chip></template>
     <template v-slot:item.action="{ item }">
@@ -37,7 +37,7 @@
         <v-card-text>
           <v-text-field label="Entity Name*" v-model="form.name" class="mb-2" :rules="[v => !!v || 'Required field']" density="compact" />
 
-          <div class="bg-surface-variant float-right d-flex align-center rounded ml-2" style="width: 56px; height: 56px">
+          <div class="bg-blue-grey-darken-4 float-right d-flex align-center rounded ml-2" style="width: 56px; height: 56px">
             <img ref="touchImageRef" v-show="form.file && form.file.length" style="max-width: 100%; max-height: 100%" />
             <v-img v-show="!form.file || !form.file.length" :src="iconPath" width="56" height="56">
               <!-- <template v-slot:error>?</template>-->
@@ -118,7 +118,7 @@
 
 <script>
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
-import { fetchPrivateEntities, getPrivateEntity, savePrivateEntity } from "@/api";
+import { fetchPrivateEntities, getPrivateEntity, removePrivateEntity, savePrivateEntity } from "@/api";
 import { API_DOMAIN, chainTypeWalletRules, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import { mapActions, mapState } from "pinia";
@@ -185,7 +185,7 @@ export default {
   computed: {
     ...mapState(useMainStore, {chainTypes: 'chainTypes'}),
     iconPath() {
-      return this.form.uuid ? API_DOMAIN + `/images/entities/${this.form.uuid}.png` : ''
+      return this.form.uuid ? API_DOMAIN + `/images/entities/${this.form.uuid}.png?v=${Math.round(Math.random() * 10000)}` : ''
     }
   },
   methods: {
@@ -234,7 +234,7 @@ export default {
       }
     },
     addEmptyWallet() {
-      this.form.wallets.push({id: 'new', local_label: '', address: '', tags: []})
+      this.form.wallets.push({id: 'new', local_label: '', address: '', chain_type: 'EVM', tags: []})
     },
     async removeWallet(wallet) {
       if(wallet.id !== 'new') {
@@ -278,7 +278,7 @@ export default {
     },
     async deleteItem () {
       this.deleteLoading = true
-      const { data } = {data: {success: true}} // await deletePrivateEntity(this.deletedItem)
+      const { data } = await removePrivateEntity(this.deletedItem.id)
       this.deleteLoading = false
       this.deleteDialog = false
 
