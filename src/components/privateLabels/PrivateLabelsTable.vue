@@ -27,8 +27,14 @@
     @update:options="loadItems"
     :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
-    <template v-slot:item.address="{ item }"><v-btn @click="$clipboard(item.address)" rounded variant="text" :title="item.address" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn></template>
-    <template v-slot:item.local_label="{ item }">{{ item.local_label ? item.local_label : '&mdash;' }}</template>
+    <template v-slot:item.address="{ item }">
+      <v-btn :to="{name: 'Console'}" rounded variant="text" :title="item.address" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn>
+      <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.address)" />
+    </template>
+    <template v-slot:item.local_label="{ item }">
+      <v-btn v-if="item.local_label" :to="{name: 'Console'}" rounded variant="text" :title="item.local_label" :active="false" class="text-none">{{ item.local_label }}</v-btn>
+      <span v-else>&mdash;</span>
+    </template>
     <template v-slot:item.global_label="{ item }">{{ item.global_label ? item.global_label : '&mdash;' }}</template>
     <template v-slot:item.chain_type="{ item }"><v-chip color="secondary" class="text-capitalize" size="small">{{ item.chain_type }}</v-chip></template>
     <template v-slot:item.entity_name="{ item }">{{ item.entity_name ? item.entity_name : '&mdash;' }}</template>

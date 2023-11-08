@@ -21,7 +21,20 @@
     @update:options="loadItems"
     :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
-    <template v-slot:item.uuid="{ item }"><v-btn @click="$clipboard(item.uuid)" rounded variant="text" density="comfortable" :title="item.uuid" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn></template>
+    <template v-slot:item.uuid="{ item }">
+      <v-btn :to="{name: 'Console'}" rounded variant="text" density="comfortable" :title="item.uuid" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn>
+      <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.uuid)" />
+    </template>
+    <template v-slot:item.name="{ item }">
+<!--      <img :src="iconPath(item.uuid)" class="va-middle" style="max-height: 40px" />-->
+      <v-img :src="iconPath(item.uuid)" height="40" width="60" class="d-inline-block va-middle">
+        <!-- <template v-slot:error>?</template>-->
+        <template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
+          <v-icon icon="mdi-help-rhombus-outline" size="large" />
+        </div></template>
+      </v-img>
+      <v-btn :to="{name: 'Console'}" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ item.name.slice(0, 20) }}</v-btn>
+    </template>
     <template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
     <template v-slot:item.type="{ item }"><v-chip :color="item.type === 'adds' ? 'success':'error'" class="text-uppercase" size="small">{{ item.type }}</v-chip></template>
     <template v-slot:item.action="{ item }">
@@ -39,7 +52,7 @@
 
           <div class="bg-blue-grey-darken-4 float-right d-flex align-center rounded ml-2" style="width: 56px; height: 56px">
             <img ref="touchImageRef" v-show="form.file && form.file.length" style="max-width: 100%; max-height: 100%" />
-            <v-img v-show="!form.file || !form.file.length" :src="iconPath" width="56" height="56">
+            <v-img v-show="!form.file || !form.file.length" :src="iconPath()" width="56" height="56">
               <!-- <template v-slot:error>?</template>-->
               <template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
                 <v-icon icon="mdi-help-rhombus-outline" size="xx-large" />
@@ -154,14 +167,15 @@ export default {
 	},
   computed: {
     ...mapState(useMainStore, {chainTypes: 'chainTypes'}),
-    iconPath() {
-      return this.form.uuid ? API_DOMAIN + `/images/entities/${this.form.uuid}.png?v=${Math.round(Math.random() * 10000)}` : ''
-    }
   },
   methods: {
 		shortAddress,
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),
 
+    iconPath(uuid = null) {
+      if(!uuid) uuid = this.form.uuid || ''
+      return API_DOMAIN + `/images/entities/${uuid.slice(0,1)}/${uuid}.png?v=${Math.round(Math.random() * 10000)}`
+    },
 		async loadItems () {
       this.loading = true
       const { data } = await fetchPrivateEntities({
