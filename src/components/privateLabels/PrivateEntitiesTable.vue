@@ -33,7 +33,7 @@
           <v-icon icon="mdi-help-rhombus-outline" size="large" />
         </div></template>
       </v-img>
-      <v-btn :to="{name: 'Console'}" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ item.name.slice(0, 20) }}</v-btn>
+      <v-btn :to="{name: 'Console'}" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ item.name.slice(0, 30) }}</v-btn>
     </template>
     <template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
     <template v-slot:item.type="{ item }"><v-chip :color="item.type === 'adds' ? 'success':'error'" class="text-uppercase" size="small">{{ item.type }}</v-chip></template>
@@ -172,10 +172,6 @@ export default {
 		shortAddress,
     ...mapActions(useMainStore, {showAlert: 'showAlert'}),
 
-    iconPath(uuid = null) {
-      if(!uuid) uuid = this.form.uuid || ''
-      return API_DOMAIN + `/images/entities/${uuid.slice(0,1)}/${uuid}.png?v=${Math.round(Math.random() * 10000)}`
-    },
 		async loadItems () {
       this.loading = true
       const { data } = await fetchPrivateEntities({
@@ -209,15 +205,23 @@ export default {
         }
         this.form.uuid = data.result.entity.uuid
         this.form.name = data.result.entity.name
+        await this.searchLabels('') //step 1 - set
         data.result.wallets.forEach(item => {
           this.form.wallets.push({value: item.id, title: item.local_label, props: { subtitle: item.address}})
-          this.labelsList.push({value: item.id, title: item.local_label, props: { subtitle: item.address}})
+          this.labelsList.push({value: item.id, title: item.local_label, props: { subtitle: item.address}}) //step 2 - add
         })
+      } else {
+        await this.searchLabels('')
       }
     },
 
+    iconPath(uuid = null) {
+      if(!uuid) uuid = this.form.uuid || ''
+      return !uuid ? '' : API_DOMAIN + `/images/entities/${uuid.slice(0,1)}/${uuid}.png?v=${Math.round(Math.random() * 10000)}`
+    },
+
     async onLabelSearch(query) {
-      if(query.trim().length <= 2) return
+      if(query.trim().length && query.trim().length <= 2) return
       await this.searchDebouncedFn(query)
     },
     async searchLabels(query) {

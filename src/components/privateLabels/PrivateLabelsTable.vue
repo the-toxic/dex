@@ -7,8 +7,8 @@
       <v-select label="Network" v-model="filter.chain_type" hide-details variant="outlined" rounded density="compact"
         :items="['All', ...chainTypes]" />
     </div>
-    <div style="width: 280px;">
-      <v-text-field v-model="filter.search" label="Search" placeholder="Label, address, entity, e.g." rounded variant="outlined"
+    <div style="width: 240px;">
+      <v-text-field v-model="filter.search" label="Search" placeholder="Label, address, e.g." rounded variant="outlined"
         persistent-placeholder density="compact" prepend-inner-icon="mdi-magnify" hide-details  clearable @click:clear="filter.search = ''" class="ml-4"/>
     </div>
   </div>
@@ -62,7 +62,7 @@
             ]" />
 
           <v-autocomplete label="Entity" v-model="form.entity_uuid" placeholder="Type more 3 chars for search"
-            @update:search="onEntitySearch" :items="entitiesList" clearable no-filter class="mt-2"></v-autocomplete>
+            @update:search="onEntitySearch" :items="entitiesList" :loading="entitiesLoading" clearable no-filter class="mt-2"></v-autocomplete>
 
           <v-textarea label="Note" v-model="form.description" rows="2" :rules="[v => !v || v.length <= 1000 || 'Max length is 1000 chars']" class="mt-2" />
         </v-card-text>
@@ -115,7 +115,7 @@ export default {
       { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
     items: [],
-    totalItems: 999,
+    totalItems: 0,
 		filter: {
       search: '',
 			chain_type: 'All'
@@ -133,6 +133,7 @@ export default {
       description: '',
     },
     entitiesList: [],
+    entitiesLoading: false,
 
     deleteDialog: false,
     deleteLoading: false,
@@ -151,6 +152,10 @@ export default {
 		this.debouncedFn = useDebounceFn(async () => {
 			await this.loadItems()
 		}, 500)
+
+    this.searchDebouncedFn = useDebounceFn(async (query) => {
+      await this.entitySearch(query)
+    }, 500)
 	},
 	watch: {
 		'filter.search'(newVal) {
@@ -187,6 +192,8 @@ export default {
 
     async editItem(item = null) {
       this.dialog = true
+      this.entitySearch('').then()
+
       if(item) {
         this.form.id = item.id
         this.form.local_label = item.local_label
@@ -218,9 +225,14 @@ export default {
     },
 
     async onEntitySearch(query) {
-      if(query.trim().length <= 2) return
-
+      if(query.trim().length && query.trim().length <= 2) return
+      await this.searchDebouncedFn(query)
+    },
+    async entitySearch(query) {
+      this.entitiesLoading = true
       const { data } = await searchEntities(query)
+      this.entitiesLoading = false
+
       if(data.success) {
         this.entitiesList = data.result.items.map(i => ({
           value: i.uuid,
