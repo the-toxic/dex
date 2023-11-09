@@ -217,7 +217,8 @@ export default {
 
     iconPath(uuid = null) {
       if(!uuid) uuid = this.form.uuid || ''
-      return !uuid ? '' : API_DOMAIN + `/images/entities/${uuid.slice(0,1)}/${uuid}.png?v=${Math.round(Math.random() * 10000)}`
+      // return !uuid ? '' : API_DOMAIN + `/images/entities/${uuid.slice(0,1)}/${uuid}.png?v=${Math.round(Math.random() * 10000)}`
+      return !uuid ? '' : API_DOMAIN + `/images/entities/${uuid.slice(0,1)}/${uuid}.png`
     },
 
     async onLabelSearch(query) {

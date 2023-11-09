@@ -282,6 +282,29 @@ export const removePrivateEntity = async (uuid) => {
   return await axios.delete(`entity/${uuid}`);
 }
 
+/** Alerts */
+export const fetchAlerts = async (payload) => {
+  // return await axios.post(`xhr/alerts`, payload);
+  return { data: { success: true, result: {}}}
+}
+export const searchAddresses = async (query) => {
+  // return await axios.get(`xhr/search-address?q=${query}`);
+  return { data: { success: true, result: [{id: 1, name: 'Any Address'}]}}
+}
+export const searchTokens = async (query) => {
+  // return await axios.get(`xhr/search-tokens?q=${query}`);
+  return { data: { success: true, result: [{id: 1, name: 'Token One'},{id: 2, name: 'Token Two'},{id: 3, name: 'Token Three'}]}}
+}
+export const saveAlert = async (payload) => {
+  // return await axios.post(`xhr/alert${!!payload.id ? '/'+payload.id : '' }`, payload);
+  return { data: { success: true, result: {}}}
+}
+export const removeAlert = async (id) => {
+  // return await axios.delete(`alert/${id}`);
+  return { data: { success: true, result: {}}}
+}
+
+/** Dashboard */
 export const fetchDashboards = async () => {
   return await axios.get('dashboards');
   // await delay(500)
