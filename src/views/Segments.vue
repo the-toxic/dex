@@ -85,11 +85,24 @@
 
           </v-card-text>
           <v-card-actions>
+            <v-btn variant="text" @click="showDeleteDialog('segment', form.id)" color="error">Delete</v-btn>
             <v-spacer></v-spacer>
             <v-btn variant="text" @click="dialog = false" color="disabled">Close</v-btn>
             <v-btn type="submit" variant="text" color="primary" :loading="dialogLoader" :disabled="dialogLoader">Save</v-btn>
           </v-card-actions>
         </v-form>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="deleteDialog" max-width="500">
+      <v-card>
+        <v-card-text class="text-center py-16 px-10">
+          <p class="text-h5 mb-6">This row will be removed.<br>Are your sure?</p>
+          <div class="d-flex justify-center align-center">
+            <v-btn color="red" @click="deleteItem" :loading="deleteLoading" :disabled="deleteLoading" class="mr-6">Delete</v-btn>
+            <v-btn color="white" @click="deleteDialog = false" class="text-none">Cancel</v-btn>
+          </div>
+        </v-card-text>
       </v-card>
     </v-dialog>
   </v-container>
@@ -101,7 +114,7 @@ import { useDebounceFn } from "@vueuse/core";
 import { mapActions } from "pinia";
 import { shortAddress, toCurrency, formatNumber, formatBigNumber } from "@/helpers/mixins";
 import { useMainStore } from "@/store/mainStore";
-import { fetchTXs, fetchSegments, getSegmentInfo, saveSegment, searchAddresses, searchTokens } from "@/api";
+import { fetchTXs, fetchSegments, getSegmentInfo, saveSegment, searchAddresses, searchTokens, removeSegment } from "@/api";
 
 export default {
   name: 'Segments',
@@ -150,6 +163,13 @@ export default {
 
     tokensLoading: false,
     tokensList: [],
+
+    deleteDialog: false,
+    deleteLoading: false,
+    deletedItem: {
+      type: null,
+      id: null
+    },
   }},
   async created() {
     this.loadSegments().then()
@@ -281,6 +301,24 @@ export default {
         await this.loadTable()
       }
     },
+
+    async showDeleteDialog (type, id) {
+      this.deleteDialog = true
+      this.deletedItem.type = type
+      this.deletedItem.id = id
+    },
+    async deleteItem () {
+      this.deleteLoading = true
+      const { data } = await removeSegment(this.deletedItem.id)
+      this.deleteLoading = false
+      this.deleteDialog = false
+      this.dialog = false
+
+      if (data.success) {
+        this.showAlert({msg: 'Successfully removed', color: 'success'})
+        await this.loadSegments()
+      }
+    }
   }
 }
 </script>
