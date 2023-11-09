@@ -282,25 +282,62 @@ export const removePrivateEntity = async (uuid) => {
   return await axios.delete(`entity/${uuid}`);
 }
 
-/** Alerts */
-export const fetchAlerts = async (payload) => {
-  // return await axios.post(`xhr/alerts`, payload);
-  return { data: { success: true, result: {}}}
+/** Segments */
+export const fetchSegments = async (payload) => {
+  // return await axios.post(`xhr/segments`, payload);
+  await delay(500)
+  return { data: { success: true, result: [
+    { id: 1, name: 'My Segment 1' },
+    { id: 2, name: 'My Segment 2' },
+    { id: 3, name: 'My Segment 3' },
+  ]}}
+}
+export const fetchTXs = async (payload) => {
+  // return await axios.post(`xhr/txs`, payload);
+  await delay(500)
+  return { data: { success: true, result: {
+    total: 1,
+    items: [
+      { id: 1, date: '2023-11-09 22:33:44', amount: '1111111111', usd: '2222222.22', token: 'TANK', from: '0x0000000000000000000000000000000000000000', to: '0x1111111111111111111111111111111111111111' },
+    ]
+  }}}
+}
+export const getSegmentInfo = async (id) => {
+  // return await axios.get(`xhr/segments/${id}`);
+  await delay(500)
+  return { data: { success: true, result: {
+    id: 'My Segment 1',
+    name: 'My Segment 1',
+    description: 'qqq',
+    address: '0x0000000000000000000000000000000000000000',
+    from: '',
+    to: '',
+    network: '',
+    value_usd_min: '0',
+    value_usd_max: '1000',
+    tokens: [
+      { id: 1, name: 'TANK', value_min: '', value_max: '999111', }
+    ],
+  }}}
 }
 export const searchAddresses = async (query) => {
   // return await axios.get(`xhr/search-address?q=${query}`);
+  await delay(500)
   return { data: { success: true, result: [{id: 1, name: 'Any Address'}]}}
 }
 export const searchTokens = async (query) => {
   // return await axios.get(`xhr/search-tokens?q=${query}`);
+  await delay(500)
   return { data: { success: true, result: [{id: 1, name: 'Token One'},{id: 2, name: 'Token Two'},{id: 3, name: 'Token Three'}]}}
 }
-export const saveAlert = async (payload) => {
-  // return await axios.post(`xhr/alert${!!payload.id ? '/'+payload.id : '' }`, payload);
+export const saveSegment = async (payload) => {
+  // return await axios.post(`xhr/segments/${!!payload.id ? '/'+payload.id : '' }`, payload);
+  await delay(500)
   return { data: { success: true, result: {}}}
 }
-export const removeAlert = async (id) => {
-  // return await axios.delete(`alert/${id}`);
+export const removeSegment = async (id) => {
+  // return await axios.delete(`xhr/segments/${id}`);
+  await delay(500)
   return { data: { success: true, result: {}}}
 }
 

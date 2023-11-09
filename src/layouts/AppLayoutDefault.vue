@@ -66,7 +66,7 @@
 					<v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged" size="large" color="white" variant="outlined" class="mx-5 text-none">Sign Up <v-icon icon="mdi-arrow-right" color="white" class="pl-2" /></v-btn>
 
 					<v-btn :to="{name: 'PrivateLabels'}" v-if="userStore.logged" rounded class="text-none">Private Labels</v-btn>
-					<v-btn :to="{name: 'Alerts'}" v-if="userStore.logged" rounded class="text-none">Alerts</v-btn>
+					<v-btn :to="{name: 'Segments'}" v-if="userStore.logged" rounded class="text-none">Segments</v-btn>
 					<v-btn :to="{name: 'WatchList'}" v-if="userStore.logged" rounded class="text-none">Watch List</v-btn>
 
           <v-btn v-if="route.name === 'Pair'" icon size="small">

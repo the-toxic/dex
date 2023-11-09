@@ -27,7 +27,7 @@ const routes = [
     { path: 'sc', name: 'SC', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/SC.vue") },
     { path: 'career', name: 'Career', component: Career },
     { path: 'contact-us', name: 'ContactUs', component: ContactUs },
-    { path: 'alerts', name: 'Alerts', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Alerts.vue") },
+    { path: 'segments', name: 'Segments', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Segments.vue") },
     { path: 'watchlist', name: 'WatchList', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/WatchList.vue") },
     { path: 'profile', name: 'Profile', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Profile.vue") },
 
