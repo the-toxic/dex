@@ -1,15 +1,19 @@
 <template>
 
-  <div class="d-flex justify-center align-center flex-wrap pa-4" style="background: #141d26">
+  <div class="d-flex justify-center align-center flex-wrap pa-4" style="background: #1a2633">
     <!-- <input type="text" ref="datepickerBuy" placeholder="Period of Buy tokens" class="datePickerInput mr-4" />-->
     <Datepicker pickerName="datepickerBuy" placeholder="Period of Buy tokens" :initPeriod="periodBuy" @update="onPeriodChange('buy', $event)" class="mr-4" />
     <Datepicker pickerName="datepickerSell" placeholder="Period of Sell tokens" :initPeriod="periodSell"  @update="onPeriodChange('sell', $event)" class="mr-4" />
 
     <v-spacer />
+
+    <div style="width: 250px">
+      <v-text-field v-model="filter.search" label="Search" placeholder="" clearable @click:clear="filter.search = ''"
+        density="compact" prepend-inner-icon="mdi-magnify" hide-details rounded variant="outlined" />
+    </div>
     <!-- <v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>-->
   </div>
 
-	<v-text-field v-model="searchInput" label="Search by Wallets..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" density="compact" />
 	<div class="overflow-x-auto">
 		<v-data-table-server style="min-width: 1300px"
 			v-model:page="page"
@@ -29,7 +33,10 @@
 			<template v-slot:column.buys="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #334c35">{{ column.title }}</div></template>
 			<template v-slot:column.sells="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #693131">{{ column.title }}</div></template>
 
-			<template v-slot:item.wallet="{ item }"><v-btn @click="$clipboard(item.wallet)" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
+			<template v-slot:item.wallet="{ item }">
+        <v-btn :to="{name: 'Address', params: {id: item.wallet}}" target="_blank" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn>
+        <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.wallet)" />
+      </template>
 			<template v-slot:item.profit="{ item }">
         <v-chip :color="item.profit > 0 ? 'success': (item.profit < 0 ? 'error' : 'white')" size="small">
           {{ toNumber(item.profit) }}
@@ -121,7 +128,9 @@ export default {
 				{ title: 'Total', key: 'sell_total', align: 'center' },
     	]
 		],
-		searchInput: '',
+		filter: {
+      search: ''
+    },
     items: [],
     totalItems: 0,
 		totalInfo: {},
@@ -159,7 +168,7 @@ export default {
 
 			this.setTokensToTableHeader()
     },
-		searchInput(newVal) {
+		'filter.search'(newVal) {
 			this.debouncedFn()
 		},
 	},
@@ -177,7 +186,7 @@ export default {
 				page: this.page,
 				per_page: this.per_page,
 				sortBy: this.sortBy.length ? this.sortBy : [{key: 'profit', order: 'desc'}],
-				search: this.searchInput.trim(),
+				search: this.filter.search.trim(),
 				buy_period_start: this.periodBuy[0] ? moment(this.periodBuy[0]).format("YYYY-MM-DD HH:mm:ss") : '',
 				buy_period_end: this.periodBuy[1] ? moment(this.periodBuy[1]).format("YYYY-MM-DD HH:mm:ss") : '',
 				sell_period_start: this.periodSell[0] ? moment(this.periodSell[0]).format("YYYY-MM-DD HH:mm:ss") : '',

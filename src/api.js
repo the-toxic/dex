@@ -452,8 +452,8 @@ export const fetchDexAnalyzeGroupTxs = async (payload) => {
   // }}}
 }
 
-export const fetchDexPairTxs = async () => {
-  // return await axios.get('dexPairTxs');
+export const fetchDexLiquidityTxs = async (payload) => {
+  return await axios.post('xhr/liquidity_txs', payload);
   await delay(500)
   return { data: { success: true, result: {
     items: [

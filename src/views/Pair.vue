@@ -229,8 +229,8 @@
 					</div>
 				</div>
 
-				<h2 class="mt-7">Transactions Info</h2>
-				<DexPairTxsTable />
+				<h2 class="mt-7">Liquidity TXs Info</h2>
+				<DexPairLiquidityTable v-if="pairId && chainId && pairInfo" :pairId="pairId" :chainId="chainId" :pairInfo="pairInfo" />
 
 <!--				<h2 class="mt-7">Wallets</h2>-->
 <!--				<DexPairWalletsTable />-->
@@ -252,13 +252,13 @@ import Converter from "@/components/Converter.vue";
 import DexAnalyzeTxsTable from "@/components/DexAnalyzeTxsTable.vue";
 import DexAnalyzeTxsGroupTable from "@/components/DexAnalyzeTxsGroupTable.vue";
 import LWChart from "@/components/LWChart.vue";
-import DexPairTxsTable from "@/components/DexPairTxsTable.vue";
+import DexPairLiquidityTable from "@/components/DexPairLiquidityTable.vue";
 import DexPairWalletsTable from "@/components/DexPairWalletsTable.vue";
 import { useMainStore } from "@/store/mainStore";
 
 export default {
   name: "Pair",
-  components: { DexPairWalletsTable, DexPairTxsTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory, VSkeletonLoader },
+  components: { DexPairWalletsTable, DexPairLiquidityTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory, VSkeletonLoader },
   head() { return  {
     title: this.pageTitle,
     // meta: [{name: 'description', content: this.pageDescription}]

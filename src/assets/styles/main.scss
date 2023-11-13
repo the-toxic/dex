@@ -260,11 +260,12 @@ $primaryFont: sans-serif;
 }
 
 .datePickerInput {
-  border: 1px solid #bbbdbf;
+  border: 1px solid #798083;
   border-radius: 20px;
   width: 310px;
-  height: 36px;
+  height: 44px;
   padding: 5px 15px;
+  &::placeholder { color: #bec2c3 }
 }
 
 .v-data-table-footer .v-field__outline__start,

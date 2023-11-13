@@ -28,11 +28,11 @@
     :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
     <template v-slot:item.address="{ item }">
-      <v-btn :to="{name: 'Console'}" rounded variant="text" :title="item.address" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn>
+      <v-btn :to="{name: 'Address', params: {id: item.address}}" target="_blank" rounded variant="text" :title="item.address" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn>
       <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.address)" />
     </template>
     <template v-slot:item.local_label="{ item }">
-      <v-btn v-if="item.local_label" :to="{name: 'Console'}" rounded variant="text" :title="item.local_label" :active="false" class="text-none">{{ item.local_label }}</v-btn>
+      <v-btn v-if="item.local_label" :to="{name: 'Address', params: {id: item.address}}" rounded variant="text" :title="item.local_label" :active="false" class="text-none">{{ item.local_label }}</v-btn>
       <span v-else>&mdash;</span>
     </template>
     <template v-slot:item.global_label="{ item }">{{ item.global_label ? item.global_label : '&mdash;' }}</template>

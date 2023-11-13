@@ -29,7 +29,7 @@ export default {
 	watch: {
 		// '$route.name'(newVal) {
 		// 	console.log('watch $route.name', newVal)
-		// 	if(['Token', 'Wallet'].includes(newVal)) {
+		// 	if(['Token', 'Address'].includes(newVal)) {
 		// 		this.loadData()
 		// 	}
 		// },

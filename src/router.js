@@ -20,8 +20,8 @@ const routes = [
     { path: ':network([a-zA-Z0-9-]{2,10})/big-swaps', name: 'BigSwaps', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/BigSwaps.vue") },
 
     { path: 'entity/:id([a-zA-Z0-9-]{36})', name: 'Entity', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Entity.vue") },
+    { path: 'address/:id([a-zA-Z0-9-]{42})', name: 'Address', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
     { path: 'token/:id([a-zA-Z0-9-]{42})', name: 'Token', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
-    { path: 'wallet/:id([a-zA-Z0-9-]{42})', name: 'Wallet', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Address.vue") },
 
     { path: 'privateLabels', name: 'PrivateLabels', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/PrivateLabels.vue") },
     { path: 'sc', name: 'SC', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/SC.vue") },

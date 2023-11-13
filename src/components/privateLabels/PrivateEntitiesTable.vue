@@ -22,7 +22,7 @@
     :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
     <template v-slot:item.uuid="{ item }">
-      <v-btn :to="{name: 'Console'}" rounded variant="text" density="comfortable" :title="item.uuid" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn>
+      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" target="_blank" rounded variant="text" density="comfortable" :title="item.uuid" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn>
       <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.uuid)" />
     </template>
     <template v-slot:item.name="{ item }">
@@ -33,10 +33,8 @@
           <v-icon icon="mdi-help-rhombus-outline" size="large" />
         </div></template>
       </v-img>
-      <v-btn :to="{name: 'Console'}" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ item.name.slice(0, 30) }}</v-btn>
+      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" target="_blank" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ item.name.slice(0, 30) }}</v-btn>
     </template>
-    <template v-slot:item.wallet="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn></template>
-    <template v-slot:item.type="{ item }"><v-chip :color="item.type === 'adds' ? 'success':'error'" class="text-uppercase" size="small">{{ item.type }}</v-chip></template>
     <template v-slot:item.action="{ item }">
       <v-btn @click="editItem(item)" icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
       <v-btn @click="showDeleteDialog('entity', item.uuid)" icon="mdi-trash-can-outline" variant="text" size="small" color="error"></v-btn>

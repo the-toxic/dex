@@ -16,7 +16,7 @@
 						<v-list-item v-for="item in items"
 						 :title="`${item.name} ${item.address && '('+shortAddress(item.address)+')'}`" @click="onResultClick"
 						 :to="{
-								name: type === 'entities' ? 'Entity' : (type === 'tokens' ? 'Token' : (type === 'pairs' ? 'Pair' : 'Wallet')),
+								name: type === 'entities' ? 'Entity' : (type === 'tokens' ? 'Token' : (type === 'pairs' ? 'Pair' : 'Address')),
 								params: { [type === 'pairs' ? 'pairAddr' : 'id']: (type === 'entities' ? item.id : item.address) }
 						 }"
 						  >

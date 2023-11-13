@@ -34,8 +34,14 @@
       @update:options="loadTable"
       :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
     >
-      <template v-slot:item.from="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="tonal" density="compact" :active="false" class="text-none">{{ shortAddress(item.from) }}</v-btn></template>
-      <template v-slot:item.to="{ item }"><v-btn :to="{name: 'Console'}" rounded variant="tonal" density="compact" :active="false" class="text-none">{{ shortAddress(item.to) }}</v-btn></template>
+      <template v-slot:item.from="{ item }">
+        <v-btn :to="{name: 'Address', params: {id: item.from}}" target="_blank" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.from) }}</v-btn>
+        <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.from)" />
+      </template>
+      <template v-slot:item.to="{ item }">
+        <v-btn :to="{name: 'Address', params: {id: item.to}}" target="_blank" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.to) }}</v-btn>
+        <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.to)" />
+      </template>
       <template v-slot:item.amount="{ item }">{{ formatBigNumber(item.amount) }}</template>
       <template v-slot:item.token="{ item }">{{ item.token }}</template>
       <template v-slot:item.usd="{ item }">{{ toCurrency(item.usd) }}</template>
