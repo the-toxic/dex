@@ -3,28 +3,28 @@ $fullscreen: 1600px;
 $mobile: 768px;
 @font-face {
   font-family: "Gilroy";
-  src: url("assets/landing/fonts/Gilroy-Light.woff") format("woff");
+  src: url("/assets/landing/fonts/Gilroy-Light.woff") format("woff");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Gilroy";
-  src: url("assets/landing/fonts/Gilroy-Regular.woff") format("woff");
+  src: url("/assets/landing/fonts/Gilroy-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Gilroy";
-  src: url("assets/landing/fonts/Gilroy-Medium.woff") format("woff");
+  src: url("/assets/landing/fonts/Gilroy-Medium.woff") format("woff");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Gilroy";
-  src: url("assets/landing/fonts/Gilroy-Bold.woff") format("woff");
+  src: url("/assets/landing/fonts/Gilroy-Bold.woff") format("woff");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -875,7 +875,7 @@ $mobile: 768px;
     }
   }
   .cases_item1 {
-    background-image: url(assets/landing/svg/cases_item1.svg);
+    background-image: url(/assets/landing/svg/cases_item1.svg);
     background-size: 6.8vw;
     background-position: right 1.45vw center;
     @media screen and (min-width: $fullscreen) {
@@ -888,7 +888,7 @@ $mobile: 768px;
     }
   }
   .cases_item2 {
-    background-image: url(assets/landing/svg/cases_item2.svg);
+    background-image: url(/assets/landing/svg/cases_item2.svg);
     background-size: 6.8vw;
     background-position: right 1.25vw center;
     @media screen and (min-width: $fullscreen) {
@@ -902,7 +902,7 @@ $mobile: 768px;
   }
   .cases_item3 {
     align-items: flex-start;
-    background-image: url(assets/landing/svg/cases_item3.svg);
+    background-image: url(/assets/landing/svg/cases_item3.svg);
     background-size: 20.4vw;
     background-position: bottom center;
     @media screen and (min-width: $fullscreen) {
@@ -914,7 +914,7 @@ $mobile: 768px;
     }
   }
   .cases_item4 {
-    background-image: url(assets/landing/svg/cases_item4.svg);
+    background-image: url(/assets/landing/svg/cases_item4.svg);
     background-size: 12vw;
     background-position: right -1.8vw center;
     @media screen and (min-width: $fullscreen) {
@@ -927,7 +927,7 @@ $mobile: 768px;
     }
   }
   .cases_item5 {
-    background-image: url(assets/landing/svg/cases_item5.svg);
+    background-image: url(/assets/landing/svg/cases_item5.svg);
     background-size: 5.9vw;
     background-position: right center;
     @media screen and (min-width: $fullscreen) {
@@ -938,7 +938,7 @@ $mobile: 768px;
     }
   }
   .cases_item6 {
-    background-image: url(assets/landing/svg/cases_item6.svg);
+    background-image: url(/assets/landing/svg/cases_item6.svg);
     background-size: 7.1vw;
     background-position: right 1.45vw center;
     @media screen and (min-width: $fullscreen) {
@@ -1120,7 +1120,7 @@ $mobile: 768px;
     background-size: contain;
   }
   .cases_chains_li1 {
-    background-image: url(assets/landing/svg/chains/chain1.svg);
+    background-image: url(/assets/landing/svg/chains/chain1.svg);
     width: 1.6vw;
     height: 2.6vw;
     @media screen and (min-width: $fullscreen) {
@@ -1133,7 +1133,7 @@ $mobile: 768px;
     }
   }
   .cases_chains_li2 {
-    background-image: url(assets/landing/svg/chains/chain2.svg);
+    background-image: url(/assets/landing/svg/chains/chain2.svg);
     width: 2.6vw;
     height: 2.6vw;
     @media screen and (min-width: $fullscreen) {
@@ -1146,7 +1146,7 @@ $mobile: 768px;
     }
   }
   .cases_chains_li3 {
-    background-image: url(assets/landing/svg/chains/chain3.svg);
+    background-image: url(/assets/landing/svg/chains/chain3.svg);
     width: 2.6vw;
     height: 2.6vw;
     @media screen and (min-width: $fullscreen) {
@@ -1159,7 +1159,7 @@ $mobile: 768px;
     }
   }
   .cases_chains_li4 {
-    background-image: url(assets/landing/svg/chains/chain4.svg);
+    background-image: url(/assets/landing/svg/chains/chain4.svg);
     width: 2.3vw;
     height: 2.6vw;
     @media screen and (min-width: $fullscreen) {
@@ -1172,7 +1172,7 @@ $mobile: 768px;
     }
   }
   .cases_chains_li5 {
-    background-image: url(assets/landing/svg/chains/chain5.svg);
+    background-image: url(/assets/landing/svg/chains/chain5.svg);
     width: 2.6vw;
     height: 2.6vw;
     @media screen and (min-width: $fullscreen) {
@@ -1185,7 +1185,7 @@ $mobile: 768px;
     }
   }
   .about_bcg {
-    background-image: url(assets/landing/images/bcg_about.jpg);
+    background-image: url(/assets/landing/images/bcg_about.jpg);
     background-repeat: no-repeat;
     background-size: 100vw;
     background-position: center;
@@ -1196,7 +1196,7 @@ $mobile: 768px;
       background-size: 1600px;
     }
     @media screen and (max-width: $mobile) {
-      background-image: url(assets/landing/images/bcg_about_mob.jpg);
+      background-image: url(/assets/landing/images/bcg_about_mob.jpg);
     }
   }
   canvas {
@@ -1371,7 +1371,7 @@ $mobile: 768px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-image: url(assets/landing/images/bcg_trial.jpg);
+    background-image: url(/assets/landing/images/bcg_trial.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     border-radius: 16px;
@@ -1384,7 +1384,7 @@ $mobile: 768px;
     @media screen and (max-width: $mobile) {
       flex-direction: column;
       align-items: flex-start;
-      background-image: url(assets/landing/images/bcg_trial_mob.jpg);
+      background-image: url(/assets/landing/images/bcg_trial_mob.jpg);
       background-size: cover;
       gap: 12.1vw;
       padding: 12.8vw 4.8vw 9.7vw 5.3vw;

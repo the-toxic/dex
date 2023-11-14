@@ -4,7 +4,7 @@
       <div class="wrapper">
         <div class="header_inner">
           <a href="/" class="header_logo_link">
-            <img src="assets/landing/svg/logo.svg" alt="Logotype hazb" class="header_logo">
+            <img src="/assets/landing/svg/logo.svg" alt="Logotype hazb" class="header_logo">
           </a>
           <ul class="header_nav">
             <template v-if="!userStore.logged">
@@ -199,9 +199,9 @@ useHead({
   title: 'HAZB - Embrace the future of crypto intelligence today!',
   titleTemplate: '%s', // remove trailing | HAZB
   script: [
-    { src: 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', onload: (el) => {console.log('loaded', el)}, tagPosition: 'bodyClose' },
+    { src: 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', tagPosition: 'bodyClose' },
     { src: 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', tagPosition: 'bodyClose' },
-    { src: 'assets/landing/js/script.js', tagPosition: 'bodyClose' },
+    { src: '/assets/landing/js/script.js', tagPosition: 'bodyClose' },
   ],
   bodyAttrs: [{id: 'landingPage'}]
 })
