@@ -68,21 +68,19 @@ function sequence_animation() {
     images.push(img);
   }
 
-  setTimeout(() => {
-    window.gsap.to(imageSeq, {
-      frame: frameCount - 1,
-      snap: 'frame',
-      ease: 'none',
-      scrollTrigger: {
-        trigger: ".trigger_anim",
-        scrub: 1.8,
-        pin: true,
-        end: "top bottom",
-        start: "top 10%",
-      },
-      onUpdate: render,
-    });
-  }, 2000)
+  window.gsap.to(imageSeq, {
+    frame: frameCount - 1,
+    snap: 'frame',
+    ease: 'none',
+    scrollTrigger: {
+      trigger: ".trigger_anim",
+      scrub: 1.8,
+      pin: true,
+      end: "top bottom",
+      start: "top 10%",
+    },
+    onUpdate: render,
+  });
 
   images[1].onload = render;
 
@@ -94,5 +92,6 @@ function sequence_animation() {
     context.drawImage(images[imageSeq.frame], 0, 0);
   }
 }
-
-sequence_animation();
+setTimeout(() => {
+  sequence_animation();
+}, 2000)
