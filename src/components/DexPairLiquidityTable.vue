@@ -1,57 +1,62 @@
 <template>
+  <div class="d-flex justify-space-between align-center flex-wrap px-4 py-2" style="gap: 10px; background: #1a2633">
+    <Datepicker pickerName="datepickerPeriod" placeholder="Period" :initPeriod="filter.period" @update="onPeriodChange($event)" />
+    <div>
+      Type:
+      <v-btn-toggle v-model="filter.type" density="comfortable" variant="outlined">
+        <v-btn :value="0" class="text-none">All</v-btn>
+        <v-btn :value="1" color="success" class="text-none">Adds</v-btn>
+        <v-btn :value="-1" color="error" class="text-none">Removes</v-btn>
+      </v-btn-toggle>
+    </div>
+    <v-switch label="Show Creator TXs" v-model="filter.isCreator" :true-value="1" :false-value="0" hide-details density="compact" color="primary" class="flex-grow-0" />
+    <div style="width: 250px">
+      <v-text-field v-model="filter.search" label="Search" placeholder="" clearable @click:clear="filter.search = ''"
+        density="compact" prepend-inner-icon="mdi-magnify" hide-details rounded variant="outlined" />
+    </div>
+  </div>
+  <v-divider />
+  <v-data-table-server
+    v-model:items-per-page="per_page"
+    v-model:sort-by="sortBy"
+    v-model:page="page"
+    :headers="headers"
+    :items-length="totalItems"
+    :items="rows"
+    :loading="loading"
+    class="elevation-1 fs14  mb-48" density="compact"
+    @update:options="loadItems"
+  >
+    <template v-slot:item.maker="{ item }">
+      <v-btn :to="{name: 'Address', params: {id: item.maker}}" target="_blank" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.maker) }}</v-btn>
+      <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.maker)" />
+    </template>
+    <template v-slot:item.type="{ item }"><v-chip :color="item.token0_amount > 0 ? 'success':'error'" class="text-uppercase" size="small">{{ item.token0_amount > 0 ? "Adds" : 'Removes' }}</v-chip></template>
+    <template v-slot:item.token0_amount="{ item }">{{ toNumber(Math.abs(item.token0_amount)) }}</template>
+    <template v-slot:item.token1_amount="{ item }">{{ toNumber(Math.abs(item.token1_amount)) }}</template>
+    <template v-slot:item.token0_total="{ item }">
+      {{ pairInfo.token0.symbol === this.nativeWrappedSymbol ? toCurrency(Math.abs(item.token0_amount) * this.nativeSymbolPrice)
+        : toCurrency(Math.abs(item.token0_amount) * this.nativeSymbolPrice * this.lastPrice) }}
+    </template>
+    <template v-slot:item.token1_total="{ item }">
+      {{ pairInfo.token1.is_stable ? toCurrency(Math.abs(item.token1_amount))
+         : pairInfo.token1.symbol === this.nativeWrappedSymbol ? toCurrency(Math.abs(item.token1_amount) * nativeSymbolPrice) : toCurrency(Math.abs(item.token1_amount)) }}
+    </template>
+    <template v-slot:item.total="{ item }">{{ toCurrency(item.total) }}</template>
 
-		<div class="d-flex justify-space-between align-center flex-wrap px-4 py-2" style="gap: 10px; background: #1a2633">
-      <Datepicker pickerName="datepickerPeriod" placeholder="Period" :initPeriod="filter.period" @update="onPeriodChange($event)" />
-			<div>
-				Type:
-				<v-btn-toggle v-model="filter.type" density="comfortable" variant="outlined">
-					<v-btn :value="0" class="text-none">All</v-btn>
-					<v-btn :value="1" color="success" class="text-none">Adds</v-btn>
-					<v-btn :value="-1" color="error" class="text-none">Removes</v-btn>
-				</v-btn-toggle>
-			</div>
-			<v-switch label="Show Creator TXs" v-model="filter.isCreator" :true-value="1" :false-value="0" hide-details density="compact" color="primary" class="flex-grow-0" />
-      <div style="width: 250px">
-        <v-text-field v-model="filter.search" label="Search" placeholder="" clearable @click:clear="filter.search = ''"
-          density="compact" prepend-inner-icon="mdi-magnify" hide-details rounded variant="outlined" />
-      </div>
-		</div>
-    <v-divider />
-		<v-data-table-server
-			v-model:items-per-page="per_page"
-			v-model:sort-by="sortBy"
-			v-model:page="page"
-			:headers="headers"
-			:items-length="totalItems"
-			:items="rows"
-			:loading="loading"
-			class="elevation-1 fs14  mb-32" density="compact"
-			@update:options="loadItems"
-		>
-			<template v-slot:item.wallet="{ item }">
-        <v-btn :to="{name: 'Address', params: {id: item.wallet}}" target="_blank" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn>
-        <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.wallet)" />
-      </template>
-			<template v-slot:item.type="{ item }"><v-chip :color="item.type === 'adds' ? 'success':'error'" class="text-uppercase" size="small">{{ item.type }}</v-chip></template>
-			<template v-slot:item.token0_amount="{ item }">{{ toNumber(item.token0_amount) }}</template>
-			<template v-slot:item.token1_amount="{ item }">{{ toNumber(item.token1_amount) }}</template>
-			<template v-slot:item.token0_total="{ item }">{{ toCurrency(item.token0_total) }}</template>
-			<template v-slot:item.token1_total="{ item }">{{ toCurrency(item.token1_total) }}</template>
-			<template v-slot:item.total="{ item }">{{ toCurrency(item.total) }}</template>
-
-			<template v-slot:tfoot>
-				<tfoot>
-				<tr class="text-surface-variant text-center">
-					<td colspan="4" class="text-right">Total</td>
-					<td>{{ toNumber(totalInfo.token0_amount) }}</td>
-					<td>${{ formatNumber(totalInfo.token0_total) }}</td>
-					<td>{{ toNumber(totalInfo.token1_amount) }}</td>
-					<td>${{ formatNumber(totalInfo.token1_total) }}</td>
-					<td>${{ formatNumber(totalInfo.total) }}</td>
-				</tr>
-				</tfoot>
-			</template>
-		</v-data-table-server>
+    <template v-slot:tfoot>
+      <tfoot>
+      <tr class="text-surface-variant text-center">
+        <td colspan="4" class="text-right">Total</td>
+        <td>{{ toNumber(totalInfo.token0_amount) }}</td>
+        <td>${{ formatNumber(totalInfo.token0_total) }}</td>
+        <td>{{ toNumber(totalInfo.token1_amount) }}</td>
+        <td>${{ formatNumber(totalInfo.token1_total) }}</td>
+        <td>${{ formatNumber(totalInfo.total) }}</td>
+      </tr>
+      </tfoot>
+    </template>
+  </v-data-table-server>
 </template>
 
 <script>
@@ -61,6 +66,9 @@ import { fetchDexLiquidityTxs } from "@/api";
 import { API_DOMAIN, formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import Datepicker from "@/components/Datepicker.vue";
+import { useMainStore } from "@/store/mainStore";
+import { mapState } from "pinia";
+import { useChartStore } from "@/store/chartStore";
 
 export default {
   name: 'DexPairLiquidityTable',
@@ -89,7 +97,7 @@ export default {
     headers: [
       { title: 'Date', key: 'date', align: 'center' },
       { title: 'Ago', key: 'ago', align: 'center', sortable: false },
-      { title: 'Wallet', key: 'wallet', align: 'center', sortable: false },
+      { title: 'Maker', key: 'maker', align: 'center', sortable: false },
       { title: 'Type', key: 'type', align: 'center', sortable: false },
       { title: 'Token0 Amount', key: 'token0_amount', align: 'center' },
       { title: 'Token0 Amount, $', key: 'token0_total', align: 'center' },
@@ -135,13 +143,17 @@ export default {
 		},
 	},
 	computed: {
-		// ...mapState(useMainStore, {chains: 'chains'}),
+		...mapState(useMainStore, {chains: 'chains'}),
+		...mapState(useChartStore, {lastPrice: 'lastPrice', nativeWrappedSymbol: 'nativeWrappedSymbol'}),
 		rows() {
 			return this.items.map(item => {
 				item.ago = moment(item.date).fromNow() //'1y 5m 1d 2h'
 				return item
 			})
-		}
+		},
+    nativeSymbolPrice() {
+      return this.chains[this.chainId]['native_symbol_price'] || 1
+    },
 	},
   methods: {
 		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
