@@ -1,20 +1,3 @@
-const TelegramButton = document.querySelector('.footer_social_telegram');
-const TelegramListHidden = document.querySelector('.footer_social_hidden');
-
-function toggleTelegramButton() {
-  'use strict';
-  TelegramListHidden.classList.toggle('open');
-}
-TelegramButton && TelegramButton.addEventListener('click', toggleTelegramButton);
-
-
-if(window.innerWidth > 992) {
-  document.getElementById('intro_video').innerHTML = '<video class="services_video_desktop" width="100%" height="100%" autoplay muted loop type="video/mp4"><source src="/assets/landing/video/video_header.mp4" type="video/mp4"></video><video src="/assets/landing/video/video_header_mobile.mp4" loop="" muted="" playsinline="" autoplay="" type="video/mp4" class="services_video_mobile" width="100%" height="100%"></video>';
-} else {
-  document.getElementById('intro_video').innerHTML = '<video src="/assets/landing/video/video_header_mobile.mp4" loop="" muted="" playsinline="" autoplay="" type="video/mp4" class="services_video_mobile" width="100%" height="100%"></video>';
-}
-
-
 function sequence_animation() {
   const canvas = document.querySelector('.about_bcg_image');
   const context = canvas.getContext('2d');

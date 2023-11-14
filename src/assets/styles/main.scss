@@ -256,8 +256,8 @@ $primaryFont: sans-serif;
   background: linear-gradient(0deg, #000 0%, #12007f 50%, #000 100%);
 }
 .authBg {
-  background-size: cover;
   background: url("/assets/landing/images/bcg.jpg") no-repeat center;
+  background-size: cover !important;
   height: 100vh;
   width: 100%;
 }

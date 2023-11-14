@@ -21,11 +21,16 @@
     <section>
       <div class="wrapper">
         <div class="intro_bcg">
-          <div id="intro_video" class="intro_video"></div>
+          <div id="intro_video" class="intro_video">
+            <video v-if="breakpoints.mdAndUp" class="services_video_desktop" width="100%" height="100%" autoplay muted loop type="video/mp4">
+              <source src="/assets/landing/video/video_header.mp4" type="video/mp4" />
+            </video>
+            <video v-if="breakpoints.smAndDown" src="/assets/landing/video/video_header_mobile.mp4" loop="" muted="" playsinline="" autoplay="" type="video/mp4" class="services_video_mobile" width="100%" height="100%"></video>
+          </div>
           <div class="intro">
             <div class="intro_text">
               <h1 class="intro_text_title">Elevate Your Investment Game with Advanced AI Analytics</h1>
-              <a href="/" class="link intro_text_link">Get Started</a>
+              <router-link :to="{name: userStore.logged ? 'Console' : 'AuthSignIn'}" class="link intro_text_link">Get Started</router-link>
             </div>
             <div class="intro_solutions">
               <p class="intro_solutions_p">A complete solution for:</p>
@@ -130,7 +135,7 @@
             <h4 class="trial_title">Unlock crypto insights with powerful analytics</h4>
             <p class="trial_text_p">Gain clarity. Identify opportunities. Improve decisions. Our analytics platform provides robust blockchain intelligence for your crypto journey. Embrace data-driven insights today.</p>
           </div>
-          <a href="/" class="link trial_link">Start your Trial</a>
+          <router-link :to="{name: userStore.logged ? 'Console' : 'AuthSignIn'}" class="link trial_link">Start your Trial</router-link>
         </div>
       </div>
     </section>
@@ -142,45 +147,45 @@
           <div class="footer_item">
             <p class="footer_item_title">Company</p>
             <div class="footer_item_list">
-              <a href="/" class="footer_item_link">About Us</a>
-              <a href="/" class="footer_item_link">Careers</a>
-              <a href="/" class="footer_item_link">Legal</a>
+              <a href="#!" class="footer_item_link">About Us</a>
+              <a href="#!" class="footer_item_link">Careers</a>
+              <a href="#!" class="footer_item_link">Legal</a>
             </div>
           </div>
           <div class="footer_item">
             <p class="footer_item_title">Resources</p>
             <div class="footer_item_list">
-              <a href="/" class="footer_item_link">White Paper</a>
-              <a href="/" class="footer_item_link">News</a>
-              <a href="/" class="footer_item_link">Docs</a>
+              <a href="#!" class="footer_item_link">White Paper</a>
+              <a :href="NEWS_HOST" target="_blank" class="footer_item_link">News</a>
+              <a :href="DOCS_HOST" target="_blank" class="footer_item_link">Docs</a>
             </div>
           </div>
           <div class="footer_item">
             <p class="footer_item_title">Contact Us</p>
             <div class="footer_item_list">
-              <a href="/" class="footer_item_link">Give Feedback</a>
-              <a href="/" class="footer_item_link">Support</a>
+              <a href="#!" class="footer_item_link">Give Feedback</a>
+              <a href="#!" class="footer_item_link">Support</a>
             </div>
           </div>
         </div>
         <div class="footer_social">
-          <a href="/" class="footer_social_link footer_social_link_x"><span>(X)</span> Twitter</a>
-          <a href="/" class="footer_social_link footer_social_link_dis">Discord</a>
-          <div class="footer_social_telegram">
+          <a :href="SOCIAL_TWITTER" target="_blank" class="footer_social_link footer_social_link_x"><span>(X)</span> Twitter</a>
+          <a href="#!" class="footer_social_link footer_social_link_dis">Discord</a>
+          <div class="footer_social_telegram" @click="TgMenuToggler = !TgMenuToggler">
             <div class="footer_social_telegram_p">Telegram</div>
-            <div class="footer_social_hidden">
-              <a href="/" class="footer_social_hidden_link">Telegram Channel</a>
-              <a href="/" class="footer_social_hidden_link">Telegram Group</a>
+            <div class="footer_social_hidden" :class="{'open': TgMenuToggler}">
+              <a :href="SOCIAL_TELEGRAM" target="_blank" class="footer_social_hidden_link">Telegram Channel</a>
+              <a :href="SOCIAL_TELEGRAM" target="_blank" class="footer_social_hidden_link">Telegram Group</a>
             </div>
           </div>
-          <a href="/" class="footer_social_link footer_social_link_lin">Linktree</a>
+          <a :href="SOCIAL_LINKTREE" target="_blank" class="footer_social_link footer_social_link_lin">Linktree</a>
         </div>
       </div>
       <div class="footer_bottom">
         <p class="footer_copyright">&copy;&nbsp;{{ currentYear }}&nbsp;HAZB. All Rights Reserved.</p>
         <div class="footer_bottom_links">
-          <a href="/" class="footer_bottom_link">Terms of Service</a>
-          <a href="/" class="footer_bottom_link">Privacy Policy</a>
+          <a href="#!" class="footer_bottom_link">Terms of Service</a>
+          <a href="#!" class="footer_bottom_link">Privacy Policy</a>
         </div>
       </div>
     </div>
@@ -191,8 +196,10 @@
 <script setup>
 import { useHead } from '@unhead/vue'
 import { useUserStore } from "@/store/userStore";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import '@/assets/styles/landing.scss'
+import { DOCS_HOST, NEWS_HOST, SOCIAL_LINKTREE, SOCIAL_TELEGRAM, SOCIAL_TWITTER } from "@/helpers/mixins";
+import { useDisplay } from "vuetify";
 
 const userStore = useUserStore()
 useHead({
@@ -205,6 +212,10 @@ useHead({
   ],
   bodyAttrs: [{id: 'landingPage'}]
 })
+
+const breakpoints = ref(useDisplay())
+
+const TgMenuToggler = ref(false)
 const currentYear = computed(() => new Date().getFullYear())
 
 </script>
