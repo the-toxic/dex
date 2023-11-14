@@ -55,7 +55,7 @@
         <v-btn v-if="userStore.logged" @click="showSearch" rounded variant="text" class="text-body-2">
           <v-icon color="#B3B5BD" class="pr-4" alt="Show Search">mdi-magnify</v-icon>
           Search
-          <span class="py-0 px-3 ml-3 border rounded text-disabled text-caption">/</span>
+          <span class="py-0 px-3 ml-3 border rounded text-disabled text-caption">Cmd + K</span>
         </v-btn>
 
         <!-- Menu open icon for mobile -->
@@ -234,7 +234,8 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
   })
 
   function searchShortCutHandler(event) {
-    if (/*(event.metaKey || event.ctrlKey) &&*/ event.code === 'Slash') { // event.key === '/'
+    console.log(event)
+    if ((event.metaKey || event.ctrlKey) && event.code === 'KeyK') { // event.key === '/' ; event.code === 'Slash'
       event.preventDefault()
       showSearch()
     }

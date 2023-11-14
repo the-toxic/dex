@@ -40,7 +40,8 @@
     </template>
     <template v-slot:item.token1_total="{ item }">
       {{ pairInfo.token1.is_stable ? toCurrency(Math.abs(item.token1_amount))
-         : pairInfo.token1.symbol === this.nativeWrappedSymbol ? toCurrency(Math.abs(item.token1_amount) * nativeSymbolPrice) : toCurrency(Math.abs(item.token1_amount)) }}
+        : pairInfo.token1.symbol === nativeWrappedSymbol ? toCurrency(Math.abs(item.token1_amount) * nativeSymbolPrice)
+        : '&mdash;' }}
     </template>
     <template v-slot:item.total="{ item }">{{ toCurrency(item.total) }}</template>
 
@@ -92,10 +93,10 @@ export default {
     loading: false,
     per_page: 10,
 		page: 1,
-		sortBy: [{key: 'date', order: 'desc'}],
+		sortBy: [{key: 'dttm', order: 'desc'}],
 		network: 'bsc', // ether | bsc
     headers: [
-      { title: 'Date', key: 'date', align: 'center' },
+      { title: 'Date', key: 'dttm', align: 'center' },
       { title: 'Ago', key: 'ago', align: 'center', sortable: false },
       { title: 'Maker', key: 'maker', align: 'center', sortable: false },
       { title: 'Type', key: 'type', align: 'center', sortable: false },
@@ -147,7 +148,7 @@ export default {
 		...mapState(useChartStore, {lastPrice: 'lastPrice', nativeWrappedSymbol: 'nativeWrappedSymbol'}),
 		rows() {
 			return this.items.map(item => {
-				item.ago = moment(item.date).fromNow() //'1y 5m 1d 2h'
+				item.ago = moment(item.dttm).fromNow() //'1y 5m 1d 2h'
 				return item
 			})
 		},
