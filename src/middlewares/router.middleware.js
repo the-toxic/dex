@@ -3,7 +3,7 @@ import { AppLayoutsEnum } from "@/helpers";
 const AppLayoutToFileMap = {
   default: "AppLayoutDefault.vue",
   auth: "AppLayoutAuth.vue",
-  error: "AppLayoutError.vue",
+  empty: "AppLayoutEmpty.vue",
 }
 
 export async function loadLayoutMiddleware(route) {

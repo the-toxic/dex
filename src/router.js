@@ -11,7 +11,7 @@ import Career from "@/views/Career.vue";
 import ContactUs from "@/views/ContactUs.vue";
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
+  { path: '/', name: 'Home', component: Home, meta: { layout: AppLayoutsEnum.empty } },
   { path: '/console', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/components/Console"), children: [
     { path: '', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pairs',  params: {network: 'bsc'} } },
     { path: 'dashboard', name: 'Dashboard', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Dashboard.vue") },
@@ -34,14 +34,14 @@ const routes = [
   ]},
   // { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
   // { path: '/auth/sign-in', name: 'AuthSignIn', component: () => import(/* webpackChunkName: "auth" */ '@/views/auth/Login.vue'), meta: { layout: AppLayoutsEnum.auth } },
-  { path: '/auth', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth"), meta: { layout: AppLayoutsEnum.auth }, children: [
+  { path: '/auth', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth"), meta: { layout: AppLayoutsEnum.empty }, children: [
       { path: '', redirect: '/auth/sign-in'},
       { path: 'sign-in', name: 'AuthSignIn', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth")},
       { path: 'sign-up', name: 'AuthSignUp', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth")},
       { path: 'reset-password', name: 'AuthResetPassword', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth")},
     ], /*beforeEnter(to, from, next) { next(!store.getters['user/logged'] ? true : {name: 'Console'}) }*/
   },
-  { path: '/:pathMatch(.*)*', component: E404, meta: { layout: AppLayoutsEnum.error }}
+  { path: '/:pathMatch(.*)*', component: E404, meta: { layout: AppLayoutsEnum.empty }}
 ]
 
 const router = createRouter({

@@ -255,6 +255,17 @@ $primaryFont: sans-serif;
 .blueGradient {
   background: linear-gradient(0deg, #000 0%, #12007f 50%, #000 100%);
 }
+.authBg {
+  background-size: cover;
+  background: url("/assets/landing/images/bcg.jpg") no-repeat center;
+  height: 100vh;
+  width: 100%;
+}
+.authLogo {
+  position: absolute;
+  left: 30px;
+  top: 30px;
+}
 .firstScreen {
   height: calc(100vh - 64px);
 }

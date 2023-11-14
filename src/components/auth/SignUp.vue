@@ -1,7 +1,7 @@
 <template>
   <template v-if="step === 'email'">
     <v-form ref="formEmail" @submit.prevent="onSubmitEmail" class="fill-width">
-      <img src="@/assets/HAZB.svg" class="mb-8" style="height: 28px" alt="Logo" />
+      <img src="/assets/landing/svg/logo.svg" class="mb-6 mt-2" alt="Logo">
       <h3 class="fs24 mb-10">Sign Up</h3>
 
       <v-text-field label="Email"
