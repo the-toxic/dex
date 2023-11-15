@@ -142,6 +142,7 @@
         </div>
       </section>
     </main>
+
     <footer>
       <div class="wrapper">
         <div class="footer_top">
@@ -151,13 +152,13 @@
               <div class="footer_item_list">
                 <a href="#!" class="footer_item_link">About Us</a>
                 <router-link :to="{name: 'Career'}" class="footer_item_link">Careers</router-link>
-                <a href="#!" class="footer_item_link">Legal</a>
+                <a :href="DOCS_HOST+'/legal/legal-advice'" target="_blank" class="footer_item_link">Legal</a>
               </div>
             </div>
             <div class="footer_item">
               <p class="footer_item_title">Resources</p>
               <div class="footer_item_list">
-                <a href="#!" class="footer_item_link">White Paper</a>
+                <a href="/whitepaper.pdf" target="_blank" class="footer_item_link">White Paper</a>
                 <a :href="NEWS_HOST" target="_blank" class="footer_item_link">News</a>
                 <a :href="DOCS_HOST" target="_blank" class="footer_item_link">Docs</a>
               </div>
@@ -186,8 +187,8 @@
         <div class="footer_bottom">
           <p class="footer_copyright">&copy;&nbsp;{{ currentYear }}&nbsp;HAZB. All Rights Reserved.</p>
           <div class="footer_bottom_links">
-            <a href="#!" class="footer_bottom_link">Terms of Service</a>
-            <a href="#!" class="footer_bottom_link">Privacy Policy</a>
+            <a :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" class="footer_bottom_link">Terms of Service</a>
+            <a :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" class="footer_bottom_link">Privacy Policy</a>
           </div>
         </div>
       </div>
