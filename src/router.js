@@ -25,13 +25,13 @@ const routes = [
 
     { path: 'privateLabels', name: 'PrivateLabels', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/PrivateLabels.vue") },
     { path: 'sc', name: 'SC', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/SC.vue") },
-    { path: 'career', name: 'Career', component: Career },
-    { path: 'contact-us', name: 'ContactUs', component: ContactUs },
     { path: 'segments', name: 'Segments', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Segments.vue") },
     { path: 'watchlist', name: 'WatchList', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/WatchList.vue") },
     { path: 'profile', name: 'Profile', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Profile.vue") },
 
   ]},
+  { path: '/career', name: 'Career', component: Career },
+  { path: '/contact-us', name: 'ContactUs', component: ContactUs },
   // { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
   // { path: '/auth/sign-in', name: 'AuthSignIn', component: () => import(/* webpackChunkName: "auth" */ '@/views/auth/Login.vue'), meta: { layout: AppLayoutsEnum.auth } },
   { path: '/auth', component: () => import(/* webpackChunkName: "auth" */ "@/views/auth/Auth"), meta: { layout: AppLayoutsEnum.empty }, children: [

@@ -150,7 +150,7 @@
               <p class="footer_item_title">Company</p>
               <div class="footer_item_list">
                 <a href="#!" class="footer_item_link">About Us</a>
-                <a href="#!" class="footer_item_link">Careers</a>
+                <router-link :to="{name: 'Career'}" class="footer_item_link">Careers</router-link>
                 <a href="#!" class="footer_item_link">Legal</a>
               </div>
             </div>
@@ -165,18 +165,18 @@
             <div class="footer_item">
               <p class="footer_item_title">Contact Us</p>
               <div class="footer_item_list">
-                <a href="#!" class="footer_item_link">Give Feedback</a>
-                <a href="#!" class="footer_item_link">Support</a>
+                <router-link :to="{name: 'ContactUs'}" class="footer_item_link">Give Feedback</router-link>
+                <router-link :to="{name: 'ContactUs'}" class="footer_item_link">Support</router-link>
               </div>
             </div>
           </div>
           <div class="footer_social">
             <a :href="SOCIAL_TWITTER" target="_blank" class="footer_social_link footer_social_link_x"><span>(X)</span> Twitter</a>
-            <a href="#!" class="footer_social_link footer_social_link_dis">Discord</a>
+            <a :href="SOCIAL_DISCORD" target="_blank" class="footer_social_link footer_social_link_dis">Discord</a>
             <div class="footer_social_telegram" @click="TgMenuToggler = !TgMenuToggler">
               <div class="footer_social_telegram_p">Telegram</div>
               <div class="footer_social_hidden" :class="{'open': TgMenuToggler}">
-                <a :href="SOCIAL_TELEGRAM" target="_blank" class="footer_social_hidden_link">Telegram Channel</a>
+                <a :href="SOCIAL_TELEGRAM_CHANNEL" target="_blank" class="footer_social_hidden_link">Telegram Channel</a>
                 <a :href="SOCIAL_TELEGRAM" target="_blank" class="footer_social_hidden_link">Telegram Group</a>
               </div>
             </div>
@@ -194,17 +194,17 @@
     </footer>
   </div>
 </template>
-<!-- :to="{name: userStore.logged ? 'Console' : 'AuthSignIn'}" -->
 
 <script setup>
 import { useHead } from '@unhead/vue'
-import { useUserStore } from "@/store/userStore";
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import '@/assets/styles/landing.scss'
-import { DOCS_HOST, NEWS_HOST, SOCIAL_LINKTREE, SOCIAL_TELEGRAM, SOCIAL_TWITTER } from "@/helpers/mixins";
 import { useDisplay } from "vuetify";
 import gsap from 'gsap'
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { useUserStore } from "@/store/userStore";
+import { DOCS_HOST, NEWS_HOST, SOCIAL_DISCORD, SOCIAL_LINKTREE, SOCIAL_TELEGRAM, SOCIAL_TELEGRAM_CHANNEL, SOCIAL_TWITTER } from "@/helpers/mixins";
+
+import '@/assets/styles/landing.scss'
 
 const userStore = useUserStore()
 useHead({

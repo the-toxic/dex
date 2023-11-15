@@ -7,15 +7,17 @@
       <v-card-text class="px-10 py-10">
         <v-responsive class="" max-width="344">
 
-          <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
+          <v-form v-if="!complete" ref="form" v-model="valid" @submit.prevent="onSubmit">
             <v-text-field label="First name" v-model="form.first_name" :rules="nameRules" class="mb-2"></v-text-field>
             <v-text-field label="Last name" v-model="form.last_name" :rules="nameRules" class="mb-2"></v-text-field>
             <v-text-field label="Email" v-model="form.email" :rules="emailRules" class="mb-2"></v-text-field>
             <v-text-field label="Discord" v-model="form.discord" :rules="[v => (v.length <= 64) || 'Max length 64 chars']" class="mb-2"></v-text-field>
             <v-text-field label="Telegram" v-model="form.telegram" :rules="[v => (v.length <= 64) || 'Max length 64 chars']" class="mb-2"></v-text-field>
-            <v-text-field label="Message" v-model="form.message" :rules="[v => (v.length >= 5) || 'Min length 5 chars']" class="mb-2"></v-text-field>
+            <v-textarea label="Message" rows="3" v-model="form.message" :rules="[v => (v.length >= 5) || 'Min length 5 chars']" class="mb-2"></v-textarea>
             <v-btn type="submit" color="primary" block size="large" class="text-none">Send</v-btn>
           </v-form>
+
+          <v-alert v-else color="success" >Your message successfully send!</v-alert>
 
         </v-responsive>
       </v-card-text>
@@ -35,6 +37,7 @@ export default {
   data() { return {
     loading: false,
     valid: true,
+    complete: false,
     form: {
       first_name: '',
       last_name: '',
@@ -56,11 +59,12 @@ export default {
       if(!valid) return
 
       this.loading = true
-      // const { data } = await contactUs(this.form)
+      const { data } = { data: { success: true } } // await contactUs(this.form)
       this.loading = false
 
       if(data.success) {
-        // this.showAlert({msg: 'Successfully saved', color: 'success'})
+        this.complete = true
+        // this.showAlert({msg: 'Successfully send', color: 'success'})
       }
     }
   }
