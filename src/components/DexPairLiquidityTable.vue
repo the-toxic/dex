@@ -24,36 +24,30 @@
     :items-length="totalItems"
     :items="rows"
     :loading="loading"
-    class="elevation-1 fs14  mb-48" density="compact"
     @update:options="loadItems"
+    class="elevation-1 fs14  mb-48" density="compact"
+    :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
     <template v-slot:item.maker="{ item }">
-      <v-btn :to="{name: 'Address', params: {id: item.maker}}" target="_blank" rounded variant="text" :active="false" class="text-none">{{ shortAddress(item.maker) }}</v-btn>
+      <v-btn :to="{name: 'Address', params: {id: item.maker}}" target="_blank" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.maker) }}</v-btn>
       <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.maker)" />
     </template>
     <template v-slot:item.type="{ item }"><v-chip :color="item.token0_amount > 0 ? 'success':'error'" class="text-uppercase" size="small">{{ item.token0_amount > 0 ? "Adds" : 'Removes' }}</v-chip></template>
-    <template v-slot:item.token0_amount="{ item }">{{ toNumber(Math.abs(item.token0_amount)) }}</template>
-    <template v-slot:item.token1_amount="{ item }">{{ toNumber(Math.abs(item.token1_amount)) }}</template>
-    <template v-slot:item.token0_total="{ item }">
-      {{ pairInfo.token0.symbol === this.nativeWrappedSymbol ? toCurrency(Math.abs(item.token0_amount) * this.nativeSymbolPrice)
-        : toCurrency(Math.abs(item.token0_amount) * this.nativeSymbolPrice * this.lastPrice) }}
-    </template>
-    <template v-slot:item.token1_total="{ item }">
-      {{ pairInfo.token1.is_stable ? toCurrency(Math.abs(item.token1_amount))
-        : pairInfo.token1.symbol === nativeWrappedSymbol ? toCurrency(Math.abs(item.token1_amount) * nativeSymbolPrice)
-        : '&mdash;' }}
-    </template>
-    <template v-slot:item.total="{ item }">{{ toCurrency(item.total) }}</template>
+    <template v-slot:item.token0_amount="{ item }">{{ formatNumber(Math.abs(item.token0_amount)) }}</template>
+    <template v-slot:item.token0_total="{ item }">${{ formatNumber(item.token0_total, true) }}</template>
+    <template v-slot:item.token1_amount="{ item }">{{ formatNumber(Math.abs(item.token1_amount)) }}</template>
+    <template v-slot:item.token1_total="{ item }">${{ formatNumber(item.token1_total, true) }}</template>
+    <template v-slot:item.total="{ item }">${{ formatNumber(item.total, true) }}</template>
 
     <template v-slot:tfoot>
       <tfoot>
       <tr class="text-surface-variant text-center">
         <td colspan="4" class="text-right">Total</td>
-        <td>{{ toNumber(totalInfo.token0_amount) }}</td>
-        <td>${{ formatNumber(totalInfo.token0_total) }}</td>
-        <td>{{ toNumber(totalInfo.token1_amount) }}</td>
-        <td>${{ formatNumber(totalInfo.token1_total) }}</td>
-        <td>${{ formatNumber(totalInfo.total) }}</td>
+        <td>{{ formatNumber(Math.abs(totalInfo.token0_amount)) }}</td>
+        <td>${{ formatNumber(totalInfo.token0_total, true) }}</td>
+        <td>{{ formatNumber(Math.abs(totalInfo.token1_amount)) }}</td>
+        <td>${{ formatNumber(totalInfo.token1_total, true) }}</td>
+        <td>${{ formatNumber(totalInfo.total, true) }}</td>
       </tr>
       </tfoot>
     </template>
@@ -64,7 +58,7 @@
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchDexLiquidityTxs } from "@/api";
-import { API_DOMAIN, formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
+import { API_DOMAIN, formatBigNumber, formatNumber, shortAddress, toCurrency } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import Datepicker from "@/components/Datepicker.vue";
 import { useMainStore } from "@/store/mainStore";
@@ -91,7 +85,7 @@ export default {
   data() { return {
 		API_DOMAIN,
     loading: false,
-    per_page: 10,
+    per_page: 20,
 		page: 1,
 		sortBy: [{key: 'dttm', order: 'desc'}],
 		network: 'bsc', // ether | bsc
@@ -126,13 +120,15 @@ export default {
 			await this.loadItems()
 		}, 500)
 
-    this.headers.find(i => i.key === 'token0_amount').title = this.pairInfo.token0.symbol.slice(0,5) +' Amount'
-    this.headers.find(i => i.key === 'token0_total').title = this.pairInfo.token0.symbol.slice(0,5) +' Amount, $'
-    this.headers.find(i => i.key === 'token1_amount').title = this.pairInfo.token1.symbol.slice(0,5) +' Amount'
-    this.headers.find(i => i.key === 'token1_total').title = this.pairInfo.token1.symbol.slice(0,5) +' Amount, $'
+    this.updateHeaders()
 	},
 
 	watch: {
+    pairInfo(newVal, oldVal) { // on select new pair in search
+      if(!newVal || !oldVal) return
+      this.updateHeaders()
+      this.loadItems()
+    },
     'filter.type'(newVal) {
       this.loadItems()
     },
@@ -157,7 +153,7 @@ export default {
     },
 	},
   methods: {
-		shortAddress, formatNumber, formatBigNumber, toCurrency, toNumber,
+		shortAddress, formatNumber, formatBigNumber, toCurrency,
 
 		async loadItems () {
       this.loading = true
@@ -175,12 +171,46 @@ export default {
 			})
       this.loading = false
       if(data.success) {
-				this.items = data.result.items
 				this.totalItems = data.result.totalItems
+				this.items = data.result.items.map(item => {
+          item.token0_total = this.pairInfo.token0.symbol === this.nativeWrappedSymbol
+            ? (Math.abs(item.token0_amount) * this.nativeSymbolPrice) // if coin
+            : (this.pairInfo.token1.is_stable
+              ? (Math.abs(item.token0_amount) * this.lastPrice) // if right stable
+              : (Math.abs(item.token0_amount) * this.nativeSymbolPrice * this.lastPrice)) // other
+
+          item.token1_total = this.pairInfo.token1.is_stable
+            ? (Math.abs(item.token1_amount))
+            : (this.pairInfo.token1.symbol === this.nativeWrappedSymbol
+              ? (Math.abs(item.token1_amount) * this.nativeSymbolPrice)
+              : 0)
+          item.total = item.token0_total + item.token1_total
+          return item
+        })
+
 				this.totalInfo = data.result.total
+        this.totalInfo.token0_total =
+          this.pairInfo.token0.symbol === this.nativeWrappedSymbol
+            ? (Math.abs(this.totalInfo.token0_amount) * this.nativeSymbolPrice) // if coin
+            : (this.pairInfo.token1.is_stable
+              ? (Math.abs(this.totalInfo.token0_amount) * this.lastPrice) // if right stable
+              : (Math.abs(this.totalInfo.token0_amount) * this.nativeSymbolPrice * this.lastPrice)) // other
+
+        this.totalInfo.token1_total =
+          this.pairInfo.token1.is_stable ? Math.abs(this.totalInfo.token1_amount)
+            : (this.pairInfo.token1.symbol === this.nativeWrappedSymbol
+            ? (Math.abs(this.totalInfo.token1_amount) * this.nativeSymbolPrice)
+            : 0)
+        this.totalInfo.total = this.totalInfo.token0_total + this.totalInfo.token1_total
       }
     },
 
+    updateHeaders() {
+      this.headers.find(i => i.key === 'token0_amount').title = this.pairInfo.token0.symbol.slice(0,5) +' Amount'
+      this.headers.find(i => i.key === 'token0_total').title = this.pairInfo.token0.symbol.slice(0,5) +' Amount, $'
+      this.headers.find(i => i.key === 'token1_amount').title = this.pairInfo.token1.symbol.slice(0,5) +' Amount'
+      this.headers.find(i => i.key === 'token1_total').title = this.pairInfo.token1.symbol.slice(0,5) +' Amount, $'
+    },
     onPeriodChange($event) {
       this.filter.period = $event;
       this.loadItems()

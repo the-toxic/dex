@@ -50,6 +50,8 @@ export const formatNumber = (number, shortBigNumber = false) => {
   if(isNaN(number)) return 0
   number = +number
   if(number === 0) return 0
+  if(number < 0) number = Math.abs(number)
+
   if (number >= 1000)
     return shortBigNumber ? formatBigNumber(number) : toNumber(number)
   else if (number > 100)
