@@ -94,4 +94,4 @@ function sequence_animation() {
 }
 setTimeout(() => {
   sequence_animation();
-}, 2000)
+}, 3000)
