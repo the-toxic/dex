@@ -1,4 +1,4 @@
-$back-base: #141d26; // 141426 // main bg.
+$back-base: #18181F; // #282833; // 141d26 // main bg.
 $text-base: #f0f3f5;
 
 $theme-dark-colors: (
@@ -19,12 +19,14 @@ $theme-dark-colors: (
   //$utilities: false,
   //$button-height: 40px,
   $body-font-family: sans-serif,
-  $application-background: map-get($theme-dark-colors, '3'), // bg
+  $application-background: #070709, // map-get($theme-dark-colors, '3'), // bg
   //$application-color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity)),
-  $app-bar-background: map-get($theme-dark-colors, '4'), // top nav
-  $navigation-drawer-background: map-get($theme-dark-colors, '4'),
-  $footer-background: map-get($theme-dark-colors, '4'),
-  $card-background: #16202b, // map-get($theme-dark-colors, '6'), // default 1
+  $app-bar-background: #18181F, // map-get($theme-dark-colors, '4'), // top nav
+  $navigation-drawer-background: #18181F, // map-get($theme-dark-colors, '4'),
+  $footer-background: #18181F, // map-get($theme-dark-colors, '4'),
+  $card-background: map-get($theme-dark-colors, '4'), // #16202b
   //$button-background: map-get($theme-dark-colors, '5'),
   //$button-color: map-get($theme-dark-colors, '5'),
+  $overlay-opacity: 0.6,
+  $overlay-scrim-background: map-get($theme-dark-colors, '1'),
 );

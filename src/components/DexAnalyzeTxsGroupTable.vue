@@ -1,6 +1,6 @@
 <template>
 
-  <div class="d-flex justify-center align-center flex-wrap pa-4" style="background: #1a2633">
+  <div class="d-flex justify-center align-center flex-wrap px-4 py-3 rounded-t bg-surface2">
     <!-- <input type="text" ref="datepickerBuy" placeholder="Period of Buy tokens" class="datePickerInput mr-4" />-->
     <Datepicker pickerName="datepickerBuy" placeholder="Period of Buy tokens" :initPeriod="periodBuy" @update="onPeriodChange('buy', $event)" class="mr-4" />
     <Datepicker pickerName="datepickerSell" placeholder="Period of Sell tokens" :initPeriod="periodSell"  @update="onPeriodChange('sell', $event)" class="mr-4" />
@@ -34,7 +34,7 @@
 			<template v-slot:column.sells="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #693131">{{ column.title }}</div></template>
 
 			<template v-slot:item.wallet="{ item }">
-        <v-btn :to="{name: 'Address', params: {id: item.wallet}}" target="_blank" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn>
+        <v-btn :to="{name: 'Address', params: {id: item.wallet}}" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn>
         <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.wallet)" />
       </template>
 			<template v-slot:item.profit="{ item }">

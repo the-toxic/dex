@@ -1,6 +1,6 @@
 <template>
 
-  <div class="d-flex justify-space-between align-center flex-wrap px-4 py-2 border-b" style="background: #141d26">
+  <div class="d-flex justify-center align-center flex-wrap px-4 py-3 rounded-t bg-surface2">
     <v-btn @click="editItem()" variant="tonal" prepend-icon="mdi-plus" color="success" rounded class="text-none" >Add Entity</v-btn>
     <v-spacer />
     <div style="width: 280px;">
@@ -22,7 +22,7 @@
     :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
     <template v-slot:item.uuid="{ item }">
-      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" target="_blank" rounded variant="text" density="comfortable" :title="item.uuid" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn>
+      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" rounded variant="text" density="comfortable" :title="item.uuid" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn>
       <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.uuid)" />
     </template>
     <template v-slot:item.name="{ item }">
@@ -33,7 +33,7 @@
           <v-icon icon="mdi-help-rhombus-outline" size="large" />
         </div></template>
       </v-img>
-      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" target="_blank" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ item.name.slice(0, 30) }}</v-btn>
+      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" rounded variant="text" density="comfortable" :active="false" class="text-none" width="250">{{ item.name.slice(0, 30) }}</v-btn>
     </template>
     <template v-slot:item.action="{ item }">
       <v-btn @click="editItem(item)" icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>

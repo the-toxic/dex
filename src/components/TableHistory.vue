@@ -108,13 +108,13 @@
 	.txsTableHead { /* thead tr */
 		display: flex;
 		padding: 6px 12px;
-		background: #2d3244;
+		background: #282833;
 		font-weight: bold;
 	}
 	.txsTableRow { /* tbody tr */
 		display: flex;
 		padding: 3px 12px;
-		&:hover { background: #0f171e }
+		&:hover { background: #18181f }
 
 	}
 	.txsTableTd { /* td */

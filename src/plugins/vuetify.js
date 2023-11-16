@@ -12,10 +12,10 @@ export default createVuetify({
     themes: {
       dark: {
         colors: {
-          surface: '#141d26', // default color btn bg
+          surface: '#18181F', // 282833;  $back-base color - default cards, btn, lists bg (old #141d26)
+          surface2: '#282833',
           primary: '#1867C0',
           secondary: '#5CBBF6',
-          myBlue: '#12007F',
         },
       },
     },

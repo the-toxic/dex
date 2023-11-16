@@ -1,6 +1,6 @@
 <template>
 
-	<div class="d-flex justify-center align-center flex-wrap pa-4" style="background: #141d26">
+	<div class="d-flex justify-center align-center flex-wrap px-4 py-3 rounded-t bg-surface2">
 		<input type="text" ref="datepickerPeriod" placeholder="Period" class="datePickerInput mr-4" />
 		<v-spacer />
 		<!-- <v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>-->
@@ -111,7 +111,7 @@ export default {
 			await this.loadItems()
 		}, 500)
 
-		this.headers[0].find(i => i.key === 'token0_name').title = 'TANK'
+		this.headers[0].find(i => i.key === 'token0_name').title = 'BIBA'
 		this.headers[0].find(i => i.key === 'token1_name').title = 'BUSD'
 	},
 	mounted() {

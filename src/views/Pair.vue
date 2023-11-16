@@ -82,7 +82,7 @@
 								</v-tabs>
 								<v-window v-model="currentPeriodTab">
 									<v-window-item v-for="period in periodsChanges" :value="period">
-										<div class="pa-4 rounded border bg-blue-grey-darken-4 d-flex">
+										<div class="pa-4 rounded border d-flex">
 											<div>
 												<p class="text-disabled">TXs</p><p>{{ toNumber(pairInfo.stats[currPeriodKey]['txs']) }}</p>
 												<p class="text-disabled mt-4">VOLUME</p><p>{{ formatBigNumber(pairInfo.stats[currPeriodKey]['volume'], 1000) }}</p>
@@ -155,7 +155,7 @@
 
 			<template v-if="tabContent === 'pair'">
 				<div class="d-flex justify-space-between align-center" style="gap: 20px;">
-					<v-card width="400" height="400">
+					<v-card min-width="400" height="400">
             <div v-if="!pairInfo || pairInfoLoading" class="d-flex align-center justify-center fill-height">
               <v-progress-circular :size="50" :width="4" color="white" indeterminate />
             </div>

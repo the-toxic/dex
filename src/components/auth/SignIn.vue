@@ -38,6 +38,7 @@ import { useUserStore } from "@/store/userStore";
 import { useMainStore } from "@/store/mainStore";
 import * as api from "@/api";
 import StepInvite from "@/components/auth/StepInvite.vue";
+import { fetchChains } from "@/api";
 
   export default {
     name: 'SignIn',
@@ -95,7 +96,7 @@ import StepInvite from "@/components/auth/StepInvite.vue";
     },
     methods: {
       ...mapActions(useUserStore, {logIn: 'logIn'}),
-      ...mapActions(useMainStore, {showAlert: 'showAlert'}),
+      ...mapActions(useMainStore, {showAlert: 'showAlert', setChains: 'setChains'}),
 
       async onSubmitEmail() {
         const { valid } = await this.$refs.form.validate()
@@ -120,6 +121,7 @@ import StepInvite from "@/components/auth/StepInvite.vue";
             this.step = 'invite'
           } else {
             this.logIn(data.result)
+            this.loadChains().then()
             await this.$router.replace({name: 'Console'})
           }
         }
@@ -127,8 +129,16 @@ import StepInvite from "@/components/auth/StepInvite.vue";
 
       async onCompleteInvite(userObject) {
         this.logIn(userObject)
+        this.loadChains().then()
         this.$router.replace({name: 'Console'})
       },
+
+      async loadChains () {
+        const { data } = await fetchChains()
+        if(data.success) {
+          this.setChains(data.result)
+        }
+      }
     }
   }
 </script>

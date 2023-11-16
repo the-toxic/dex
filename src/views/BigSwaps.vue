@@ -1,21 +1,19 @@
 <template>
   <v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
     <div class="d-flex align-center">
-      <h1 class="text-h4 mt-2 mb-2">BIG SWAPS EXPLORER</h1>
+      <h1 class="text-h5 mt-2 mb-2">BIG SWAPS EXPLORER</h1>
     </div>
 
-    <v-card class="mb-0">
-      <v-card-text class="d-flex justify-start align-center flex-wrap pa-4">
-        <v-spacer />
-				<div class="d-flex align-center" style="min-width: 300px">
-					<v-text-field v-model="minAmount" label="Minimum USD amount" placeholder="More than $10k" rounded variant="outlined"
-						persistent-placeholder density="compact" prepend-inner-icon="mdi-currency-usd" hide-details  clearable @click:clear="minAmount = ''" class="mr-4"/>
-        	<v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>
-				</div>
-      </v-card-text>
-    </v-card>
-
-		<v-text-field v-model="searchInput" label="Search by Tokens..." prepend-inner-icon="mdi-magnify" hide-details clearable @click:clear="searchInput = ''" />
+    <div class="d-flex justify-end align-center flex-wrap px-4 py-3 rounded-t bg-surface2">
+      <div style="width: 240px;">
+        <v-text-field v-model="minAmount" label="Minimum USD amount" placeholder="More than $10k" rounded variant="outlined"
+          persistent-placeholder density="compact" prepend-inner-icon="mdi-currency-usd" hide-details  clearable @click:clear="minAmount = ''" class="mr-4"/>
+      </div>
+      <div style="width: 240px;">
+        <v-text-field v-model="filter.search" label="Search by tokens" rounded variant="outlined"
+          density="compact" prepend-inner-icon="mdi-magnify" hide-details  clearable @click:clear="filter.search = ''" class="ml-4"/>
+      </div>
+    </div>
 
 		<v-data-table-server
 			v-model:items-per-page="per_page"
@@ -27,6 +25,7 @@
 			:loading="loading"
 			class="elevation-1"
 			@update:options="loadItems"
+      :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
 		>
 			<template v-slot:item.pair_name="{ item, internalItem }">
 				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text"  class="text-none">
@@ -76,7 +75,7 @@ export default {
   data() { return {
 		API_DOMAIN,
     loading: false,
-    per_page: 10,
+    per_page: 20,
 		page: 1,
 		sortBy: [{key: 'date', order: 'desc'}],
 		network: 'bsc', // ether | bsc
@@ -91,7 +90,9 @@ export default {
       { title: 'Maker', key: 'maker', align: 'center', sortable: false },
       { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
-    searchInput: '',
+    filter: {
+      search: ''
+    },
     items: [],
 		minAmount: '',
     totalItems: 999,
@@ -105,7 +106,7 @@ export default {
 		}, 500)
 	},
 	watch: {
-		searchInput(newVal) {
+		'filter.search'(newVal) {
 			this.debouncedFn()
 		},
 		minAmount(newVal) {
@@ -132,7 +133,7 @@ export default {
 				page: this.page,
 				per_page: this.per_page,
 				sortBy: this.sortBy,
-				search: this.searchInput.trim(),
+				search: this.filter.search.trim(),
 				minAmount: this.minAmount.trim()
 			})
       this.loading = false

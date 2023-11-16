@@ -2,17 +2,20 @@
   <v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
     <div class="v-row align-center">
       <div class="v-col">
-        <h1 class="text-h4 mt-2 mb-2">Segments</h1>
+        <h1 class="text-h5 mt-2 mb-2">SEGMENTS</h1>
       </div>
       <div class="v-col-auto">
         <v-select label="Current Segment" v-model="currentSegmentId" :items="segmentsList" :loading="loading" :disabled="loading || !currentSegmentId" hide-no-data
-          density="compact" variant="outlined" hide-details class="va-middle d-inline-block" />
+          density="compact" variant="outlined" hide-details class="va-middle d-inline-block mr-3" />
 
-        <v-btn text="Edit" color="white" variant="outlined" @click="editItem(currentSegmentId)"
-          :disabled="loading || !currentSegmentId" prepend-icon="mdi-pencil" class="text-none mx-3" />
+        <v-btn color="white" variant="outlined" rounded size="small" @click="editItem(currentSegmentId)"
+          :disabled="loading || !currentSegmentId" icon="mdi-pencil" class="text-none mr-3" title="Edit" />
 
-        <v-btn color="text-grey-lighten-1" variant="outlined" @click="editItem()" :disabled="loading" class="text-none" prepend-icon="mdi-plus"
-          >Add Segment</v-btn>
+        <v-btn variant="outlined" @click="editItem()" :disabled="loading" title="Add"
+          rounded size="small" class="text-none mr-3" icon="mdi-plus" />
+
+        <v-btn variant="outlined" @click="null" :disabled="loading" title="Alert"
+          rounded size="small" class="text-none" icon="mdi-bell-outline" />
       </div>
     </div>
 
@@ -22,33 +25,44 @@
         >Add Segment</v-btn>
     </div>
 
-    <v-data-table-server v-else
-      v-model:items-per-page="per_page"
-      v-model:sort-by="sortBy"
-      v-model:page="page"
-      :headers="headers"
-      :items-length="totalItems"
-      :items="items"
-      :loading="loadingTable"
-      class="elevation-1 mt-6 fs14"
-      @update:options="loadTable"
-      :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
-    >
-      <template v-slot:item.from="{ item }">
-        <v-btn :to="{name: 'Address', params: {id: item.from}}" target="_blank" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.from) }}</v-btn>
-        <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.from)" />
-      </template>
-      <template v-slot:item.to="{ item }">
-        <v-btn :to="{name: 'Address', params: {id: item.to}}" target="_blank" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.to) }}</v-btn>
-        <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.to)" />
-      </template>
-      <template v-slot:item.amount="{ item }">{{ formatBigNumber(item.amount) }}</template>
-      <template v-slot:item.token="{ item }">{{ item.token }}</template>
-      <template v-slot:item.usd="{ item }">{{ toCurrency(item.usd) }}</template>
-    </v-data-table-server>
+
+    <template v-else>
+      <div class="d-flex justify-space-between align-center flex-wrap mt-4 px-4 py-3 rounded-t bg-surface2" style="gap: 10px;">
+        <Datepicker pickerName="datepickerPeriod" placeholder="Period" :initPeriod="filter.period" @update="onPeriodChange($event)" />
+        <div style="width: 250px">
+          <v-text-field v-model="filter.search" label="Search" placeholder="By Wallet" clearable @click:clear="filter.search = ''"
+            density="compact" prepend-inner-icon="mdi-magnify" hide-details rounded variant="outlined" persistent-placeholder />
+        </div>
+      </div>
+
+      <v-data-table-server
+        v-model:items-per-page="per_page"
+        v-model:sort-by="sortBy"
+        v-model:page="page"
+        :headers="headers"
+        :items-length="totalItems"
+        :items="items"
+        :loading="loadingTable"
+        class="elevation-1 fs14"
+        @update:options="loadTable"
+        :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
+      >
+        <template v-slot:item.from="{ item }">
+          <v-btn :to="{name: 'Address', params: {id: item.from}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.from) }}</v-btn>
+          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.from)" />
+        </template>
+        <template v-slot:item.to="{ item }">
+          <v-btn :to="{name: 'Address', params: {id: item.to}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.to) }}</v-btn>
+          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.to)" />
+        </template>
+        <template v-slot:item.amount="{ item }">{{ formatNumber(item.amount, true) }}</template>
+        <template v-slot:item.token="{ item }">{{ item.token }}</template>
+        <template v-slot:item.usd="{ item }">{{ toCurrency(item.usd) }}</template>
+      </v-data-table-server>
+    </template>
 
 
-    <v-dialog v-model="dialog" max-width="500">
+    <v-dialog v-model="dialog" max-width="550">
       <v-card :loading="dialogLoader">
         <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
           <v-card-title class="mb-3 pt-7" style="font-size: 25px;">Segment Editor</v-card-title>
@@ -58,40 +72,46 @@
 
             <v-textarea label="Description"  v-model="form.description" rows="2" :rules="[v => !v || v.length <= 1024 || 'Max length is 1000 chars']" />
             <v-spacer />
+<!--{{ form.address }}-->
+            <v-autocomplete label="Address*" v-model="form.address" return-object  placeholder="Enter at least 3 chars to search" :hide-no-data="false"
+              @update:search="onAddressSearch($event, 'address')" :items="addressesList" :loading="addressesLoading" no-filter />
 
-            <v-autocomplete label="Address*" v-model="form.address" return-object placeholder="Type more 3 chars for search"
-              @update:search="onAddressSearch" :items="addressesList" :loading="addressesLoading" clearable no-filter></v-autocomplete>
+            <v-autocomplete label="From*" v-model="form.from" return-object  placeholder="Enter at least 3 chars to search" :hide-no-data="false"
+              @update:search="onAddressSearch($event, 'from')" :items="addressesList" :loading="addressesLoading" no-filter />
 
-            <v-text-field label="From" v-model="form.from" placeholder="Filter from address" persistent-placeholder />
-            <v-text-field label="To" v-model="form.to" placeholder="Filter to address" persistent-placeholder />
+            <v-autocomplete label="To*" v-model="form.to" return-object  placeholder="Enter at least 3 chars to search" :hide-no-data="false"
+              @update:search="onAddressSearch($event, 'to')" :items="addressesList" :loading="addressesLoading" no-filter />
+
+<!--            <v-text-field label="From" v-model="form.from" placeholder="Filter from address" :loading="addressesLoading" persistent-placeholder />-->
+<!--            <v-text-field label="To" v-model="form.to" placeholder="Filter to address" :loading="addressesLoading" persistent-placeholder />-->
 
             <div class="d-flex align-center" style="gap: 10px">
-              <v-text-field label="Min Value in USD" v-model="form.value_usd_min" placeholder="" />
-              <v-text-field label="Max Value in USD" v-model="form.value_usd_max" placeholder="" />
+              <v-text-field label="Min Value in USD" type="number" v-model="form.value_usd_min" :rules="[v => !v || (!isNaN(v) && +v >= 0 && +v < 1e12) || 'Incorrect number']" />
+              <v-text-field label="Max Value in USD" type="number" v-model="form.value_usd_max" :rules="[v => !v || (!isNaN(v) && +v >= 0 && +v < 1e12) || 'Incorrect number']" />
             </div>
 
             <v-select label="Network" v-model="form.network" :items="networksList"></v-select>
 
-            <v-autocomplete label="Tokens*" v-model="form.tokens" return-object multiple chips closable-chips placeholder="Type more 3 chars for search" no-filter
-              @update:search="onTokensSearch" :items="tokensList" item-title="name" item-value="id" :loading="tokensLoading" />
+            <v-autocomplete label="Tokens" v-model="form.tokens" return-object multiple chips closable-chips placeholder="Type more 3 chars for search" no-filter
+              @update:search="onTokensSearch" :items="tokensList" item-title="name" item-value="id" :loading="tokensLoading" counter :rules="[v => v.length <= 10 || 'Max allow 10 tokens']" />
 
-            <div v-if="form.tokens.length" class="border-md border-s-xl pa-3 pb-1 rounded">
+            <!-- <div v-if="form.tokens.length" class="border-md border-s-xl pa-3 pb-1 rounded">
               <div v-for="item in form.tokens" class="d-flex align-center mb-2" style="gap: 10px">
                 <div style="width: 180px">{{ item.name }}</div>
                 <v-text-field label="Min Value" v-model="item.value_min" density="compact" hide-details="auto" />
                 <v-text-field label="Max Value" v-model="item.value_max" density="compact" hide-details="auto" />
               </div>
-            </div>
+            </div>-->
 
-            <div class="mt-4 font-weight-bold text-body-1">Send alert to:</div>
+            <!-- <div class="mt-4 font-weight-bold text-body-1">Send alert to:</div>
             <v-switch label="Webhook" hide-details color="primary" class="d-inline-block mr-3" />
             <v-switch label="Slack" hide-details color="primary" class="d-inline-block mr-3" />
             <v-switch label="Telegram" hide-details color="primary" class="d-inline-block mr-3" />
-            <v-switch label="Email" hide-details color="primary" class="d-inline-block" />
+            <v-switch label="Email" hide-details color="primary" class="d-inline-block" />-->
 
           </v-card-text>
           <v-card-actions>
-            <v-btn variant="text" @click="showDeleteDialog('segment', form.id)" color="error">Delete</v-btn>
+            <v-btn v-if="form.id" variant="text" @click="showDeleteDialog('segment', form.id)" color="error">Delete</v-btn>
             <v-spacer></v-spacer>
             <v-btn variant="text" @click="dialog = false" color="disabled">Close</v-btn>
             <v-btn type="submit" variant="text" color="primary" :loading="dialogLoader" :disabled="dialogLoader">Save</v-btn>
@@ -115,18 +135,22 @@
 </template>
 
 <script>
+import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
 import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { useDebounceFn } from "@vueuse/core";
-import { mapActions } from "pinia";
-import { shortAddress, toCurrency, formatNumber, formatBigNumber } from "@/helpers/mixins";
+import { mapActions, mapState } from "pinia";
+import { shortAddress, toCurrency, formatNumber, chainTypesRegex } from "@/helpers/mixins";
 import { useMainStore } from "@/store/mainStore";
-import { fetchTXs, fetchSegments, getSegmentInfo, saveSegment, searchAddresses, searchTokens, removeSegment } from "@/api";
+import { fetchTXs, fetchSegments, getSegmentInfo, saveSegment, searchAddresses, searchTokens, removeSegment, fetchSearch } from "@/api";
+import Datepicker from "@/components/Datepicker.vue";
 
 export default {
   name: 'Segments',
   head: () => ({ title: 'Segments' }),
-  components: { VDataTableServer },
+  components: { Datepicker, VDataTableServer },
   data() {return {
+    chainTypesRegex,
+
     loading: false,
     currentSegmentId: null,
     segments: [],
@@ -147,6 +171,10 @@ export default {
     totalItems: 0,
     filter: {
       search: '',
+      period: [
+        null, // moment().subtract(7, 'days').startOf("day").toDate(),
+        null, // moment().endOf("day").toDate()
+      ],
     },
 
     dialog: false,
@@ -180,8 +208,12 @@ export default {
   async created() {
     this.loadSegments().then()
 
-    this.searchAddressesDebouncedFn = useDebounceFn(async (query) => {
-      await this.addressesSearch(query)
+    this.searchTXsDebouncedFn = useDebounceFn(async () => {
+      await this.loadTable()
+    }, 500)
+
+    this.searchAddressesDebouncedFn = useDebounceFn(async (query, variant) => {
+      await this.addressesSearch(query, variant)
     }, 500)
 
     this.searchTokensDebouncedFn = useDebounceFn(async (query) => {
@@ -193,18 +225,24 @@ export default {
       if(!oldVal) return
       console.log(oldVal, '->', newVal)
       this.loadTable(this.currentSegmentId)
-    }
+    },
+    'filter.search'(newVal) {
+      this.searchTXsDebouncedFn()
+    },
   },
   computed: {
+    ...mapState(useMainStore, {networks: 'networks'}),
+
     segmentsList() {
       return !this.segments ? [] : this.segments.map(i => ({value: i.id, title: i.name}))
     },
     networksList() {
-      return [{value: '', title: 'All'}, {value: 'ethereum', title: 'Ethereum'}, {value: 'bsc', title: 'BSC'}, {value: 'solana', title: 'Solana'}, ]
+      const networks = [{value: '', title: 'All'}]
+      this.networks.forEach(name => networks.push({value: name.toLowerCase(), title: name}))
+      return networks
     }
   },
   methods: {
-    formatBigNumber,
     toCurrency, formatNumber, shortAddress,
     ...mapActions(useMainStore, { showAlert: 'showAlert' }),
 
@@ -225,6 +263,8 @@ export default {
       const { data } = await fetchTXs({
         segment_id: segmentId,
         search: this.filter.search.trim(),
+        from_dttm: this.filter.period[0] ? moment(this.filter.period[0]).format("YYYY-MM-DD HH:mm:ss") : '',
+        to_dttm: this.filter.period[1] ? moment(this.filter.period[1]).format("YYYY-MM-DD HH:mm:ss") : '',
         page: this.page,
         per_page: this.per_page,
         sortBy: this.sortBy,
@@ -265,22 +305,42 @@ export default {
       }
     },
 
-    async onAddressSearch(query) {
-      if(query.trim().length && query.trim().length <= 2) return
-      await this.searchAddressesDebouncedFn(query)
+    async onAddressSearch(query, variant) {
+      if(query?.trim().length && query.trim().length < 3) return
+      await this.searchAddressesDebouncedFn(query, variant)
     },
-    async addressesSearch(query) {
-      this.addressesLoading = true
-      const { data } = await searchAddresses(query)
-      this.addressesLoading = false
+    async addressesSearch(query, variant) {
+      if(!query?.trim().length) {
+        this.addressesList = []
+        return
+      }
+      this.dialogLoader = true
+      // const { data } = await searchAddresses(query)
+      const {data} = await fetchSearch(query, 'entities,labels')
+      this.dialogLoader = false
+      this.addressesList = []
 
       if(data.success) {
-        this.addressesList = data.result.map(i => ({ value: i.id, title: i.name, }))
+        Object.keys(data.result).forEach(category => {
+          if(!data.result[category].length) return
+
+          data.result[category].forEach(item => {
+            this.addressesList.push({
+              value: item.id,
+              title: item.name,
+              props: {subtitle: category}
+            })
+          })
+        })
+        if(!this.addressesList.length) {
+          const validAddress = Object.values(chainTypesRegex).some(regex => regex.test(query))
+          if(validAddress) this.addressesList.push({ value: query, title: query, props: {subtitle: 'address'} })
+        }
       }
     },
 
     async onTokensSearch(query) {
-      if(query.trim().length && query.trim().length <= 2) return
+      if(query.trim().length && query.trim().length < 3) return
       await this.searchTokensDebouncedFn(query)
     },
     async tokensSearch(query) {
@@ -324,6 +384,11 @@ export default {
         this.showAlert({msg: 'Successfully removed', color: 'success'})
         await this.loadSegments()
       }
+    },
+
+    onPeriodChange($event) {
+      this.filter.period = $event;
+      this.loadTable()
     }
   }
 }

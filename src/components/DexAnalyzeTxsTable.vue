@@ -1,6 +1,6 @@
 <template>
 
-	<div class="d-flex justify-center align-center flex-wrap pa-4" style="background: #141d26">
+	<div class="d-flex justify-center align-center flex-wrap px-4 py-3 rounded-t bg-surface2">
 		<input type="text" ref="datepickerBuy" placeholder="Period of Buy tokens" class="datePickerInput mr-4" />
 		<input type="text" ref="datepickerSell" placeholder="Period of Sell tokens" class="datePickerInput" />
 		<v-spacer />

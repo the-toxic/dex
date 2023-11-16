@@ -178,7 +178,7 @@ export const fetchWhitelistTokens = async (payload) => {
   await delay(500)
   return {
     data: {success: true, result: [
-      {id: 1, network: 'bsc', name: 'TANK', price: 0.0021, percent_5_holders: 23.44, change_7d: 4112445.11,  change_30d: -2144771.22, market_cap: 23040111.22, address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'}
+      {id: 1, network: 'bsc', name: 'BIBA', price: 0.0021, percent_5_holders: 23.44, change_7d: 4112445.11,  change_30d: -2144771.22, market_cap: 23040111.22, address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'}
     ]}
   }
   // return  await axios.post(`user/watchlist_tokens`, payload)
@@ -221,13 +221,14 @@ export const fetchExchanges = async () => {
 }
 
 
-export const fetchSearch = async (payload) => {
-  return await axios.get(`search?q=${payload}`);
-  // await delay(500)
+export const fetchSearch = async (query, categories = null) => {
+  const cats = categories ? `&categories=${categories}` : ''
+  return await axios.get(`search?q=${query}${cats}`);
+
   // return { data: {
   //     success: true, result: [
   //       { type: 'entity', id: 'binance', name: 'Binance' },
-  //       { type: 'token', id: '0x1234', name: 'TANK', address: '0x25412r3rd332r4ft5f46f23r111' },
+  //       { type: 'token', id: '0x1234', name: 'Biba', address: '0x25412r3rd332r4ft5f46f23r111' },
   //       { type: 'wallet', id: '0x5678', name: '0x5678', address: '0x5678' }
   //     ]
   //   }}
@@ -245,7 +246,7 @@ export const fetchAddress = async (id) => {
   return await axios.get(`address/${id}`);
   // await delay(500)
   // if(id === '0x1234')
-  //   return { data: { success: true, result: { type: 'token', name: 'TANK', id: '1245-12453-152325-34234', address: '0x25412r3rd332r4ft5f46f23r' } }}
+  //   return { data: { success: true, result: { type: 'token', name: 'BIBA', id: '1245-12453-152325-34234', address: '0x25412r3rd332r4ft5f46f23r' } }}
   // else
   //   return { data: { success: true, result: { type: 'wallet', name: '0x5678', id: '2342-2422-2222-3333', address: '0x5678' } }}
 }
@@ -298,7 +299,7 @@ export const fetchTXs = async (payload) => {
   return { data: { success: true, result: {
     total: 1,
     items: [
-      { id: 1, date: '2023-11-09 22:33:44', amount: '1111111111', usd: '2222222.22', token: 'TANK', from: '0x0000000000000000000000000000000000000000', to: '0x1111111111111111111111111111111111111111' },
+      { id: 1, date: '2023-11-09 22:33:44', amount: '1111111111', usd: '2222222.22', token: 'BIBA', from: '0x0000000000000000000000000000000000000000', to: '0x1111111111111111111111111111111111111111' },
     ]
   }}}
 }
@@ -316,7 +317,7 @@ export const getSegmentInfo = async (id) => {
     value_usd_min: '0',
     value_usd_max: '1000',
     tokens: [
-      { id: 1, name: 'TANK', value_min: '', value_max: '999111', }
+      { id: 1, name: 'BIBA', value_min: '', value_max: '999111', }
     ],
   }}}
 }

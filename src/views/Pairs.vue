@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
     <div class="d-flex align-center">
-      <h1 class="text-h4 mt-2 mb-2">EXPLORER</h1>
+      <h1 class="text-h5 mt-2 mb-2">EXPLORER</h1>
     </div>
 
     <v-card class="mb-0">

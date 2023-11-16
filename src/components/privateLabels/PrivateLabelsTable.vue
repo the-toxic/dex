@@ -1,6 +1,6 @@
 <template>
 
-  <div class="d-flex justify-space-between align-center flex-wrap px-4 py-4 border-b" style="background: #141d26">
+  <div class="d-flex justify-center align-center flex-wrap px-4 py-3 rounded-t bg-surface2">
     <v-btn @click="editItem()" variant="tonal" prepend-icon="mdi-plus" color="success" rounded class="text-none" >Add Label</v-btn>
     <v-spacer />
     <div style="width: 115px;">
@@ -28,7 +28,7 @@
     :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
     <template v-slot:item.address="{ item }">
-      <v-btn :to="{name: 'Address', params: {id: item.address}}" target="_blank" rounded variant="text" :title="item.address" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn>
+      <v-btn :to="{name: 'Address', params: {id: item.address}}" rounded variant="text" :title="item.address" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn>
       <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.address)" />
     </template>
     <template v-slot:item.local_label="{ item }">

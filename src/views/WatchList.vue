@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="mx-auto relative" style="max-width: 1500px;height: 100%">
     <div class="d-flex align-center">
-      <h1 class="text-h4 mt-2 mb-2">WATCHLIST</h1>
+      <h1 class="text-h5 mt-2 mb-2">WATCHLIST</h1>
     </div>
 
 		<v-tabs v-model="tab" class="mt-6 mb-6 border-b">

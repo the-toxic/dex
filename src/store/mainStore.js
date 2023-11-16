@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 
 const localStorageTheme = window.localStorage.getItem('theme')
 const showCookiePopup = !window.localStorage.getItem('cookiePopup')
+const chains = JSON.parse(window.localStorage.getItem('chains'))
 
 export const useMainStore = defineStore('main', {
 	state: () => ({
@@ -14,8 +15,9 @@ export const useMainStore = defineStore('main', {
     wsConnected: false,
     searchDialog: false,
     dialog: false,
-    chains: null,
+    chains: chains || null,
     chainTypes: ['EVM', 'Tron', 'Bitcoin', 'Other'], // 'Solana', 'Dash', 'Litecoin', 'Dogecoin'
+    networks: ['Ethereum', 'BSC', 'Polygon', 'Arbitrum', 'Optimism'],
     // subscribeForm: false,
     showCookie: showCookiePopup,
 	}),
@@ -50,6 +52,7 @@ export const useMainStore = defineStore('main', {
     },
     setChains(payload) {
       this.chains = payload
+      window.localStorage.setItem('chains', JSON.stringify(payload))
     },
     // showSubscribeForm(visible) {
     //   this.subscribeForm = visible || false

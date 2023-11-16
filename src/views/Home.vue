@@ -137,7 +137,7 @@
               <h4 class="trial_title">Unlock crypto insights with powerful analytics</h4>
               <p class="trial_text_p">Gain clarity. Identify opportunities. Improve decisions. Our analytics platform provides robust blockchain intelligence for your crypto journey. Embrace data-driven insights today.</p>
             </div>
-            <router-link :to="{name: userStore.logged ? 'Console' : 'AuthSignIn'}" class="link trial_link">Start your Trial</router-link>
+            <router-link :to="{name: userStore.logged ? 'Console' : 'AuthSignIn'}" class="link trial_link">Get Started</router-link>
           </div>
         </div>
       </section>
@@ -152,7 +152,7 @@
               <div class="footer_item_list">
                 <a href="#!" class="footer_item_link">About Us</a>
                 <router-link :to="{name: 'Career'}" class="footer_item_link">Careers</router-link>
-                <a :href="DOCS_HOST+'/legal/legal-advice'" target="_blank" class="footer_item_link">Legal</a>
+                <a :href="DOCS_HOST+'/legal'" target="_blank" class="footer_item_link">Legal</a>
               </div>
             </div>
             <div class="footer_item">

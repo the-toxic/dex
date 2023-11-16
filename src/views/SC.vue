@@ -4,7 +4,7 @@
       <h1 class="text-h4 mt-2 mb-2">SC</h1>
     </div>
 
-		<div class="d-flex justify-center align-center flex-wrap pa-4" style="background: #141d26">
+		<div class="d-flex justify-center align-center flex-wrap px-4 py-3 rounded-t bg-surface2">
 			<input type="text" ref="datepickerBuy" placeholder="Period of Buy tokens" class="datePickerInput mr-4" />
 			<input type="text" ref="datepickerSell" placeholder="Period of Sell tokens" class="datePickerInput" />
 			<v-spacer />
@@ -29,7 +29,7 @@
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->
 			<template v-slot:item.wallet="{ item, internalItem }">
-				<v-btn :to="{name: 'Address', params: {id: item.wallet}}" target="_blank" rounded variant="text" :active="false" class="text-none">
+				<v-btn :to="{name: 'Address', params: {id: item.wallet}}" rounded variant="text" :active="false" class="text-none">
 					<span class="text-disabled mr-1" style="width: 30px;">#{{ internalItem.index + 1 }}</span>
 					{{ shortAddress(item.wallet) }}
 				</v-btn>

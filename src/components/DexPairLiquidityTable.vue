@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-space-between align-center flex-wrap px-4 py-2" style="gap: 10px; background: #1a2633">
+  <div class="d-flex justify-space-between align-center flex-wrap px-4 py-3 rounded-t bg-surface2" style="gap: 10px;">
     <Datepicker pickerName="datepickerPeriod" placeholder="Period" :initPeriod="filter.period" @update="onPeriodChange($event)" />
     <div>
       Type:
@@ -29,13 +29,13 @@
     :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
   >
     <template v-slot:item.maker="{ item }">
-      <v-btn :to="{name: 'Address', params: {id: item.maker}}" target="_blank" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.maker) }}</v-btn>
+      <v-btn :to="{name: 'Address', params: {id: item.maker}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.maker) }}</v-btn>
       <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.maker)" />
     </template>
     <template v-slot:item.type="{ item }"><v-chip :color="item.token0_amount > 0 ? 'success':'error'" class="text-uppercase" size="small">{{ item.token0_amount > 0 ? "Adds" : 'Removes' }}</v-chip></template>
-    <template v-slot:item.token0_amount="{ item }">{{ formatNumber(Math.abs(item.token0_amount)) }}</template>
+    <template v-slot:item.token0_amount="{ item }">{{ formatNumber(Math.abs(item.token0_amount), true) }}</template>
     <template v-slot:item.token0_total="{ item }">${{ formatNumber(item.token0_total, true) }}</template>
-    <template v-slot:item.token1_amount="{ item }">{{ formatNumber(Math.abs(item.token1_amount)) }}</template>
+    <template v-slot:item.token1_amount="{ item }">{{ formatNumber(Math.abs(item.token1_amount), true) }}</template>
     <template v-slot:item.token1_total="{ item }">${{ formatNumber(item.token1_total, true) }}</template>
     <template v-slot:item.total="{ item }">${{ formatNumber(item.total, true) }}</template>
 
@@ -43,9 +43,9 @@
       <tfoot>
       <tr class="text-surface-variant text-center">
         <td colspan="4" class="text-right">Total</td>
-        <td>{{ formatNumber(Math.abs(totalInfo.token0_amount)) }}</td>
+        <td>{{ formatNumber(Math.abs(totalInfo.token0_amount), true) }}</td>
         <td>${{ formatNumber(totalInfo.token0_total, true) }}</td>
-        <td>{{ formatNumber(Math.abs(totalInfo.token1_amount)) }}</td>
+        <td>{{ formatNumber(Math.abs(totalInfo.token1_amount), true) }}</td>
         <td>${{ formatNumber(totalInfo.token1_total, true) }}</td>
         <td>${{ formatNumber(totalInfo.total, true) }}</td>
       </tr>
@@ -104,7 +104,6 @@ export default {
     totalItems: 999,
 		totalInfo: {},
 
-		pickerPeriod: '',
 		filter: {
       search: '',
 			type: 0,
