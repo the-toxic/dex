@@ -1,7 +1,7 @@
 <template>
   <template v-if="step === 'email'">
-    <img src="/assets/landing/svg/logo.svg" class="mb-6 mt-2" alt="Logo">
-    <h3 class="fs24 mb-10">Sign In</h3>
+<!--    <img src="/assets/landing/svg/logo.svg" class="d-md-none mb-6 mt-2" alt="Logo">-->
+    <h3 class="fs24 mb-8">Sign In</h3>
     <v-form ref="form" @submit.prevent="onSubmitEmail">
       <v-text-field label="Email"
         v-model.trim="form.email"
@@ -19,10 +19,10 @@
       <v-btn type="submit" color="primary" block class="myBtn mt-2 text-none" size="large"
        :loading="loading" :disabled="loading">Login</v-btn>
 
-      <router-link :to="{name: 'AuthResetPassword'}" class="mt-8 fs16 d-inline-block text-none text-decoration-none text-secondary">Reset password</router-link>
-
-      <v-divider class="mt-4" />
-      <v-btn :to="{name: 'Home'}" variant="outlined" color="secondary" class="mt-6 text-none">Back to Home</v-btn>
+      <div class="d-flex justify-space-between align-center mt-8">
+        <v-btn variant="text" :to="{name: 'AuthResetPassword'}" color="secondary" class="text-none mx-n4">Reset Password</v-btn>
+        <v-btn :to="{name: 'Home'}" variant="outlined" color="secondary" class="text-none">Back to Home</v-btn>
+      </div>
     </v-form>
   </template>
   <template v-if="step === 'invite'">

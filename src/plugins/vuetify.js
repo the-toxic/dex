@@ -14,7 +14,8 @@ export default createVuetify({
         colors: {
           surface: '#18181F', // 282833;  $back-base color - default cards, btn, lists bg (old #141d26)
           surface2: '#282833',
-          primary: '#1867C0',
+          myBlack: '#070709',
+          primary: '#4200FF',
           secondary: '#5CBBF6',
         },
       },
