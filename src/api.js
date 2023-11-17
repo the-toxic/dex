@@ -284,14 +284,14 @@ export const removePrivateEntity = async (uuid) => {
 }
 
 /** Segments */
-export const fetchSegments = async (payload) => {
-  // return await axios.post(`xhr/segments`, payload);
-  await delay(500)
-  return { data: { success: true, result: [
-    { id: 1, name: 'My Segment 1' },
-    { id: 2, name: 'My Segment 2' },
-    { id: 3, name: 'My Segment 3' },
-  ]}}
+export const fetchSegments = async () => {
+  return await axios.get(`xhr/private/segments/`);
+  // await delay(500)
+  // return { data: { success: true, result: [
+  //   { id: 1, name: 'My Segment 1' },
+  //   { id: 2, name: 'My Segment 2' },
+  //   { id: 3, name: 'My Segment 3' },
+  // ]}}
 }
 export const fetchTXs = async (payload) => {
   // return await axios.post(`xhr/txs`, payload);
@@ -304,42 +304,32 @@ export const fetchTXs = async (payload) => {
   }}}
 }
 export const getSegmentInfo = async (id) => {
-  // return await axios.get(`xhr/segments/${id}`);
-  await delay(500)
-  return { data: { success: true, result: {
-    id: 'My Segment 1',
-    name: 'My Segment 1',
-    description: 'qqq',
-    address: '0x0000000000000000000000000000000000000000',
-    from: '',
-    to: '',
-    network: '',
-    value_usd_min: '0',
-    value_usd_max: '1000',
-    tokens: [
-      { id: 1, name: 'BIBA', value_min: '', value_max: '999111', }
-    ],
-  }}}
-}
-export const searchAddresses = async (query) => {
-  // return await axios.get(`xhr/search-address?q=${query}`);
-  await delay(500)
-  return { data: { success: true, result: [{id: 1, name: 'Any Address'}]}}
-}
-export const searchTokens = async (query) => {
-  // return await axios.get(`xhr/search-tokens?q=${query}`);
-  await delay(500)
-  return { data: { success: true, result: [{id: 1, name: 'Token One'},{id: 2, name: 'Token Two'},{id: 3, name: 'Token Three'}]}}
+  return await axios.get(`xhr/private/segment/${id}`);
+  // await delay(500)
+  // return { data: { success: true, result: {
+  //   id: 4,
+  //   name: 'Segment 4',
+  //   description: 'qqq',
+  //   main_address: '0x0000000000000000000000000000000000000001',
+  //   from_address: '',
+  //   to_address: '',
+  //   chain_id: 2,
+  //   min_value: '0',
+  //   max_value: '1000',
+  //   tokens: [
+  //     { id: 1, name: 'DogeCoin', symbol: 'DOGE' }
+  //   ],
+  // }}}
 }
 export const saveSegment = async (payload) => {
-  // return await axios.post(`xhr/segments/${!!payload.id ? '/'+payload.id : '' }`, payload);
-  await delay(500)
-  return { data: { success: true, result: {}}}
+  return await axios.post(`xhr/private/segment/save`, payload);
+  // await delay(500)
+  // return { data: { success: true, result: {}}}
 }
 export const removeSegment = async (id) => {
-  // return await axios.delete(`xhr/segments/${id}`);
-  await delay(500)
-  return { data: { success: true, result: {}}}
+  return await axios.delete(`xhr/private/segment/${id}`);
+  // await delay(500)
+  // return { data: { success: true, result: {}}}
 }
 
 /** Dashboard */

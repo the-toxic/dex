@@ -1,7 +1,7 @@
 <template>
   <template v-if="step === 'email'">
-    <img src="/assets/landing/svg/logo.svg" class="mb-6 mt-2" alt="Logo">
-    <h3 class="fs24 mb-10">Reset Password</h3>
+<!--    <img src="/assets/landing/svg/logo.svg" class="mb-6 mt-2" alt="Logo">-->
+    <h3 class="fs24 mb-8">Reset Password</h3>
 
     <v-form v-if="step === 'email'" ref="form" @submit.prevent="onSubmitEmail">
       <v-text-field label="Email"
