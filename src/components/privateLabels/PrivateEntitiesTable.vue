@@ -27,13 +27,14 @@
     </template>
     <template v-slot:item.name="{ item }">
 <!--      <img :src="iconPath(item.uuid)" class="va-middle" style="max-height: 40px" />-->
-      <v-img :src="iconPath(item.uuid)" height="40" width="60" class="d-inline-block va-middle">
+      <v-img :src="iconPath(item.uuid)" height="40" width="60" aspect-ratio="1/1" class="d-inline-block va-middle ml-16">
         <!-- <template v-slot:error>?</template>-->
         <template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
           <v-icon icon="mdi-help-rhombus-outline" size="large" />
         </div></template>
       </v-img>
-      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" rounded variant="text" density="comfortable" :active="false" class="text-none" width="250">{{ item.name.slice(0, 30) }}</v-btn>
+<!--      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" rounded variant="text" density="comfortable" :active="false" class="text-none" width="250">{{ item.name.slice(0, 30) }}</v-btn>-->
+      <router-link :to="{name: 'Entity', params: {id: item.uuid}}" class="d-inline-block text-left text-white text-decoration-none" style="width: 250px">{{ item.name.slice(0, 30) }}</router-link>
     </template>
     <template v-slot:item.action="{ item }">
       <v-btn @click="editItem(item)" icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>

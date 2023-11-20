@@ -5,10 +5,10 @@
         <h1 class="text-h5 mt-2 mb-2">SEGMENTS</h1>
       </div>
       <div class="v-col-auto">
-        <v-select label="Segment" v-model="currentSegmentId" :items="segmentsList" :loading="loading" :disabled="loading || !currentSegmentId" hide-no-data
+        <v-select v-if="segmentsList.length" label="Segment" v-model="currentSegmentId" :items="segmentsList" :loading="loading" :disabled="loading || !currentSegmentId" hide-no-data
           density="compact" variant="outlined" hide-details class="va-middle d-inline-block mr-3" />
 
-        <v-btn color="white" variant="outlined" rounded size="small" @click="editItem(currentSegmentId)"
+        <v-btn v-if="segmentsList.length" color="white" variant="outlined" rounded size="small" @click="editItem(currentSegmentId)"
           :disabled="loading || !currentSegmentId" icon="mdi-pencil" class="text-none mr-3" title="Edit" />
 
         <v-btn variant="outlined" @click="editItem()" :disabled="loading" title="Add"
@@ -203,7 +203,12 @@ export default {
     },
   }},
   async created() {
-    this.loadSegments().then()
+    const { id } = this.$route.query
+    if(id && !isNaN(id) && +id > 0 && +id < 1000000) {
+      this.loadSegments(+id).then()
+    } else {
+      this.loadSegments().then()
+    }
 
     this.searchTXsDebouncedFn = useDebounceFn(async () => {
       await this.loadTable()
@@ -222,6 +227,7 @@ export default {
       if(!oldVal) return
       console.log(oldVal, '->', newVal)
       this.loadTable(this.currentSegmentId)
+      this.$router.push({...this.$route, query: {id: this.currentSegmentId}})
     },
     'filter.search'(newVal) {
       this.searchTXsDebouncedFn()
@@ -241,7 +247,7 @@ export default {
           chains.push({value: item.id, title: item.name})
       })
       return chains
-    }
+    },
   },
   methods: {
     toCurrency, formatNumber, shortAddress,
@@ -254,7 +260,8 @@ export default {
 
       if(data.success) {
         this.segments = data.result.items
-        this.currentSegmentId = selectIDAfterLoad || data.result.items[0]?.id || null
+        const existId = selectIDAfterLoad && data.result.items.some(item => item.id === selectIDAfterLoad)
+        this.currentSegmentId = (existId && selectIDAfterLoad) || data.result.items[0]?.id || null
         await this.loadTable(this.currentSegmentId)
       }
     },
@@ -351,10 +358,23 @@ export default {
           })
         })
         if(!this.addressesList.length) {
-          const validAddress = Object.values(chainTypesRegex).some(regex => regex.test(query))
+          const validAddress = this.checkWalletOnChainTypes(query)
           if(validAddress) this.addressesList.push({ value: query, title: query, props: {subtitle: 'address'} })
         }
       }
+    },
+
+    checkWalletOnChainTypes(query) {
+      const chainTypes = [ // BUG on import from mixins
+        /^0x[0-9a-fA-F]{40}$/g,
+        /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/ig,
+        /^T[A-Za-z1-9]{33}$/g,
+        /^[1-9A-HJ-NP-Za-km-z]{32,44}$/g,
+        /X[1-9A-HJ-NP-Za-km-z]{33}$/g,
+        /^([LM3][a-km-zA-HJ-NP-Z1-9]{26,33}|ltc1[a-z0-9]{39,59})$/,
+        /^D[5-9A-HJ-NP-U][1-9A-HJ-NP-Za-km-z]{32}$/,
+      ]
+      return chainTypes.some( regex => regex.test(query) )
     },
 
     async onTokensSearch(query) {
@@ -387,8 +407,8 @@ export default {
       form.from_address = !form.from_address ? null : { type: form.from_address.props.subtitle, value: form.from_address.value }
       form.to_address = !form.to_address ? null : { type: form.to_address.props.subtitle, value: form.to_address.value }
       form.tokens = form.tokens.map(i => i.value)
-      form.min_value = +form.min_value ? form.min_value : null
-      form.max_value = +form.max_value ? form.max_value : null
+      form.min_value = +form.min_value ? +form.min_value : null
+      form.max_value = +form.max_value ? +form.max_value : null
 
       this.dialogLoader = true
       const { data } = await saveSegment(form)

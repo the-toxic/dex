@@ -6,9 +6,9 @@
 				<!-- <v-chip text="My Dashboard" size="large" />-->
 			</div>
 			<div class="v-col-auto">
-				<v-select v-model="activeDashSelect" :items="parsedItems" :loading="loading" :disabled="loading || !activeDashSelect" hide-no-data
+				<v-select v-if="parsedItems.length" v-model="currentDashId" :items="parsedItems" :loading="loading" :disabled="loading || !currentDashId" hide-no-data
 					density="compact" variant="outlined" hide-details class="va-middle d-inline-block" />
-				<v-btn color="white" variant="outlined" @click="editDashboard()" :disabled="currentIsDefault || loading || !activeDashSelect" icon="mdi-pencil" rounded size="small" class="text-none mx-3" />
+				<v-btn color="white" variant="outlined" @click="editDashboard()" :disabled="currentIsDefault || loading || !currentDashId" icon="mdi-pencil" rounded size="small" class="text-none mx-3" />
 				<v-btn color="text-grey-lighten-1" variant="outlined" @click="addDashboard" :disabled="loading" class="text-none" icon="mdi-plus" rounded size="small" />
 			</div>
 		</div>
@@ -59,7 +59,7 @@ export default {
   head: () => ({ title: 'Dashboard' }),
   data: () => ({
     loading: false,
-		activeDashSelect: null,
+		currentDashId: null,
     items: [],
 		soonText: 'Add Widget',
 
@@ -74,19 +74,32 @@ export default {
 		// deletedId: null
   }),
 	created() {
-		this.loadData()
+    const { id } = this.$route.query
+    if(id && !isNaN(id) && +id > 0 && +id < 1000000) {
+      this.loadDashboards(+id).then()
+    } else {
+      this.loadDashboards().then()
+    }
 	},
+  watch: {
+    currentDashId(newVal, oldVal) {
+      if (!oldVal) return
+      console.log(oldVal, '->', newVal)
+      this.$router.push({ ...this.$route, query: { id: this.currentDashId } })
+    },
+  },
 	computed: {
 		parsedItems() { return !this.items ? [] : this.items.map(i => ({value: +i.id, title: i.name})) },
     currentIsDefault() {
       if(!this.items.length) return false
-      const { name: currentName } = this.items.find(i => +i.id === +this.activeDashSelect)
+      const { name: currentName } = this.items.find(i => +i.id === +this.currentDashId)
       return currentName === 'Default'
     }
 	},
 	methods: {
-		...mapActions(useMainStore, ['showAlert']),
-    async loadData (selectedIdAfterLoad = null) {
+		...mapActions(useMainStore, {showAlert: 'showAlert'}),
+
+    async loadDashboards (selectIDAfterLoad = null) {
       this.loading = true
       const { data } = await fetchDashboards()
       this.loading = false
@@ -97,7 +110,8 @@ export default {
 					name: data.result[id].name,
 					widgets: data.result[id].widgets
 				}))
-				this.activeDashSelect = +selectedIdAfterLoad || +this.items[0]?.id
+        const existId = selectIDAfterLoad && this.items.some(item => item.id === selectIDAfterLoad)
+        this.currentDashId = (existId && selectIDAfterLoad) || this.items[0]?.id || null
       }
     },
 		addDashboard() {
@@ -106,7 +120,7 @@ export default {
 		},
 		async editDashboard() {
 			this.dialog = true
-			const { id, name } = this.items.find(i => +i.id === this.activeDashSelect)
+			const { id, name } = this.items.find(i => +i.id === this.currentDashId)
 			this.form.id = +id
 			this.form.name = name
 		},
@@ -130,7 +144,7 @@ export default {
 			if(data.success) {
 				this.dialog = false
 				this.showAlert({msg: 'Successfully save', color: 'success'})
-				await this.loadData(data.result?.id || this.activeDashSelect)
+				await this.loadDashboards(data.result?.id || this.currentDashId)
 			}
 		},
 		async onDeleteItem() {
@@ -143,7 +157,7 @@ export default {
 
 			if(data.success) {
 				this.showAlert({msg: 'Successfully removed', color: 'success'})
-				await this.loadData()
+				await this.loadDashboards()
 			}
 		},
 		addWidget() {}

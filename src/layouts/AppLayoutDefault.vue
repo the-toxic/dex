@@ -120,7 +120,7 @@
 
     <v-footer app absolute :color="$route.path.startsWith('/console') ? null : '#000'" class="d-flex flex-column text-center text-md-left">
 
-      <div class="d-flex flex-wrap w-100 align-center px-md-4 pb-2">
+      <!-- <div class="d-flex flex-wrap w-100 align-center px-md-4 pb-2">
         <div class="pt-4 fill-width-m">
           <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
             <div class="" @click="navigate">
@@ -154,12 +154,10 @@
             <v-btn :to="{name: 'AuthSignIn'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Sign In</v-btn><br />
             <v-btn :to="{name: 'AuthSignUp'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Sign Up</v-btn><br />
             <v-btn :to="{name: 'AuthResetPassword'}" v-if="!userStore.logged" variant="text" rounded class="text-none">Reset Password</v-btn>
-
           </v-col>
         </v-row>
-
-      </div>
-      <v-divider class="fill-width pb-2" />
+      </div>-->
+      <!-- <v-divider class="fill-width pb-2" />-->
 
       <div class="d-flex justify-space-between align-center flex-wrap fill-width px-md-4">
         <div class="text-center text-disabled fs14 order-1 order-md-0 mx-auto mx-md-0 ">
@@ -167,8 +165,8 @@
           <router-link class="text-none text-disabled" :to="{name: 'Home'}" exact>{{ PROJECT_NAME }}</router-link>. <span>All Rights Reserved.</span>
         </div>
         <div class="text-center mx-auto mx-md-0 order-0 order-md-1">
-          <v-btn variant="text" rounded :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" class="text-none text-disabled">Terms of Use</v-btn>
-          <v-btn variant="text" rounded :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" class="text-none text-disabled">Privacy Policy</v-btn>
+          <!-- <v-btn variant="text" rounded :href="DOCS_HOST+'/legal/terms-of-use'" target="_blank" rel="nofollow" class="text-none text-disabled">Terms of Use</v-btn>
+          <v-btn variant="text" rounded :href="DOCS_HOST+'/legal/privacy-policy'" target="_blank" rel="nofollow" class="text-none text-disabled">Privacy Policy</v-btn>-->
         </div>
       </div>
     </v-footer>
