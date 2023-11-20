@@ -140,7 +140,7 @@
 						<span class="" style="color:#9EA0AF;">Total: {{ shortNumber(buyVolume24 + sellVolume24) }} {{ rightToken }}</span>
 					</div>-->
 				</div>
-				<v-card class="mt-2 mb-8 rounded-xl">
+				<v-card class="mt-2 mb-8">
 					<TableHistory />
 				</v-card>
 			</div>

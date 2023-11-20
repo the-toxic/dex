@@ -19,6 +19,11 @@ export const passwordRules = [
   v => !!v || 'Field is required',
   v => /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])[\w~!?.,@#$%^&*=+-]{6,25}$/.test(v) || 'Password must be at least one lowercase letter, uppercase letter and number. 6 - 25 characters',
 ]
+/*export const urlRules = [
+  v => !!v || 'Field is required',
+  v => urlRegex.test(v) || 'Invalid site address',
+],*/
+
 export const chainTypesRegex = {
   EVM: /^0x[0-9a-fA-F]{40}$/g,
   Bitcoin: /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/ig,
@@ -37,15 +42,13 @@ export const chainTypeWalletRules = chainType => [
   v => chainType !== 'Litecoin' || /^([LM3][a-km-zA-HJ-NP-Z1-9]{26,33}|ltc1[a-z0-9]{39,59})$/.test(v) || 'Invalid Litecoin format, check length and lower/upper-case',
   v => chainType !== 'Dogecoin' || /^D[5-9A-HJ-NP-U][1-9A-HJ-NP-Za-km-z]{32}$/.test(v) || 'Invalid Dogecoin format, check length and lower/upper-case',
 ]
-/*export const urlRules = [
-  v => !!v || 'Field is required',
-  v => urlRegex.test(v) || 'Invalid site address',
-],*/
+
 export const SOCIAL_TWITTER = import.meta.env.VITE_APP_SOCIAL_TWITTER
 export const SOCIAL_TELEGRAM = import.meta.env.VITE_APP_SOCIAL_TELEGRAM
 export const SOCIAL_TELEGRAM_CHANNEL = import.meta.env.VITE_APP_SOCIAL_TELEGRAM_CHANNEL
 export const SOCIAL_DISCORD = import.meta.env.VITE_APP_SOCIAL_DISCORD
 export const SOCIAL_LINKTREE = import.meta.env.VITE_APP_SOCIAL_LINKTREE
+export const SOCIAL_WP = import.meta.env.VITE_APP_SOCIAL_WP
 
 export const toNumber = (value, isRound = false) => isNaN(value) ? 0 : new Intl.NumberFormat('en-US').format(isRound ? Math.round(value) : value)
 export const toCurrency = (value, currency) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'usd' }).format(isNaN(value) ? 0 : +value)

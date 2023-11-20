@@ -7,7 +7,7 @@ import { useMainStore } from "@/store/mainStore";
 
 import Home from "@/views/Home.vue";
 import E404 from "@/views/E404.vue";
-import Career from "@/views/Career.vue";
+// import Career from "@/views/Career.vue";
 import ContactUs from "@/views/ContactUs.vue";
 
 const routes = [
@@ -30,7 +30,7 @@ const routes = [
     { path: 'profile', name: 'Profile', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Profile.vue") },
 
   ]},
-  { path: '/career', name: 'Career', component: Career },
+  // { path: '/career', name: 'Career', component: Career },
   { path: '/contact-us', name: 'ContactUs', component: ContactUs },
   // { path: '/console', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pair', params: {network: 'bsc', pairAddr: '0x1b96b92314c44b159149f7e0303511fb2fc4774f'} } },
   // { path: '/auth/sign-in', name: 'AuthSignIn', component: () => import(/* webpackChunkName: "auth" */ '@/views/auth/Login.vue'), meta: { layout: AppLayoutsEnum.auth } },

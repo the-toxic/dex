@@ -61,8 +61,8 @@
               ...chainTypeWalletRules(form.chain_type)
             ]" />
 
-          <v-autocomplete label="Entity" v-model="form.entity_uuid" placeholder="Type more 3 chars for search"
-            @update:search="onEntitySearch" :items="entitiesList" :loading="entitiesLoading" clearable no-filter class="mt-2"></v-autocomplete>
+          <v-autocomplete label="Entity" v-model="form.entity" return-object placeholder="Type more 3 chars for search"
+            @update:search="onEntitySearch" :items="entitiesList" :loading="entitiesLoading" clearable class="mt-2"></v-autocomplete>
 
           <v-textarea label="Note" v-model="form.description" rows="2" :rules="[v => !v || v.length <= 1000 || 'Max length is 1000 chars']" class="mt-2" />
         </v-card-text>
@@ -129,7 +129,7 @@ export default {
       local_label: '',
       address: '',
       chain_type: '',
-      entity_uuid: '',
+      entity: null,
       description: '',
     },
     entitiesList: [],
@@ -192,7 +192,8 @@ export default {
 
     async editItem(item = null) {
       this.dialog = true
-      this.entitySearch('').then()
+      this.entitySearch('default').then()
+      this.entitiesList = []
 
       if(item) {
         this.form.id = item.id
@@ -200,21 +201,23 @@ export default {
         this.form.address = item.address
         this.form.chain_type = item.chain_type
         this.form.description = item.description
-        this.form.entity_uuid = item.entity_uuid
-        this.entitiesList = item.entity_uuid ? [{value: item.entity_uuid, title: item.entity_name}] : []
+        this.form.entity = item.entity_uuid ? {value: item.entity_uuid, title: item.entity_name} : null
       } else {
         await this.$nextTick(() => this.$refs.form.reset()) // resetValidation()
         this.form.id = null
         this.form.chain_type = 'EVM' // default
-        this.entitiesList = []
       }
     },
     async onSubmit() {
       const { valid } = await this.$refs.form.validate()
       if(!valid) return false
 
+      const form = { ...this.form }
+      form.entity_uuid = !form.entity ? null : form.entity.value
+      delete form.entity
+
       this.dialogLoader = true
-      const { data } = await savePrivateLabel(this.form)
+      const { data } = await savePrivateLabel(form)
       this.dialogLoader = false
 
       if(data.success) {
@@ -225,10 +228,16 @@ export default {
     },
 
     async onEntitySearch(query) {
-      if(query.trim().length && query.trim().length <= 2) return
+      if(query.trim().length && query.trim().length < 3) return
       await this.searchDebouncedFn(query)
     },
     async entitySearch(query) {
+      if(!query.trim().length) {
+        this.entitiesList = []
+        return
+      }
+      if(query === 'default') query = '' // for fill on open modal
+
       this.entitiesLoading = true
       const { data } = await searchEntities(query)
       this.entitiesLoading = false

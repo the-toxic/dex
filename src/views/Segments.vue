@@ -397,7 +397,7 @@ export default {
       if(data.success) {
         this.dialog = false
         this.showAlert({msg: 'Successfully updated', color: 'success'})
-        await this.loadSegments(this.currentSegmentId)
+        await this.loadSegments(data.result.id || this.currentSegmentId) // get new id after create
       }
     },
 

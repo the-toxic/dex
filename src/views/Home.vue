@@ -151,14 +151,14 @@
               <p class="footer_item_title">Company</p>
               <div class="footer_item_list">
                 <a href="#!" class="footer_item_link">About Us</a>
-                <router-link :to="{name: 'Career'}" class="footer_item_link">Careers</router-link>
+                <a href="https://forms.gle/Jf6ZCZvXN6wi5UFG6" target="_blank" class="footer_item_link">Career</a>
                 <a :href="DOCS_HOST+'/legal'" target="_blank" class="footer_item_link">Legal</a>
               </div>
             </div>
             <div class="footer_item">
               <p class="footer_item_title">Resources</p>
               <div class="footer_item_list">
-                <a href="/whitepaper.pdf" target="_blank" class="footer_item_link">White Paper</a>
+                <a :href="SOCIAL_WP" target="_blank" class="footer_item_link">White Paper</a>
                 <a :href="NEWS_HOST" target="_blank" class="footer_item_link">News</a>
                 <a :href="DOCS_HOST" target="_blank" class="footer_item_link">Docs</a>
               </div>
@@ -203,7 +203,7 @@ import { useDisplay } from "vuetify";
 import gsap from 'gsap'
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useUserStore } from "@/store/userStore";
-import { DOCS_HOST, NEWS_HOST, SOCIAL_DISCORD, SOCIAL_LINKTREE, SOCIAL_TELEGRAM, SOCIAL_TELEGRAM_CHANNEL, SOCIAL_TWITTER } from "@/helpers/mixins";
+import { DOCS_HOST, NEWS_HOST, SOCIAL_DISCORD, SOCIAL_LINKTREE, SOCIAL_TELEGRAM, SOCIAL_TELEGRAM_CHANNEL, SOCIAL_TWITTER, SOCIAL_WP } from "@/helpers/mixins";
 
 import '@/assets/styles/landing.scss'
 
