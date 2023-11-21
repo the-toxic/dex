@@ -293,15 +293,15 @@ export const fetchSegments = async () => {
   //   { id: 3, name: 'My Segment 3' },
   // ]}}
 }
-export const fetchTXs = async (payload) => {
-  // return await axios.post(`xhr/txs`, payload);
-  await delay(500)
-  return { data: { success: true, result: {
-    total: 1,
-    items: [
-      { id: 1, date: '2023-11-09 22:33:44', amount: '1111111111', usd: '2222222.22', token: 'BIBA', from: '0x0000000000000000000000000000000000000000', to: '0x1111111111111111111111111111111111111111' },
-    ]
-  }}}
+export const fetchSegmentTXs = async (payload) => {
+  return await axios.post(`xhr/private/segment/${payload.id}/txs`, payload);
+  // await delay(500)
+  // return { data: { success: true, result: {
+  //   total: 1,
+  //   items: [
+  //     { id: 1, date: '2023-11-09 22:33:44', amount: '1111111111', usd: '2222222.22', token: 'BIBA', from: '0x0000000000000000000000000000000000000000', to: '0x1111111111111111111111111111111111111111' },
+  //   ]
+  // }}}
 }
 export const getSegmentInfo = async (id) => {
   return await axios.get(`xhr/private/segment/${id}`);

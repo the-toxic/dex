@@ -47,17 +47,16 @@
         @update:options="loadTable"
         :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
       >
-        <template v-slot:item.from="{ item }">
-          <v-btn :to="{name: 'Address', params: {id: item.from}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.from) }}</v-btn>
-          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.from)" />
+				<template v-slot:item.date="{ item }">{{ item.date }}</template>
+        <template v-slot:item.maker="{ item }">
+          <v-btn :to="{name: 'Address', params: {id: item.maker}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.maker) }}</v-btn>
+          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.maker)" />
         </template>
-        <template v-slot:item.to="{ item }">
-          <v-btn :to="{name: 'Address', params: {id: item.to}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.to) }}</v-btn>
-          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.to)" />
+        <template v-slot:item.receiver="{ item }">
+          <v-btn :to="{name: 'Address', params: {id: item.receiver}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.receiver) }}</v-btn>
+          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.receiver)" />
         </template>
-        <template v-slot:item.amount="{ item }">{{ formatNumber(item.amount, true) }}</template>
-        <template v-slot:item.token="{ item }">{{ item.token }}</template>
-        <template v-slot:item.usd="{ item }">{{ toCurrency(item.usd) }}</template>
+        <template v-slot:item.amount_token0="{ item }">{{ formatNumber(item.amount_token0, true) }}</template>
       </v-data-table-server>
     </template>
 
@@ -138,7 +137,7 @@ import { useDebounceFn } from "@vueuse/core";
 import { mapActions, mapState } from "pinia";
 import { shortAddress, toCurrency, formatNumber, chainTypesRegex } from "@/helpers/mixins";
 import { useMainStore } from "@/store/mainStore";
-import { fetchTXs, fetchSegments, getSegmentInfo, saveSegment, removeSegment, fetchSearch } from "@/api";
+import { fetchSegmentTXs, fetchSegments, getSegmentInfo, saveSegment, removeSegment, fetchSearch } from "@/api";
 import Datepicker from "@/components/Datepicker.vue";
 
 export default {
@@ -155,14 +154,12 @@ export default {
     loadingTable: false,
     page: 1,
     per_page: 20,
-    sortBy: [{key: 'id', order: 'desc'}],
+    sortBy: [{key: 'date', order: 'desc'}],
     headers: [
       { title: 'Date', key: 'date', align: 'center', sortable: false },
-      { title: 'From', key: 'from', align: 'center', sortable: false },
-      { title: 'To', key: 'to', align: 'center', sortable: false },
-      { title: 'Amount', key: 'amount', align: 'center', sortable: false },
-      { title: 'Token', key: 'token', align: 'center', sortable: false },
-      { title: 'USD', key: 'usd', align: 'center', sortable: false },
+      { title: 'From', key: 'maker', align: 'center', sortable: false },
+      { title: 'To', key: 'receiver', align: 'center', sortable: false },
+      { title: 'Amount ', key: 'amount_token0', align: 'center', sortable: false },
     ],
     items: [],
     totalItems: 0,
@@ -226,7 +223,7 @@ export default {
     currentSegmentId(newVal, oldVal) {
       if(!oldVal) return
       console.log(oldVal, '->', newVal)
-      this.loadTable(this.currentSegmentId)
+      this.loadTable()
       this.$router.push({...this.$route, query: {id: this.currentSegmentId}})
     },
     'filter.search'(newVal) {
@@ -262,14 +259,15 @@ export default {
         this.segments = data.result.items
         const existId = selectIDAfterLoad && data.result.items.some(item => item.id === selectIDAfterLoad)
         this.currentSegmentId = (existId && selectIDAfterLoad) || data.result.items[0]?.id || null
-        await this.loadTable(this.currentSegmentId)
+        await this.loadTable()
       }
     },
 
-    async loadTable (segmentId) {
+    async loadTable () {
+			if(this.loadingTable) return // deny double request
       this.loadingTable = true
-      const { data } = await fetchTXs({
-        segment_id: segmentId,
+      const { data } = await fetchSegmentTXs({
+        id: this.currentSegmentId,
         search: this.filter.search.trim(),
         from_dttm: this.filter.period[0] ? moment(this.filter.period[0]).format("YYYY-MM-DD HH:mm:ss") : '',
         to_dttm: this.filter.period[1] ? moment(this.filter.period[1]).format("YYYY-MM-DD HH:mm:ss") : '',
@@ -279,7 +277,10 @@ export default {
       })
       this.loadingTable = false
       if(data.success) {
-        this.items = data.result.items
+        this.items = data.result.items.map(item => {
+					item.date = new Date(item.date * 1000).toISOString().slice(0, 19).replace('T', ' ')
+					return item
+				})
         this.totalItems = data.result.total
       }
     },
