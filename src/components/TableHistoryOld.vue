@@ -91,7 +91,6 @@ const chartStore = useChartStore()
 
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { shortAddress, formatNumber } from "@/helpers/mixins";
-import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 
 
 export default {
@@ -100,7 +99,6 @@ export default {
     loading: false,
 		// rows: []
   }},
-  components: { VSkeletonLoader },
   async created() {},
   computed: {
     ...mapState(useChartStore, {activeSymbol: 'activeSymbol', leftToken: 'leftToken', rightToken: 'rightToken',

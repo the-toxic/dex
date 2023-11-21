@@ -41,7 +41,7 @@
 						<v-btn v-bind="props" variant="text" :active="false" size="large" append-icon="mdi-menu-down" rounded class="d-none d-md-inline-flex text-none">DEX</v-btn>
 				</template>
 				<v-list>
-					<v-list-item title="Explorer" :to="{name: 'Pairs', params: {network: 'bsc'}}" />
+					<v-list-item title="Explorer" :to="{name: 'Pairs', params: {network: 'all'}}" />
 					<v-list-item title="Big Swaps" :to="{name: 'BigSwaps', params: {network: 'bsc'}}" />
 					<v-list-item title="SC" :to="{name: 'SC'}" />
 				</v-list>

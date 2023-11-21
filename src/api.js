@@ -120,11 +120,11 @@ export const fetchBigSwaps = async (payload) => {
   await delay(500)
   return {
     success: true, result: [
-      {pair_id: '1', date: '2023-08-25 12:13:14', chain_id: 2, type: 'sell', pair_name: 'WBNB/USDT', quantity: 333.45, variation: 4.33, total: 333.45, total_usd: 72111.55,
-        token0: {symbol: 'WBNB', name: 'Wrapped BNB', address: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'}, token1: {symbol: 'USDT', name: 'Tether USD', address: '0x55d398326f99059ff775485246999027b3197955'},
+      {pair_id: '1', date: '2023-08-25 12:13:14', chain_id: 2, type: 'sell', pair_name: 'WBNB/BUSD', quantity: 333.45, variation: 4.33, total: 333.45, total_usd: 72111.55,
+        token0: {symbol: 'WBNB', name: 'Wrapped BNB', address: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'}, token1: {symbol: 'BUSD', name: 'Binance USD', address: '0x55d398326f99059ff775485246999027b3197955'},
         maker_addr: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640',
         tx_addr: '0xd2486b717dd2426729f48302b9b6a2e1b67a70ab8796568a36745f62f4ad3bff',
-        pair_addr: '0xd2486b717dd2426729f48302b9b6a2e1b67a70ab8796568a36745f62f4ad3bff',
+        pair_addr: '0x58f876857a02d6762e0101bb5c46a8c1ed44dc16',
       }
     ]
   }

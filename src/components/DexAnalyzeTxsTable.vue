@@ -19,7 +19,7 @@
 			:items="items"
 			:loading="loading"
 			class="elevation-1 fs14" density="compact"
-			:items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
+			:items-per-page-options="[20,50,100]"
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->
 <!--			<template v-slot:column.wallet="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
@@ -66,7 +66,6 @@
 </template>
 
 <script>
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { easepick, AmpPlugin, RangePlugin, PresetPlugin, TimePlugin } from '@easepick/bundle';
 import { fetchDexAnalyzeTxs } from "@/api";
 import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
@@ -74,7 +73,6 @@ import { useDebounceFn } from "@vueuse/core";
 
 export default {
   name: 'DexAnalyzeTxsTable',
-  components: { VDataTableServer },
   data: () => ({
     loading: false,
     per_page: 20,

@@ -14,7 +14,7 @@
         <v-btn variant="outlined" @click="editItem()" :disabled="loading" title="Add"
           rounded size="small" class="text-none mr-3" icon="mdi-plus" />
 
-        <v-btn variant="outlined" @click="null" :disabled="loading" title="Alert"
+        <v-btn v-if="segmentsList.length" title="Alert" variant="outlined" @click="null" :disabled="loading"
           rounded size="small" class="text-none" icon="mdi-bell-outline" />
       </div>
     </div>
@@ -45,18 +45,19 @@
         :loading="loadingTable"
         class="elevation-1 fs14"
         @update:options="loadTable"
-        :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
+        :items-per-page-options="[20,50,100]"
       >
 				<template v-slot:item.date="{ item }">{{ item.date }}</template>
-        <template v-slot:item.maker="{ item }">
-          <v-btn :to="{name: 'Address', params: {id: item.maker}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.maker) }}</v-btn>
-          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.maker)" />
+        <template v-slot:item.sender="{ item }">
+          <v-btn :to="{name: 'Address', params: {id: item.sender}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.sender) }}</v-btn>
+          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.sender)" />
         </template>
         <template v-slot:item.receiver="{ item }">
           <v-btn :to="{name: 'Address', params: {id: item.receiver}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.receiver) }}</v-btn>
           <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.receiver)" />
         </template>
-        <template v-slot:item.amount_token0="{ item }">{{ formatNumber(item.amount_token0, true) }}</template>
+        <template v-slot:item.amount="{ item }">{{ formatNumber(item.amount, true) }}</template>
+				<template v-slot:item.symbol="{ item }"><v-chip color="secondary" size="small">{{ item.symbol }}</v-chip></template>
       </v-data-table-server>
     </template>
 
@@ -132,7 +133,6 @@
 
 <script>
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { useDebounceFn } from "@vueuse/core";
 import { mapActions, mapState } from "pinia";
 import { shortAddress, toCurrency, formatNumber, chainTypesRegex } from "@/helpers/mixins";
@@ -143,7 +143,7 @@ import Datepicker from "@/components/Datepicker.vue";
 export default {
   name: 'Segments',
   head: () => ({ title: 'Segments' }),
-  components: { Datepicker, VDataTableServer },
+  components: { Datepicker },
   data() {return {
     chainTypesRegex,
 
@@ -157,9 +157,10 @@ export default {
     sortBy: [{key: 'date', order: 'desc'}],
     headers: [
       { title: 'Date', key: 'date', align: 'center', sortable: false },
-      { title: 'From', key: 'maker', align: 'center', sortable: false },
+      { title: 'From', key: 'sender', align: 'center', sortable: false },
       { title: 'To', key: 'receiver', align: 'center', sortable: false },
-      { title: 'Amount ', key: 'amount_token0', align: 'center', sortable: false },
+      { title: 'Amount ', key: 'amount', align: 'center', sortable: false },
+      { title: 'Token ', key: 'symbol', align: 'center', sortable: false },
     ],
     items: [],
     totalItems: 0,
@@ -277,7 +278,7 @@ export default {
       })
       this.loadingTable = false
       if(data.success) {
-        this.items = data.result.items.map(item => {
+        this.items = data.result.items.filter(item => !!item.sender && !!item.receiver).map(item => {
 					item.date = new Date(item.date * 1000).toISOString().slice(0, 19).replace('T', ' ')
 					return item
 				})

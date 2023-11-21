@@ -25,7 +25,7 @@
 			:search="filter.search"
 			:loading="loading"
 			class="elevation-1"
-			:items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
+			:items-per-page-options="[20,50,100]"
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->
 			<template v-slot:item.wallet="{ item, internalItem }">
@@ -77,7 +77,6 @@
 </template>
 
 <script>
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { easepick, AmpPlugin, RangePlugin, PresetPlugin, TimePlugin } from '@easepick/bundle';
 import { fetchSC } from "@/api";
 import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
@@ -85,7 +84,6 @@ import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } fro
 export default {
   name: 'SC',
   head: () => ({ title: 'SC' }),
-  components: { VDataTableServer },
   data: () => ({
     loading: false,
     page: 1,

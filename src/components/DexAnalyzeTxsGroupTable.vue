@@ -24,14 +24,14 @@
 			:items="items"
 			:loading="loading"
 			class="elevation-1 fs14" density="compact"
-			:items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
+			:items-per-page-options="[20,50,100]"
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->
-<!--			<template v-slot:column.wallet="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
-<!--			<template v-slot:column.profit="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
-<!--			<template v-slot:column.roi="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
-			<template v-slot:column.buys="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #334c35">{{ column.title }}</div></template>
-			<template v-slot:column.sells="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #693131">{{ column.title }}</div></template>
+<!--			<template v-slot:header.wallet="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
+<!--			<template v-slot:header.profit="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
+<!--			<template v-slot:header.roi="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
+			<template v-slot:header.buys="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #334c35">{{ column.title }}</div></template>
+			<template v-slot:header.sells="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #693131">{{ column.title }}</div></template>
 
 			<template v-slot:item.wallet="{ item }">
         <v-btn :to="{name: 'Address', params: {id: item.wallet}}" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn>
@@ -88,7 +88,6 @@
 
 <script>
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchDexAnalyzeGroupTxs } from "@/api";
 import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
@@ -98,7 +97,7 @@ import { useChartStore } from "@/store/chartStore";
 
 export default {
   name: 'DexAnalyzeTxsGroupTable',
-  components: { Datepicker, VDataTableServer },
+  components: { Datepicker },
   props: {
     chainId: Number,
     pairId: Number
@@ -109,24 +108,21 @@ export default {
 		page: 1,
 		sortBy: [{key: 'profit', order: 'desc'}],
     headers: [
-			[
-				{ title: 'Wallet', key: 'wallet', align: 'center', sortable: false, rowspan: 2 },
-				{ title: 'Profit', key: 'profit', align: 'center', rowspan: 2 },
-				{ title: '% ROI', key: 'roi', align: 'center', rowspan: 2 },
-				{ title: 'Buys', key: 'buys', align: 'center', sortable: false, colspan: 4, color: 'bg-green' },
-				{ title: 'Sells', key: 'sells', align: 'center', sortable: false, colspan: 4 },
-			],
-			[
-				{ title: 'TXs', key: 'buy_txs', align: 'center' },
-				{ title: 'Amount', key: 'buy_amount', align: 'center' },
-				{ title: 'Price', key: 'buy_price', align: 'center' },
-				{ title: 'Total', key: 'buy_total', align: 'center' },
-
+			{ title: 'Wallet', key: 'wallet', align: 'center', sortable: false, rowspan: 2 },
+			{ title: 'Profit', key: 'profit', align: 'center', rowspan: 2 },
+			{ title: '% ROI', key: 'roi', align: 'center', rowspan: 2 },
+			{ title: 'Buys', key: 'buys', align: 'center', sortable: false, color: 'bg-green', children: [
+					{ title: 'TXs', key: 'buy_txs', align: 'center' },
+					{ title: 'Amount', key: 'buy_amount', align: 'center' },
+					{ title: 'Price', key: 'buy_price', align: 'center' },
+					{ title: 'Total', key: 'buy_total', align: 'center' },
+			] },
+			{ title: 'Sells', key: 'sells', align: 'center', sortable: false, children: [
 				{ title: 'TXs', key: 'sell_txs', align: 'center' },
 				{ title: 'Amount', key: 'sell_amount', align: 'center' },
 				{ title: 'Price', key: 'sell_price', align: 'center' },
 				{ title: 'Total', key: 'sell_total', align: 'center' },
-    	]
+			] },
 		],
 		filter: {
       search: ''
@@ -225,11 +221,11 @@ export default {
       }
     },
 		setTokensToTableHeader() {
-			this.headers[0].find(i => i.key === 'profit').title = 'Profit, '+this.rightToken.slice(0,5)
-			this.headers[1].find(i => i.key === 'buy_amount').title = 'Amount, '+this.leftToken.slice(0,5)
-			this.headers[1].find(i => i.key === 'buy_price').title = 'Price, '+this.rightToken.slice(0,5)
-			this.headers[1].find(i => i.key === 'sell_amount').title = 'Amount, '+this.leftToken.slice(0,5)
-			this.headers[1].find(i => i.key === 'sell_price').title = 'Price, '+this.rightToken.slice(0,5)
+			this.headers.find(i => i.key === 'profit').title = 'Profit, '+this.rightToken.slice(0,5)
+			this.headers.find(i => i.key === 'buys')['children'].find(i => i.key === 'buy_amount').title = 'Amount, '+this.leftToken.slice(0,5)
+			this.headers.find(i => i.key === 'buys')['children'].find(i => i.key === 'buy_price').title = 'Price, '+this.rightToken.slice(0,5)
+			this.headers.find(i => i.key === 'sells')['children'].find(i => i.key === 'sell_amount').title = 'Amount, '+this.leftToken.slice(0,5)
+			this.headers.find(i => i.key === 'sells')['children'].find(i => i.key === 'sell_price').title = 'Amount, '+this.rightToken.slice(0,5)
 		},
     onPeriodChange(type, $event) {
       console.log('onPeriodChange')

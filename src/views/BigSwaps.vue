@@ -25,7 +25,7 @@
 			:loading="loading"
 			class="elevation-1"
 			@update:options="loadItems"
-      :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
+      :items-per-page-options="[20,50,100]"
 		>
 			<template v-slot:item.pair_name="{ item, internalItem }">
 				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text"  class="text-none">
@@ -51,7 +51,7 @@
 					{{ isNaN(item.variation) ? '' : (item.variation < 0 ? '-' : '+') }} {{ isNaN(item.variation) ? 'Unknown' : Math.abs(item.variation) }}%
 				</v-chip>
 			</template>
-			<template v-slot:item.maker="{ item }"><a :href="item.maker_addr" target="_blank">{{ shortAddress(item.maker_addr) }}</a></template>
+			<template v-slot:item.maker="{ item }"><v-btn :to="{name: 'Address', params: {id: item.maker_addr}}" variant="text" density="compact" rounded class="text-none">{{ shortAddress(item.maker_addr) }}</v-btn></template>
 			<template v-slot:item.action="{ item }">
 				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}"
 					 icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchBigSwaps } from "@/api";
 import { API_DOMAIN, formatNumber, formatBigNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import { mapState } from "pinia";
@@ -71,7 +70,6 @@ import { useDebounceFn } from "@vueuse/core";
 export default {
   name: 'BigSwaps',
   head: () => ({ title: 'Big Swaps' }),
-  components: { VDataTableServer },
   data() { return {
 		API_DOMAIN,
     loading: false,

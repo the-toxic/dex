@@ -25,7 +25,7 @@
     :loading="loading"
     class="elevation-1 fs14"
     @update:options="loadItems"
-    :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
+    :items-per-page-options="[20,50,100]"
   >
     <template v-slot:item.address="{ item }">
       <v-btn :to="{name: 'Address', params: {id: item.address}}" rounded variant="text" :title="item.address" :active="false" class="text-none">{{ shortAddress(item.address) }}</v-btn>
@@ -90,7 +90,6 @@
 </template>
 
 <script>
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchPrivateLabels, savePrivateLabel, searchEntities, removePrivateLabel } from "@/api";
 import { API_DOMAIN, chainTypeWalletRules, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
@@ -99,7 +98,6 @@ import { useMainStore } from "@/store/mainStore";
 
 export default {
   name: 'PrivateLabelsTable',
-  components: { VDataTableServer },
   data() { return {
 		API_DOMAIN,
     IS_DEBUG: 0,

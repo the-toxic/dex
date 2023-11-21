@@ -150,7 +150,7 @@
             <div class="footer_item">
               <p class="footer_item_title">Company</p>
               <div class="footer_item_list">
-                <a href="#!" class="footer_item_link">About Us</a>
+<!--                <a href="#!" class="footer_item_link">About Us</a>-->
                 <a href="https://forms.gle/Jf6ZCZvXN6wi5UFG6" target="_blank" class="footer_item_link">Career</a>
                 <a :href="DOCS_HOST+'/legal'" target="_blank" class="footer_item_link">Legal</a>
               </div>
@@ -158,25 +158,25 @@
             <div class="footer_item">
               <p class="footer_item_title">Resources</p>
               <div class="footer_item_list">
-                <a :href="SOCIAL_WP" target="_blank" class="footer_item_link">White Paper</a>
+                <a :href="SOCIAL_WP" target="_blank" class="footer_item_link">Whitepaper</a>
                 <a :href="NEWS_HOST" target="_blank" class="footer_item_link">News</a>
                 <a :href="DOCS_HOST" target="_blank" class="footer_item_link">Docs</a>
               </div>
             </div>
-            <div class="footer_item">
-              <p class="footer_item_title">Contact Us</p>
-              <div class="footer_item_list">
-                <router-link :to="{name: 'ContactUs'}" class="footer_item_link">Give Feedback</router-link>
-                <router-link :to="{name: 'ContactUs'}" class="footer_item_link">Support</router-link>
-              </div>
-            </div>
+<!--            <div class="footer_item">-->
+<!--              <p class="footer_item_title">Contact Us</p>-->
+<!--              <div class="footer_item_list">-->
+<!--                <router-link :to="{name: 'ContactUs'}" class="footer_item_link">Give Feedback</router-link>-->
+<!--                <router-link :to="{name: 'ContactUs'}" class="footer_item_link">Support</router-link>-->
+<!--              </div>-->
+<!--            </div>-->
           </div>
           <div class="footer_social">
             <a :href="SOCIAL_TWITTER" target="_blank" class="footer_social_link footer_social_link_x"><span>(X)</span> Twitter</a>
             <a :href="SOCIAL_DISCORD" target="_blank" class="footer_social_link footer_social_link_dis">Discord</a>
-            <div class="footer_social_telegram" @click="TgMenuToggler = !TgMenuToggler">
+            <div class="footer_social_telegram" @click="breakpoints.smAndDown ? (tgMenuToggler = !tgMenuToggler) : null">
               <div class="footer_social_telegram_p">Telegram</div>
-              <div class="footer_social_hidden" :class="{'open': TgMenuToggler}">
+              <div class="footer_social_hidden" :class="{'open': tgMenuToggler}">
                 <a :href="SOCIAL_TELEGRAM_CHANNEL" target="_blank" class="footer_social_hidden_link">Telegram Channel</a>
                 <a :href="SOCIAL_TELEGRAM" target="_blank" class="footer_social_hidden_link">Telegram Group</a>
               </div>
@@ -221,7 +221,7 @@ useHead({
 
 const breakpoints = ref(useDisplay())
 
-const TgMenuToggler = ref(false)
+const tgMenuToggler = ref(false)
 const currentYear = computed(() => new Date().getFullYear())
 
 const canvasImageRef = ref(null)

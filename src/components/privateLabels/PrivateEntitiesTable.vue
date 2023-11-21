@@ -19,7 +19,7 @@
     :loading="loading"
     class="elevation-1 fs14"
     @update:options="loadItems"
-    :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
+    :items-per-page-options="[20,50,100]"
   >
     <template v-slot:item.uuid="{ item }">
       <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" rounded variant="text" density="comfortable" :title="item.uuid" :active="false" class="text-none">{{ item.uuid.slice(0, 12) + '...' }}</v-btn>
@@ -27,12 +27,14 @@
     </template>
     <template v-slot:item.name="{ item }">
 <!--      <img :src="iconPath(item.uuid)" class="va-middle" style="max-height: 40px" />-->
-      <v-img :src="iconPath(item.uuid)" height="40" width="60" aspect-ratio="1/1" class="d-inline-block va-middle ml-16">
-        <!-- <template v-slot:error>?</template>-->
-        <template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
-          <v-icon icon="mdi-help-rhombus-outline" size="large" />
-        </div></template>
-      </v-img>
+			<div class="d-inline-block overflow-hidden va-middle mr-3" style="width: 40px; height: 40px; border-radius: 50%;">
+				<v-img :src="iconPath(item.uuid)" height="40" width="60" aspect-ratio="1/1">
+					<!-- <template v-slot:error>?</template>-->
+					<template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
+						<v-icon icon="mdi-help-rhombus-outline" size="large" />
+					</div></template>
+				</v-img>
+			</div>
 <!--      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" rounded variant="text" density="comfortable" :active="false" class="text-none" width="250">{{ item.name.slice(0, 30) }}</v-btn>-->
       <router-link :to="{name: 'Entity', params: {id: item.uuid}}" class="d-inline-block text-left text-white text-decoration-none" style="width: 250px">{{ item.name.slice(0, 30) }}</router-link>
     </template>
@@ -90,7 +92,6 @@
 </template>
 
 <script>
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchPrivateEntities, fetchPrivateLabels, getPrivateEntity, removePrivateEntity, savePrivateEntity } from "@/api";
 import { API_DOMAIN, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
@@ -99,7 +100,6 @@ import { useMainStore } from "@/store/mainStore";
 
 export default {
   name: 'PrivateEntitiesTable',
-  components: { VDataTableServer },
   data() { return {
 		API_DOMAIN,
     IS_DEBUG: 0,

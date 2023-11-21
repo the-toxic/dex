@@ -215,8 +215,8 @@
 					<div class="flex-fill">
 						<v-tabs v-model="tabChartVariant">
 							<v-tab value="liquidity" variant="flat" class="text-none">Liquidity</v-tab>
-							<v-tab value="volume" variant="flat" class="text-none">Volume</v-tab>
-							<v-tab value="share" variant="flat" class="text-none">Share</v-tab>
+<!--							<v-tab value="volume" variant="flat" class="text-none">Volume</v-tab>-->
+<!--							<v-tab value="share" variant="flat" class="text-none">Share</v-tab>-->
 						</v-tabs>
 						<LWChart
 							:type="chartType"
@@ -245,7 +245,6 @@ import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-ran
 import { API_DOMAIN, formatBigNumber, formatNumber, PROJECT_NAME, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import TableHistory from "@/components/TableHistory.vue";
 import { mapActions, mapState } from "pinia";
-import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 import { useChartStore } from "@/store/chartStore";
 import ChartTV from "@/components/ChartTV.vue";
 import Converter from "@/components/Converter.vue";
@@ -258,7 +257,7 @@ import { useMainStore } from "@/store/mainStore";
 
 export default {
   name: "Pair",
-  components: { DexPairWalletsTable, DexPairLiquidityTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory, VSkeletonLoader },
+  components: { DexPairWalletsTable, DexPairLiquidityTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory },
   head() { return  {
     title: this.pageTitle,
     // meta: [{name: 'description', content: this.pageDescription}]

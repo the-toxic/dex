@@ -26,7 +26,7 @@
     :loading="loading"
     @update:options="loadItems"
     class="elevation-1 fs14  mb-48" density="compact"
-    :items-per-page-options="[{value: 20, title: '20'}, {value: 50, title: '50'}, {value: 100, title: '100'}]"
+    :items-per-page-options="[20,50,100]"
   >
     <template v-slot:item.maker="{ item }">
       <v-btn :to="{name: 'Address', params: {id: item.maker}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.maker) }}</v-btn>
@@ -56,7 +56,6 @@
 
 <script>
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
 import { fetchDexLiquidityTxs } from "@/api";
 import { API_DOMAIN, formatBigNumber, formatNumber, shortAddress, toCurrency } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
@@ -67,7 +66,7 @@ import { useChartStore } from "@/store/chartStore";
 
 export default {
   name: 'DexPairLiquidityTable',
-  components: { Datepicker, VDataTableServer },
+  components: { Datepicker },
   props: {
     pairId: {
       type: Number,

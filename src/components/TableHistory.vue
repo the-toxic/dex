@@ -49,7 +49,6 @@
 	const { activeSymbol } = storeToRefs(chartStore) // for use in watch
 
 	import { shortAddress, formatNumber } from "@/helpers/mixins";
-	import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 	import { storeToRefs } from "pinia";
 
 	/** DATA */
