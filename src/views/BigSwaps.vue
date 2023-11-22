@@ -29,13 +29,9 @@
 		>
 			<template v-slot:item.pair_name="{ item, internalItem }">
 				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text"  class="text-none">
-					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ internalItem.index + 1 }}</span>
-					<v-img :src="item.iconToken0" width="24" height="24" :alt="item.token0.symbol" class="va-top rounded-xl">
-						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
-					</v-img>
-					<v-img :src="item.iconToken1" width="24" height="24" :alt="item.token1.symbol" class="va-top rounded-xl mx-2">
-						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
-					</v-img>
+					<!-- <span class="text-disabled text-right mr-2" style="width: 30px;">#{{ internalItem.index + 1 }}</span>-->
+					<TokenIcon :src="item.iconToken0" :alt="item.token0.symbol" class="mr-1" />
+					<TokenIcon :src="item.iconToken1" :alt="item.token1.symbol" class="mr-2" />
 					{{ item.pair_name }}
 					<span class="text-secondary ml-3">{{ item.token0.name }}</span>
 				</v-btn>
@@ -66,9 +62,11 @@ import { API_DOMAIN, formatNumber, formatBigNumber, shortAddress, toCurrency, to
 import { mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 import { useDebounceFn } from "@vueuse/core";
+import TokenIcon from "@/components/UI/TokenIcon.vue";
 
 export default {
   name: 'BigSwaps',
+	components: { TokenIcon },
   head: () => ({ title: 'Big Swaps' }),
   data() { return {
 		API_DOMAIN,

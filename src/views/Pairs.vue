@@ -40,12 +40,8 @@
 			<template v-slot:item.pair_name="{ item, internalItem }">
 				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text"  class="text-none">
 					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ internalItem.index + 1 }}</span>
-					<v-img :src="item.iconToken0" width="24" height="24" :alt="item.token0.symbol" class="va-top rounded-xl">
-						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
-					</v-img>
-					<v-img :src="item.iconToken1" width="24" height="24" :alt="item.token1.symbol" class="va-top rounded-xl mx-2">
-						<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14 pt-1">?</div></template>
-					</v-img>
+					<TokenIcon :src="item.iconToken0" :alt="item.token0.symbol" width="24" class="mr-1" />
+					<TokenIcon :src="item.iconToken1" :alt="item.token1.symbol" width="24" class="mr-2" />
 					{{ item.token0.symbol }}/{{ item.token1.symbol }}
 					<span class="text-secondary ml-3">{{ item.token0.name }}</span>
 				</v-btn>
@@ -72,9 +68,11 @@ import { fetchPairs } from "@/api";
 import { API_DOMAIN, formatBigNumber, formatNumber, needInvert, toCurrency, toNumber } from "@/helpers/mixins";
 import { mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
+import TokenIcon from "@/components/UI/TokenIcon.vue";
 
 export default {
   name: 'Pairs',
+	components: { TokenIcon },
   head: () => ({ title: 'Explorer' }),
   data: () => ({
 		API_DOMAIN,

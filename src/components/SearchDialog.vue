@@ -21,9 +21,7 @@
 						 }"
 						  >
 							<template v-slot:prepend>
-								<v-img v-if="type === 'tokens' || type === 'entities'" :src="itemIconSrc(item, type)" width="24" height="24" class="va-top rounded-xl mr-1">
-									 <template v-slot:error><div class="bg-grey-darken-3 fill-height text-center fs14" style="padding-top: 2px">?</div></template>
-								</v-img>
+								<TokenIcon v-if="type === 'tokens' || type === 'entities'" :src="itemIconSrc(item, type)" error-size="small" width="24" class="mr-1" />
 							</template>
 						</v-list-item>
 					</div>
@@ -43,9 +41,11 @@ import { useDebounceFn } from "@vueuse/core";
 import { useMainStore } from "@/store/mainStore";
 import { fetchSearch } from "@/api";
 import { API_DOMAIN, shortAddress } from "@/helpers/mixins";
+import TokenIcon from "@/components/UI/TokenIcon.vue";
 
 export default {
   name: "SearchDialog",
+	components: { TokenIcon },
   props: {
 		query: {
       type: String,

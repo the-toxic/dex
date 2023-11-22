@@ -3,9 +3,9 @@
     <v-navigation-drawer v-model="drawer" width="500" location="bottom" v-if="breakpoints.mobile"><!-- v-if="breakpoints.width <= 768" -->
       <v-list :nav="true">
         <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
-        <v-list-item :to="{name: 'Pairs', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Explorer"></v-list-item>
+        <v-list-item :to="{name: 'Pairs', params: {network: 'all'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Explorer"></v-list-item>
         <v-list-item :to="{name: 'BigSwaps', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="BigSwaps"></v-list-item>
-        <v-list-item :to="{name: 'PrivateLabels'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Private Tags"></v-list-item>
+        <v-list-item :to="{name: 'PrivateLabels'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Private Labels"></v-list-item>
         <v-list-item :to="{name: 'SC'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="SC"></v-list-item>
         <v-list-item :href="NEWS_HOST" target="news" prepend-icon="mdi-menu-open" title="News"></v-list-item>
         <v-list-item :href="DOCS_HOST" target="docs" prepend-icon="mdi-menu-open" title="Docs"></v-list-item>
@@ -21,7 +21,7 @@
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar absolute :color="$route.path.startsWith('/console') ? null : '#000'">
+    <v-app-bar absolute>
 			<!-- LEFT Side-->
 			<template v-slot:prepend>
         <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
@@ -46,7 +46,6 @@
 					<v-list-item title="SC" :to="{name: 'SC'}" />
 				</v-list>
 			</v-menu>
-			<v-btn variant="text" size="large" :href="NEWS_HOST" target="news" rounded class="d-none d-md-inline-flex text-none">News <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-btn>
 
 			<v-spacer />
 
@@ -55,7 +54,7 @@
         <v-btn v-if="userStore.logged" @click="showSearch" rounded variant="text" class="text-body-2">
           <v-icon color="#B3B5BD" class="pr-4" alt="Show Search">mdi-magnify</v-icon>
           Search
-          <span class="py-0 px-3 ml-3 border rounded text-disabled text-caption">⌘ + K</span>
+          <span class="py-0 px-2 ml-3 border rounded text-disabled text-caption">⌘ K</span>
         </v-btn>
 
         <!-- Menu open icon for mobile -->
@@ -78,8 +77,9 @@
 						<template v-slot:activator="{ props }">
 							<v-btn v-bind="props" icon="mdi-text-box-outline" title="Docs"></v-btn>
 						</template>
-						<v-list>
+						<v-list width="100">
 							<v-list-item :href="DOCS_HOST" target="docs">Docs <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-list-item>
+							<v-list-item :href="NEWS_HOST" target="docs">News <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-list-item>
 							<v-list-item title="Support" href="mailto:support@hazb.com" />
 						</v-list>
 					</v-menu>

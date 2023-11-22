@@ -8,12 +8,7 @@
 					<div class="d-flex align-center flex-wrap">
             <v-btn icon="mdi-arrow-left" :to="{name: 'Console'}" :active="false" size="x-large" density="compact" class="mr-2" />
             <div class="mr-2" :class="{'bg-blue-grey-darken-3': !pairInfo || !iconToken0 || pairInfoLoading}" style="width: 40px; height: 40px;border-radius: 50%;overflow: hidden;">
-							<v-img v-if="!pairInfoLoading" :src="iconToken0" width="40" height="40" alt="Logo">
-								<template v-slot:error><div class="bg-grey-darken-3 fill-height text-center pt-3 fs28">?</div></template>
-								<!-- <template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
-									<v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular></div>
-								</template>-->
-							</v-img>
+							<TokenIcon v-if="!pairInfoLoading" :src="iconToken0" width="40" />
             </div>
 						<h2 class="fs24 font-weight-regular mr-3" style="color: #D9DCEE">{{ tokenTitle }}</h2>
 						<v-btn size="small" icon="mdi-star-outline" class="mr-3"></v-btn>
@@ -254,10 +249,11 @@ import LWChart from "@/components/LWChart.vue";
 import DexPairLiquidityTable from "@/components/DexPairLiquidityTable.vue";
 import DexPairWalletsTable from "@/components/DexPairWalletsTable.vue";
 import { useMainStore } from "@/store/mainStore";
+import TokenIcon from "@/components/UI/TokenIcon.vue";
 
 export default {
   name: "Pair",
-  components: { DexPairWalletsTable, DexPairLiquidityTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory },
+  components: { TokenIcon, DexPairWalletsTable, DexPairLiquidityTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory },
   head() { return  {
     title: this.pageTitle,
     // meta: [{name: 'description', content: this.pageDescription}]

@@ -28,12 +28,7 @@
     <template v-slot:item.name="{ item }">
 <!--      <img :src="iconPath(item.uuid)" class="va-middle" style="max-height: 40px" />-->
 			<div class="d-inline-block overflow-hidden va-middle mr-3" style="width: 40px; height: 40px; border-radius: 50%;">
-				<v-img :src="iconPath(item.uuid)" height="40" width="60" aspect-ratio="1/1">
-					<!-- <template v-slot:error>?</template>-->
-					<template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
-						<v-icon icon="mdi-help-rhombus-outline" size="large" />
-					</div></template>
-				</v-img>
+				<TokenIcon :src="iconPath(item.uuid)" width="40" class="mr-1" />
 			</div>
 <!--      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" rounded variant="text" density="comfortable" :active="false" class="text-none" width="250">{{ item.name.slice(0, 30) }}</v-btn>-->
       <router-link :to="{name: 'Entity', params: {id: item.uuid}}" class="d-inline-block text-left text-white text-decoration-none" style="width: 250px">{{ item.name.slice(0, 30) }}</router-link>
@@ -51,14 +46,9 @@
         <v-card-text>
           <v-text-field label="Entity Name*" v-model="form.name" class="mb-2" :rules="[v => !!v || 'Required field']" density="compact" />
 
-          <div class="bg-blue-grey-darken-4 float-right d-flex align-center rounded ml-2" style="width: 56px; height: 56px">
+          <div class="bg-blue-grey-darken-4 float-right d-flex align-center rounded overflow-hidden ml-2" style="width: 56px; height: 56px; border-radius: 50%!important;">
             <img ref="touchImageRef" v-show="form.file && form.file.length" style="max-width: 100%; max-height: 100%" />
-            <v-img v-show="!form.file || !form.file.length" :src="iconPath()" width="56" height="56">
-              <!-- <template v-slot:error>?</template>-->
-              <template v-slot:placeholder><div class="d-flex align-center justify-center fill-height">
-                <v-icon icon="mdi-help-rhombus-outline" size="xx-large" />
-              </div></template>
-            </v-img>
+						<TokenIcon v-show="!form.file || !form.file.length" :src="iconPath()" width="56" error-size="xx-large" />
           </div>
 
           <v-file-input label="Upload Icon" v-model="form.file" accept="image/*"  prepend-inner-icon="mdi-account-box-outline" prepend-icon=""
@@ -97,9 +87,11 @@ import { API_DOMAIN, shortAddress } from "@/helpers/mixins";
 import { useDebounceFn } from "@vueuse/core";
 import { mapActions, mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
+import TokenIcon from "@/components/UI/TokenIcon.vue";
 
 export default {
   name: 'PrivateEntitiesTable',
+	components: { TokenIcon },
   data() { return {
 		API_DOMAIN,
     IS_DEBUG: 0,
