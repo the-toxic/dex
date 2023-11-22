@@ -17,10 +17,10 @@
 						persistent-placeholder :rules="[v => !v || v.length < 512  || 'Required field']" counter class="mb-2"></v-textarea>
         </v-card-text>
 
-        <v-card-actions>
+				<v-card-actions class="px-4 pt-0 pb-4">
           <v-spacer></v-spacer>
           <v-btn variant="text" @click="dialog = false" color="disabled">Close</v-btn>
-          <v-btn type="submit" variant="text" color="secondary" :loading="loading" :disabled="loading">Save</v-btn>
+          <v-btn type="submit" variant="outlined" color="secondary" :loading="loading" :disabled="loading" class="text-none">Save</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>

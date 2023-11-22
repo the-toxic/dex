@@ -15,7 +15,10 @@
             <v-btn :to="{name: 'AuthSignUp'}" class="flex-fill px-md-12 px-8 text-none">Sign Up</v-btn>
           </v-btn-toggle>
 
-          <component :is="pageComponent" />
+          <component :is="pageComponent" ref="dynamicComp" />
+
+					<Captcha @successCaptcha="onSuccessCaptcha" />
+
         </v-card-text>
       </v-card>
     </div>
@@ -27,11 +30,12 @@ import AuthSignUp from "@/components/auth/SignUp.vue";
 import AuthSignIn from "@/components/auth/SignIn.vue"
 import AuthResetPassword from "@/components/auth/ResetPassword.vue"
 import { useUserStore } from "@/store/userStore";
+import Captcha from "@/components/Captcha.vue";
 const userStore = useUserStore()
 
 export default {
   name: "Auth",
-  components: {AuthSignUp, AuthSignIn, AuthResetPassword},
+  components: { Captcha, AuthSignUp, AuthSignIn, AuthResetPassword},
   data() {return {
 		pageComponent: 'AuthSignUp',
 	}},
@@ -55,5 +59,10 @@ export default {
 	destroyed() {
 		// this.$store.commit('paddingContainer', true)
 	},
+	methods: {
+		onSuccessCaptcha(captcha) {
+			this.$refs['dynamicComp'].onSuccessCaptcha(captcha)
+		}
+	}
 }
 </script>

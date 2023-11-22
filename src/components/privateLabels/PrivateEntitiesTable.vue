@@ -58,10 +58,10 @@
             @update:search="onLabelSearch" :items="labelsList" :loading="labelsLoading" no-filter class="mt-2"></v-autocomplete>
 
         </v-card-text>
-        <v-card-actions>
+				<v-card-actions class="px-4 pt-0 pb-4">
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="dialog = false" color="disabled">Close</v-btn>
-          <v-btn type="submit" variant="text" color="primary" :loading="dialogLoader" :disabled="dialogLoader">Save</v-btn>
+          <v-btn variant="text" @click="dialog = false" color="disabled" class="text-none">Close</v-btn>
+          <v-btn type="submit" variant="outlined" color="secondary" :loading="dialogLoader" :disabled="dialogLoader" class="text-none">Save</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>

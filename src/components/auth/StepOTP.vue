@@ -2,7 +2,7 @@
 	<h3 class="fs24 mb-10">{{ otpAttempts ? 'Enter Code' : 'Resend Code' }}</h3>
   <p v-if="otpAttempts" class="mb-4">We've sent a code to <span class="font-weight-bold">{{ email }}</span></p>
 
-	<v-otp-input v-if="otpAttempts"
+	<otp-input v-if="otpAttempts"
 		ref="otpInput" v-model:value="otp"
 		input-classes="otp-input" separator="" class="otpWrap"
 		:num-inputs="6" :should-auto-focus="true" :is-disabled="!otpAttempts || loading || loadingResend"
@@ -34,7 +34,7 @@ import * as api from "@/api";
 
 export default {
 	name: "StepOTP",
-	components: { VOtpInput },
+	components: { OtpInput: VOtpInput },
 	expose: ['onCaptchaPassed'], // call this method from parent component
 	emits: ['completed'],
 	props: {

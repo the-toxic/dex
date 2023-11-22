@@ -56,6 +56,8 @@ export default {
   name: 'SignUp',
   components: { StepInvite, StepPassword, StepOTP },
   head: { title: 'Sign Up' },
+	expose: ['onSuccessCaptcha'], // call this method from parent component
+
   data: () => ({
 		loading: false,
 		step: 'email', // email | otp | password | invite
@@ -66,43 +68,25 @@ export default {
     timer: 0,
 
     agree: true,
-    CAPTCHA_ID: import.meta.env.VITE_APP_CAPTCHA_ID,
 	}),
-  computed: {
+
+	computed: {
     ...mapStores(useUserStore, useMainStore),
     emailRules() { return emailRules },
   },
-  mounted() {
-    const _this = this
-    initGeetest4(
-      {
-        captchaId: _this.CAPTCHA_ID, // sign-up event
-        product: "bind", // float | bind | popup
-      },
-      function (captchaObj) {
-        // captchaObj.appendTo("#captchaBox"); // Insert the validation button into the captchaBox element in the host page
-        window.captchaObj = captchaObj
-        captchaObj
-          .onReady(() => { /*console.log('onReady')*/ })
-          .onError(function () { console.log('onError', arguments); _this.showAlert('Captcha error. Please try later...') })
-          .onSuccess(function () {
-            // console.log('onSuccess')
-            const captcha = window.captchaObj.getValidate()
-            console.log('step', _this.step)
-            switch (_this.step) {
-              case 'email': _this.sendRequestEmail(captcha); break
-              case 'otp': _this.$refs.stepOTP.onCaptchaPassed(captcha); break
-              case 'invite': _this.$refs.stepInvite.onCaptchaPassed(captcha); break
-              // case 'otp': !_this.isResendEvent ? _this.sendRequestOTP(captcha) : _this.sendRequestResendEmail(captcha); break
-            }
-          })
-      }
-    );
-  },
-  unmounted() {
-    window.captchaObj?.destroy()
-  },
+
   methods: {
+		onSuccessCaptcha(captcha) {
+			console.log('onSuccessCaptcha')
+			console.log('step', this.step)
+			switch (this.step) {
+				case 'email': this.sendRequestEmail(captcha); break
+				case 'otp': this.$refs.stepOTP.onCaptchaPassed(captcha); break
+				case 'invite': this.$refs.stepInvite.onCaptchaPassed(captcha); break
+				// case 'otp': !_this.isResendEvent ? _this.sendRequestOTP(captcha) : _this.sendRequestResendEmail(captcha); break
+			}
+		},
+
     async onSubmitEmail() {
       const { valid } = await this.$refs.formEmail.validate()
       if(!valid) return false

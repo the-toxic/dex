@@ -14,7 +14,7 @@
         <v-btn variant="outlined" @click="editItem()" :disabled="loading" title="Add"
           rounded size="small" class="text-none mr-3" icon="mdi-plus" />
 
-        <v-btn v-if="segmentsList.length" title="Alert" variant="outlined" @click="null" :disabled="loading"
+        <v-btn v-if="segmentsList.length" title="Alert" variant="outlined" @click="null" :disabled="loading || true"
           rounded size="small" class="text-none" icon="mdi-bell-outline" />
       </div>
     </div>
@@ -107,12 +107,12 @@
             <v-switch label="Email" hide-details color="primary" class="d-inline-block" />-->
 
           </v-card-text>
-          <v-card-actions>
-            <v-btn v-if="form.id" variant="text" @click="showDeleteDialog('segment', form.id)" color="error">Delete</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn variant="text" @click="dialog = false" color="disabled">Close</v-btn>
-            <v-btn type="submit" variant="text" color="primary" :loading="dialogLoader" :disabled="dialogLoader">Save</v-btn>
-          </v-card-actions>
+					<v-card-actions class="px-4 pt-0 pb-4">
+						<v-btn v-if="form.id" variant="text" @click="showDeleteDialog('segment', form.id)" color="error">Delete</v-btn>
+						<v-spacer></v-spacer>
+						<v-btn variant="text" @click="dialog = false" color="disabled" class="text-none">Close</v-btn>
+						<v-btn type="submit" variant="outlined" color="secondary" class="text-none" :loading="dialogLoader" :disabled="dialogLoader">Save</v-btn>
+					</v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
@@ -222,10 +222,9 @@ export default {
   },
   watch: {
     currentSegmentId(newVal, oldVal) {
-      if(!oldVal) return
       console.log(oldVal, '->', newVal)
-      this.loadTable()
-      this.$router.push({...this.$route, query: {id: this.currentSegmentId}})
+      this.$router.push({...this.$route, query: {id: newVal}})
+      if(newVal) this.loadTable() // after delete last segment newvVal = null
     },
     'filter.search'(newVal) {
       this.searchTXsDebouncedFn()
@@ -260,7 +259,7 @@ export default {
         this.segments = data.result.items
         const existId = selectIDAfterLoad && data.result.items.some(item => item.id === selectIDAfterLoad)
         this.currentSegmentId = (existId && selectIDAfterLoad) || data.result.items[0]?.id || null
-        await this.loadTable()
+				// if(this.currentSegmentId) await this.loadTable() // call in watch change currentSegmentId
       }
     },
 
