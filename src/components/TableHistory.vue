@@ -2,40 +2,47 @@
 	<div class="overflow-x-auto">
 
 		<div v-bind="containerProps" style="height: 600px; min-width: 1450px">
-			<div v-bind="wrapperProps" class="d-table">
-				<div class="txsTableHead" :class="{'d-none': loading}" style="min-width: 1450px">
-					<div class="txsTableTd">Date</div>
-					<div class="txsTableTd">Type</div>
-					<div class="txsTableTd">Price</div>
-					<div class="txsTableTd">{{ chartStore.leftToken }}</div>
-					<div class="txsTableTd">{{ chartStore.rightToken }}</div>
-					<div class="txsTableTd" style="flex-grow: 2">Aggregator</div>
-					<div class="txsTableTd" style="width: 400px">Maker</div>
-					<div class="txsTableTd">Receiver</div>
-					<div class="txsTableTd">Actions</div>
-				</div>
-				<div v-for="item in list" :key="item.index" class="txsTableRow" :class="item.data.type === 'buy' ? 'buyRow' : 'sellRow'">
-					<div class="txsTableTd">{{ item.data.parsedDate }}</div>
-					<div class="txsTableTd text-uppercase">{{ item.data.type }}</div>
-					<div class="txsTableTd">{{ formatNumber(item.data.parsedPrice, true) }}</div>
-					<div class="txsTableTd">{{ formatNumber(item.data.amount_token0, true) }}</div>
-					<div class="txsTableTd">{{ formatNumber(item.data.amount_token1, true) }}</div>
-					<div class="txsTableTd text-center">
-						<a v-if="item.data.router.address" :href="`${blockchainDomain}/address/${item.data.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.data.router.title }}</a>
-						<span v-else>{{ item.data.router.title }}</span>
-					</div>
-					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.maker.address}`" :address="item.data.maker" target="_blank" /></div>
-					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.receiver.address}`" :address="item.data.receiver" target="_blank" /></div>
-					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/tx/${item.data.tx}`" text="Show TX" target="_blank" /></div>
-				</div>
-				<div>
-					<div v-if="loading" class="text-center flex-fill"><v-skeleton-loader type="table-tbody" /> <v-skeleton-loader type="table-tbody" /></div>
-					<div v-else-if="!loading && !rows.length" class="text-center flex-fill">No activity</div>
-					<div v-if="!loading && rows.length" v-intersect="infiniteScrolling" class="text-center flex-fill">
-						<v-progress-circular :size="50" :width="4" color="white" indeterminate class="ma-2" />
-					</div>
-				</div>
-			</div>
+			<table v-bind="wrapperProps" class="txsTable relative">
+				<thead class="txsTableHead" style="position:sticky; top:0">
+					<tr>
+						<td class="txsTableTd px-12">Date</td>
+						<td class="txsTableTd">Type</td>
+						<td class="txsTableTd">Price</td>
+						<td class="txsTableTd">{{ chartStore.leftToken }}</td>
+						<td class="txsTableTd">{{ chartStore.rightToken }}</td>
+						<td class="txsTableTd">Aggregator</td>
+						<td class="txsTableTd" style="width: 400px">Maker</td>
+						<td class="txsTableTd" style="width: 400px">Receiver</td>
+						<td class="txsTableTd px-4">Actions</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="item in list" :key="item.index" class="txsTableRow" :class="item.data.type === 'buy' ? 'buyRow' : 'sellRow'">
+						<td class="txsTableTd">{{ item.data.parsedDate }}</td>
+						<td class="txsTableTd text-uppercase">{{ item.data.type }}</td>
+						<td class="txsTableTd">{{ formatNumber(item.data.parsedPrice, true) }}</td>
+						<td class="txsTableTd">{{ formatNumber(item.data.amount_token0, true) }}</td>
+						<td class="txsTableTd">{{ formatNumber(item.data.amount_token1, true) }}</td>
+						<td class="txsTableTd text-center">
+							<a v-if="item.data.router.address" :href="`${blockchainDomain}/address/${item.data.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.data.router.title }}</a>
+							<span v-else>{{ item.data.router.title }}</span>
+						</td>
+						<td class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.maker.address}`" :address="item.data.maker" target="_blank" /></td>
+						<td class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.receiver.address}`" :address="item.data.receiver" target="_blank" /></td>
+						<td class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/tx/${item.data.tx}`" text="Show TX" target="_blank" /></td>
+					</tr>
+					<tr>
+						<td colspan="9">
+							<div v-if="loading" class="text-center"><v-skeleton-loader type="table-tbody" /> <v-skeleton-loader type="table-tbody" /></div>
+							<div v-else-if="!loading && !rows.length" class="text-center py-4">No activity</div>
+							<div v-if="!loading && rows.length" v-intersect="infiniteScrolling" class="text-center">
+								<v-progress-circular :size="50" :width="4" color="white" indeterminate class="ma-3" />
+							</div>
+						</td>
+					</tr>
+				</tbody>
+
+			</table>
 		</div>
 	</div>
 </template>
@@ -105,14 +112,18 @@
 </script>
 
 <style lang="scss">
+	.txsTable {
+		border-collapse: collapse;
+		border-spacing: 0;
+	}
 	.txsTableHead { /* thead tr */
-		display: table-row;
+		//display: table-row;
 		//padding: 6px 12px;
 		background: #282833;
 		font-weight: bold;
 	}
 	.txsTableRow { /* tbody tr */
-		display: table-row;
+		//display: table-row;
 		height: 30px;
 		//padding: 3px 12px;
 		&.buyRow { background: rgb(11 153 129 / 25%); color: aquamarine; }
@@ -120,7 +131,7 @@
 		&:hover { background: #292929 }
 	}
 	.txsTableTd { /* td */
-		display: table-cell;
+		//display: table-cell;
 		height: 30px;
 		vertical-align: middle;
 		white-space: nowrap;
