@@ -1,32 +1,32 @@
 <template>
 	<div class="overflow-x-auto">
-		<div class="txsTableHead" style="min-width: 1450px">
-			<div class="txsTableTd">Date</div>
-			<div class="txsTableTd">Type</div>
-			<div class="txsTableTd">Price</div>
-			<div class="txsTableTd">{{ chartStore.leftToken }}</div>
-			<div class="txsTableTd">{{ chartStore.rightToken }}</div>
-			<div class="txsTableTd" style="flex-grow: 2">Aggregator</div>
-			<div class="txsTableTd">Maker</div>
-			<div class="txsTableTd">Receiver</div>
-			<div class="txsTableTd">Actions</div>
-		</div>
 
 		<div v-bind="containerProps" style="height: 600px; min-width: 1450px">
-			<div v-bind="wrapperProps">
-				<div v-for="item in list" :key="item.index" class="txsTableRow" >
-					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.data.parsedDate }}</div>
-					<div class="txsTableTd text-uppercase" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ item.data.type }}</div>
-					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ formatNumber(item.data.parsedPrice, true) }}</div>
-					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ formatNumber(item.data.amount_token0, true) }}</div>
-					<div class="txsTableTd" :class="item.data.type === 'buy' ? 'buyTd' : 'sellTd'">{{ formatNumber(item.data.amount_token1, true) }}</div>
-					<div class="txsTableTd text-center" style="flex-grow: 2">
+			<div v-bind="wrapperProps" class="d-table">
+				<div class="txsTableHead" :class="{'d-none': loading}" style="min-width: 1450px">
+					<div class="txsTableTd">Date</div>
+					<div class="txsTableTd">Type</div>
+					<div class="txsTableTd">Price</div>
+					<div class="txsTableTd">{{ chartStore.leftToken }}</div>
+					<div class="txsTableTd">{{ chartStore.rightToken }}</div>
+					<div class="txsTableTd" style="flex-grow: 2">Aggregator</div>
+					<div class="txsTableTd" style="width: 400px">Maker</div>
+					<div class="txsTableTd">Receiver</div>
+					<div class="txsTableTd">Actions</div>
+				</div>
+				<div v-for="item in list" :key="item.index" class="txsTableRow" :class="item.data.type === 'buy' ? 'buyRow' : 'sellRow'">
+					<div class="txsTableTd">{{ item.data.parsedDate }}</div>
+					<div class="txsTableTd text-uppercase">{{ item.data.type }}</div>
+					<div class="txsTableTd">{{ formatNumber(item.data.parsedPrice, true) }}</div>
+					<div class="txsTableTd">{{ formatNumber(item.data.amount_token0, true) }}</div>
+					<div class="txsTableTd">{{ formatNumber(item.data.amount_token1, true) }}</div>
+					<div class="txsTableTd text-center">
 						<a v-if="item.data.router.address" :href="`${blockchainDomain}/address/${item.data.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.data.router.title }}</a>
 						<span v-else>{{ item.data.router.title }}</span>
 					</div>
-					<div class="txsTableTd"><a :href="`${blockchainDomain}/address/${item.data.maker}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.data.maker) }}</a></div>
-					<div class="txsTableTd"><a :href="`${blockchainDomain}/address/${item.data.receiver}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ shortAddress(item.data.receiver) }}</a></div>
-					<div class="txsTableTd"><a :href="`${blockchainDomain}/tx/${item.data.tx}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">Show Tx</a></div>
+					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.maker.address}`" :address="item.data.maker" target="_blank" /></div>
+					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.receiver.address}`" :address="item.data.receiver.address" target="_blank" /></div>
+					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/tx/${item.data.tx}`" text="Show TX" target="_blank" /></div>
 				</div>
 				<div>
 					<div v-if="loading" class="text-center flex-fill"><v-skeleton-loader type="table-tbody" /> <v-skeleton-loader type="table-tbody" /></div>
@@ -50,6 +50,7 @@
 
 	import { shortAddress, formatNumber } from "@/helpers/mixins";
 	import { storeToRefs } from "pinia";
+	import LabelAddress from "@/components/UI/LabelAddress.vue";
 
 	/** DATA */
 	const loading = ref(true)
@@ -105,24 +106,26 @@
 
 <style lang="scss">
 	.txsTableHead { /* thead tr */
-		display: flex;
-		padding: 6px 12px;
+		display: table-row;
+		//padding: 6px 12px;
 		background: #282833;
 		font-weight: bold;
 	}
 	.txsTableRow { /* tbody tr */
-		display: flex;
-		padding: 3px 12px;
-		&:hover { background: #18181f }
-
+		display: table-row;
+		height: 30px;
+		//padding: 3px 12px;
+		&.buyRow { background: rgb(11 153 129 / 25%); color: aquamarine; }
+		&.sellRow { background: rgb(240 83 79 / 20%); color: #fb5c5c }
+		&:hover { background: #292929 }
 	}
 	.txsTableTd { /* td */
-		flex: 1;
+		display: table-cell;
+		height: 30px;
+		vertical-align: middle;
 		white-space: nowrap;
 		text-align: center;
 		font-size: 14px;
-		&.buyTd { color: #27a69a }
-		&.sellTd { color: #f0534f }
 		& a:hover {
 			text-decoration: underline !important;
 		}
