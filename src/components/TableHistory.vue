@@ -25,7 +25,7 @@
 						<span v-else>{{ item.data.router.title }}</span>
 					</div>
 					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.maker.address}`" :address="item.data.maker" target="_blank" /></div>
-					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.receiver.address}`" :address="item.data.receiver.address" target="_blank" /></div>
+					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.receiver.address}`" :address="item.data.receiver" target="_blank" /></div>
 					<div class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/tx/${item.data.tx}`" text="Show TX" target="_blank" /></div>
 				</div>
 				<div>
