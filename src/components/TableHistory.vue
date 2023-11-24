@@ -126,7 +126,7 @@
 		//display: table-row;
 		height: 30px;
 		//padding: 3px 12px;
-		&:nth-child(even) { background: #101015;}
+		//&:nth-child(even) { background: #101015;}
 		&.buyRow { color: #55a58d; }
 		&.sellRow { color: #bf4344 }
 		&:hover { background: #000 }

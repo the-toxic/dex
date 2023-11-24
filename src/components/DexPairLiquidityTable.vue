@@ -30,8 +30,7 @@
     :items-per-page-options="[20,50,100]"
   >
     <template v-slot:item.maker="{ item }">
-      <v-btn :to="{name: 'Address', params: {id: item.maker}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.maker) }}</v-btn>
-      <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.maker)" />
+			<LabelAddress link copy :to="{name: 'Address', params: {id: item.maker.address}}" :address="item.maker" target="_blank" />
     </template>
     <template v-slot:item.type="{ item }"><v-chip :color="item.token0_amount > 0 ? 'success':'error'" class="text-uppercase" size="small">{{ item.token0_amount > 0 ? "Adds" : 'Removes' }}</v-chip></template>
     <template v-slot:item.token0_amount="{ item }">{{ formatNumber(Math.abs(item.token0_amount), true) }}</template>
@@ -64,10 +63,11 @@ import Datepicker from "@/components/Datepicker.vue";
 import { useMainStore } from "@/store/mainStore";
 import { mapState } from "pinia";
 import { useChartStore } from "@/store/chartStore";
+import LabelAddress from "@/components/UI/LabelAddress.vue";
 
 export default {
   name: 'DexPairLiquidityTable',
-  components: { Datepicker },
+  components: { LabelAddress, Datepicker },
   props: {
     pairId: {
       type: Number,

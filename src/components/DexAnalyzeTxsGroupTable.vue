@@ -35,8 +35,7 @@
 			<template v-slot:header.sells="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #693131">{{ column.title }}</div></template>
 
 			<template v-slot:item.wallet="{ item }">
-        <v-btn :to="{name: 'Address', params: {id: item.wallet}}" rounded variant="text" density="comfortable" :active="false" class="text-none">{{ shortAddress(item.wallet) }}</v-btn>
-        <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.wallet)" />
+				<LabelAddress link copy :to="{name: 'Address', params: {id: item.wallet.address}}" :address="item.wallet" target="_blank" />
       </template>
 			<template v-slot:item.profit="{ item }">
         <v-chip :color="item.profit > 0 ? 'success': (item.profit < 0 ? 'error' : 'white')" size="small">
@@ -95,10 +94,11 @@ import { useDebounceFn } from "@vueuse/core";
 import Datepicker from "@/components/Datepicker.vue";
 import { mapState } from "pinia";
 import { useChartStore } from "@/store/chartStore";
+import LabelAddress from "@/components/UI/LabelAddress.vue";
 
 export default {
   name: 'DexAnalyzeTxsGroupTable',
-  components: { Datepicker },
+  components: { LabelAddress, Datepicker },
   props: {
     chainId: Number,
     pairId: Number
