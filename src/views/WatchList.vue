@@ -70,6 +70,7 @@
 					:items="itemsTokens"
 					:loading="loading"
 					class="elevation-1"
+					density="comfortable"
 					@update:options="loadItemsTokens"
 				>
 					<template v-slot:item.name="{ item }">

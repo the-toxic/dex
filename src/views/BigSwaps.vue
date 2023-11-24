@@ -24,11 +24,12 @@
 			:items="rows"
 			:loading="loading"
 			class="elevation-1"
+			density="comfortable"
 			@update:options="loadItems"
       :items-per-page-options="[20,50,100]"
 		>
 			<template v-slot:item.pair_name="{ item, internalItem }">
-				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text"  class="text-none">
+				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text" density="comfortable" class="text-none">
 					<!-- <span class="text-disabled text-right mr-2" style="width: 30px;">#{{ internalItem.index + 1 }}</span>-->
 					<TokenIcon :src="item.iconToken0" :alt="item.token0.symbol" class="mr-1" />
 					<TokenIcon :src="item.iconToken1" :alt="item.token1.symbol" class="mr-2" />

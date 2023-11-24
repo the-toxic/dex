@@ -25,6 +25,7 @@
 			:search="filter.search"
 			:loading="loading"
 			class="elevation-1"
+			density="comfortable"
 			:items-per-page-options="[20,50,100]"
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->

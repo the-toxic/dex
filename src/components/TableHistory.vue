@@ -27,8 +27,8 @@
 							<a v-if="item.data.router.address" :href="`${blockchainDomain}/address/${item.data.router.address}`" target="_blank" class="text-decoration-none" style="color:#2e7ebe;">{{ item.data.router.title }}</a>
 							<span v-else>{{ item.data.router.title }}</span>
 						</td>
-						<td class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.maker.address}`" :address="item.data.maker" target="_blank" /></td>
-						<td class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/address/${item.data.receiver.address}`" :address="item.data.receiver" target="_blank" /></td>
+						<td class="txsTableTd"><LabelAddress link :to="{name: 'Address', params: {id: item.data.maker.address}}" :address="item.data.maker" target="_blank" /></td>
+						<td class="txsTableTd"><LabelAddress link :to="{name: 'Address', params: {id: item.data.receiver.address}}" :address="item.data.receiver" target="_blank" /></td>
 						<td class="txsTableTd"><LabelAddress link :to="`${blockchainDomain}/tx/${item.data.tx}`" text="Show TX" target="_blank" /></td>
 					</tr>
 					<tr>
@@ -126,9 +126,10 @@
 		//display: table-row;
 		height: 30px;
 		//padding: 3px 12px;
-		&.buyRow { background: rgb(11 153 129 / 25%); color: aquamarine; }
-		&.sellRow { background: rgb(240 83 79 / 20%); color: #fb5c5c }
-		&:hover { background: #292929 }
+		&:nth-child(even) { background: #101015;}
+		&.buyRow { color: #55a58d; }
+		&.sellRow { color: #bf4344 }
+		&:hover { background: #000 }
 	}
 	.txsTableTd { /* td */
 		//display: table-cell;

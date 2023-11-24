@@ -23,7 +23,8 @@
 			:items-length="totalItems"
 			:items="items"
 			:loading="loading"
-			class="elevation-1 fs14" density="compact"
+			class="elevation-1 fs14"
+		 density="comfortable"
 			:items-per-page-options="[20,50,100]"
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->

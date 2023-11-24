@@ -25,7 +25,8 @@
     :items="rows"
     :loading="loading"
     @update:options="loadItems"
-    class="elevation-1 fs14  mb-48" density="compact"
+    class="elevation-1 fs14 mb-16"
+		density="comfortable"
     :items-per-page-options="[20,50,100]"
   >
     <template v-slot:item.maker="{ item }">

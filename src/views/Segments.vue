@@ -44,17 +44,18 @@
         :items="items"
         :loading="loadingTable"
         class="elevation-1 fs14"
+				density="comfortable"
         @update:options="loadTable"
         :items-per-page-options="[20,50,100]"
       >
 				<template v-slot:item.date="{ item }">{{ item.date }}</template>
         <template v-slot:item.sender="{ item }">
-          <v-btn :to="{name: 'Address', params: {id: item.sender}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.sender) }}</v-btn>
-          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.sender)" />
+<!--          <v-btn :to="{name: 'Address', params: {id: item.sender}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.sender) }}</v-btn>-->
+					<LabelAddress link copy :to="{name: 'Address', params: {id: item.sender.address}}" :address="item.sender" target="_blank" />
         </template>
         <template v-slot:item.receiver="{ item }">
-          <v-btn :to="{name: 'Address', params: {id: item.receiver}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.receiver) }}</v-btn>
-          <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.receiver)" />
+<!--          <v-btn :to="{name: 'Address', params: {id: item.receiver}}" rounded variant="text" density="compact" :active="false" class="text-none">{{ shortAddress(item.receiver) }}</v-btn>-->
+					<LabelAddress link copy :to="{name: 'Address', params: {id: item.receiver.address}}" :address="item.receiver" target="_blank" />
         </template>
         <template v-slot:item.amount="{ item }">{{ formatNumber(item.amount, true) }}</template>
 				<template v-slot:item.symbol="{ item }"><v-chip color="secondary" size="small">{{ item.symbol }}</v-chip></template>
@@ -139,11 +140,12 @@ import { shortAddress, toCurrency, formatNumber, chainTypesRegex } from "@/helpe
 import { useMainStore } from "@/store/mainStore";
 import { fetchSegmentTXs, fetchSegments, getSegmentInfo, saveSegment, removeSegment, fetchSearch } from "@/api";
 import Datepicker from "@/components/Datepicker.vue";
+import LabelAddress from "@/components/UI/LabelAddress.vue";
 
 export default {
   name: 'Segments',
   head: () => ({ title: 'Segments' }),
-  components: { Datepicker },
+  components: { LabelAddress, Datepicker },
   data() {return {
     chainTypesRegex,
 

@@ -1,7 +1,12 @@
 <template>
-	<img v-if="iconSrc.length" :src="iconSrc" class="addressIcon" onerror="this.onerror=null;this.style.display = 'none'">
-	<span v-if="entityName.length" class="text-disabled">{{ entityName }}: </span>
-	<a v-if="type === 'link'" :href="to" :target="target" class="text-decoration-none" v-bind="$attrs" style="color:#2e7ebe;">{{ title }}</a>
+	<router-link v-if="entityLink" :to="entityLink" class="underlineHover text-disabled" target="_blank" >
+		<img :src="entityIcon" class="addressIcon" onerror="this.onerror=null;this.style.display = 'none'">
+		<span class="text-disabled">{{ entityName }}</span>
+	</router-link>
+	<span v-if="entityLink" class="text-disabled">: </span>
+	<router-link v-if="typeof to === 'object' && type === 'link'" :to="to" :target="target" class="underlineHover" v-bind="$attrs" style="color:#2e7ebe;">{{ title }}</router-link>
+	<a v-if="typeof to === 'string' && type === 'link'" :href="to" :target="target" class="underlineHover" v-bind="$attrs" style="color:#2e7ebe;">{{ title }}</a>
+	<v-btn v-if="copy" icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(typeof address === 'object' ? address.address : address)" />
 </template>
 
 <script>
@@ -12,6 +17,7 @@ export default {
 	props: {
 		link: { type: Boolean, default: false },
 		btn: { type: Boolean, default: false },
+		copy: { type: Boolean, default: false },
 		text: {
 			type: String,
 			default: ''
@@ -21,7 +27,7 @@ export default {
 			default: ''
 		},
 		to: {
-			type: String,
+			type: [String, Object],
 			required: true
 		},
 		target: {
@@ -30,8 +36,19 @@ export default {
 		}
 	},
   data: () => ({
-		API_DOMAIN
+		API_DOMAIN,
+		entityName: '',
+		entityLink: '',
+		entityIcon: '',
 	}),
+	created() {
+		if(typeof this.address === 'object' && this.address.entity.uuid && this.address.entity.name) {
+			this.entityName = this.address.entity.name.slice(0, 20)
+			this.entityLink =  {name: 'Entity', params: {id: this.address.entity.uuid}}
+			const uuid = this.address.entity.uuid
+			this.entityIcon = API_DOMAIN + `/images/entities/${uuid.slice(0,1)}/${uuid}.png`
+		}
+	},
 	methods: {
 		shortAddress
 	},
@@ -39,14 +56,7 @@ export default {
 		type() {
 			return this.link ? 'link' : (this.btn ? 'btn' : 'other')
 		},
-		entityName() {
-			return (typeof this.address === 'object' && this.address.entity.name) ? this.address.entity.name.slice(0, 20) : ''
-		},
-		iconSrc() {
-			if (typeof this.address !== 'object' || !this.address.entity.uuid) return ''
-			const uuid = this.address.entity.uuid
-			return API_DOMAIN + `/images/entities/${uuid.slice(0,1)}/${uuid}.png`
-		},
+
 		title() {
 			if(this.text.length) return this.text
 			if(typeof this.address !== 'object') return shortAddress(this.address)
@@ -68,7 +78,11 @@ export default {
 	.addressIcon {
 		height: 22px;
 		border-radius: 50%;
-		vertical-align: bottom;
+		vertical-align: middle;
 		margin-right: 8px;
+	}
+	.underlineHover {
+		text-decoration: none;
+		&:hover { text-decoration: underline }
 	}
 </style>

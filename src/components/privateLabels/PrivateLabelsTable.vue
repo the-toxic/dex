@@ -24,6 +24,7 @@
     :items="items"
     :loading="loading"
     class="elevation-1 fs14"
+		density="comfortable"
     @update:options="loadItems"
     :items-per-page-options="[20,50,100]"
   >
