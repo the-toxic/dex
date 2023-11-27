@@ -163,12 +163,45 @@ function tableMessageHandler(data) {
     tradeTimeStr, // 1649773293
     amount0,
     amount1,
-    maker, // 0x...
-    receiver, // 0x...
+    maker, // JSON
+    receiver, // JSON
     tx, // 0x...
     type, // buy | sell
     routerId, // 123
   ] = data.split('~');
+
+  maker = JSON.parse(maker)
+  const parsedMaker = {
+    address: maker.a,
+    entity: {
+      uuid: maker.e.u,
+      name: maker.e.n,
+    },
+    global_label: {
+      id: maker.gl.i,
+      label: maker.gl.l,
+    },
+    local_label: {
+      id: maker.ll.i,
+      label: maker.ll.l,
+    },
+  }
+  receiver = JSON.parse(receiver)
+  const parsedReceiver = {
+    address: receiver.a,
+    entity: {
+      uuid: receiver.e.u,
+      name: receiver.e.n,
+    },
+    global_label: {
+      id: receiver.gl.i,
+      label: receiver.gl.l,
+    },
+    local_label: {
+      id: receiver.ll.i,
+      label: receiver.ll.l,
+    },
+  }
 
   if(!chartStore().activeSymbol || +chartStore().activeSymbol.pair_id !== +pair_id) {
     return; // fix bug delay call SubRemove
@@ -186,8 +219,8 @@ function tableMessageHandler(data) {
     price: parseFloat(amount1 / amount0),
     amount_token0: parseFloat(amount0),
     amount_token1: parseFloat(amount1),
-    maker,
-    receiver,
+    maker: parsedMaker,
+    receiver: parsedReceiver,
     tx,
     router_id: parseInt(routerId)
   }
