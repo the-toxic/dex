@@ -15,7 +15,7 @@
   </div>
 
 	<div class="overflow-x-auto">
-		<v-data-table-server style="min-width: 1300px"
+		<v-data-table-server style="min-width: 1480px"
 			v-model:page="page"
 			v-model:items-per-page="per_page"
 			v-model:sort-by="sortBy"
@@ -31,8 +31,17 @@
 <!--			<template v-slot:header.wallet="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
 <!--			<template v-slot:header.profit="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
 <!--			<template v-slot:header.roi="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
-			<template v-slot:header.buys="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #334c35">{{ column.title }}</div></template>
-			<template v-slot:header.sells="{ column }"><div class="mx-n4 fill-height pt-2" style="background: #693131">{{ column.title }}</div></template>
+<!--			<template v-slot:header.buys="{ column }"><div class="mx-n4 fill-height pt-3" style="color:#4aaf50;">{{ column.title }}</div></template>-->
+<!--			<template v-slot:header.sells="{ column }"><div class="mx-n4 fill-height pt-3" style="color: #c06072">{{ column.title }}</div></template>-->
+
+			<template v-slot:header.buy_txs="{ column }"><div style="color:#4aaf50;">{{ column.title }}</div></template>
+			<template v-slot:header.buy_amount="{ column }"><div style="color:#4aaf50;">{{ column.title }}</div></template>
+			<template v-slot:header.buy_price="{ column }"><div style="color:#4aaf50;">{{ column.title }}</div></template>
+			<template v-slot:header.buy_total="{ column }"><div style="color:#4aaf50;">{{ column.title }}</div></template>
+			<template v-slot:header.sell_txs="{ column }"><div style="color:#c06072;">{{ column.title }}</div></template>
+			<template v-slot:header.sell_amount="{ column }"><div style="color:#c06072;">{{ column.title }}</div></template>
+			<template v-slot:header.sell_price="{ column }"><div style="color:#c06072;">{{ column.title }}</div></template>
+			<template v-slot:header.sell_total="{ column }"><div style="color:#c06072;">{{ column.title }}</div></template>
 
 			<template v-slot:item.wallet="{ item }">
 				<LabelAddress link copy :to="{name: 'Address', params: {id: item.wallet.address}}" :address="item.wallet" target="_blank" />
@@ -112,18 +121,18 @@ export default {
 			{ title: 'Wallet', key: 'wallet', align: 'center', sortable: false, rowspan: 2 },
 			{ title: 'Profit', key: 'profit', align: 'center', rowspan: 2 },
 			{ title: '% ROI', key: 'roi', align: 'center', rowspan: 2 },
-			{ title: 'Buys', key: 'buys', align: 'center', sortable: false, color: 'bg-green', children: [
+			// { title: 'Buys', key: 'buys', align: 'center', sortable: false, children: [
 					{ title: 'TXs', key: 'buy_txs', align: 'center' },
 					{ title: 'Amount', key: 'buy_amount', align: 'center' },
 					{ title: 'Price', key: 'buy_price', align: 'center' },
 					{ title: 'Total', key: 'buy_total', align: 'center' },
-			] },
-			{ title: 'Sells', key: 'sells', align: 'center', sortable: false, children: [
+			// ] },
+			// { title: 'Sells', key: 'sells', align: 'center', sortable: false, children: [
 				{ title: 'TXs', key: 'sell_txs', align: 'center' },
 				{ title: 'Amount', key: 'sell_amount', align: 'center' },
 				{ title: 'Price', key: 'sell_price', align: 'center' },
 				{ title: 'Total', key: 'sell_total', align: 'center' },
-			] },
+			// ] },
 		],
 		filter: {
       search: ''
@@ -223,10 +232,12 @@ export default {
     },
 		setTokensToTableHeader() {
 			this.headers.find(i => i.key === 'profit').title = 'Profit, '+this.rightToken.slice(0,5)
-			this.headers.find(i => i.key === 'buys')['children'].find(i => i.key === 'buy_amount').title = 'Amount, '+this.leftToken.slice(0,5)
-			this.headers.find(i => i.key === 'buys')['children'].find(i => i.key === 'buy_price').title = 'Price, '+this.rightToken.slice(0,5)
-			this.headers.find(i => i.key === 'sells')['children'].find(i => i.key === 'sell_amount').title = 'Amount, '+this.leftToken.slice(0,5)
-			this.headers.find(i => i.key === 'sells')['children'].find(i => i.key === 'sell_price').title = 'Amount, '+this.rightToken.slice(0,5)
+			this.headers.find(i => i.key === 'buy_amount').title = 'Amount, '+this.leftToken.slice(0,5)
+			this.headers.find(i => i.key === 'buy_price').title = 'Price, '+this.rightToken.slice(0,5)
+			this.headers.find(i => i.key === 'sell_amount').title = 'Amount, '+this.leftToken.slice(0,5)
+			this.headers.find(i => i.key === 'sell_price').title = 'Price, '+this.rightToken.slice(0,5)
+			// this.headers.find(i => i.key === 'sells')['children'].find(i => i.key === 'sell_price').title = 'Amount, '+this.rightToken.slice(0,5)
+
 		},
     onPeriodChange(type, $event) {
       console.log('onPeriodChange')

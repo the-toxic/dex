@@ -43,7 +43,8 @@ export default {
 	}),
 	created() {
 		if(typeof this.address === 'object' && this.address.entity.uuid && this.address.entity.name) {
-			this.entityName = this.address.entity.name.slice(0, 20)
+			const needTrimLength = this.address.local_label.label?.length > 10 || this.address.global_label.label?.length > 10
+			this.entityName = this.address.entity.name.slice(0, needTrimLength ? 12 : 20)
 			this.entityLink =  {name: 'Entity', params: {id: this.address.entity.uuid}}
 			const uuid = this.address.entity.uuid
 			this.entityIcon = API_DOMAIN + `/images/entities/${uuid.slice(0,1)}/${uuid}.png`
@@ -66,7 +67,7 @@ export default {
 				: shortAddress(this.address.address, 8, 6)
 
 			if(this.address.local_label.label || this.address.global_label.label) {
-				return (this.address.local_label.label || this.address.global_label.label).slice(0, 20) + address
+				return (this.address.local_label.label || this.address.global_label.label).slice(0, this.entityName.length > 9 ? 12 : 20) + address
 			}
 
 			return address
