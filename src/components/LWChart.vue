@@ -33,7 +33,7 @@ const defaultChartOptions = {
 	layout: {
 		background: {
 			type: 'solid',
-			color: '#2B2B43',
+			color: '#18181F',
 		},
 		lineColor: '#2B2B43',
 		textColor: '#D9D9D9',
@@ -44,25 +44,17 @@ const defaultChartOptions = {
 	// 		currency: "USD", // Currency for data points
 	// 	}).format,
 	// },
-	watermark: {
-		color: 'rgba(0, 0, 0, 0)',
-	},
-	crosshair: {
-		color: '#758696',
-	},
+	watermark: { color: 'rgba(0, 0, 0, 0)' },
+	crosshair: { color: '#758696', },
 	grid: {
-		vertLines: {
-			color: '#2B2B43',
-		},
-		horzLines: {
-			color: '#363C4E',
-		},
+		vertLines: { color: '#2B2B43', },
+		horzLines: { color: '#363C4E', },
 	}
 }
 const defaultAreaSeriesOptions = {
-	topColor: 'rgba(148,32,226,0.56)',
-	bottomColor: 'rgba(171,32,226,0.04)',
-	lineColor: 'rgb(178,32,226)',
+	topColor: '#4200ff',
+	bottomColor: '#18181F',
+	lineColor: '#642cff',
 	lineWidth: 2,
 	priceFormat: {
 		type: 'volume', // format number to 1K 1M...
