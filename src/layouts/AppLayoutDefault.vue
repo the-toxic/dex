@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="drawer" width="500" location="bottom" v-if="breakpoints.mobile"><!-- v-if="breakpoints.width <= 768" -->
       <v-list :nav="true">
         <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
-        <v-list-item :to="{name: 'Pairs', params: {network: 'all'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Explorer"></v-list-item>
+        <v-list-item :to="{name: 'Pairs', params: {network: 'ethereum'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Explorer"></v-list-item>
         <v-list-item :to="{name: 'BigSwaps', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="BigSwaps"></v-list-item>
         <v-list-item :to="{name: 'PrivateLabels'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Private Labels"></v-list-item>
         <v-list-item :to="{name: 'SC'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="SC"></v-list-item>
@@ -41,7 +41,7 @@
 						<v-btn v-bind="props" variant="text" :active="false" size="large" append-icon="mdi-menu-down" rounded class="d-none d-md-inline-flex text-none">DEX</v-btn>
 				</template>
 				<v-list>
-					<v-list-item title="Explorer" :to="{name: 'Pairs', params: {network: 'all'}}" />
+					<v-list-item title="Explorer" :to="{name: 'Pairs', params: {network: 'ethereum'}}" />
 					<v-list-item title="Big Swaps" :to="{name: 'BigSwaps', params: {network: 'bsc'}}" />
 					<v-list-item title="SC" :to="{name: 'SC'}" />
 				</v-list>

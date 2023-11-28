@@ -63,7 +63,10 @@ const defaultAreaSeriesOptions = {
 	topColor: 'rgba(148,32,226,0.56)',
 	bottomColor: 'rgba(171,32,226,0.04)',
 	lineColor: 'rgb(178,32,226)',
-	lineWidth: 2
+	lineWidth: 2,
+	priceFormat: {
+		type: 'volume', // format number to 1K 1M...
+	},
 }
 
 export default {
@@ -163,6 +166,7 @@ export default {
 		chartOptions(newOptions) {
 			if (!chart) return;
 			chart.applyOptions(newOptions);
+			this.fitContent()
 		},
 		seriesOptions(newOptions) {
 			if (!series) return;

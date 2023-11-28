@@ -15,7 +15,7 @@
 <!--				<v-divider class="my-3" />-->
 <!--				<div v-if="filterOpened">-->
 					<v-select label="Chain" v-model="network" class="flex-grow-0" style="width: 150px"
-						:items="[{value: 'all', title: 'All'}, {value: 'bsc', title: 'BSC'}, {value: 'ethereum', title: 'Ethereum'}]"
+						:items="[{value: 'bsc', title: 'BSC'}, {value: 'ethereum', title: 'Ethereum'}]"
 						variant="outlined" rounded hide-details density="compact"></v-select>
 <!--				</div>-->
       </v-card-text>

@@ -326,6 +326,8 @@ export default {
       this.pairInfoLoading = true
       await this.getPairInfo(newVal.pair_id)
       this.pairInfoLoading = false
+
+			this.loadLiquidityChart().then()
     },
 
 		// pairSelect(newVal, oldVal) {
@@ -337,15 +339,7 @@ export default {
 		// 	window.tvWidget.activeChart().setSymbol(newVal)
 		// },
     async tabContent(newVal) {
-      console.log('watch tab', newVal)
       this.$router.replace({ hash: '#'+newVal }) // add ...this.$route for save url query on tab change
-
-			if(newVal === 'pair') {
-				const { data } = await fetchLiquidityChart()
-				if(data.success) {
-					this.chartData = data.result
-				}
-			}
     },
     token0PriceInUSD() {
       this.updateTitle()
@@ -389,6 +383,12 @@ export default {
     moment, formatBigNumber, toCurrency, shortAddress, toNumber, formatNumber,  // from mixins
     ...mapActions(useChartStore, {getPairInfo: 'getPairInfo', setActiveSymbol: 'setActiveSymbol', resetState: 'resetState', loadExchanges: 'loadExchanges'}),
 
+		async loadLiquidityChart() {
+			const { data } = await fetchLiquidityChart({chainId: this.chainId, pairId: this.pairId})
+			if(data.success) {
+				this.chartData = data.result.data
+			}
+		},
     updateTitle() {
       const chain = (!this.activeSymbol || !this.chains) ? '' : this.chains[this.chainId]['name']
       this.pageTitle = !this.activeSymbol ? '' : `$${formatNumber(this.token0PriceInUSD)} ${this.pairSymbol} - ${this.tokenTitle} | ${this.activeSymbol.exchange} / ${chain}`
