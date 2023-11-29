@@ -28,8 +28,8 @@
     </template>
     <template v-slot:item.name="{ item }">
 <!--      <img :src="iconPath(item.uuid)" class="va-middle" style="max-height: 40px" />-->
-			<div class="d-inline-block overflow-hidden va-middle mr-3" style="width: 40px; height: 40px; border-radius: 50%;">
-				<TokenIcon :src="iconPath(item.uuid)" width="40" class="mr-1" />
+			<div class="d-inline-block overflow-hidden va-middle mr-3" style="width: 24px; height: 24px; border-radius: 50%;">
+				<TokenIcon :src="iconPath(item.uuid)" width="24" class="mr-1" />
 			</div>
 <!--      <v-btn :to="{name: 'Entity', params: {id: item.uuid}}" rounded variant="text" density="comfortable" :active="false" class="text-none" width="250">{{ item.name.slice(0, 30) }}</v-btn>-->
       <router-link :to="{name: 'Entity', params: {id: item.uuid}}" class="d-inline-block text-left text-white text-decoration-none" style="width: 250px">{{ item.name.slice(0, 30) }}</router-link>

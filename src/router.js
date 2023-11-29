@@ -13,7 +13,7 @@ import ContactUs from "@/views/ContactUs.vue";
 const routes = [
   { path: '/', name: 'Home', component: Home, meta: { layout: AppLayoutsEnum.empty } },
   { path: '/console', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/components/Console"), children: [
-    { path: '', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pairs',  params: {network: 'bsc'} } },
+    { path: '', name: 'Console', meta: { needAuth: true }, redirect: { name: 'Pairs',  params: {network: 'ethereum'} } },
     { path: 'dashboard', name: 'Dashboard', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Dashboard.vue") },
     { path: ':network([a-zA-Z0-9-]{2,10})/explorer', name: 'Pairs', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pairs.vue") },
     { path: 'dex/:pairAddr(0x[a-zA-Z0-9]{40})', name: 'Pair', meta: { needAuth: true }, component: () => import(/* webpackChunkName: "console" */ "@/views/Pair.vue") },
