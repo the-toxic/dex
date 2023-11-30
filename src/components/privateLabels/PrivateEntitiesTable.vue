@@ -104,7 +104,7 @@ export default {
     headers: [
       { title: 'UUID', key: 'uuid', align: 'center', sortable: false },
       { title: 'Name', key: 'name', align: 'center', sortable: false },
-      { title: 'Wallets', key: 'wallets', align: 'center', sortable: false },
+      { title: 'Addresses', key: 'wallets', align: 'center', sortable: false },
       { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
     items: [],

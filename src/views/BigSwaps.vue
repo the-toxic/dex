@@ -29,7 +29,7 @@
       :items-per-page-options="[20,50,100]"
 		>
 			<template v-slot:item.pair_name="{ item, internalItem }">
-				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text" density="comfortable" class="text-none">
+				<v-btn :to="{name: 'Pair', params: {id: item.pair_addr}}" rounded variant="text" density="comfortable" class="text-none">
 					<!-- <span class="text-disabled text-right mr-2" style="width: 30px;">#{{ internalItem.index + 1 }}</span>-->
 					<TokenIcon :src="item.iconToken0" :alt="item.token0.symbol" class="mr-1" />
 					<TokenIcon :src="item.iconToken1" :alt="item.token1.symbol" class="mr-2" />
@@ -50,7 +50,7 @@
 			</template>
 			<template v-slot:item.maker="{ item }"><v-btn :to="{name: 'Address', params: {id: item.maker_addr}}" variant="text" density="compact" rounded class="text-none">{{ shortAddress(item.maker_addr) }}</v-btn></template>
 			<template v-slot:item.action="{ item }">
-				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}"
+				<v-btn :to="{name: 'Pair', params: {id: item.pair_addr}}"
 					 icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
 			</template>
 		</v-data-table-server>

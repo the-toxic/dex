@@ -49,6 +49,10 @@ const defaultChartOptions = {
 	grid: {
 		vertLines: { color: '#2B2B43', },
 		horzLines: { color: '#363C4E', },
+	},
+	timeScale: {
+		fixRightEdge: true, // limit on scroll longer start/end chart
+		fixLeftEdge: true,
 	}
 }
 const defaultAreaSeriesOptions = {
@@ -154,11 +158,11 @@ export default {
 		data(newData) {
 			if (!series) return;
 			series.setData(newData);
+			this.fitContent()
 		},
 		chartOptions(newOptions) {
 			if (!chart) return;
 			chart.applyOptions(newOptions);
-			this.fitContent()
 		},
 		seriesOptions(newOptions) {
 			if (!series) return;

@@ -17,9 +17,8 @@
 						 :title="`${item.name} ${item.address && '('+shortAddress(item.address)+')'}`" @click="onResultClick"
 						 :to="{
 								name: type === 'entities' ? 'Entity' : (type === 'tokens' ? 'Token' : (type === 'pairs' ? 'Pair' : 'Address')),
-								params: { [type === 'pairs' ? 'pairAddr' : 'id']: (type === 'entities' ? item.id : item.address) }
-						 }"
-						  >
+								params: { id: (type === 'entities' ? item.id : item.address) }
+						 }">
 							<template v-slot:prepend>
 								<TokenIcon v-if="type === 'tokens' || type === 'entities'" :src="itemIconSrc(item, type)" error-size="small" width="24" class="mr-1" />
 							</template>

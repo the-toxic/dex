@@ -4,9 +4,10 @@
       <v-list :nav="true">
         <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
         <v-list-item :to="{name: 'Pairs', params: {network: 'ethereum'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Explorer"></v-list-item>
-        <v-list-item :to="{name: 'BigSwaps', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="BigSwaps"></v-list-item>
+<!--        <v-list-item :to="{name: 'BigSwaps', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="BigSwaps"></v-list-item>-->
+<!--        <v-list-item :to="{name: 'SC'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="SC"></v-list-item>-->
         <v-list-item :to="{name: 'PrivateLabels'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Private Labels"></v-list-item>
-        <v-list-item :to="{name: 'SC'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="SC"></v-list-item>
+        <v-list-item :to="{name: 'Segments'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Segments"></v-list-item>
         <v-list-item :href="NEWS_HOST" target="news" prepend-icon="mdi-menu-open" title="News"></v-list-item>
         <v-list-item :href="DOCS_HOST" target="docs" prepend-icon="mdi-menu-open" title="Docs"></v-list-item>
 <!--        <v-list-item :to="{name: 'Career'}" prepend-icon="mdi-menu-open" title="Career"></v-list-item>-->
@@ -34,9 +35,10 @@
 <!--      <v-spacer />-->
 
 			<!-- Center Side-->
-			<v-btn variant="text" :active="false" size="large" :to="{name: 'Home'}" rounded class="d-none d-md-inline-flex text-none">Home</v-btn>
+<!--			<v-btn variant="text" :active="false" size="large" :to="{name: 'Home'}" rounded class="d-none d-md-inline-flex text-none">Home</v-btn>-->
 			<v-btn variant="text" :active="false" size="large" :to="{name: 'Dashboard'}" rounded class="d-none d-md-inline-flex text-none">Dashboard</v-btn>
-			<v-menu v-if="userStore.logged" v-model="consoleSubMenu" :close-on-content-click="false" location="bottom">
+			<v-btn variant="text" :active="false" size="large" :to="{name: 'Pairs', params: {network: 'ethereum'}}" rounded class="d-none d-md-inline-flex text-none">Explorer</v-btn>
+			<!-- <v-menu v-if="userStore.logged" v-model="consoleSubMenu" :close-on-content-click="false" location="bottom">
 				<template v-slot:activator="{ props }">
 						<v-btn v-bind="props" variant="text" :active="false" size="large" append-icon="mdi-menu-down" rounded class="d-none d-md-inline-flex text-none">DEX</v-btn>
 				</template>
@@ -45,7 +47,7 @@
 					<v-list-item title="Big Swaps" :to="{name: 'BigSwaps', params: {network: 'bsc'}}" />
 					<v-list-item title="SC" :to="{name: 'SC'}" />
 				</v-list>
-			</v-menu>
+			</v-menu>-->
 
 			<v-spacer />
 
@@ -66,7 +68,7 @@
 
 					<v-btn :to="{name: 'PrivateLabels'}" v-if="userStore.logged" rounded class="text-none">Private Labels</v-btn>
 					<v-btn :to="{name: 'Segments'}" v-if="userStore.logged" rounded class="text-none">Segments</v-btn>
-					<v-btn :to="{name: 'WatchList'}" v-if="userStore.logged" rounded class="text-none">Watch List</v-btn>
+					<!-- <v-btn :to="{name: 'WatchList'}" v-if="userStore.logged" rounded class="text-none">Watch List</v-btn>-->
 
           <v-btn v-if="route.name === 'Pair'" icon size="small">
             <v-icon right :color="!mainStore.wsConnected ? 'red' : (mainStore.wsConnected === 'loading' ? 'orange' : 'green')">mdi-checkbox-blank-circle</v-icon>

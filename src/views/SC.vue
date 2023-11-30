@@ -9,7 +9,7 @@
 			<input type="text" ref="datepickerSell" placeholder="Period of Sell tokens" class="datePickerInput" />
 			<v-spacer />
       <div style="width: 250px">
-        <v-text-field v-model="filter.search" label="Search by Wallets" placeholder="" rounded variant="outlined"
+        <v-text-field v-model="filter.search" label="Search by Addresses" placeholder="" rounded variant="outlined"
           density="compact" prepend-inner-icon="mdi-magnify" hide-details  clearable @click:clear="filter.search = ''" class="ml-4"/>
       </div>
 <!--			<v-btn rounded class="text-none" variant="outlined"><v-icon start icon="mdi-filter" /> Filter</v-btn>-->
@@ -29,12 +29,12 @@
 			:items-per-page-options="[20,50,100]"
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->
-			<template v-slot:item.wallet="{ item, internalItem }">
-				<v-btn :to="{name: 'Address', params: {id: item.wallet}}" rounded variant="text" :active="false" class="text-none">
+			<template v-slot:item.address="{ item, internalItem }">
+				<v-btn :to="{name: 'Address', params: {id: item.address}}" rounded variant="text" :active="false" class="text-none">
 					<span class="text-disabled mr-1" style="width: 30px;">#{{ internalItem.index + 1 }}</span>
-					{{ shortAddress(item.wallet) }}
+					{{ shortAddress(item.address) }}
 				</v-btn>
-        <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.wallet)" />
+        <v-btn icon="mdi-content-copy" variant="text" size="x-small" @click="$clipboard(item.address)" />
 			</template>
 			<template v-slot:item.tx_id="{ item }">
 				<v-btn rounded variant="text" :href="`https://${item.tx_id}`" target="_blank" class="text-none">{{ shortAddress(item.tx_id) }} <v-icon icon="mdi-open-in-new" size="x-small" class="mb-3" /></v-btn>
@@ -91,7 +91,7 @@ export default {
     per_page: 20,
 		sortBy: [{key: 'profit', order: 'desc'}],
     headers: [
-      { title: 'Wallet', key: 'wallet', align: 'start', sortable: false },
+      { title: 'Address', key: 'address', align: 'center', sortable: false },
       { title: 'TX ID', key: 'tx_id', align: 'center', sortable: false },
       { title: 'Bought, Tokens', key: 'bought', align: 'center' },
       { title: 'Sold, Tokens', key: 'sold', align: 'center' },

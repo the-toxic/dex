@@ -38,7 +38,7 @@
 <!--			@update:options="loadItems"-->
       <template v-slot:bottom></template> <!-- hide footer -->
 			<template v-slot:item.pair_name="{ item, internalItem }">
-				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}" rounded variant="text" density="comfortable" class="text-none">
+				<v-btn :to="{name: 'Pair', params: {id: item.pair_addr}}" rounded variant="text" density="comfortable" class="text-none">
 					<span class="text-disabled text-right mr-2" style="width: 30px;">#{{ internalItem.index + 1 }}</span>
 					<TokenIcon :src="item.iconToken0" :alt="item.token0.symbol" width="24" class="mr-1" />
 					<TokenIcon :src="item.iconToken1" :alt="item.token1.symbol" width="24" class="mr-2" />
@@ -55,10 +55,10 @@
 				</v-chip>
 			</template>
 			<template v-slot:item.liquidity="{ item }">${{ formatBigNumber(item.liquidity) || 0 }}</template>
-			<template v-slot:item.action="{ item }">
-				<v-btn :to="{name: 'Pair', params: {pairAddr: item.pair_addr}}"
+			<!-- <template v-slot:item.action="{ item }">
+				<v-btn :to="{name: 'Pair', params: {id: item.pair_addr}}"
 					 icon="mdi-eye-outline" variant="text" size="small" color="secondary"></v-btn>
-			</template>
+			</template>-->
 		</v-data-table-server>
   </v-container>
 </template>
@@ -79,7 +79,7 @@ export default {
     loading: false,
 		filterOpened: true,
 		network: '',
-    per_page: 10,
+    per_page: 20,
 		sortBy: [{key: 'txs', order: 'desc'}],
 		page: 1,
     headers: [
@@ -89,7 +89,7 @@ export default {
       { title: 'Volume', key: 'volume', align: 'center' },
       { title: '% 24h', key: 'change_24h', align: 'center' },
       { title: 'Liquidity', key: 'liquidity', align: 'center' },
-      { title: 'Action', key: 'action', align: 'center', sortable: false },
+      // { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
     searchInput: '',
     items: [],
@@ -122,8 +122,6 @@ export default {
 		...mapState(useMainStore, {chains: 'chains'}),
 		rows() {
 			return this.items.map(item => {
-				const iconFolder = !this.chains ? null : this.chains[item.chain_id]['icon_folder']
-
 				if(needInvert(item.token0.symbol, item.token1.symbol)) {
 					const oldToken0 = item.token0
 					item.token0 = item.token1
@@ -131,6 +129,7 @@ export default {
 					item.last_price = 1 / item.last_price
 					item.need_invert = true
 				}
+				const iconFolder = !this.chains ? null : this.chains[item.chain_id]['icon_folder']
 				item.iconToken0 = !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${item.token0.address.toLowerCase().slice(0,4)}/${item.token0.address.toLowerCase()}/default.png`
 				item.iconToken1 = !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${item.token1.address.toLowerCase().slice(0,4)}/${item.token1.address.toLowerCase()}/default.png`
 
