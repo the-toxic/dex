@@ -289,6 +289,7 @@ export default {
 	},
 	watch: {
 		'$route.params.id'(newVal, oldVal) {
+			if(this.$route.name !== 'Pair') return; // fix bug - open entity in DEX page
 			console.log('watch $route.params.id', newVal, oldVal)
 			if(typeof newVal === 'undefined' || newVal === null) return // undefined on unmount, null on resetState
 
