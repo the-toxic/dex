@@ -14,13 +14,17 @@
 					<div v-for="(items, type) in results" class="border">
 						<v-list-subheader class="text-uppercase">{{ type }}</v-list-subheader>
 						<v-list-item v-for="item in items"
-						 :title="`${item.name} ${item.address && '('+shortAddress(item.address)+')'}`" @click="onResultClick"
+						 :title="`${item.name} ${item.address && '('+shortAddress(item.address)+')'} ${type === 'pairs' ? '['+formatBigNumber(item.swaps_count, 1000, true)+' txs]' : ''}`" @click="onResultClick"
 						 :to="{
 								name: type === 'entities' ? 'Entity' : (type === 'tokens' ? 'Token' : (type === 'pairs' ? 'Pair' : 'Address')),
 								params: { id: (type === 'entities' ? item.id : item.address) }
 						 }">
 							<template v-slot:prepend>
-								<TokenIcon v-if="type === 'tokens' || type === 'entities'" :src="itemIconSrc(item, type)" error-size="small" width="24" class="mr-1" />
+								<TokenIcon v-if="type === 'tokens' || type === 'entities'" :src="itemIconSrc(type, item.address || item.id, item.chain_id)" error-size="small" width="24" class="mr-1" />
+								<template v-else-if="type === 'pairs'">
+									<TokenIcon :src="itemIconSrc('tokens', item.token0_address, item.chain_id)" error-size="small" width="24" class="mr-1" />
+									<TokenIcon :src="itemIconSrc('tokens', item.token1_address, item.chain_id)" error-size="small" width="24" class="mr-1" />
+								</template>
 							</template>
 						</v-list-item>
 					</div>
@@ -39,7 +43,7 @@ import { mapActions, mapState } from "pinia";
 import { useDebounceFn } from "@vueuse/core";
 import { useMainStore } from "@/store/mainStore";
 import { fetchSearch } from "@/api";
-import { API_DOMAIN, shortAddress } from "@/helpers/mixins";
+import { API_DOMAIN, formatBigNumber, formatNumber, shortAddress } from "@/helpers/mixins";
 import TokenIcon from "@/components/UI/TokenIcon.vue";
 
 export default {
@@ -93,15 +97,15 @@ export default {
 
 	},
   methods: {
-		shortAddress,
+		formatBigNumber, shortAddress,
     ...mapActions(useMainStore, {showAlert: 'showAlert', toggleSearchDialog: 'toggleSearchDialog'}),
 
-		itemIconSrc(item, type) {
+		itemIconSrc(type, address, chain_id = null) {
       if(type === 'tokens') {
-        const iconFolder = !this.chains ? null : this.chains[item.chain_id]['icon_folder']
-        return !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${item.address.toLowerCase().slice(0,4)}/${item.address.toLowerCase()}/default.png`
+        const iconFolder = !this.chains ? null : this.chains[chain_id]['icon_folder']
+        return !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${address.toLowerCase().slice(0,4)}/${address.toLowerCase()}/default.png`
       } else if(type === 'entities') {
-        return API_DOMAIN + `/images/entities/${item.id.slice(0,1)}/${item.id}.png`
+        return API_DOMAIN + `/images/entities/${address.slice(0,1)}/${address}.png`
       }
 		},
 		onResultClick() {

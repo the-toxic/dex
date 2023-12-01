@@ -48,10 +48,10 @@
 			</template>
 			<template v-slot:item.price="{ item }">${{ formatNumber(item.last_price) }}</template>
 			<template v-slot:item.txs="{ item }">{{ formatBigNumber(item.txs) }}</template>
-			<template v-slot:item.volume="{ item }">{{formatBigNumber(item.need_invert ? item.volume_token1 : item.volume_token0) }}</template>
-			<template v-slot:item.change_24h="{ item }">
-				<v-chip :color="item.change_24h > 0 ? 'success': (item.change_24h < 0 ? 'error' : 'white')">
-					{{ item.change_24h > 0 ? '+' : (item.change_24h < 0 ? '-' : '') }} {{ Math.abs(item.change_24h) || 0 }}%
+			<template v-slot:item.volume="{ item }">{{formatBigNumber(item.volume_token0) }}</template>
+			<template v-slot:item.percent24="{ item }">
+				<v-chip :color="item.percent24 > 0 ? 'success': (item.percent24 < 0 ? 'error' : 'white')" density="comfortable">
+					{{ item.percent24 > 0 ? '+' : (item.percent24 < 0 ? '-' : '') }} {{ Math.abs(Math.round(item.percent24 * 100) / 100) || 0 }}%
 				</v-chip>
 			</template>
 			<template v-slot:item.liquidity="{ item }">${{ formatBigNumber(item.liquidity) || 0 }}</template>
@@ -87,7 +87,7 @@ export default {
       { title: 'Price', key: 'price', align: 'center' },
       { title: 'TXs', key: 'txs', align: 'center' },
       { title: 'Volume', key: 'volume', align: 'center' },
-      { title: '% 24h', key: 'change_24h', align: 'center' },
+      { title: '% 24h', key: 'percent24', align: 'center' },
       { title: 'Liquidity', key: 'liquidity', align: 'center' },
       // { title: 'Action', key: 'action', align: 'center', sortable: false },
     ],
@@ -123,15 +123,42 @@ export default {
 		rows() {
 			return this.items.map(item => {
 				if(needInvert(item.token0.symbol, item.token1.symbol)) {
+					item.need_invert = true
+					item.last_price = 1 / item.last_price
+
 					const oldToken0 = item.token0
 					item.token0 = item.token1
 					item.token1 = oldToken0
-					item.last_price = 1 / item.last_price
-					item.need_invert = true
+
+					const oldVolToken0 = item.volume_token0
+					item.volume_token0 = item.volume_token1
+					item.volume_token1 = oldVolToken0
 				}
 				const iconFolder = !this.chains ? null : this.chains[item.chain_id]['icon_folder']
 				item.iconToken0 = !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${item.token0.address.toLowerCase().slice(0,4)}/${item.token0.address.toLowerCase()}/default.png`
 				item.iconToken1 = !iconFolder ? '' : `${API_DOMAIN}${iconFolder}${item.token1.address.toLowerCase().slice(0,4)}/${item.token1.address.toLowerCase()}/default.png`
+
+
+				const nativeWrappedSymbol = 'W' + this.chains[item.chain_id]['native_symbol']
+				const nativeSymbolPrice = this.chains[item.chain_id]['native_symbol_price'] || 1
+
+				if(!item.token1.is_stable) {
+					item.last_price = item.last_price * nativeSymbolPrice
+				}
+
+				const token0_total = item.token0.symbol === nativeWrappedSymbol
+					? (Math.abs(item.volume_token0) * nativeSymbolPrice) // if coin
+					: (item.token1.is_stable
+						? (Math.abs(item.volume_token0) * item.last_price) // if right stable
+						: (Math.abs(item.volume_token0) * item.last_price * nativeSymbolPrice)) // other
+
+				const token1_total = item.token1.is_stable
+					? (Math.abs(item.volume_token1))
+					: (item.token1.symbol === nativeWrappedSymbol
+						? (Math.abs(item.volume_token1) * nativeSymbolPrice)
+						: 0)
+
+				item.liquidity = token0_total + token1_total
 
 				return item
 			})
