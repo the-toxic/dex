@@ -88,7 +88,6 @@
               <v-text-field label="Max Value" type="number" v-model="form.max_value" :rules="[v => !v || (!isNaN(v) && +v >= 0 && +v < 1e12) || 'Incorrect number']" />
             </div>
 
-            {{ form.chain_id || '?' }}
             <v-select label="Network" v-model="form.chain_id" :items="networksList" :disabled="!!form.tokens.length"></v-select>
 
             <v-autocomplete label="Tokens" v-model="form.tokens" return-object placeholder="Type more 3 chars for search"
