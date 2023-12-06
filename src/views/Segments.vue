@@ -84,11 +84,12 @@
               @update:search="onAddressSearch($event, 'to')" :items="addressesList" :loading="addressesLoading" clearable />
 
             <div class="d-flex align-center" style="gap: 10px">
-              <v-text-field label="Min Value in USD" type="number" v-model="form.min_value" :rules="[v => !v || (!isNaN(v) && +v >= 0 && +v < 1e12) || 'Incorrect number']" />
-              <v-text-field label="Max Value in USD" type="number" v-model="form.max_value" :rules="[v => !v || (!isNaN(v) && +v >= 0 && +v < 1e12) || 'Incorrect number']" />
+              <v-text-field label="Min Value" type="number" v-model="form.min_value" :rules="[v => !v || (!isNaN(v) && +v >= 0 && +v < 1e12) || 'Incorrect number']" />
+              <v-text-field label="Max Value" type="number" v-model="form.max_value" :rules="[v => !v || (!isNaN(v) && +v >= 0 && +v < 1e12) || 'Incorrect number']" />
             </div>
 
-            <v-select label="Network" v-model="form.chain_id" :items="networksList"></v-select>
+            {{ form.chain_id || '?' }}
+            <v-select label="Network" v-model="form.chain_id" :items="networksList" :disabled="!!form.tokens.length"></v-select>
 
             <v-autocomplete label="Tokens" v-model="form.tokens" return-object placeholder="Type more 3 chars for search"
               @update:search="onTokensSearch" :items="tokensList" :loading="tokensLoading" counter multiple chips closable-chips :rules="[v => v.length <= 10 || 'Max allow 10 tokens']" />
@@ -109,7 +110,7 @@
 
           </v-card-text>
 					<v-card-actions class="px-4 pt-0 pb-4">
-						<v-btn v-if="form.id" variant="text" @click="showDeleteDialog('segment', form.id)" color="error">Delete</v-btn>
+						<v-btn v-if="form.id" variant="text" @click="showDeleteDialog('segment', form.id)" color="error" class="text-none">Delete</v-btn>
 						<v-spacer></v-spacer>
 						<v-btn variant="text" @click="dialog = false" color="disabled" class="text-none">Close</v-btn>
 						<v-btn type="submit" variant="outlined" color="secondary" class="text-none" :loading="dialogLoader" :disabled="dialogLoader">Save</v-btn>
@@ -224,12 +225,20 @@ export default {
   },
   watch: {
     currentSegmentId(newVal, oldVal) {
-      console.log(oldVal, '->', newVal)
+      console.log('currentSegmentId: ', oldVal, '->', newVal)
       this.$router.push({...this.$route, query: {id: newVal}})
       if(newVal) this.loadTable() // after delete last segment newvVal = null
     },
     'filter.search'(newVal) {
       this.searchTXsDebouncedFn()
+    },
+    'form.tokens'(newVal, oldVal) {
+      if(newVal.length && !!newVal[0].chain_id && this.form.chain_id !== newVal[0].chain_id) {
+        this.form.chain_id = newVal[0].chain_id
+      }
+      if(this.tokensList.some(i => i.chain_id !== this.form.chain_id)) {
+        this.tokensList = this.tokensList.filter(i => i.chain_id === this.form.chain_id)
+      }
     },
   },
   computed: {
@@ -239,7 +248,7 @@ export default {
       return !this.segments ? [] : this.segments.map(i => ({value: i.id, title: i.name}))
     },
     networksList() {
-      const needChains = ['Ethereum', 'BSC', 'polygon', 'arbitrum_one', 'optimism']
+      const needChains = ['Ethereum', 'BSC']
       const chains = [{value: 0, title: 'All'}]
       Object.values(this.chains).forEach(item => {
         if(needChains.includes(item.name))
@@ -386,7 +395,7 @@ export default {
     },
     async tokensSearch(query) {
       this.tokensLoading = true
-      const { data } = await fetchSearch(query, 'tokens')
+      const { data } = await fetchSearch(query, 'tokens', this.form.chain_id || null)
       this.tokensLoading = false
       this.tokensList = []
 
@@ -395,7 +404,8 @@ export default {
           this.tokensList.push({
             value: item.id,
             title: item.symbol || item.name,
-            props: {subtitle: `${item.name} (${shortAddress(item.address)})`}
+            props: {subtitle: `${item.name} (${shortAddress(item.address)}) [${this.chains[item.chain_id]['name']}]`},
+            chain_id: item.chain_id
           })
         })
       }

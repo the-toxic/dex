@@ -378,9 +378,10 @@ export const fetchLiquidityChart = async ({chainId, pairId}) => {
 }
 
 
-export const fetchSearch = async (query, categories = null) => {
+export const fetchSearch = async (query, categories = null, chain_id = null) => {
   const cats = categories ? `&categories=${categories}` : ''
-  return await axios.get(`search?q=${query}${cats}`);
+  const chain = chain_id ? `&chain_id=${chain_id}` : ''
+  return await axios.get(`search?q=${query}${cats}${chain}`);
 
   // return { data: {
   //     success: true, result: [
