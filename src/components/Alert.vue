@@ -20,11 +20,12 @@
   </v-snackbar>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue"
 import { mapState } from "pinia";
 import { useMainStore } from "@/store/mainStore";
 
-export default {
+export default defineComponent({
   name: "Alert",
   data: () => ({
     isVisible: false
@@ -43,7 +44,7 @@ export default {
       this.isVisible = !!val
     }
   }
-}
+})
 </script>
 
 <style lang="scss">

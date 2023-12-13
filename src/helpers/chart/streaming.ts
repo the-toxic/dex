@@ -1,6 +1,7 @@
 import { io } from 'socket.io-client'
 import { useMainStore } from "@/store/mainStore";
 import { useChartStore } from "@/store/chartStore";
+import { Address, ChartSymbol, LastTxsItem, StreamingBar, StreamingSubHandler } from "@/types";
 
 const mainStore = () => useMainStore()
 const chartStore = () => useChartStore()
@@ -30,7 +31,7 @@ const socket = io(apiDomain, {
 // socket.onerror = function(event) { console.log('on error', event) };
 
 socket.on('connect', () => {
-  // console.log('[socket] Connected. ID:', socket.id);
+  console.log('[socket] Connected. ID:', socket.id);
   mainStore().setConnected(true)
 });
 
@@ -40,14 +41,15 @@ socket.on('disconnect', (reason) => {
 });
 
 socket.on("connect_error", (error) => {
-  console.log('[socket] Connect Error', error.code, error.message);
+  console.log('[socket] Connect Error:', error.message);
 });
 
 socket.on('error', (error) => {
   console.log('[socket] Error:', error);
 });
 socket.io.on("reconnect", (attempt) => {
-  console.log('[socket] Reconnect:', attempt);
+  mainStore().setConnected('loading')
+  console.log('[socket] Reconnect: ', attempt);
 });
 socket.io.on("reconnect_attempt", (attempt) => {
   console.log('[socket] Reconnect attempt:', attempt);
@@ -55,8 +57,8 @@ socket.io.on("reconnect_attempt", (attempt) => {
 socket.io.on("reconnect_error", (error) => {
   console.log('[socket] Reconnect error:', error);
 });
-socket.io.on("reconnect_failed", (error) => {
-  console.log('[socket] Reconnect failed:', error);
+socket.io.on("reconnect_failed", () => {
+  console.log('[socket] Reconnect failed');
 });
 // socket.io.on("ping", () => {
 //   console.log('[socket] Ping:', arguments);
@@ -81,10 +83,10 @@ socket.on('m', data => {
   }
 })
 
-const humanDate = (date, length = 16) => new Date(date).toISOString().slice(0, length).split('T').join(' ')
+// const humanDate = (date: string, length = 16) => new Date(date).toISOString().slice(0, length).split('T').join(' ')
 // const checkInvert = (number, needInvert) => (needInvert ? number : 1 / number)
 
-function candleMessageHandler(data) {
+function candleMessageHandler(data: string) {
   // 0~14~15~1651066924.0~19.643600704488794~0.05
   // свечи 0~{pair_id}~{span}~{ts}~{amount0}~{amount1}
   // цена = правое делить на левое
@@ -98,7 +100,8 @@ function candleMessageHandler(data) {
     amount1, // 0.05
   ] = data.split('~');
 
-  if(!chartStore().activeSymbol || +chartStore().activeSymbol.pair_id !== +pair_id) {
+  const chartSymbol = chartStore().activeSymbol as ChartSymbol
+  if(!chartSymbol || +chartSymbol?.pair_id !== +pair_id) {
     return; // fix bug delay call SubRemove
   }
 
@@ -109,7 +112,7 @@ function candleMessageHandler(data) {
   }
 
   const tradeTime = parseInt(tradeTimeStr) * 1000;
-  const tradePrice = parseFloat(amount1 / amount0);
+  const tradePrice = parseFloat(String(+amount1 / +amount0));
   const tradeVolume = parseFloat(amount0);
 
   const channelString = `0~${pair_id}~${resolution}`;
@@ -123,7 +126,9 @@ function candleMessageHandler(data) {
 
   // console.log(resolution, humanDate(lastBar.time), '<', humanDate(tradeTime, 19), '<', humanDate(nextBarTime), tradePrice)
 
-  let bar;
+
+
+  let bar: StreamingBar;
   if (tradeTime >= nextBarTime) { // если пора рисовать новый бар
     bar = {
       time: nextBarTime,
@@ -148,10 +153,10 @@ function candleMessageHandler(data) {
   subscriptionItem.lastBar = bar;
 
   // send data to every subscriber of that symbol
-  subscriptionItem.handlers.forEach(handler => handler.callback(bar));
+  subscriptionItem.handlers.forEach((handler: StreamingSubHandler) => handler.callback(bar));
 }
 
-function tableMessageHandler(data) {
+function tableMessageHandler(data: any) {
   // 1~10~15~1651639383.0~867.1865216318507~2.2613733312250917~0x2eae1660df22b0bbd80170092c23ff965e72a79c~0x2eae1660df22b0bbd80170092c23ff965e72a79c~0xe6a49844d7e3bfb4cf4cb7a25d531a8256e0b9c480dbd89a78c3c60fded5b118~buy~123
   // таблица 1~{pair_id}~{span}~{ts}~{amount0}~{amount1}~{maker}~{receiver}~{tx}~{direction}~{router_id}
   // цена = правое делить на левое
@@ -171,7 +176,7 @@ function tableMessageHandler(data) {
   ] = data.split('~');
 
   maker = JSON.parse(maker)
-  const parsedMaker = {
+  const parsedMaker: Address = {
     address: maker.a,
     entity: {
       uuid: maker.e.u,
@@ -186,8 +191,9 @@ function tableMessageHandler(data) {
       label: maker.ll.l,
     },
   }
+
   receiver = JSON.parse(receiver)
-  const parsedReceiver = {
+  const parsedReceiver: Address = {
     address: receiver.a,
     entity: {
       uuid: receiver.e.u,
@@ -203,7 +209,8 @@ function tableMessageHandler(data) {
     },
   }
 
-  if(!chartStore().activeSymbol || +chartStore().activeSymbol.pair_id !== +pair_id) {
+  const chartSymbol = chartStore().activeSymbol as ChartSymbol
+  if(!chartSymbol || +chartSymbol?.pair_id !== +pair_id) {
     return; // fix bug delay call SubRemove
   }
 
@@ -213,10 +220,10 @@ function tableMessageHandler(data) {
     amount1 = oldAmount0
   }
 
-  const item = {
+  const item: LastTxsItem = {
     date: parseInt(tradeTimeStr),
     type,
-    price: parseFloat(amount1 / amount0),
+    // price: parseFloat(amount1 / amount0),
     amount_token0: parseFloat(amount0),
     amount_token1: parseFloat(amount1),
     maker: parsedMaker,
@@ -229,10 +236,10 @@ function tableMessageHandler(data) {
 
 }
 
-function getNextBarTime(lastBarTime, resolution) {
+function getNextBarTime(lastBarTime: string, resolution: string) {
   const date = new Date(lastBarTime);
-  resolution = resolution.includes('D') ? 1440 : (resolution.includes('W') ? 10080 : resolution)
-  date.setTime(date.getTime() + resolution * 60 * 1000);
+  const resolutionNumber = resolution.includes('D') ? 1440 : (resolution.includes('W') ? 10080 : +resolution)
+  date.setTime(date.getTime() + resolutionNumber * 60 * 1000);
   return date.getTime();
   // var coeff = resolution * 60
   //  var rounded = Math.floor(data.ts / coeff) * coeff
@@ -242,15 +249,15 @@ function getNextBarTime(lastBarTime, resolution) {
 }
 
 export function subscribeOnStream(
-  symbolInfo,
-  resolution,
-  onRealtimeCallback,
-  subscribeUID,
-  onResetCacheNeededCallback,
-  lastBar,
+  symbolInfo: ChartSymbol,
+  resolution: string | number,
+  onRealtimeCallback: () => {},
+  subscribeUID: string,
+  onResetCacheNeededCallback: () => void,
+  lastBar: StreamingBar | null,
 ) {
   const channelString = `0~${symbolInfo.pair_id}~${resolution}`; // ~${parsedSymbol.pairAddr}
-  const handler = {
+  const handler: StreamingSubHandler = {
     id: subscribeUID,
     callback: onRealtimeCallback,
   };
@@ -276,11 +283,11 @@ export function subscribeOnStream(
   // })
 }
 
-export function unsubscribeFromStream(subscriberUID) {
+export function unsubscribeFromStream(subscriberUID: string) {
   // find a subscription with id === subscriberUID
   for (const channelString of channelToSubscription.keys()) {
     const subscriptionItem = channelToSubscription.get(channelString);
-    const handlerIndex = subscriptionItem.handlers.findIndex(handler => handler.id === subscriberUID);
+    const handlerIndex = subscriptionItem.handlers.findIndex((handler: StreamingSubHandler) => handler.id === subscriberUID);
 
     if (handlerIndex !== -1) {
       // remove from handlers

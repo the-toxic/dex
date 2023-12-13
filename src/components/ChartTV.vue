@@ -2,19 +2,20 @@
 	<div id="tv_chart_container" class="fill-height fill-width"></div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import { initChart } from "@/helpers/chart/chart";
 import { mapActions, mapState } from "pinia";
 import { useChartStore } from "@/store/chartStore";
 
-export default {
+export default defineComponent({
   name: "ChartTV",
 	props: {
 		pairAddr: String
 	},
 
   mounted() {
-    initChart(this.pairAddr)
+    initChart(this.pairAddr as string)
     // tvWidget.onChartReady(() => {
     //   const symbol = tvWidget.activeChart().symbolExt()
     //   this.pairName = symbol.symbol
@@ -25,9 +26,9 @@ export default {
     // });
 
   },
-  destroyed() {
-    window.tvWidget.remove()
-		window.tvWidget = null
+  unmounted() {
+    window.tvWidget?.remove()
+		window.tvWidget = undefined
     this.resetState()
   },
   // tvWidget.activeChart().symbolExt()
@@ -52,5 +53,5 @@ export default {
   methods: {
     ...mapActions(useChartStore, {resetState: 'resetState'}),
   }
-}
+})
 </script>

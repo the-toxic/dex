@@ -9,7 +9,7 @@
   </v-tooltip>
 </template>
 
-<script>
+<script lang="ts">
 /*
 |---------------------------------------------------------------------
 | Copy Label Component
@@ -18,7 +18,9 @@
 | Copy to clipboard with the plugin clipboard `this.$clipboard`
 |
 */
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   props: {
     // Text to copy to clipboard
     text: {
@@ -50,11 +52,11 @@ export default {
   data() {
     return {
       tooltip: 'Copy',
-      timeout: null
+      timeout: 0
     }
   },
-  beforeDestroy() {
-    if (this.timeout) clearTimeout(this.timeout)
+  beforeUnmount() {
+    if(this.timeout) clearTimeout(this.timeout)
   },
   computed: {
     visibleText() {
@@ -66,12 +68,12 @@ export default {
       this.$clipboard(this.text, this.alertText)
       this.tooltip = 'Copied!'
 
-      this.timeout = setTimeout(() => {
+      this.timeout = window.setTimeout(() => {
         this.tooltip = 'Copy'
       }, 2000)
     }
   }
-}
+})
 </script>
 
 <style>

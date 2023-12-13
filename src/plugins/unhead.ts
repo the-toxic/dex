@@ -1,10 +1,11 @@
 import { createHead, useHead, VueHeadMixin } from '@unhead/vue'
+import { App } from "vue";
 
 /**
  * Manipulating the meta information of the head tag, a simple and easy way
  * https://github.com/ktquez/vue-head
  */
-export function initUnhead(app) {
+export function initUnhead(app: App) {
   const head = createHead()
   app.use(head) // enable useHead()
   app.mixin(VueHeadMixin) // for support use in options API

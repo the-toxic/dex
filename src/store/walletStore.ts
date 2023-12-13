@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 
-function updateLocalStorage(data) {
-  const wallet = JSON.parse(window.localStorage.getItem('wallet'));
+function updateLocalStorage(data: any) {
+  const wallet = JSON.parse(window.localStorage.getItem('wallet') as string);
   window.localStorage.setItem('wallet', JSON.stringify({...wallet, ...data}))
 }
 
-const localStorageWallet = JSON.parse(window.localStorage.getItem('wallet'))
+const localStorageWallet = JSON.parse(window.localStorage.getItem('wallet') as string)
 
 export const useWalletStore = defineStore('wallet', {
 	state: () => ({
@@ -26,7 +26,7 @@ export const useWalletStore = defineStore('wallet', {
 	},
 
 	actions: {
-    async login(payload) {
+    async login(payload: any) {
       this.account = payload.account
       // this.jwt = payload.jwt
       // this.refresh = payload.refresh
@@ -34,7 +34,7 @@ export const useWalletStore = defineStore('wallet', {
       this.providerName = payload.providerName
       window.localStorage.setItem('wallet', JSON.stringify(payload))
     },
-    async sign(payload) {
+    async sign(payload: string) {
       this.sign_phrase = payload
       updateLocalStorage({sign_phrase: payload})
     },

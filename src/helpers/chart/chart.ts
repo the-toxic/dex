@@ -1,8 +1,9 @@
-import Datafeed from "./datafeed.js";
+import Datafeed from "./datafeed";
 import { formatNumber } from "@/helpers/mixins";
 // import { symbolItemByInfo } from "@/helpers/common";
 
-export const initChart = (pairAddr) => {
+export const initChart = (pairAddr: string) => {
+  //@ts-ignore
   window.tvWidget = new TradingView.widget({
     // debug: true,
     // symbol: 'UNKNOWN ROUTER:USDT/WBNB:0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // default symbol
@@ -61,39 +62,59 @@ export const initChart = (pairAddr) => {
     }
   });
 
-  tvWidget.onChartReady(() => {
-    tvWidget.activeChart().priceFormatter().format = formatNumber; // function
+  window.tvWidget?.onChartReady(() => {
+    if(!window.tvWidget) return
 
-    tvWidget.headerReady().then(function() {
-      // const button = tvWidget.createButton();
+    window.tvWidget.activeChart().priceFormatter().format = formatNumber; // function
+
+    window.tvWidget.headerReady().then(function() {
+      // const button = window.tvWidget.createButton();
       // button.textContent = 'Invert Pair'
       // button.style.cursor = 'pointer'
       // button.classList.add("invertPairBtn")
       // button.addEventListener('click', () => {
-      //   tvWidget.activeChart().setSymbol(tvWidget.activeChart().symbol() + ':invert')
-      //   tvWidget.activeChart().resetData()
+      //   window.tvWidget.activeChart().setSymbol(window.tvWidget.activeChart().symbol() + ':invert')
+      //   window.tvWidget.activeChart().resetData()
       // });
     });
 
     // Вызывается только при ручном выборе пары через поиск
-    tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo) => {
-      tvWidget.activeChart().priceFormatter().format = formatNumber;
+    window.tvWidget.activeChart().onSymbolChanged().subscribe(null, (symbolInfo: any) => {
+      if(!window.tvWidget) return
+
+      window.tvWidget.activeChart().priceFormatter().format = formatNumber;
       // symbolInfo.needInvert = symbolInfo.checkInvert()
       // const symbolItem = symbolItemByInfo(symbolInfo)
       // store.dispatch('chart/setActiveSymbol', symbolItem).then()
     });
 
     // let f = () => { console.log('bars loaded'); };
-    // let subsr = tvWidget.activeChart().onDataLoaded();
+    // let subsr = window.tvWidget.activeChart().onDataLoaded();
     // subsr.subscribe(null, f, false)
     // subsr.unsubscribe(null, f)
   })
-  // tvWidget.subscribe('onTick', (candle) => {
+  // window.tvWidget.subscribe('onTick', (candle) => {
   //   console.log('onTick', candle) // time, open, close...
   // })
-  // tvWidget.unsubscribe('onTick', (cb) => {})
+  // window.tvWidget.unsubscribe('onTick', (cb) => {})
 }
 
 // export const showChartSearch = () => {
-//   window.tvWidget.activeChart().executeActionById('symbolSearch');
+//   window.window.tvWidget.activeChart().executeActionById('symbolSearch');
+// }
+
+// export function symbolItemByInfo(symbolInfo) {
+//   return {
+//     symbol: symbolInfo.name,
+//     full_name: symbolInfo.full_name,
+//     exchange: symbolInfo.exchange,
+//     exchange_id: symbolInfo.exchange_id,
+//     pair_addr: symbolInfo.pair_addr,
+//     chain_id: symbolInfo.type === 'BSC' ? 2 : (symbolInfo.type === 'Ethereum' ? 1 : 0),
+//     pair_id: symbolInfo.pair_id,
+//     type: symbolInfo.type,
+//     description: symbolInfo.description,
+//     tx_count: symbolInfo.tx_count,
+//     need_invert: symbolInfo.need_invert
+//   }
 // }

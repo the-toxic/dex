@@ -19,7 +19,7 @@
 			v-model:page="page"
 			v-model:items-per-page="per_page"
 			v-model:sort-by="sortBy"
-			:headers="headers"
+			:headers="headers as any"
 			:items-length="totalItems"
 			:items="items"
 			:loading="loading"
@@ -95,17 +95,24 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
+//@ts-ignore
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
 import { fetchDexAnalyzeGroupTxs } from "@/api";
 import { formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
-import { useDebounceFn } from "@vueuse/core";
+import { PromisifyFn, useDebounceFn } from "@vueuse/core";
 import Datepicker from "@/components/Datepicker.vue";
 import { mapState } from "pinia";
 import { useChartStore } from "@/store/chartStore";
 import LabelAddress from "@/components/UI/LabelAddress.vue";
+import { defineComponent, ref } from "vue";
 
-export default {
+import type { VDataTable } from 'vuetify/lib/components/index.mjs'
+import { AnalyzeGroupTxsItem, DataTableHeader } from "@/types";
+type SortBy = InstanceType<typeof VDataTable>['sortBy']
+// type Headers = InstanceType<typeof VDataTable>['headers']
+
+export default defineComponent({
   name: 'DexAnalyzeTxsGroupTable',
   components: { LabelAddress, Datepicker },
   props: {
@@ -116,51 +123,54 @@ export default {
     loading: false,
     per_page: 20,
 		page: 1,
-		sortBy: [{key: 'profit', order: 'desc'}],
+    sortBy: [{key: 'profit', order: 'desc'}] as SortBy,
     headers: [
-			{ title: 'Wallet', key: 'wallet', align: 'center', sortable: false, rowspan: 2 },
-			{ title: 'Profit', key: 'profit', align: 'center', rowspan: 2 },
-			{ title: '% ROI', key: 'roi', align: 'center', rowspan: 2 },
+			{ title: 'Wallet', key: 'wallet', align: 'center', sortable: false },
+			{ title: 'Profit', key: 'profit', align: 'center' },
+			{ title: '% ROI', key: 'roi', align: 'center' },
 			// { title: 'Buys', key: 'buys', align: 'center', sortable: false, children: [
-					{ title: 'TXs', key: 'buy_txs', align: 'center' },
-					{ title: 'Amount', key: 'buy_amount', align: 'center' },
-					{ title: 'Price', key: 'buy_price', align: 'center' },
-					{ title: 'Total', key: 'buy_total', align: 'center' },
+			{ title: 'TXs', key: 'buy_txs', align: 'center' },
+			{ title: 'Amount', key: 'buy_amount', align: 'center' },
+			{ title: 'Price', key: 'buy_price', align: 'center' },
+			{ title: 'Total', key: 'buy_total', align: 'center' },
 			// ] },
 			// { title: 'Sells', key: 'sells', align: 'center', sortable: false, children: [
-				{ title: 'TXs', key: 'sell_txs', align: 'center' },
-				{ title: 'Amount', key: 'sell_amount', align: 'center' },
-				{ title: 'Price', key: 'sell_price', align: 'center' },
-				{ title: 'Total', key: 'sell_total', align: 'center' },
+			{ title: 'TXs', key: 'sell_txs', align: 'center' },
+			{ title: 'Amount', key: 'sell_amount', align: 'center' },
+			{ title: 'Price', key: 'sell_price', align: 'center' },
+			{ title: 'Total', key: 'sell_total', align: 'center' },
 			// ] },
-		],
+		] as DataTableHeader[],
 		filter: {
       search: ''
     },
-    items: [],
+    items: [] as AnalyzeGroupTxsItem[],
     totalItems: 0,
-		totalInfo: {},
+		totalInfo: {} as Omit<AnalyzeGroupTxsItem, 'wallet'>,
 
     // periodBuy: [ new Date('2022-02-01 00:00'), new Date('2022-02-07 23:59')]
     periodBuy: [
 			moment().subtract(7, 'days').startOf("day").toDate(),
       moment().endOf("day").toDate()
-    ],
-    periodSell: [/*new Date('2022-02-11 00:00'), new Date('2022-02-12 23:59')*/],
+    ] as Date[] | [],
+    periodSell: [] as Date[] | [], // [new Date('2022-02-11 00:00'), new Date('2022-02-12 23:59')]
+		debouncedFn: undefined as any
   }),
+
 	async created() {
+
 		this.debouncedFn = useDebounceFn(async () => {
-			await this.loadItems()
+      await this.loadItems()
 		}, 500)
 
 		this.setTokensToTableHeader()
 
 		if(this.$route['query']['periodBuy']) {
-			const [from, to] = this.$route['query']['periodBuy'].split(' - ')
+			const [from, to] = (this.$route['query']['periodBuy'] as string).split(' - ')
 			this.periodBuy = [new Date(from), new Date(to)]
 		}
 		if(this.$route['query']['periodSell']) {
-			const [from, to] = this.$route['query']['periodSell'].split(' - ')
+			const [from, to] = (this.$route['query']['periodSell'] as string).split(' - ')
 			this.periodSell = [new Date(from), new Date(to)]
 		}
 	},
@@ -199,24 +209,14 @@ export default {
 				sell_period_end: this.periodSell[1] ? moment(this.periodSell[1]).format("YYYY-MM-DD HH:mm:ss") : '',
 			};
 
-			setTimeout(() => {
-				const urlQuery = {}
-				if(params.buy_period_start) urlQuery.periodBuy = params.buy_period_start +' - '+ params.buy_period_end
-				if(params.sell_period_start) urlQuery.periodSell = params.sell_period_start +' - '+ params.sell_period_end
-				this.$router.replace({
-					...this.$route,
-					query: urlQuery,
-				})
-			}, 500)
-
 			this.loading = true
-			const { data } = await fetchDexAnalyzeGroupTxs(params)
+			const data = await fetchDexAnalyzeGroupTxs(params)
       this.loading = false
       if(data.success) {
-        const items = data.result.items.map(i => {
-          if(i['buy_txs'] === 0 || i['sell_txs'] === 0) {
-            i['roi'] = 0
-            i['profit'] = 0
+				this.items = data.result.items.map(i => {
+          if(i.buy_txs === 0 || i.sell_txs === 0) {
+            i.roi = 0
+            i.profit = 0
           }
           return i
         })
@@ -225,21 +225,35 @@ export default {
         //   if(a.profit < b.profit) return 1
         //   return 0
         // })
-        this.items = items
         this.totalItems = data.result.totalItems || 0 // data.result.totalItems
         this.totalInfo = data.result.total ||  {} // data.result.total
       }
+
+			setTimeout(() => {
+				const urlQuery: any = {}
+				if(params.buy_period_start) urlQuery.periodBuy = params.buy_period_start +' - '+ params.buy_period_end
+				if(params.sell_period_start) urlQuery.periodSell = params.sell_period_start +' - '+ params.sell_period_end
+				this.$router.replace({
+					...this.$route,
+					query: urlQuery,
+				})
+			}, 500)
     },
 		setTokensToTableHeader() {
-			this.headers.find(i => i.key === 'profit').title = 'Profit, '+this.rightToken.slice(0,5)
-			this.headers.find(i => i.key === 'buy_amount').title = 'Amount, '+this.leftToken.slice(0,5)
-			this.headers.find(i => i.key === 'buy_price').title = 'Price, '+this.rightToken.slice(0,5)
-			this.headers.find(i => i.key === 'sell_amount').title = 'Amount, '+this.leftToken.slice(0,5)
-			this.headers.find(i => i.key === 'sell_price').title = 'Price, '+this.rightToken.slice(0,5)
+      this.headers[2].title = 'Profit, '+this.rightToken.slice(0,5)
+			this.headers[5].title = 'Amount, '+this.leftToken.slice(0,5)
+			this.headers[6].title = 'Price, '+this.rightToken.slice(0,5)
+			this.headers[9].title = 'Amount, '+this.leftToken.slice(0,5)
+			this.headers[10].title = 'Price, '+this.rightToken.slice(0,5)
+      // this.headers.find(i => i.key === 'profit')?.title = 'Profit, '+this.rightToken.slice(0,5)
+			// this.headers.find(i => i.key === 'buy_amount').title = 'Amount, '+this.leftToken.slice(0,5)
+			// this.headers.find(i => i.key === 'buy_price').title = 'Price, '+this.rightToken.slice(0,5)
+			// this.headers.find(i => i.key === 'sell_amount').title = 'Amount, '+this.leftToken.slice(0,5)
+			// this.headers.find(i => i.key === 'sell_price').title = 'Price, '+this.rightToken.slice(0,5)
 			// this.headers.find(i => i.key === 'sells')['children'].find(i => i.key === 'sell_price').title = 'Amount, '+this.rightToken.slice(0,5)
 
 		},
-    onPeriodChange(type, $event) {
+    onPeriodChange(type: 'buy' | 'sell', $event: Date[] | []) {
       console.log('onPeriodChange')
       if(type === 'buy') {
         this.periodBuy = $event;
@@ -250,5 +264,5 @@ export default {
       this.loadItems()
     }
   },
-}
+})
 </script>

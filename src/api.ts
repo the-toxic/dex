@@ -1,6 +1,7 @@
 import axios from "axios";
 import { setCookie } from '@/helpers/common'
 import { useChartStore } from "@/store/chartStore";
+import { AnalyzeGroupTxsItem, LiquidityTxsItem, Chains, ChartSymbol, LastTxsItem, PairInfo, StreamingBar } from "@/types";
 
 const chartStore = () => useChartStore()
 
@@ -53,51 +54,54 @@ const chartStore = () => useChartStore()
 //   return data
 // }
 
-const delay = async (ms) => await new Promise(resolve => setTimeout(() => resolve(true), ms))
+const delay = async (ms: number) => await new Promise(resolve => setTimeout(() => resolve(true), ms))
 
 /** Auth module */
 
-export async function signIn(payload) {
+export async function signIn(payload: {email: string, password: string, remember: boolean}): Promise<{success: boolean, result: object}> {
   // await delay(500)
   // return { data: { success: true, result: { user: {"id":31,"unique_id":"SJEQIQ","email":"admin@hazb.com","first_name":"Admin","last_name":"Admin","tz":"Africa/Juba","status":1,"created_at":"2023-08-18 07:45:02","wallet":"","discord":"","telegram":"","ref_id":0}, access_token:"", refresh_token:""} }}
-  return await axios.post(`auth/sign-in`, payload);
+  const { data } = await axios.post(`auth/sign-in`, payload);
+  return data
 }
 
-export async function signUp(payload) {
-  return await axios.post(`auth/sign-up`, payload);
+export async function signUp(payload: {email: string, captcha: object}): Promise<{success: boolean, result: object}> {
+  const { data } = await axios.post(`auth/sign-up`, payload);
+  return data
 }
 
-export async function resetPassword(payload) {
-  return await axios.post(`auth/reset-password`, payload);
+export async function resetPassword(payload: {email: string, captcha: object}): Promise<{success: boolean, result: object}> {
+  const { data } = await axios.post(`auth/reset-password`, payload);
+  return data
 }
 
-export async function otp(payload) {
+export async function otp(payload: any): Promise<{success: boolean, result: object}> {
   return await axios.post(`auth/otp`, payload);
 }
 
-export async function otpResend(payload) {
+export async function otpResend(payload: any) {
   return await axios.post(`auth/otp-resend`, payload);
 }
 
-export async function setPassword(payload) {
+export async function setPassword(payload: any) {
   return await axios.post(`auth/set-password`, payload);
 }
 
-export async function inviteRequest(payload) {
+export async function inviteRequest(payload: any) {
   return await axios.post(`auth/invite`, payload);
 }
 
-export async function refreshJwt({ token }) {
+export async function refreshJwt({ token }: {token: string}) {
   return await axios.post(`user/refresh`, { token });
 }
 
 
 /** User module */
-export async function updateProfile(payload) {
+export async function updateProfile(payload: any) {
   return await axios.post(`user/profile`, payload);
 }
 
-export async function changePassword(payload) {
+export async function changePassword(payload: any) {
   return await axios.post(`user/password`, payload);
 }
 
@@ -106,17 +110,18 @@ export async function deleteAccount() {
 }
 
 /** Explorer page */
-export const fetchChains = async () => {
+export const fetchChains = async (): Promise<{success: boolean, result: Chains}> => {
   // return { data: { success: true, result: { 1: { name: 'Ethereum', native_symbol: 'ETH', native_symbol_price: 1, icon_folder: '' }, 2: { name: 'BSC', native_symbol: 'BSC', native_symbol_price: 1, icon_folder: '' }, } } }
-  return await axios.get(`xhr/chains`);
+  const { data } = await axios.get(`xhr/chains`);
+  return data
 }
 
-export const fetchPairs = async (payload) => {
+export const fetchPairs = async (payload: any) => {
   payload.sortDir = payload.sortBy.order
   payload.sortBy = payload.sortBy.key
   return await axios.post(`xhr/pair_explorer`, payload);
 }
-export const fetchBigSwaps = async (payload) => {
+export const fetchBigSwaps = async (payload: any) => {
   await delay(500)
   return {
     success: true, result: [
@@ -129,7 +134,7 @@ export const fetchBigSwaps = async (payload) => {
     ]
   }
 }
-export const fetchSC = async (payload) => {
+export const fetchSC = async (payload: any) => {
   // payload.sortDir = payload.sortBy.order
   // payload.sortBy = payload.sortBy.key
   // return await axios.post(`xhr/sc`, payload);
@@ -146,7 +151,7 @@ export const fetchSC = async (payload) => {
 }
 
 /** Whitelist page */
-export const fetchWhitelistWallets = async (payload) => {
+export const fetchWhitelistWallets = async (payload: any) => {
   await delay(500)
   return {
     data: {success: true, result: [
@@ -157,24 +162,24 @@ export const fetchWhitelistWallets = async (payload) => {
   }
   // return  await axios.post(`user/watchlist_wallets`, payload)
 }
-export const fetchWhitelistWalletItem = async (id) => {
+export const fetchWhitelistWalletItem = async (id: any) => {
   await delay(500)
   return {
     data: {success: true, result: {id: 1, label: 'Cool wallet 1', network: 'bsc', note: 'Balance 1kkk USD', address: '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5641'}}
   }
   // return  await axios.get(`user/get_watchlist_wallet`, {id})
 }
-export const saveWatchlistWallet = async (payload) => {
+export const saveWatchlistWallet = async (payload: any) => {
   await delay(500)
   return { data: {success: true, result: { ...payload }} }
   // return  await axios.post(`user/save_watchlist_wallet`, payload)
 }
-export const deleteWatchlistItem = async (payload) => {
+export const deleteWatchlistItem = async (payload: any) => {
   await delay(500)
   return { data: {success: true, result: { ...payload }} }
   // return  await axios.post(`user/delete_watchlist_item`, payload)
 }
-export const fetchWhitelistTokens = async (payload) => {
+export const fetchWhitelistTokens = async (payload: any) => {
   await delay(500)
   return {
     data: {success: true, result: [
@@ -186,19 +191,19 @@ export const fetchWhitelistTokens = async (payload) => {
 
 
 /** Pair page */
-export const searchPair = async (payload) => {
+export const searchPair = async (payload: any): Promise<{success: boolean, result: { content: ChartSymbol[] }}> => {
   const { data } = await axios.post(`xhr/search_pair`, payload, {
     headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
 }
-export const fetchPairInfo = async (pairId) => {
+export const fetchPairInfo = async (pairId: number): Promise<{success: boolean, result: PairInfo}> => {
   const { data } = await axios.get(`xhr/pair_info?pair_id=${pairId}`, {
     headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
 }
-export const fetchHistoryTable = async (payload) => {
+export const fetchHistoryTable = async (payload: {chain_id: number, pair_id: number, block_id?: number, tx?: string}): Promise<{success: boolean, result: LastTxsItem[]}> => {
   const chainId = payload.chain_id
   const pairId = payload.pair_id
   const lastBlockId = payload.block_id || 0
@@ -208,8 +213,9 @@ export const fetchHistoryTable = async (payload) => {
   });
   return data
 }
-export const fetchHistoryCandles = async (body) => {
-  const { data } = await axios.post(`xhr/limit_candles_history`, body, {
+export const fetchHistoryCandles = async (payload: {pair_id: number, to_ts: number, limit: number, span: number,})
+  : Promise<{success: boolean, result: {candles: StreamingBar[], count: number, limit: number, time_to: number }}> => {
+  const { data } = await axios.post(`xhr/limit_candles_history`, payload, {
     headers: { 'x-session-id': chartStore().sessionId },
   });
   return data
@@ -220,7 +226,7 @@ export const fetchExchanges = async () => {
   return data
 }
 
-export const fetchLiquidityChart = async ({chainId, pairId}) => {
+export const fetchLiquidityChart = async ({chainId, pairId}: {chainId: number, pairId: number}) => {
   // await delay(500)
   // return { data: {success: true, result: [
   //       { time: '2018-10-19', value: 35.98 },
@@ -378,7 +384,7 @@ export const fetchLiquidityChart = async ({chainId, pairId}) => {
 }
 
 
-export const fetchSearch = async (query, categories = null, chain_id = null) => {
+export const fetchSearch = async (query: string, categories = null, chain_id = null) => {
   const cats = categories ? `&categories=${categories}` : ''
   const chain = chain_id ? `&chain_id=${chain_id}` : ''
   return await axios.get(`search?q=${query}${cats}${chain}`);
@@ -392,52 +398,45 @@ export const fetchSearch = async (query, categories = null, chain_id = null) => 
   //   }}
 }
 
-export const fetchEntity = async (id) => {
+export const fetchEntity = async (id: string) => {
   return await axios.get(`entity/${id}`);
-  // await delay(500)
-  // return { data: {
-  //   success: true, result: { type: 'entity', id: '1234-1234-1234-1234', name: 'Binance Entity' }
-  // }}
 }
 
-export const fetchAddress = async (id) => {
+export const fetchAddress = async (id: string) => {
   return await axios.get(`address/${id}`);
   // await delay(500)
-  // if(id === '0x1234')
-  //   return { data: { success: true, result: { type: 'token', name: 'BIBA', id: '1245-12453-152325-34234', address: '0x25412r3rd332r4ft5f46f23r' } }}
-  // else
   //   return { data: { success: true, result: { type: 'wallet', name: '0x5678', id: '2342-2422-2222-3333', address: '0x5678' } }}
 }
 
 /** Private Labels */
-export const fetchPrivateLabels = async (payload) => {
+export const fetchPrivateLabels = async (payload: any) => {
   return await axios.post(`xhr/private/labels`, payload);
 }
-export const savePrivateLabel = async (payload) => {
+export const savePrivateLabel = async (payload: any) => {
   return await axios.post(`xhr/private/label/save`, payload);
 }
-export const removePrivateLabel = async (id) => {
+export const removePrivateLabel = async (id: number) => {
   return await axios.delete(`xhr/private/label/${id}`);
 }
 
 /** Private Entities */
-export const fetchPrivateEntities = async (payload) => {
+export const fetchPrivateEntities = async (payload: any) => {
   return await axios.post(`xhr/private/entities`, payload);
 }
-export const getPrivateEntity = async (uuid) => {
+export const getPrivateEntity = async (uuid: string) => {
   return await axios.get(`xhr/private/entities/${uuid}`);
 }
-export const searchEntities = async (query) => {
+export const searchEntities = async (query: string) => {
   return await axios.get(`xhr/search-entity?q=${query}`);
 }
-export const savePrivateEntity = async (payload) => {
+export const savePrivateEntity = async (payload: any) => {
   const isEdit = !!payload.has('uuid') && payload.get('uuid') !== 'null'
 
   return await axios.post(`entity${isEdit ? '/'+payload.get('uuid') : '' }`, payload, {
     headers: { "Content-Type": "multipart/form-data" } // for send file
   });
 }
-export const removePrivateEntity = async (uuid) => {
+export const removePrivateEntity = async (uuid: string) => {
   return await axios.delete(`entity/${uuid}`);
 }
 
@@ -451,7 +450,7 @@ export const fetchSegments = async () => {
   //   { id: 3, name: 'My Segment 3' },
   // ]}}
 }
-export const fetchSegmentTXs = async (payload) => {
+export const fetchSegmentTXs = async (payload: any) => {
   return await axios.post(`xhr/private/segment/${payload.id}/txs`, payload);
   // await delay(500)
   // return { data: { success: true, result: {
@@ -461,7 +460,7 @@ export const fetchSegmentTXs = async (payload) => {
   //   ]
   // }}}
 }
-export const getSegmentInfo = async (id) => {
+export const getSegmentInfo = async (id: number) => {
   return await axios.get(`xhr/private/segment/${id}`);
   // await delay(500)
   // return { data: { success: true, result: {
@@ -479,12 +478,12 @@ export const getSegmentInfo = async (id) => {
   //   ],
   // }}}
 }
-export const saveSegment = async (payload) => {
+export const saveSegment = async (payload: any) => {
   return await axios.post(`xhr/private/segment/save`, payload);
   // await delay(500)
   // return { data: { success: true, result: {}}}
 }
-export const removeSegment = async (id) => {
+export const removeSegment = async (id: number) => {
   return await axios.delete(`xhr/private/segment/${id}`);
   // await delay(500)
   // return { data: { success: true, result: {}}}
@@ -499,11 +498,11 @@ export const fetchDashboards = async () => {
   //   {name: 'My Dash 2', id: 2, widgets: []},
   // ] }}
 }
-export const saveDashboard = async (payload) => {
+export const saveDashboard = async (payload: any) => {
   const isEdit = !!payload.id
   return await axios.post(`dashboard${isEdit ? '/'+payload.id : '' }`, payload);
 }
-export const removeDashboard = async (id) => {
+export const removeDashboard = async (id: number) => {
   return await axios.delete(`dashboard/${id}`);
 }
 
@@ -557,8 +556,10 @@ export const fetchDexAnalyzeTxs = async () => {
   }}}
 }
 
-export const fetchDexAnalyzeGroupTxs = async (payload) => {
-  return axios.post('xhr/analyze', payload);
+export const fetchDexAnalyzeGroupTxs = async (payload: any)
+  : Promise<{ success: boolean, result: { items: AnalyzeGroupTxsItem[], total: AnalyzeGroupTxsItem, totalItems: number } }> => {
+  const { data } = await axios.post('xhr/analyze', payload);
+  return data
   // await delay(500)
   // return { data: { success: true, result: {
   //   items: [
@@ -601,41 +602,43 @@ export const fetchDexAnalyzeGroupTxs = async (payload) => {
   // }}}
 }
 
-export const fetchDexLiquidityTxs = async (payload) => {
-  return await axios.post('xhr/liquidity_txs', payload);
-  await delay(500)
-  return { data: { success: true, result: {
-    items: [
-      {
-        wallet: '0x0000000000000000000000000000000000000000',
-        date: '2023-09-22 12:22:22',
-        type: 'adds',
-        token0_amount: 1122444,
-        token0_total: 80000,
-        token1_amount: 80000,
-        token1_total: 80000,
-        total: 160000,
-      },
-      {
-        wallet: '0x0000000000000000000000000000000000000000',
-        date: '2023-09-12 12:22:22',
-        type: 'removes',
-        token0_amount: 1122444,
-        token0_total: 80000,
-        token1_amount: 80000,
-        token1_total: 80000,
-        total: 160000,
-      },
-    ],
-    totalItems: 2,
-    total: {
-      token0_amount: 1122444*2,
-      token0_total: 80000*2,
-      token1_amount: 80000*2,
-      token1_total: 80000*2,
-      total: 160000*2,
-    }
-  }}}
+export const fetchDexLiquidityTxs = async (payload: any)
+	: Promise<{ success: boolean, result: { items: LiquidityTxsItem[], total: Omit<LiquidityTxsItem, 'dttm' | 'maker'>, totalItems: number } }>=> {
+  const { data } = await axios.post('xhr/liquidity_txs', payload);
+  return data
+  // await delay(500)
+  // return { data: { success: true, result: {
+  //   items: [
+  //     {
+  //       wallet: '0x0000000000000000000000000000000000000000',
+  //       date: '2023-09-22 12:22:22',
+  //       type: 'adds',
+  //       token0_amount: 1122444,
+  //       token0_total: 80000,
+  //       token1_amount: 80000,
+  //       token1_total: 80000,
+  //       total: 160000,
+  //     },
+  //     {
+  //       wallet: '0x0000000000000000000000000000000000000000',
+  //       date: '2023-09-12 12:22:22',
+  //       type: 'removes',
+  //       token0_amount: 1122444,
+  //       token0_total: 80000,
+  //       token1_amount: 80000,
+  //       token1_total: 80000,
+  //       total: 160000,
+  //     },
+  //   ],
+  //   totalItems: 2,
+  //   total: {
+  //     token0_amount: 1122444*2,
+  //     token0_total: 80000*2,
+  //     token1_amount: 80000*2,
+  //     token1_total: 80000*2,
+  //     total: 160000*2,
+  //   }
+  // }}}
 }
 
 export const fetchDexPairWallets = async () => {

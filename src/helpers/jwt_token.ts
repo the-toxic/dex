@@ -1,4 +1,4 @@
-function parseJWT(token) {
+function parseJWT(token: string) {
 	try {
 		const parts = token.split('.')
 		return {
@@ -11,7 +11,7 @@ function parseJWT(token) {
 	}
 }
 
-function parsePart(str) {
+function parsePart(str: string) {
 	return JSON.parse(window.atob(str))
 }
 

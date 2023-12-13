@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
+import { Chains } from "@/types";
 
 const localStorageTheme = window.localStorage.getItem('theme')
 const showCookiePopup = !window.localStorage.getItem('cookiePopup')
-const chains = JSON.parse(window.localStorage.getItem('chains'))
+const chains: Chains = JSON.parse(window.localStorage.getItem('chains') as string)
 
 export const useMainStore = defineStore('main', {
 	state: () => ({
@@ -12,7 +13,7 @@ export const useMainStore = defineStore('main', {
       msg: '',
       color: ''
     },
-    wsConnected: false,
+    wsConnected: 'loading',
     searchDialog: false,
     dialog: false,
     chains: chains || null,
@@ -25,14 +26,14 @@ export const useMainStore = defineStore('main', {
 		// getTheme: (state) => state.theme
 	},
 	actions: {
-    setGlobalLoader(visible) {
+    setGlobalLoader(visible: boolean) {
       this.globalLoader = visible
     },
-		setTheme(name) {
+		setTheme(name: string) {
 			this.theme = name
       window.localStorage.setItem('theme', name)
     },
-    showAlert(payload) {
+    showAlert(payload: string | {msg: string, color: string}) {
       if (typeof payload === "string") payload = {msg: payload, color: 'error'}
       this.alert.msg = payload.msg || ''
       this.alert.color = payload.color || ''
@@ -41,16 +42,16 @@ export const useMainStore = defineStore('main', {
         this.alert.color = ''
       }, 7000)
     },
-    setConnected(payload) {
-      this.wsConnected = payload || false
+    setConnected(payload: boolean | 'loading') {
+      this.wsConnected = payload as string
     },
-    showDialog(name) {
+    showDialog(name: boolean) {
       this.dialog = name || false
     },
-    toggleSearchDialog(payload) {
+    toggleSearchDialog(payload: boolean) {
       this.searchDialog = payload
     },
-    setChains(payload) {
+    setChains(payload: Chains) {
       this.chains = payload
       window.localStorage.setItem('chains', JSON.stringify(payload))
     },

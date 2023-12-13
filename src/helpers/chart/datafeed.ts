@@ -1,8 +1,9 @@
-import { fetchHistoryCandles, searchPair } from '@/api.js'
-import { subscribeOnStream, unsubscribeFromStream } from './streaming.js';
+import { fetchHistoryCandles, searchPair } from '@/api'
+import { subscribeOnStream, unsubscribeFromStream } from './streaming';
 import { useChartStore } from "@/store/chartStore";
 import { useMainStore } from "@/store/mainStore";
 import { needInvert, shortAddress } from "@/helpers/mixins";
+import { ChartSymbol, StreamingBar } from "@/types";
 
 const chartStore = () => useChartStore()
 const mainStore = () => useMainStore()
@@ -29,14 +30,14 @@ const lastBarsCache = new Map();
 // }
 // ]
 
-async function loadDefaultPair(symbolFullName) {
+async function loadDefaultPair(symbolFullName: string) {
   const {success, result} = await searchPair( { search: symbolFullName, exchange: '', network: '' })
   if(success && result?.content && result.content.length && result.content.some(i => i.pair_addr === symbolFullName)) {
     fillSimilarityPools(result.content)
-    const fullName = chartStore().similarityPools.find((i => i.pair_addr === symbolFullName)).full_name
-    window.tvWidget.activeChart().setSymbol(fullName+'^'+Math.random()) // disable cache
+    const fullName = chartStore().similarityPools.find((i => i.pair_addr === symbolFullName))?.full_name
+    window.tvWidget?.activeChart().setSymbol(fullName+'^'+Math.random()) // disable cache
   } else {
-    await mainStore().showAlert({msg: 'Error. Pair not found', color: 'error'})
+    mainStore().showAlert({msg: 'Error. Pair not found', color: 'error'})
     // location.href = '/home?msg=pair404'
   }
 }
@@ -69,9 +70,9 @@ const configurationData = {
   // }],
 };
 
-const humanDate = (date) => new Date(date * 1000).toISOString().slice(0, 16)
+const humanDate = (date: number) => new Date(date * 1000).toISOString().slice(0, 16)
 
-function fillSimilarityPools(data) {
+function fillSimilarityPools(data: ChartSymbol[]) {
   data.forEach(i => {
     // trim exchange name
     if(i.exchange.slice(-6) === 'Router') {
@@ -82,7 +83,7 @@ function fillSimilarityPools(data) {
 
     const [token0, token1] = i.symbol.split('/')
     if(needInvert(token0, token1)) {
-      if(i.need_invert === false) console.warn('BACKEND SEND INVALID `need_invert` IN /search_pair')
+      if(!i.need_invert) console.warn('BACKEND SEND INVALID `need_invert` IN /search_pair')
       i.need_invert = true
       i.symbol = `${token1}/${token0}`
     }
@@ -100,7 +101,7 @@ function fillSimilarityPools(data) {
 }
 
 export default {
-  onReady: (callback) => {
+  onReady: (callback: (configurationData: object) => void) => {
     // console.log('[onReady]: Method call');
     setTimeout(() => callback(configurationData), 0);
   },
@@ -128,12 +129,12 @@ export default {
   // },
 
   resolveSymbol: async (
-    symbolFullName,
-    onSymbolResolvedCallback,
-    onResolveErrorCallback,
+    symbolFullName: string,
+    onSymbolResolvedCallback: (symbolInfo: object) => void,
+    onResolveErrorCallback: (error: string) => void,
   ) => {
     console.log('[resolveSymbol]: Method call', symbolFullName);
-    symbolFullName = symbolFullName.split('^')[0] // disable cache
+    symbolFullName = symbolFullName.split('^')[0] as string // disable cache
 
     if(!chartStore().similarityPools.length) {
       await loadDefaultPair(symbolFullName)
@@ -150,7 +151,7 @@ export default {
       return;
     }
 
-    if(chartStore().activeSymbol && chartStore().activeSymbol.pair_addr === symbolFullName) return // end double call
+    if(chartStore().activeSymbol && chartStore().activeSymbol?.pair_addr === symbolFullName) return // end double call
 
     chartStore().setActiveSymbol(symbolItem).then()
 
@@ -197,7 +198,13 @@ export default {
     setTimeout(() => onSymbolResolvedCallback(symbolInfo))
   },
 
-  getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) => {
+  getBars: async (
+    symbolInfo: ChartSymbol,
+    resolution: string | number,
+    periodParams: Record<string, any>,
+    onHistoryCallback: (bars: any[], options: {}) => void,
+    onErrorCallback: (error: any) => void
+  ) => {
     const { from, to, countBack, firstDataRequest } = periodParams;
     if (resolution.toString().includes('D')) resolution = 1440;
     if (resolution.toString().includes('W')) resolution = 10080;
@@ -211,20 +218,20 @@ export default {
         pair_id: symbolInfo.pair_id,
         to_ts: to, // 1467676800
         limit: 350,
-        span: resolution,
+        span: resolution as number,
       });
 
       if (!success || !('candles' in result) || !result.candles.length) {
         onHistoryCallback([], { noData: true }); // "noData" should be set if there is no data in the requested period.
         return;
       }
-      result.candles.sort((a,b) => {
+      result.candles.sort((a: any, b: any) => {
         if(a.time > b.time) return 1
         if(a.time < b.time) return -1
         return 0
       })
-      const checkInvert = (number) => (symbolInfo.need_invert ? 1 / number : number)
-      let bars = [], lastBar = null;
+      const checkInvert = (number: number) => (symbolInfo.need_invert ? 1 / number : number)
+      let bars: StreamingBar[] = [], lastBar: StreamingBar | null = null;
       result.candles.forEach(bar => {
         // if (bar.time >= from && bar.time < to) {
         // console.log('needInvert', symbolInfo.needInvert)
@@ -255,11 +262,12 @@ export default {
   },
 
   subscribeBars: (
-    symbolInfo,
-    resolution,
-    onRealtimeCallback,
-    subscribeUID,
-    onResetCacheNeededCallback,
+    symbolInfo: ChartSymbol,
+    resolution: string | number,
+    onRealtimeCallback: () => {},
+    subscribeUID: string,
+    onResetCacheNeededCallback: () => void,
+    lastBar: StreamingBar | null,
   ) => {
     console.log('[subscribeBars]: Method call with subscribeUID:', subscribeUID);
     subscribeOnStream(
@@ -272,7 +280,7 @@ export default {
     );
   },
 
-  unsubscribeBars: (subscriberUID) => {
+  unsubscribeBars: (subscriberUID: string) => {
     console.log('[unsubscribeBars]: Method call with subscriberUID:', subscriberUID);
     // chartStore().similarityPools = []
     unsubscribeFromStream(subscriberUID);

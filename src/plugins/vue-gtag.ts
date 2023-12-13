@@ -1,5 +1,6 @@
 import VueGtag from 'vue-gtag'
 import router from '@/router'
+import { App } from "vue";
 
 // https://matteo-gabriele.gitbook.io/vue-gtag/
 
@@ -7,7 +8,7 @@ const gaId = import.meta.env.VITE_APP_GA_ID || ''
 
 const isProduction = import.meta.env.MODE === 'production' // window.location.host.includes('.com')
 
-export function initVueGtag(app) {
+export function initVueGtag(app: App) {
   if (!gaId || !isProduction) return false
 
   app.use(VueGtag, {

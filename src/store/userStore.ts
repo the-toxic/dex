@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import router from "@/router";
 
-const localStorageUser = JSON.parse(window.localStorage.getItem('user'))
+const localStorageUser = JSON.parse(window.localStorage.getItem('user') as string)
 
 export const useUserStore = defineStore('user', {
 	state: () => ({
@@ -13,7 +13,7 @@ export const useUserStore = defineStore('user', {
     // token: (state) => state.user.token
 	},
 	actions: {
-    logIn(payload) {
+    logIn(payload: any) {
       if(!['access_token', 'refresh_token', 'user'].every(key => key in payload)) {
         console.log('Invalid params for logIn'); return false
       }
@@ -25,7 +25,7 @@ export const useUserStore = defineStore('user', {
       return true
     },
 
-    updateUser(payload) {
+    updateUser(payload: any) {
       if(!this.logged) return
       this.user = {
         ...this.user,

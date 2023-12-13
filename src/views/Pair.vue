@@ -230,8 +230,10 @@
 	</v-container>
 </template>
 
-<script>
-import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
+<script lang="ts">
+import { defineComponent } from 'vue'
+// @ts-ignore
+import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range';
 import { API_DOMAIN, formatBigNumber, formatNumber, shortAddress, toCurrency, toNumber } from "@/helpers/mixins";
 import TableHistory from "@/components/TableHistory.vue";
 import { mapActions, mapState } from "pinia";
@@ -247,7 +249,7 @@ import { useMainStore } from "@/store/mainStore";
 import TokenIcon from "@/components/UI/TokenIcon.vue";
 import { fetchLiquidityChart } from "@/api";
 
-export default {
+export default defineComponent({
   name: "Pair",
   components: { TokenIcon, DexPairWalletsTable, DexPairLiquidityTable, LWChart, DexAnalyzeTxsGroupTable, DexAnalyzeTxsTable, Converter, ChartTV, TableHistory },
   head() { return  {
@@ -294,18 +296,18 @@ export default {
 			if(typeof newVal === 'undefined' || newVal === null) return // undefined on unmount, null on resetState
 
 			if(!oldVal) { // on load page
-				window.tvWidget.activeChart().setSymbol(newVal)
+				window.tvWidget?.activeChart().setSymbol(newVal)
 			}
 			// on change symbol
 			this.pairInfoLoading = true
 			const similarityItem = this.similarityPools.find(({pair_addr}) => pair_addr === newVal);
 			if(similarityItem) { // global search on similarityPools or double call on change pair select
 				this.setActiveSymbol(similarityItem)
-				window.tvWidget.activeChart().setSymbol(similarityItem.full_name)
+				window.tvWidget?.activeChart().setSymbol(similarityItem.full_name)
 				return
 			}
 			// console.warn('!!!')
-			window.tvWidget.activeChart().setSymbol(newVal+'^'+Math.random()) // disable cache
+			window.tvWidget?.activeChart().setSymbol(newVal+'^'+Math.random()) // disable cache
 
 			this.pairInfoLoading = false
 			// 	window.tvWidget.remove()
@@ -359,22 +361,21 @@ export default {
 		// },
 		token0PriceInUSD() {
 			if(!this.pairInfo || !this.activeSymbol || !this.chains) return 0
-			if(this.pairInfo.token1.is_stable)
-        return this.lastPrice
+			if(this.pairInfo.token1.is_stable) return this.lastPrice
 
-			const nativeSymbolPrice = this.chains[this.chainId]['native_symbol_price']
+			const nativeSymbolPrice = this.chains[this.chainId]['native_symbol_price'] || 1
 			return this.lastPrice * nativeSymbolPrice
 		},
 		token1PriceInUSD() {
 			if(!this.pairInfo || !this.activeSymbol || !this.chains) return 0
 			if(this.pairInfo.token1.is_stable) return 1
       if(this.pairInfo.token1.symbol === this.nativeWrappedSymbol) {
-        return this.chains[this.chainId]['native_symbol_price']
+        return this.chains[this.chainId]['native_symbol_price'] || 1
       }
       return 0
 		},
     currPeriodKey() {
-      return this.currentPeriodTab === '1H' ? 'h1' : (this.currentPeriodTab === '6H' ? 'h6' : (this.currentPeriodTab === '12H' ? 'h12' : (this.currentPeriodTab === '24H' ? 'h24' : '') ))
+      return this.currentPeriodTab === '1H' ? 'h1' : (this.currentPeriodTab === '6H' ? 'h6' : (this.currentPeriodTab === '12H' ? 'h12' : (this.currentPeriodTab === '24H' ? 'h24' : 'h1') ))
     },
     // buySellRate() { return !this.pairInfo ? 50 : Math.round(this.buyVolume24 / (this.buyVolume24 + this.sellVolume24) * 100) },
   },
@@ -394,5 +395,5 @@ export default {
       // this.pageDescription = `Analyse ${this.pairSymbol} of ${this.PROJECT_NAME} | ${this.pairAddr}`
     },
   }
-}
+})
 </script>

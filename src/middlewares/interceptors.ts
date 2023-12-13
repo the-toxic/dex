@@ -14,9 +14,9 @@ axios.defaults.baseURL = apiDomain + import.meta.env.VITE_APP_API_PATH;
 export function httpInt() {
   axios.interceptors.request.use(function(config) {
     const pattern = /^https?:\/\//;
-    if(!pattern.test(config.url)) { // if the request is not sent to an external url
+    if(!pattern.test(config.url as string)) { // if the request is not sent to an external url
 
-      if(!config.url.includes('auth')) {
+      if(!(config.url as string).includes('auth')) {
         const token = userStore().user?.jwt
         if(token) config.headers.Authorization = `Bearer ${token}`
       }
@@ -37,7 +37,7 @@ export function httpInt() {
     const isSilenceAlert = 'silenceAlert' in error.config
 
     if(!error.response) { // 500 error or CORS
-      if(!isSilenceAlert) await mainStore().showAlert({msg: 'Error. Please try later.', color: 'error'})
+      if(!isSilenceAlert) mainStore().showAlert({msg: 'Error. Please try later.', color: 'error'})
       return {data: {success: false}}
     }
 
@@ -54,7 +54,7 @@ export function httpInt() {
           throw new Error(data)
         }
 
-        await userStore().updateUser({
+        userStore().updateUser({
           jwt: data.result['access_token'],
           refresh: data.result['refresh_token'],
         })
@@ -67,7 +67,7 @@ export function httpInt() {
 
       } catch (error) {
         await userStore().logOut()
-        await mainStore().showAlert({msg: 'Session expired. Re-login please.', color: 'error'})
+        mainStore().showAlert({msg: 'Session expired. Re-login please.', color: 'error'})
         return {data: {success: false}}
         // return Promise.reject(error);
       }
@@ -87,7 +87,7 @@ export function httpInt() {
     const msg = error.response.data?.error?.text || error.response.data?.error?.message || error.response.data?.error?.description
 
     if(msg) {
-      if(!isSilenceAlert) await mainStore().showAlert({msg, color: 'error'})
+      if(!isSilenceAlert) mainStore().showAlert({msg, color: 'error'})
       return error.response
     }
 
@@ -96,18 +96,18 @@ export function httpInt() {
     if(code === 422 && 'detail' in data && data.detail.length) {
       if(!isSilenceAlert) {
         if(data.detail[0].type === 'value_error.missing') {
-          await mainStore().showAlert('Internal error [Invalid params]')
+          mainStore().showAlert('Internal error [Invalid params]')
         } else {
           let field = data.detail[0].loc[1]?.split('_').join(' ')
           field = !field ? 'Error' : field.charAt(0).toUpperCase() + field.slice(1)
           const msg = field + ': ' + data.detail[0].msg
-          await mainStore().showAlert({msg, color: 'error'})
+          mainStore().showAlert({msg, color: 'error'})
         }
       }
       return error.response
     }
 
-    await mainStore().showAlert('Internal error. Please try later.')
+    mainStore().showAlert('Internal error. Please try later.')
     // return Promise.reject(error);
     return error.response
 

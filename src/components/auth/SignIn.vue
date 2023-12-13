@@ -92,7 +92,7 @@ export default {
 			this.form.captcha = captcha
 
 			this.loading = true
-			const { data } = await api.signIn(this.form)
+			const data = await api.signIn(this.form)
 			this.loading = false
 			window.captchaObj.reset();
 
@@ -114,7 +114,7 @@ export default {
 		},
 
 		async loadChains () {
-			const { data } = await fetchChains()
+			const data = await fetchChains()
 			if(data.success) {
 				this.setChains(data.result)
 			}

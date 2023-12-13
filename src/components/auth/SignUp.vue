@@ -100,7 +100,7 @@ export default {
     },
     async sendRequestEmail(captcha) {
       this.loading = true
-      const { data } = await api.signUp({email: this.email, captcha: captcha})
+      const data = await api.signUp({email: this.email, captcha: captcha})
       this.loading = false
       window.captchaObj.reset();
 

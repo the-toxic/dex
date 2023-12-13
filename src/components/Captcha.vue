@@ -2,23 +2,27 @@
 <!--	<div id="captchaBox"></div>-->
 </template>
 
-<script setup>
+<script setup lang="ts">
 	import { onUnmounted, ref } from "vue";
 	import { useScript } from "@unhead/vue";
 	import { useMainStore } from "@/store/mainStore";
 	const mainStore = useMainStore()
 
-	// defineProps({any: String})
+	// defineProps<{
+	// 	any?: string
+	// }>()
 
-	const emits = defineEmits(['successCaptcha'])
+	const emits = defineEmits<{
+		successCaptcha: [captcha: object]
+	}>()
 
 	const script = useScript({
 		src: 'https://static.geetest.com/v4/gt4.js', onload: () => { onIntiCaptcha()}, tagPosition: 'bodyClose' }
 	)
 
 	function onIntiCaptcha() {
-		console.log('captcha init', typeof initGeetest4 === 'function')
-		initGeetest4(
+		console.log('captcha init', typeof window.initGeetest4 === 'function')
+		window.initGeetest4(
 			{
 				captchaId: import.meta.env.VITE_APP_CAPTCHA_ID,
 				product: "bind", // float | bind | popup

@@ -74,7 +74,7 @@
       },
       async sendRequestEmail(captcha) {
         this.loading = true
-        const {data} = await api.resetPassword({email: this.email, captcha})
+        const data = await api.resetPassword({email: this.email, captcha})
         this.loading = false
         window.captchaObj.reset();
 

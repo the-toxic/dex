@@ -2,7 +2,7 @@
   <v-app :class="{'pageReady': isRouterReady}">
     <v-navigation-drawer v-model="drawer" width="500" location="bottom" v-if="breakpoints.mobile"><!-- v-if="breakpoints.width <= 768" -->
       <v-list :nav="true">
-        <v-list-item :to="{name: 'Home'}" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
+        <v-list-item :to="toRoute({name: 'Home'})" prepend-icon="mdi-menu-open" title="Landing"></v-list-item>
         <v-list-item :to="{name: 'Pairs', params: {network: 'ethereum'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="Explorer"></v-list-item>
 <!--        <v-list-item :to="{name: 'BigSwaps', params: {network: 'bsc'}}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="BigSwaps"></v-list-item>-->
 <!--        <v-list-item :to="{name: 'SC'}" v-if="userStore.logged" prepend-icon="mdi-menu-open" title="SC"></v-list-item>-->
@@ -25,7 +25,7 @@
     <v-app-bar absolute>
 			<!-- LEFT Side-->
 			<template v-slot:prepend>
-        <router-link custom v-slot="{ navigate }" :to="{name: 'Home'}">
+        <router-link custom v-slot="{ navigate }" :to="toRoute({name: 'Home'})">
           <div class="logoBox ml-4 mr-8" @click="navigate">
             <img src="@/assets/logo.png" alt="Logo" />
           </div>
@@ -120,7 +120,7 @@
     </v-main>
 
 
-    <v-footer app absolute :color="$route.path.startsWith('/console') ? null : '#000'" class="d-flex flex-column text-center text-md-left">
+    <v-footer app absolute :color="$route.path.startsWith('/console') ? undefined : '#000'" class="d-flex flex-column text-center text-md-left">
 
       <!-- <div class="d-flex flex-wrap w-100 align-center px-md-4 pb-2">
         <div class="pt-4 fill-width-m">
@@ -178,8 +178,8 @@
   </v-app>
 </template>
 
-<script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+<script setup lang="ts">
+	import { ref, computed, onMounted, onUnmounted } from "vue";
   import { useRoute } from "vue-router";
   import { useTheme, useDisplay } from "vuetify";
   const theme = useTheme()
@@ -189,7 +189,8 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
   import { useWalletStore } from "@/store/walletStore";
   import { PROJECT_NAME, DOCS_HOST, NEWS_HOST, SOCIAL_TWITTER, SOCIAL_TELEGRAM, SOCIAL_LINKTREE } from "@/helpers/mixins";
 
-  // import { showChartSearch } from "@/helpers/chart/chart";
+	import { toRoute } from "@/router";
+	// import { showChartSearch } from "@/helpers/chart/chart";
 	import SearchDialog from "@/components/SearchDialog.vue";
   // import { connect as web3Connect, disconnect as web3Disconnect } from "@/helpers/web3";
 
@@ -208,7 +209,11 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
     toggleTheme()
   }
 
-  const fullName = computed(() => ( userStore.user.first_name || userStore.user.last_name ? `${userStore.user.first_name} ${userStore.user.last_name}` : null ))
+  const fullName = computed(() => (
+    userStore.user.first_name || userStore.user.last_name
+      ? `${userStore.user.first_name} ${userStore.user.last_name}`
+      : undefined
+  ))
 
   function toggleTheme() {
     const newTheme = theme.global.current.value.dark ? 'light' : 'dark'
@@ -233,7 +238,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
     window.removeEventListener('keydown', searchShortCutHandler)
   })
 
-  function searchShortCutHandler(event) {
+  function searchShortCutHandler(event: KeyboardEvent) {
     if ((event.metaKey || event.ctrlKey) && event.code === 'KeyK') { // event.key === '/' ; event.code === 'Slash'
       event.preventDefault()
       showSearch()

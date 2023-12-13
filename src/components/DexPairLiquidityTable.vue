@@ -140,7 +140,7 @@ export default {
 	},
 	computed: {
 		...mapState(useMainStore, {chains: 'chains'}),
-		...mapState(useChartStore, {lastPrice: 'lastPrice', nativeWrappedSymbol: 'nativeWrappedSymbol'}),
+		...mapState(useChartStore, {lastPrice: 'lastPrice', nativeWrappedSymbol: 'nativeWrappedSymbol', needInvert: 'needInvert'}),
 		rows() {
 			return this.items.map(item => {
 				item.ago = moment(item.dttm).fromNow() //'1y 5m 1d 2h'
@@ -156,7 +156,7 @@ export default {
 
 		async loadItems () {
       this.loading = true
-      const { data } = await fetchDexLiquidityTxs({
+      const data = await fetchDexLiquidityTxs({
 				page: this.page,
 				per_page: this.per_page,
 				sortBy: this.sortBy,
@@ -172,6 +172,11 @@ export default {
       if(data.success) {
 				this.totalItems = data.result.totalItems
 				this.items = data.result.items.map(item => {
+					if(this.needInvert) {
+						const oldAmount0 = item.token0_amount
+						item.token0_amount = item.token1_amount
+						item.token1_amount = oldAmount0
+					}
           item.token0_total = this.pairInfo.token0.symbol === this.nativeWrappedSymbol
             ? (Math.abs(item.token0_amount) * this.nativeSymbolPrice) // if coin
             : (this.pairInfo.token1.is_stable
@@ -187,6 +192,11 @@ export default {
           return item
         })
 
+				if(this.needInvert) {
+					const oldAmount0 = data.result.total.token0_amount
+					data.result.total.token0_amount = data.result.total.token1_amount
+					data.result.total.token1_amount = oldAmount0
+				}
 				this.totalInfo = data.result.total
         this.totalInfo.token0_total =
           this.pairInfo.token0.symbol === this.nativeWrappedSymbol

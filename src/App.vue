@@ -1,12 +1,12 @@
 <template>
-  <component :is="route.meta['layoutComponent']">
+  <component :is="route.meta.layoutComponent">
       <router-view />
   </component>
 
   <Alert />
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { useRoute } from "vue-router";
   import { useHead } from "@unhead/vue";
   import Alert from "@/components/Alert.vue";
