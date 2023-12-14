@@ -79,7 +79,7 @@ export const useChartStore = defineStore('chart', {
       this.lastTXs.unshift(newTx) // add to start array
       // if(this.lastTXs.length > 1000) { this.lastTXs = this.lastTXs.slice(0, 1000) }
     },
-    async loadOldTXs() {
+    async loadOldTXs(): Promise<number> {
       const lastTx = this.lastTXs[this.lastTXs.length - 1]
       const {success, result} = await fetchHistoryTable({
         chain_id: this.activeSymbol?.chain_id as number,
@@ -98,7 +98,10 @@ export const useChartStore = defineStore('chart', {
           data = invertAmounts(data)
 
         this.lastTXs.push(...data) // add to end array
-      }
+
+        return data.length
+      } else
+        return 0
     },
     async loadExchanges() {
       const {success, result} = await fetchExchanges()

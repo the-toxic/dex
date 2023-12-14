@@ -36,7 +36,7 @@
 							<div v-if="loading" class="text-center"><v-skeleton-loader type="table-tbody" /> <v-skeleton-loader type="table-tbody" /></div>
 							<div v-else-if="!loading && !rows.length" class="text-center py-4">No activity</div>
 							<div v-if="!loading && rows.length" v-intersect="infiniteScrolling" class="text-center">
-								<v-progress-circular :size="50" :width="4" color="white" indeterminate class="ma-3" />
+								<v-progress-circular v-if="visibleInfiniteLoader" :size="50" :width="4" color="white" indeterminate class="ma-3" />
 							</div>
 						</td>
 					</tr>
@@ -61,13 +61,13 @@
 
 	/** DATA */
 	const loading = ref(true)
+	const visibleInfiniteLoader = ref(false)
 	const tzOffset = -(new Date().getTimezoneOffset()) * 60
 
 	/** COMPUTED */
 	const rows = computed(() => {
 		if(loading.value) return []
 		// const items = Object.assign([], chartStore.lastTXs)
-
 		return chartStore.lastTXs.map(item => {
 			item.parsedPrice = +item.amount_token1/+item.amount_token0
 			item.parsedDate = new Date((item.date + tzOffset) * 1000).toISOString().slice(0, 19).split('T').join(' ')
@@ -77,7 +77,7 @@
 		// return this.lastTXs
 	})
 
-	const { list, containerProps, wrapperProps } = useVirtualList(
+	const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(
 		rows,
 		{
 			itemHeight: 30,
@@ -90,6 +90,8 @@
 	// watch(() => chartStore.activeSymbol, async (newVal, oldVal) => {
 		if(!newVal) return
 		loading.value = true
+		visibleInfiniteLoader.value = true
+		scrollTo(0) // on change pair reset scroll table
 		await chartStore.loadHistoryTable({
 			chain_id: newVal['chain_id'],
 			pair_id: newVal['pair_id']
@@ -98,10 +100,11 @@
 	})
 
 	/** METHODS */
-	const infiniteScrolling = (isIntersecting, entries, observer) => {
+	const infiniteScrolling = async (isIntersecting, entries, observer) => {
 		if (entries[0].isIntersecting) {
-			console.log('Load Oldest TXs on Scroll...')
-			chartStore.loadOldTXs().then()
+			const addedRows = await chartStore.loadOldTXs()
+			console.log(`Loaded ${addedRows} oldest TXs on scroll...`)
+			if(!addedRows) visibleInfiniteLoader.value = false
 		}
 	}
 
