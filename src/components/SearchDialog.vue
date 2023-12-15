@@ -70,7 +70,9 @@ export default {
 			}
 			this.loading = true
 			const {data} = await fetchSearch(this.searchInput)
-			this.loading = false
+			if(!data.canceled)
+				this.loading = false
+
 			if(data.success) {
 				Object.keys(data.result).map(k => {
 					if(!data.result[k].length)

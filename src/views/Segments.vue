@@ -216,11 +216,11 @@ export default {
 
     this.searchAddressesDebouncedFn = useDebounceFn(async (query, variant) => {
       await this.addressesSearch(query, variant)
-    }, 500)
+    }, 800)
 
     this.searchTokensDebouncedFn = useDebounceFn(async (query) => {
       await this.tokensSearch(query)
-    }, 500)
+    }, 800)
   },
   watch: {
     currentSegmentId(newVal, oldVal) {
@@ -351,12 +351,12 @@ export default {
         return
       }
       this.dialogLoader = true
-      // const { data } = await searchAddresses(query)
       const {data} = await fetchSearch(query, 'entities,labels')
-      this.dialogLoader = false
-      this.addressesList = []
+      if(!data.canceled)
+        this.dialogLoader = false
 
       if(data.success) {
+        this.addressesList = []
         Object.keys(data.result).forEach(category => {
           if(!data.result[category].length) return
 
@@ -395,10 +395,11 @@ export default {
     async tokensSearch(query) {
       this.tokensLoading = true
       const { data } = await fetchSearch(query, 'tokens', this.form.chain_id || null)
-      this.tokensLoading = false
-      this.tokensList = []
+      if(!data.canceled)
+        this.tokensLoading = false
 
       if(data.success) {
+        this.tokensList = []
         data.result['tokens'].forEach(item => {
           this.tokensList.push({
             value: item.id,

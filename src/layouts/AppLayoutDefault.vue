@@ -221,7 +221,7 @@
     mainStore.setTheme(newTheme)
   }
 
-  if('msg' in route.query && route.query.msg === 'pair404') {
+  if('alert' in route.query && route.query.alert === 'pair404') {
     setTimeout(() => mainStore.showAlert('Pair not Found'), 500)
   }
 

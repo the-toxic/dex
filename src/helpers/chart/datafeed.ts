@@ -38,7 +38,7 @@ async function loadDefaultPair(symbolFullName: string) {
     window.tvWidget?.activeChart().setSymbol(fullName+'^'+Math.random()) // disable cache
   } else {
     mainStore().showAlert({msg: 'Error. Pair not found', color: 'error'})
-    // location.href = '/home?msg=pair404'
+    location.href = '/console?alert=pair404'
   }
 }
 

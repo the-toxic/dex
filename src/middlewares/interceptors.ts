@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { CanceledError } from 'axios';
 import { useMainStore } from "@/store/mainStore";
 import { useUserStore } from "@/store/userStore";
 import { refreshJwt } from "@/api";
@@ -10,20 +10,36 @@ const userStore = () => useUserStore()
 const isDev = window.location.host.includes('localhost') || window.location.host.includes('.app')
 const apiDomain = isDev ? import.meta.env.VITE_APP_API_DOMAIN_DEV : import.meta.env.VITE_APP_API_DOMAIN
 axios.defaults.baseURL = apiDomain + import.meta.env.VITE_APP_API_PATH;
+let prevRequest: any = null;
 
 export function httpInt() {
   axios.interceptors.request.use(function(config) {
-    const pattern = /^https?:\/\//;
-    if(!pattern.test(config.url as string)) { // if the request is not sent to an external url
-
-      if(!(config.url as string).includes('auth')) {
-        const token = userStore().user?.jwt
-        if(token) config.headers.Authorization = `Bearer ${token}`
-      }
-      // config.headers.Authorization = `Basic / Bearer 123423534623abc=`
-      // if(!config.headers['x-path']) config.headers['x-path'] = encodeURI(config.url.split('?')[0])
+    // if the request is sent to an external url
+    if(/^https?:\/\//.test(config.url as string)) {
+      return config;
     }
-    return config;
+
+    if(!(config.url as string).includes('auth')) { // no auth pages requests, add header
+      const token = userStore().user?.jwt
+      if (token) config.headers.Authorization = `Bearer ${token}`
+    }
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    if (prevRequest && prevRequest.url === (config.url as string).split('?')[0] && prevRequest.controller) {
+      // console.log('Canceled request:', prevRequest.url, prevRequest.controller.signal.aborted)
+      prevRequest.controller.abort(); // cancel previews request
+    }
+    prevRequest = {
+      url: (config.url as string).split('?')[0],
+      controller: controller
+    };
+    config.signal = signal;
+
+    return config
+    // config.headers.Authorization = `Basic / Bearer 123423534623abc=`
+    // if(!config.headers['x-path']) config.headers['x-path'] = encodeURI(config.url.split('?')[0])
 
   }, function(err) {
     return Promise.reject(err);
@@ -33,6 +49,13 @@ export function httpInt() {
     return response;
 
   }, async function (error) {
+
+    if(error instanceof CanceledError) { // on cancel duplicated request
+      // console.log('axios.interceptors.response - CanceledError')
+      // await Promise.reject(error);
+      return {data: {success: false, canceled: true}}
+    }
+
     // console.dir(error)
     const isSilenceAlert = 'silenceAlert' in error.config
 
