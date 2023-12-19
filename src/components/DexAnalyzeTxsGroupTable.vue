@@ -28,20 +28,15 @@
 			:items-per-page-options="[20,50,100]"
 			@update:options="loadItems"
 		> <!-- All Events update: https://vuetifyjs.com/en/api/v-data-table/#events -->
-<!--			<template v-slot:header.wallet="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
-<!--			<template v-slot:header.profit="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
-<!--			<template v-slot:header.roi="{ column }"><div class="mx-n4 fill-height pt-11 border">{{ column.title }}</div></template>-->
-<!--			<template v-slot:header.buys="{ column }"><div class="mx-n4 fill-height pt-3" style="color:#4aaf50;">{{ column.title }}</div></template>-->
-<!--			<template v-slot:header.sells="{ column }"><div class="mx-n4 fill-height pt-3" style="color: #c06072">{{ column.title }}</div></template>-->
 
-			<template v-slot:header.buy_txs="{ column }"><div style="color:#4aaf50;">{{ column.title }}</div></template>
-			<template v-slot:header.buy_amount="{ column }"><div style="color:#4aaf50;">{{ column.title }}</div></template>
-			<template v-slot:header.buy_price="{ column }"><div style="color:#4aaf50;">{{ column.title }}</div></template>
-			<template v-slot:header.buy_total="{ column }"><div style="color:#4aaf50;">{{ column.title }}</div></template>
-			<template v-slot:header.sell_txs="{ column }"><div style="color:#c06072;">{{ column.title }}</div></template>
-			<template v-slot:header.sell_amount="{ column }"><div style="color:#c06072;">{{ column.title }}</div></template>
-			<template v-slot:header.sell_price="{ column }"><div style="color:#c06072;">{{ column.title }}</div></template>
-			<template v-slot:header.sell_total="{ column }"><div style="color:#c06072;">{{ column.title }}</div></template>
+			<template v-slot:header.buy_txs="{ column, getSortIcon, isSorted }"><div style="color:#4aaf50;">{{ column.title }} <v-icon v-if="isSorted(column)" :icon="getSortIcon(column)"></v-icon></div></template>
+			<template v-slot:header.buy_amount="{ column, getSortIcon, isSorted }"><div style="color:#4aaf50;">{{ column.title }} <v-icon v-if="isSorted(column)" :icon="getSortIcon(column)"></v-icon></div></template>
+			<template v-slot:header.buy_price="{ column, getSortIcon, isSorted }"><div style="color:#4aaf50;">{{ column.title }} <v-icon v-if="isSorted(column)" :icon="getSortIcon(column)"></v-icon></div></template>
+			<template v-slot:header.buy_total="{ column, getSortIcon, isSorted }"><div style="color:#4aaf50;">{{ column.title }} <v-icon v-if="isSorted(column)" :icon="getSortIcon(column)"></v-icon></div></template>
+			<template v-slot:header.sell_txs="{ column, getSortIcon, isSorted }"><div style="color:#c06072;">{{ column.title }} <v-icon v-if="isSorted(column)" :icon="getSortIcon(column)"></v-icon></div></template>
+			<template v-slot:header.sell_amount="{ column, getSortIcon, isSorted }"><div style="color:#c06072;">{{ column.title }} <v-icon v-if="isSorted(column)" :icon="getSortIcon(column)"></v-icon></div></template>
+			<template v-slot:header.sell_price="{ column, getSortIcon, isSorted }"><div style="color:#c06072;">{{ column.title }} <v-icon v-if="isSorted(column)" :icon="getSortIcon(column)"></v-icon></div></template>
+			<template v-slot:header.sell_total="{ column, getSortIcon, isSorted }"><div style="color:#c06072;">{{ column.title }} <v-icon v-if="isSorted(column)" :icon="getSortIcon(column)"></v-icon></div></template>
 
 			<template v-slot:item.wallet="{ item }">
 				<LabelAddress link copy :to="{name: 'Address', params: {id: item.wallet.address}}" :address="item.wallet" target="_blank" />
