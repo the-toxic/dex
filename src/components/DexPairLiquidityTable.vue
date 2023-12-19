@@ -22,7 +22,7 @@
     v-model:page="page"
     :headers="headers"
     :items-length="totalItems"
-    :items="rows"
+    :items="items"
     :loading="loading"
     @update:options="loadItems"
     class="elevation-1 fs14 mb-16"
@@ -141,12 +141,12 @@ export default {
 	computed: {
 		...mapState(useMainStore, {chains: 'chains'}),
 		...mapState(useChartStore, {lastPrice: 'lastPrice', nativeWrappedSymbol: 'nativeWrappedSymbol', needInvert: 'needInvert'}),
-		rows() {
-			return this.items.map(item => {
-				item.ago = moment(item.dttm).fromNow() //'1y 5m 1d 2h'
-				return item
-			})
-		},
+		// rows() {
+		// 	return this.items.map(item => {
+		// 		item.ago = moment(item.dttm).fromNow() //'1y 5m 1d 2h'
+		// 		return item
+		// 	})
+		// },
     nativeSymbolPrice() {
       return this.chains[this.chainId]['native_symbol_price'] || 1
     },
@@ -156,6 +156,7 @@ export default {
 
 		async loadItems () {
       this.loading = true
+			this.items = []
       const data = await fetchDexLiquidityTxs({
 				page: this.page,
 				per_page: this.per_page,
@@ -169,9 +170,10 @@ export default {
         to_dttm: this.filter.period[1] ? moment(this.filter.period[1]).format("YYYY-MM-DD HH:mm:ss") : '',
 			})
       this.loading = false
+
       if(data.success) {
-				this.totalItems = data.result.totalItems
 				this.items = data.result.items.map(item => {
+					item.ago = moment(item.dttm).fromNow() //'1y 5m 1d 2h'
 					if(this.needInvert) {
 						const oldAmount0 = item.token0_amount
 						item.token0_amount = item.token1_amount
@@ -189,8 +191,10 @@ export default {
               ? (Math.abs(item.token1_amount) * this.nativeSymbolPrice)
               : 0)
           item.total = item.token0_total + item.token1_total
+
           return item
         })
+				console.log(this.items[1].maker.entity.name)
 
 				if(this.needInvert) {
 					const oldAmount0 = data.result.total.token0_amount
@@ -211,6 +215,8 @@ export default {
             ? (Math.abs(this.totalInfo.token1_amount) * this.nativeSymbolPrice)
             : 0)
         this.totalInfo.total = this.totalInfo.token0_total + this.totalInfo.token1_total
+
+				this.totalItems = data.result.totalItems
       }
     },
 
