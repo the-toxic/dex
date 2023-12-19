@@ -240,7 +240,7 @@ export default defineComponent({
 			}, 500)
     },
 		setTokensToTableHeader() {
-      this.headers[2].title = 'Profit, '+this.rightToken.slice(0,5)
+      this.headers[1].title = 'Profit, '+this.rightToken.slice(0,5)
 			this.headers[5].title = 'Amount, '+this.leftToken.slice(0,5)
 			this.headers[6].title = 'Price, '+this.rightToken.slice(0,5)
 			this.headers[9].title = 'Amount, '+this.leftToken.slice(0,5)
