@@ -1,0 +1,32 @@
+$back-base: #18181F; // #282833; // 141d26 // main bg.
+$text-base: #f0f3f5;
+
+$theme-dark-colors: (
+  '0': #000000,
+  '1': darken($back-base, 7.5%), // top & left menu bar
+  '2': darken($back-base, 5%),
+  '3': darken($back-base, 2.5%),
+  '4': $back-base,
+  '6': lighten($back-base, 2.5%),
+  '8': lighten($back-base, 5%),
+  '12': lighten($back-base, 7.5%),
+  '16': lighten($back-base, 10%),
+  '24': lighten($back-base, 12.5%),
+);
+
+@use 'vuetify/settings' with (
+  //$color-pack: false,
+  //$utilities: false,
+  //$button-height: 40px,
+  $body-font-family: sans-serif,
+  $application-background: #070709, // map-get($theme-dark-colors, '3'), // bg
+  //$application-color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity)),
+  $app-bar-background: #18181F, // map-get($theme-dark-colors, '4'), // top nav
+  $navigation-drawer-background: #18181F, // map-get($theme-dark-colors, '4'),
+  $footer-background: #18181F, // map-get($theme-dark-colors, '4'),
+  $card-background: map-get($theme-dark-colors, '4'), // #16202b
+  //$button-background: map-get($theme-dark-colors, '5'),
+  //$button-color: map-get($theme-dark-colors, '5'),
+  $overlay-opacity: 0.6,
+  $overlay-scrim-background: map-get($theme-dark-colors, '1'),
+);

@@ -1,3 +1,23 @@
-# Dex-app project
+# HAZB. Blockchain tools and analytics
 
-This template should help get you started developing with Vue 2 and Vuetify. 
+## Installation via NPM
+
+```
+# npm
+npm install
+```
+
+### Compiles and hot-reloads for development
+
+```
+# npm
+npm run dev
+```
+
+### Compiles and minifies for production
+
+```
+# npm
+npm run build
+```
+

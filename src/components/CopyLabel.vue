@@ -1,16 +1,15 @@
 <template>
-  <v-tooltip bottom>
-    <template v-slot:activator="{ on }">
-      <span v-on="on" @click.stop.prevent="copy">
+  <v-tooltip location="end" :text="tooltip">
+    <template v-slot:activator="{ props }">
+      <span v-bind="props" @click.stop.prevent="copy">
         <v-icon v-if="icon" size="14" :color="iconColor">mdi-content-copy</v-icon>
         <span v-else>{{ visibleText }}</span>
       </span>
     </template>
-    <span>{{ tooltip }}</span>
   </v-tooltip>
 </template>
 
-<script>
+<script lang="ts">
 /*
 |---------------------------------------------------------------------
 | Copy Label Component
@@ -19,7 +18,9 @@
 | Copy to clipboard with the plugin clipboard `this.$clipboard`
 |
 */
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   props: {
     // Text to copy to clipboard
     text: {
@@ -51,15 +52,15 @@ export default {
   data() {
     return {
       tooltip: 'Copy',
-      timeout: null
+      timeout: 0
     }
   },
-  beforeDestroy() {
-    if (this.timeout) clearTimeout(this.timeout)
+  beforeUnmount() {
+    if(this.timeout) clearTimeout(this.timeout)
   },
   computed: {
     visibleText() {
-      return this.strip ? this.text.substr(0, 6) + '...' : this.text
+      return this.strip ? this.text.slice(0, 6) + '...' : this.text
     }
   },
   methods: {
@@ -67,12 +68,12 @@ export default {
       this.$clipboard(this.text, this.alertText)
       this.tooltip = 'Copied!'
 
-      this.timeout = setTimeout(() => {
+      this.timeout = window.setTimeout(() => {
         this.tooltip = 'Copy'
       }, 2000)
     }
   }
-}
+})
 </script>
 
 <style>
