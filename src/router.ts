@@ -6,7 +6,6 @@ import { useMainStore } from "@/store/mainStore";
 
 import Home from "@/views/Home.vue";
 import E404 from "@/views/E404.vue";
-// import Career from "@/views/Career.vue";
 import ContactUs from "@/views/ContactUs.vue";
 
 type AppRouteRecord = Omit<RouteRecordRaw, 'name' | 'children'> & {

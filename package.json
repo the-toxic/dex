@@ -1,6 +1,6 @@
 {
-  "name": "hazb-dex",
-  "version": "0.3.0",
+  "name": "hazb",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
